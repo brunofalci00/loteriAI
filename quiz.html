@@ -1,0 +1,338 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loter.IA | Simulador Interativo</title>
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1185694843449930');
+    fbq('track', 'PageView');
+    fbq('track', 'ViewContent');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1185694843449930&ev=PageView&noscript=1"/></noscript>
+  <!-- End Meta Pixel Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz.css">
+</head>
+<body class="quiz-body">
+  <header class="quiz-header">
+    <div class="quiz-brand">
+      <img class="brand-logo" src="https://i.ibb.co/r2FFdKRw/Logo-Lumen-1.png" alt="Logo Loter.IA">
+    </div>
+  </header>
+
+  <main class="quiz-wrapper">
+    <!-- Slide 1 -->
+    <section class="quiz-slide is-active" data-step="intro">
+      <div class="slide-card slide-card--intro">
+        <h1 class="slide-title">Você foi aprovado para testar a IA da Loter.IA</h1>
+        <p class="slide-lead">Vamos comparar o seu desempenho com e sem inteligência artificial.</p>
+
+        <div class="info-box info-box--list">
+          <h2>Etapas do teste</h2>
+          <ul>
+            <li>Rodada 1 – Você joga manualmente</li>
+            <li>Rodada 2 – Outro jogo manual</li>
+            <li>Rodada 3 – IA ativa, você apenas segue as sugestões</li>
+            <li>Rodada 4 – Último jogo com a IA</li>
+          </ul>
+        </div>
+
+        <button class="quiz-btn quiz-btn--primary" data-next="preloading">COMEÇAR TESTE AGORA</button>
+      </div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section class="quiz-slide" data-step="preloading">
+      <div class="slide-card slide-card--center">
+        <h2 class="slide-title">Preparando seu acesso...</h2>
+        <div class="loader-icon" aria-hidden="true">
+          <svg viewBox="0 0 50 50">
+            <circle class="track" cx="25" cy="25" r="20"></circle>
+            <circle class="indicator" cx="25" cy="25" r="20"></circle>
+          </svg>
+        </div>
+        <div class="progress">
+          <div class="progress__bar progress__bar--animated"></div>
+        </div>
+        <div class="status-list">
+          <span class="status">Analisando padrões do seu perfil de jogo…</span>
+          <span class="status">Consultando base de dados dos últimos 3.000 concursos…</span>
+          <span class="status">IA temporariamente desativada para validação.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section class="quiz-slide" data-step="manual-select-1">
+      <div class="slide-card slide-card--wide">
+        <header class="slide-head">
+          <h2>Monte seu primeiro jogo manual</h2>
+          <span class="chip chip--alert">IA desativada</span>
+        </header>
+        <p class="slide-instruction">Selecione 15 números para jogar. Você está jogando por conta própria.</p>
+        <div class="number-grid" data-mode="manual" data-round="1">
+          <!-- Números inseridos via JS -->
+        </div>
+        <footer class="slide-foot">
+          <span class="foot-label">Rodada 1/4</span>
+          <button class="quiz-btn quiz-btn--primary" data-action="verify-manual" data-round="1">CONFERIR RESULTADO</button>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section class="quiz-slide" data-step="manual-loading-1">
+      <div class="slide-card slide-card--center">
+        <h2 class="slide-title">Processando seu jogo...</h2>
+        <div class="loader-icon loader-icon--pulse" aria-hidden="true"></div>
+        <div class="status-list">
+          <span class="status">Conferindo resultados…</span>
+          <span class="status">Comparando com base histórica…</span>
+          <span class="status">Calculando probabilidade de premiação…</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 5 -->
+    <section class="quiz-slide" data-step="manual-result-1">
+      <div class="slide-card slide-card--center">
+        <div class="result-box result-box--negative">
+          <span class="result-icon">📉</span>
+          <h3>Você teve 6 acertos</h3>
+          <p>💸 Ganho simulado: R$ 5,00</p>
+        </div>
+        <p class="slide-note">Esse é o desempenho típico de quem joga no escuro.</p>
+        <p class="slide-note">Média Brasil: 5 a 8 acertos.</p>
+        <button class="quiz-btn quiz-btn--primary" data-next="manual-select-2">IR PARA PRÓXIMO JOGO</button>
+      </div>
+    </section>
+
+    <!-- Slide 6 -->
+    <section class="quiz-slide" data-step="manual-select-2">
+      <div class="slide-card slide-card--wide">
+        <header class="slide-head">
+          <h2>Monte seu segundo jogo manual</h2>
+          <span class="chip chip--alert">IA desativada</span>
+        </header>
+        <p class="slide-instruction">Selecione outra combinação com 15 números.</p>
+        <div class="number-grid" data-mode="manual" data-round="2">
+          <!-- Números via JS -->
+        </div>
+        <footer class="slide-foot">
+          <span class="foot-label">Rodada 2/4</span>
+          <button class="quiz-btn quiz-btn--primary" data-action="verify-manual" data-round="2">CONFERIR RESULTADO</button>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 7 -->
+    <section class="quiz-slide" data-step="manual-loading-2">
+      <div class="slide-card slide-card--center">
+        <h2 class="slide-title">Analisando seu segundo jogo...</h2>
+        <div class="loader-icon loader-icon--pulse" aria-hidden="true"></div>
+        <div class="status-list">
+          <span class="status">Verificando sua consistência…</span>
+          <span class="status">Cruzando desempenho com outros jogadores…</span>
+          <span class="status">IA ainda desativada.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 8 -->
+    <section class="quiz-slide" data-step="manual-result-2">
+      <div class="slide-card slide-card--center">
+        <div class="result-box result-box--negative">
+          <span class="result-icon">📉</span>
+          <h3>Você teve 7 acertos</h3>
+          <p>💸 Ganho simulado: R$ 10,00</p>
+        </div>
+        <p class="slide-note">Mais uma vez, resultado abaixo do ideal. Agora a IA vai te guiar.</p>
+        <button class="quiz-btn quiz-btn--primary" data-next="ia-activate">ATIVAR INTELIGÊNCIA ARTIFICIAL</button>
+      </div>
+    </section>
+
+    <!-- Slide 9 -->
+    <section class="quiz-slide" data-step="ia-activate">
+      <div class="slide-card slide-card--center">
+        <span class="badge badge--success">IA ativada</span>
+        <h2 class="slide-title">IA ativada com sucesso</h2>
+        <div class="loader-icon loader-icon--pulse" aria-hidden="true"></div>
+        <div class="status-list">
+          <span class="status">Detectando padrões de alto rendimento…</span>
+          <span class="status">Gerando sequência sugerida número a número…</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 10 -->
+    <section class="quiz-slide" data-step="guided-select-1">
+      <div class="slide-card slide-card--wide">
+        <header class="slide-head">
+          <h2>IA da Loter.IA guiando sua escolha</h2>
+          <span class="chip chip--success">Seleção guiada 1/2</span>
+        </header>
+        <p class="slide-instruction">Clique no número sugerido pela IA. Siga as indicações na ordem.</p>
+        <div class="guided-feedback" aria-live="polite"></div>
+        <div class="number-grid" data-mode="guided" data-sequence="1">
+          <!-- números via JS -->
+        </div>
+        <footer class="slide-foot">
+          <span class="foot-label">Rodada 3/4</span>
+          <div class="progress progress--thin">
+            <div class="progress__bar" data-progress="guided-1"></div>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 11 -->
+    <section class="quiz-slide" data-step="ia-loading-1">
+      <div class="slide-card slide-card--center">
+        <h2 class="slide-title">Calculando seu resultado otimizado...</h2>
+        <div class="loader-icon loader-icon--pulse" aria-hidden="true"></div>
+        <div class="status-list">
+          <span class="status">Cruzando com sorteios anteriores…</span>
+          <span class="status">Verificando frequência e saltos numéricos…</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 12 -->
+    <section class="quiz-slide" data-step="ia-result-1">
+      <div class="slide-card slide-card--center">
+        <div class="result-box result-box--positive">
+          <span class="result-icon">🎉</span>
+          <h3>Você teve 14 acertos!</h3>
+          <p>💰 Ganho simulado: R$ 2.253,94</p>
+        </div>
+        <p class="slide-note">Sua performance com IA foi R$ 2.248,94 superior ao primeiro jogo.</p>
+        <button class="quiz-btn quiz-btn--primary" data-next="guided-select-2">FAZER ÚLTIMO JOGO COM A IA</button>
+      </div>
+    </section>
+
+    <!-- Slide 13 -->
+    <section class="quiz-slide" data-step="guided-select-2">
+      <div class="slide-card slide-card--wide">
+        <header class="slide-head">
+          <h2>IA preparando nova combinação estratégica</h2>
+          <span class="chip chip--success">Seleção guiada 2/2</span>
+        </header>
+        <p class="slide-instruction">Repita o processo: escolha apenas o número que a IA indicar.</p>
+        <div class="guided-feedback" aria-live="polite"></div>
+        <div class="number-grid" data-mode="guided" data-sequence="2">
+          <!-- números via JS -->
+        </div>
+        <footer class="slide-foot">
+          <span class="foot-label">Rodada 4/4</span>
+          <div class="progress progress--thin">
+            <div class="progress__bar" data-progress="guided-2"></div>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Slide 14 -->
+    <section class="quiz-slide" data-step="ia-loading-2">
+      <div class="slide-card slide-card--center">
+        <h2 class="slide-title">Finalizando a análise inteligente...</h2>
+        <div class="loader-icon loader-icon--pulse" aria-hidden="true"></div>
+        <div class="status-list">
+          <span class="status">Consolidando desempenho da IA…</span>
+          <span class="status">Atualizando indicadores de ganho…</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 15 -->
+    <section class="quiz-slide" data-step="summary">
+      <div class="slide-card slide-card--center summary-card">
+        <h2 class="slide-title">Resumo do seu teste com a Loter.IA</h2>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <h3>Jogo Manual 1</h3>
+            <p>6 acertos</p>
+            <span>R$ 5,00</span>
+          </div>
+          <div class="summary-item">
+            <h3>Jogo Manual 2</h3>
+            <p>7 acertos</p>
+            <span>R$ 10,00</span>
+          </div>
+          <div class="summary-item summary-item--highlight">
+            <h3>Jogo IA 1</h3>
+            <p>14 acertos</p>
+            <span>R$ 2.253,94</span>
+          </div>
+          <div class="summary-item summary-item--highlight">
+            <h3>Jogo IA 2</h3>
+            <p>13 acertos</p>
+            <span>R$ 1.854,90</span>
+          </div>
+        </div>
+        <p class="summary-total">Total com IA: <strong>R$ 4.108,84</strong></p>
+        <button class="quiz-btn quiz-btn--primary" data-next="offer">LIBERAR ACESSO À IA AGORA</button>
+      </div>
+    </section>
+
+    <!-- Slide 16 -->
+    <section class="quiz-slide" data-step="offer">
+      <div class="slide-card slide-card--offer">
+        <h2>Antes de acessar a Loter.IA, veja o que nossos usuários estão dizendo</h2>
+        <p class="offer-lead">Mais de 12 mil pessoas já testaram a IA. Esses são alguns resultados reais compartilhados com nossa equipe.</p>
+
+        <div class="testimonials">
+          <article class="testimonial">
+            <img src="https://i.ibb.co/kV8Fn1x2/depoimento-01.png" alt="Depoimento de usuário da Loter.IA mostrando evolução de ganhos">
+          </article>
+          <article class="testimonial">
+            <img src="https://i.ibb.co/WpHjFrRv/depoimento-02.png" alt="Comentário em rede social sobre os resultados com a Loter.IA">
+          </article>
+          <article class="testimonial">
+            <img src="https://i.ibb.co/MxZkRrTW/depoimento-03.png" alt="Print de conversa destacando acertos com a IA da Loter.IA">
+          </article>
+        </div>
+
+        <p class="offer-note">
+          Infelizmente, não temos muitas vagas disponíveis. Para manter a qualidade das análises, liberamos acesso para novos membros por tempo limitado.
+        </p>
+
+        <h3>Acesso anual único à Loter.IA</h3>
+        <p class="offer-highlight">Receba 3 jogos prontos todos os dias + atualizações em tempo real por apenas:</p>
+        <div class="price-card">
+          <span class="price">R$ 47,90</span>
+          <span class="price-tag">Pagamento único anual</span>
+        </div>
+        <p class="offer-bonus">Bônus imediato: desbloqueie a IA da Mega-Sena e de mais 5 loterias (Quina, Lotomania, Dupla Sena, Timemania e Dia de Sorte).</p>
+
+        <ul class="benefits">
+          <li>Acesso imediato ao simulador avançado + dashboard</li>
+          <li>Atualizações diárias com base nos últimos concursos</li>
+          <li>Média de 14 acertos relatada pelos usuários que seguem a IA</li>
+          <li>Mais de 10 combinações inteligentes por sorteio para planejar apostas de forma estratégica</li>
+        </ul>
+
+        <a class="quiz-btn quiz-btn--primary quiz-btn--large" href="checkout.html" onclick="if (typeof fbq === 'function') { fbq('track', 'AddToCart'); }">GARANTIR MEU ACESSO ANUAL</a>
+        <span class="offer-subtext">Oferta válida enquanto houver vagas disponíveis.</span>
+      </div>
+    </section>
+  </main>
+
+  <script src="quiz.js" defer></script>
+</body>
+</html>
+
+
+
