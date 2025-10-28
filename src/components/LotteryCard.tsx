@@ -4,8 +4,10 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Skeleton } from "./ui/skeleton";
 import { formatShortDate, isToday, formatCurrency } from "@/utils/formatters";
+import { getLotteryColor } from "@/utils/lotteryColors";
 
 interface LotteryCardProps {
+  lotteryId: string;
   name: string;
   description: string;
   icon: string;
@@ -16,11 +18,22 @@ interface LotteryCardProps {
   estimatedPrize?: number;
 }
 
-export const LotteryCard = ({ name, description, icon, numbersCount, onClick, nextDrawDate, isLoading, estimatedPrize }: LotteryCardProps) => {
+export const LotteryCard = ({ lotteryId, name, description, icon, numbersCount, onClick, nextDrawDate, isLoading, estimatedPrize }: LotteryCardProps) => {
   const drawIsToday = nextDrawDate ? isToday(nextDrawDate) : false;
+  const lotteryColor = getLotteryColor(lotteryId);
+  
   return (
-    <Card className="group relative overflow-hidden border-border bg-card p-6 shadow-card transition-all duration-300 hover:shadow-glow hover:scale-105 cursor-pointer" onClick={onClick}>
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    <Card 
+      className="group relative overflow-hidden border-border bg-card p-6 shadow-card transition-all duration-300 hover:shadow-glow hover:scale-105 cursor-pointer border-t-4" 
+      style={{ borderTopColor: lotteryColor }}
+      onClick={onClick}
+    >
+      <div 
+        className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
+        style={{ 
+          backgroundImage: `linear-gradient(to bottom right, ${lotteryColor}10, ${lotteryColor}05)` 
+        }}
+      />
       
       <div className="relative z-10">
         <div className="mb-4 flex items-center justify-between">

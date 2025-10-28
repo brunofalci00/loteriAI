@@ -82,6 +82,7 @@ const LotteryCardWithData = ({ lottery, onClick }: { lottery: typeof lotteries[0
 
   return (
     <LotteryCard
+      lotteryId={lottery.id}
       name={lottery.name}
       description={lottery.description}
       icon={lottery.icon}
