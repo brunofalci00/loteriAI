@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let autoTimer;
 
   const autoAdvance = {
-    preloading: { next: 'manual-select-1', delay: 5000 },
+    preloading: { next: 'video-manual-intro', delay: 5000 },
     'manual-loading-1': { next: 'manual-result-1', delay: 3000 },
     'manual-loading-2': { next: 'manual-result-2', delay: 3000 },
     'ia-activate': { next: 'guided-select-1', delay: 4000 },
@@ -47,12 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const manualState = new Map();
   const guidedState = new Map();
-  const iaActivationDisplay = createIaActivationDisplay();
+  const videoGates = new Map();
+  let activeVideoGate = null;
 
   initManualGrids();
   initGuidedGrids();
-  initTestimonialSlider();
-  initHublaLink();
+  initVideoGates();
   wireControls();
 
   function fbSafeTrack(event, params) {
@@ -97,10 +97,203 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function initVideoGates() {
+    const sections = document.querySelectorAll('[data-video-gate]');
+
+    sections.forEach((section) => {
+      const step = section.dataset.step;
+      const video = section.querySelector('video');
+      const playButton = section.querySelector('[data-role="video-play"]');
+      const continueButton = section.querySelector('[data-role="video-continue"]');
+      const hint = section.querySelector('[data-role="video-hint"]');
+      const progressBar = section.querySelector('[data-role="video-progress-bar"]');
+
+      if (!step || !video || !continueButton) {
+        return;
+      }
+
+      let lastTime = 0;
+      let resetting = false;
+
+      const blockedKeys = new Set(['ArrowRight', 'ArrowLeft', ' ', 'f', 'F', 'k', 'K', 'm', 'M']);
+
+      const preventKeySkip = (event) => {
+        if (!gate.active) return;
+        if (blockedKeys.has(event.key)) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      };
+
+      const preventContextMenu = (event) => {
+        if (gate.active) {
+          event.preventDefault();
+        }
+      };
+
+      const refreshProgress = () => {
+        if (!progressBar) return;
+        const duration = Number(video.duration);
+        const progressed = Number(video.currentTime);
+        let percent = 0;
+        if (Number.isFinite(duration) && duration > 0) {
+          percent = Math.min((progressed / duration) * 100, 100);
+        } else if (video.ended) {
+          percent = 100;
+        }
+        progressBar.style.width = `${percent}%`;
+      };
+
+      const updateLastTime = () => {
+        if (gate.active && !video.seeking) {
+          lastTime = video.currentTime;
+        }
+        refreshProgress();
+      };
+
+      const enforceSeekLock = () => {
+        if (!gate.active || resetting) return;
+        if (Math.abs(video.currentTime - lastTime) > 1.5) {
+          video.currentTime = lastTime;
+        }
+        refreshProgress();
+      };
+
+      const resumePlayback = () => {
+        if (!gate.active || resetting || video.ended) return;
+        const attempt = video.play();
+        if (attempt && typeof attempt.catch === 'function') {
+          attempt.catch(() => {
+            if (gate.active && playButton) {
+              playButton.classList.remove('is-hidden');
+            }
+          });
+        }
+      };
+
+      const handleEnded = () => {
+        gate.active = false;
+        window.removeEventListener('keydown', preventKeySkip, true);
+        section.removeEventListener('contextmenu', preventContextMenu);
+        video.removeEventListener('contextmenu', preventContextMenu);
+        refreshProgress();
+        continueButton.disabled = false;
+        continueButton.classList.remove('is-hidden');
+        if (hint) {
+          hint.classList.add('is-hidden');
+        }
+      };
+
+      const gate = {
+        step,
+        active: false,
+        activate() {
+          this.active = true;
+          resetting = true;
+          lastTime = 0;
+          continueButton.disabled = true;
+          continueButton.classList.add('is-hidden');
+          if (hint) {
+            hint.classList.remove('is-hidden');
+          }
+          if (progressBar) {
+            progressBar.style.width = '0%';
+          }
+          if (playButton) {
+            playButton.classList.remove('is-hidden');
+          }
+          try {
+            video.pause();
+          } catch (error) {
+            // Ignore browsers that throw when pausing before metadata loads.
+          }
+          try {
+            video.currentTime = 0;
+          } catch (error) {
+            video.load();
+          }
+          video.controls = false;
+          video.setAttribute('controlsList', 'nodownload noplaybackrate noremoteplayback');
+          video.setAttribute('disablePictureInPicture', '');
+          window.addEventListener('keydown', preventKeySkip, { capture: true, passive: false });
+          section.addEventListener('contextmenu', preventContextMenu);
+          video.addEventListener('contextmenu', preventContextMenu);
+          window.setTimeout(() => {
+            resetting = false;
+          }, 0);
+        },
+        deactivate() {
+          if (!this.active) return;
+          this.active = false;
+          window.removeEventListener('keydown', preventKeySkip, true);
+          section.removeEventListener('contextmenu', preventContextMenu);
+          video.removeEventListener('contextmenu', preventContextMenu);
+           refreshProgress();
+          try {
+            video.pause();
+          } catch (error) {
+            // Ignore silently.
+          }
+        },
+        requestPlay() {
+          const attempt = video.play();
+          if (attempt && typeof attempt.catch === 'function') {
+            attempt.catch(() => {
+              if (this.active && playButton) {
+                playButton.classList.remove('is-hidden');
+              }
+            });
+          }
+        },
+      };
+
+      if (playButton) {
+        playButton.addEventListener('click', () => {
+          playButton.classList.add('is-hidden');
+          gate.requestPlay();
+        });
+      }
+
+      video.addEventListener('play', () => {
+        if (gate.active && playButton) {
+          playButton.classList.add('is-hidden');
+        }
+      });
+
+      video.addEventListener('pause', () => {
+        resumePlayback();
+      });
+
+      video.addEventListener('timeupdate', updateLastTime);
+      video.addEventListener('waiting', updateLastTime);
+      video.addEventListener('seeking', enforceSeekLock);
+      video.addEventListener('loadedmetadata', refreshProgress);
+      video.addEventListener('ended', handleEnded);
+
+      continueButton.addEventListener('click', () => {
+        gate.deactivate();
+      });
+
+      videoGates.set(step, gate);
+    });
+  }
+
   function showSlide(step) {
     if (!slideByStep.has(step)) return;
+    const nextGate = videoGates.get(step);
+
+    if (activeVideoGate && activeVideoGate !== nextGate) {
+      activeVideoGate.deactivate();
+      activeVideoGate = null;
+    }
+
     slides.forEach((slide) => slide.classList.toggle('is-active', slide.dataset.step === step));
     clearTimeout(autoTimer);
+    if (nextGate) {
+      nextGate.activate();
+      activeVideoGate = nextGate;
+    }
+
     const config = autoAdvance[step];
     if (config?.next) {
       autoTimer = window.setTimeout(() => showSlide(config.next), config.delay);
@@ -116,11 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (cashSlides.has(step)) playCashSound();
     if (failSlides.has(step)) playFailSound();
-    if (step === 'ia-activate') {
-      iaActivationDisplay.start();
-    } else {
-      iaActivationDisplay.stop();
-    }
 
     switch (step) {
       case 'manual-select-1':
@@ -363,68 +551,6 @@ document.addEventListener('DOMContentLoaded', () => {
     state.feedback.textContent = message;
   }
 
-  function createIaActivationDisplay() {
-    let timerId;
-
-    function clearTimer() {
-      if (timerId) {
-        window.clearTimeout(timerId);
-        timerId = undefined;
-      }
-    }
-
-    function renderState(lines, activeIndex) {
-      lines.forEach((line, index) => {
-        line.classList.toggle('is-active', index === activeIndex);
-        line.classList.toggle('is-complete', index < activeIndex);
-      });
-    }
-
-    function start() {
-      const container = document.querySelector('[data-ia-feed]');
-      if (!container) return;
-      const lines = Array.from(container.querySelectorAll('[data-line]'));
-      const typing = container.querySelector('[data-typing]');
-      if (!lines.length) return;
-
-      clearTimer();
-      lines.forEach((line) => line.classList.remove('is-active', 'is-complete'));
-      if (typing) typing.classList.remove('is-visible');
-
-      let activeIndex = -1;
-
-      const activateNext = () => {
-        activeIndex += 1;
-        renderState(lines, activeIndex);
-
-        if (activeIndex < lines.length - 1) {
-          if (typing) typing.classList.remove('is-visible');
-          timerId = window.setTimeout(activateNext, 1150);
-          return;
-        }
-
-        // Keep last line brilhando e exibir o efeito digitando após pequena pausa.
-        if (typing) {
-          timerId = window.setTimeout(() => typing.classList.add('is-visible'), 850);
-        }
-      };
-
-      activateNext();
-    }
-
-    function stop() {
-      clearTimer();
-      const container = document.querySelector('[data-ia-feed]');
-      if (!container) return;
-      const lines = container.querySelectorAll('[data-line]');
-      lines.forEach((line) => line.classList.remove('is-active', 'is-complete'));
-      const typing = container.querySelector('[data-typing]');
-      if (typing) typing.classList.remove('is-visible');
-    }
-
-    return { start, stop };
-  }
-
   function playClickSound() {
     playAudioClip('click', 0.7, () => {
       ToneGenerator.playSequence([780, 960], 0.07, 0.05, 'click');
@@ -472,114 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  
-
-  function initHublaLink() {
-    const link = document.querySelector('[data-hubla-link]');
-    if (!link) return;
-    const target = new URL(link.getAttribute('href'), window.location.href);
-    const params = new URLSearchParams(window.location.search);
-
-    params.forEach((value, key) => {
-      if (!target.searchParams.has(key)) {
-        target.searchParams.append(key, value);
-      }
-    });
-
-    link.href = target.toString();
-    link.addEventListener('click', () => {
-      if (typeof fbq === 'function') {
-        fbq('track', 'AddToCart');
-        fbq('track', 'InitiateCheckout');
-      }
-    });
-  }
-
-
-  function initTestimonialSlider() {
-    const container = document.querySelector('[data-testimonial-slider]');
-    if (!container) return;
-    container.setAttribute('tabindex', '0');
-    container.dataset.sliderReady = 'true';
-    let isPointerDown = false;
-    let startX = 0;
-    let scrollLeft = 0;
-    let pointerId = null;
-    let lastDelta = 0;
-    let velocity = 0;
-    let frame;
-
-    const stopInertia = () => {
-      if (frame) {
-        window.cancelAnimationFrame(frame);
-        frame = undefined;
-      }
-      container.classList.remove('is-dragging');
-    };
-
-    const applyInertia = () => {
-      velocity *= 0.92;
-      if (Math.abs(velocity) < 0.08) {
-        stopInertia();
-        return;
-      }
-      container.scrollLeft -= velocity;
-      frame = window.requestAnimationFrame(applyInertia);
-    };
-
-    container.addEventListener('pointerdown', (event) => {
-      isPointerDown = true;
-      pointerId = event.pointerId;
-      startX = event.clientX;
-      scrollLeft = container.scrollLeft;
-      lastDelta = 0;
-      velocity = 0;
-      stopInertia();
-      try {
-        container.setPointerCapture(pointerId);
-      } catch (_) {}
-      container.classList.add('is-dragging');
-    });
-
-    container.addEventListener('pointermove', (event) => {
-      if (!isPointerDown || event.pointerId !== pointerId) return;
-      const delta = event.clientX - startX;
-      container.scrollLeft = scrollLeft - delta;
-      velocity = delta - lastDelta;
-      lastDelta = delta;
-    });
-
-    const endGesture = (event) => {
-      if (!isPointerDown || (pointerId !== null && event.pointerId !== pointerId)) return;
-      isPointerDown = false;
-      pointerId = null;
-      try {
-        container.releasePointerCapture(event.pointerId);
-      } catch (_) {}
-      container.classList.remove('is-dragging');
-      lastDelta = 0;
-      if (Math.abs(velocity) > 0.2) {
-        frame = window.requestAnimationFrame(applyInertia);
-      } else {
-        velocity = 0;
-        stopInertia();
-      }
-    };
-
-    container.addEventListener('pointerup', endGesture);
-    container.addEventListener('pointercancel', endGesture);
-    container.addEventListener('pointerleave', endGesture);
-
-    container.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowRight') {
-        container.scrollBy({ left: container.clientWidth * 0.8, behavior: 'smooth' });
-      } else if (event.key === 'ArrowLeft') {
-        container.scrollBy({ left: -container.clientWidth * 0.8, behavior: 'smooth' });
-      }
-    });
-  }
-
-const ToneGenerator = (() => {
+  const ToneGenerator = (() => {
     let audioCtx;
     return {
       play(freq, duration, type = 'click') {

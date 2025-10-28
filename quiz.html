@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
@@ -43,10 +43,10 @@
         <div class="info-box info-box--list">
           <h2>Etapas do teste</h2>
           <ul>
-            <li>Rodada 1 – Você joga manualmente</li>
-            <li>Rodada 2 – Outro jogo manual</li>
-            <li>Rodada 3 – IA ativa, você apenas segue as sugestões</li>
-            <li>Rodada 4 – Último jogo com a IA</li>
+            <li>Rodada 1 — Você joga manualmente</li>
+            <li>Rodada 2 — Outro jogo manual</li>
+            <li>Rodada 3 — IA ativa, você apenas segue as sugestões</li>
+            <li>Rodada 4 — Último jogo com a IA</li>
           </ul>
         </div>
 
@@ -72,6 +72,26 @@
           <span class="status">Consultando base de dados dos últimos 3.000 concursos…</span>
           <span class="status">IA temporariamente desativada para validação.</span>
         </div>
+      </div>
+    </section>
+
+    <!-- Video Gate 1 -->
+    <section class="quiz-slide" data-step="video-manual-intro" data-video-gate>
+      <div class="slide-card slide-card--video">
+        <h2 class="slide-title">Antes de começar, assista a esta instrução rápida</h2>
+        <p class="slide-lead">Entenda como funciona a primeira parte do desafio antes de montar seus jogos manuais.</p>
+        <div class="video-shell video-shell--vertical">
+          <video playsinline preload="auto" tabindex="-1">
+            <source src="IMG_4743%20(1).mp4" type="video/mp4">
+            Seu navegador não suporta reprodução de vídeo.
+          </video>
+          <div class="video-progress" aria-hidden="true">
+            <span class="video-progress__bar" data-role="video-progress-bar"></span>
+          </div>
+          <button type="button" class="video-play" data-role="video-play">Assistir vídeo</button>
+        </div>
+        <p class="watch-hint" data-role="video-hint">Assista até o final para liberar o próximo passo.</p>
+        <button class="quiz-btn quiz-btn--primary video-continue is-hidden" data-role="video-continue" data-next="manual-select-1" disabled>INICIAR O TESTE MANUAL</button>
       </div>
     </section>
 
@@ -110,9 +130,9 @@
     <section class="quiz-slide" data-step="manual-result-1">
       <div class="slide-card slide-card--center">
         <div class="result-box result-box--negative">
-          <span class="result-icon">📉</span>
+          <span class="result-icon">😬</span>
           <h3>Você teve 6 acertos</h3>
-          <p>💸 Ganho simulado: R$ 5,00</p>
+          <p>😕 Ganho simulado: R$ 5,00</p>
         </div>
         <p class="slide-note">Esse é o desempenho típico de quem joga no escuro.</p>
         <p class="slide-note">Média Brasil: 5 a 8 acertos.</p>
@@ -155,12 +175,32 @@
     <section class="quiz-slide" data-step="manual-result-2">
       <div class="slide-card slide-card--center">
         <div class="result-box result-box--negative">
-          <span class="result-icon">📉</span>
+          <span class="result-icon">😬</span>
           <h3>Você teve 7 acertos</h3>
-          <p>💸 Ganho simulado: R$ 10,00</p>
+          <p>😕 Ganho simulado: R$ 10,00</p>
         </div>
         <p class="slide-note">Mais uma vez, resultado abaixo do ideal. Agora a IA vai te guiar.</p>
-        <button class="quiz-btn quiz-btn--primary" data-next="ia-activate">ATIVAR INTELIGÊNCIA ARTIFICIAL</button>
+        <button class="quiz-btn quiz-btn--primary" data-next="video-pre-ia">ATIVAR INTELIGÊNCIA ARTIFICIAL</button>
+      </div>
+    </section>
+
+    <!-- Video Gate 2 -->
+    <section class="quiz-slide" data-step="video-pre-ia" data-video-gate>
+      <div class="slide-card slide-card--video">
+        <h2 class="slide-title">Como realizar o teste com a IA</h2>
+        <p class="slide-lead">Assista ao passo a passo para seguir exatamente a sequência indicada pela inteligência artificial.</p>
+        <div class="video-shell video-shell--vertical">
+          <video playsinline preload="auto" tabindex="-1">
+            <source src="IMG_4747.mp4" type="video/mp4">
+            Seu navegador não suporta reprodução de vídeo.
+          </video>
+          <div class="video-progress" aria-hidden="true">
+            <span class="video-progress__bar" data-role="video-progress-bar"></span>
+          </div>
+          <button type="button" class="video-play" data-role="video-play">Assistir vídeo</button>
+        </div>
+        <p class="watch-hint" data-role="video-hint">Conclua o vídeo para liberar a IA.</p>
+        <button class="quiz-btn quiz-btn--primary video-continue is-hidden" data-role="video-continue" data-next="ia-activate" disabled>PROSSEGUIR COM A IA</button>
       </div>
     </section>
 
@@ -169,7 +209,7 @@
       <div class="slide-card slide-card--center ia-activation-card">
         <span class="badge badge--success">IA ativada</span>
         <h2 class="slide-title">IA ativada com sucesso</h2>
-        <p class="slide-lead">Conectando algoritmos estat?sticos aos seus jogos...</p>
+        <p class="slide-lead">Conectando algoritmos estatísticos aos seus jogos...</p>
         <div class="ia-activation">
           <div class="ia-activation__visual" aria-hidden="true">
             <span class="ia-activation__core"></span>
@@ -180,15 +220,15 @@
           <div class="ia-activation__feed" data-ia-feed role="log" aria-live="polite">
             <div class="ia-feed__line" data-line="0">
               <span class="ia-feed__icon" aria-hidden="true"></span>
-              <span class="ia-feed__text">Carregando hist?rico completo dos concursos.</span>
+              <span class="ia-feed__text">Carregando histórico completo dos concursos.</span>
             </div>
             <div class="ia-feed__line" data-line="1">
               <span class="ia-feed__icon" aria-hidden="true"></span>
-              <span class="ia-feed__text">Detectando padr?es de alto rendimento em tempo real.</span>
+              <span class="ia-feed__text">Detectando padrões de alto rendimento em tempo real.</span>
             </div>
             <div class="ia-feed__line" data-line="2">
               <span class="ia-feed__icon" aria-hidden="true"></span>
-              <span class="ia-feed__text">Gerando sequ?ncia recomendada n?mero a n?mero.</span>
+              <span class="ia-feed__text">Gerando sequência recomendada número a número.</span>
             </div>
             <div class="ia-feed__typing" data-typing aria-hidden="true">
               <span class="dot"></span>
@@ -238,7 +278,7 @@
     <section class="quiz-slide" data-step="ia-result-1">
       <div class="slide-card slide-card--center">
         <div class="result-box result-box--positive">
-          <span class="result-icon">🎉</span>
+          <span class="result-icon">🚀</span>
           <h3>Você teve 14 acertos!</h3>
           <p>💰 Ganho simulado: R$ 2.253,94</p>
         </div>
@@ -307,7 +347,27 @@
           </div>
         </div>
         <p class="summary-total">Total com IA: <strong>R$ 4.108,84</strong></p>
-        <button class="quiz-btn quiz-btn--primary" data-next="offer">LIBERAR ACESSO À IA AGORA</button>
+        <button class="quiz-btn quiz-btn--primary" data-next="video-post-ia">LIBERAR ACESSO À IA AGORA</button>
+      </div>
+    </section>
+
+    <!-- Video Gate 3 -->
+    <section class="quiz-slide" data-step="video-post-ia" data-video-gate>
+      <div class="slide-card slide-card--video">
+        <h2 class="slide-title">Veja como acessar a plataforma completa</h2>
+        <p class="slide-lead">Assista para conhecer os próximos passos e entender o que será liberado para você após o teste.</p>
+        <div class="video-shell video-shell--vertical">
+          <video playsinline preload="auto" tabindex="-1">
+            <source src="IMG_4746.mp4" type="video/mp4">
+            Seu navegador não suporta reprodução de vídeo.
+          </video>
+          <div class="video-progress" aria-hidden="true">
+            <span class="video-progress__bar" data-role="video-progress-bar"></span>
+          </div>
+          <button type="button" class="video-play" data-role="video-play">Assistir vídeo</button>
+        </div>
+        <p class="watch-hint" data-role="video-hint">Assista até o final para liberar a oferta.</p>
+        <button class="quiz-btn quiz-btn--primary video-continue is-hidden" data-role="video-continue" data-next="offer" disabled>LIBERAR ACESSO À PLATAFORMA</button>
       </div>
     </section>
 
@@ -317,9 +377,16 @@
         <h2>Antes de acessar a Loter.IA, veja o que nossos usuários estão dizendo</h2>
         <p class="offer-lead">Mais de 12 mil pessoas já testaram a IA. Esses são alguns resultados reais compartilhados com nossa equipe.</p>
 
+        <div class="offer-video">
+          <video controls playsinline preload="metadata" poster="" controlsList="nodownload">
+            <source src="IMG_4762.mp4" type="video/mp4">
+            Seu navegador não suporta reprodução de vídeo.
+          </video>
+        </div>
+
         <div class="testimonials" data-testimonial-slider>
           <article class="testimonial">
-            <img src="https://i.ibb.co/ZR5DvT1L/Whats-App-Image-2025-10-27-at-16-26-21.jpg" alt="Relato de apostador que atingiu 13 pontos em dois jogos consecutivos">
+            <img src="https://i.ibb.co/TD85XLkM/Whats-App-Image-2025-10-27-at-16-36-22.jpg" alt="Relato de apostador que atingiu 13 pontos em dois jogos consecutivos">
           </article>
           <article class="testimonial">
             <img src="https://i.ibb.co/dJX303yc/Whats-App-Image-2025-10-27-at-16-29-26.jpg" alt="Bilhete vencedor de apostador que utilizou a IA para planejar as apostas">
@@ -350,51 +417,11 @@
           </ul>
         </div>
 
-        <div class="offer-assurance">
-          <article class="assurance-card">
-            <h3>Garantia incondicional de 7 dias</h3>
-            <p>Teste a Loter.IA sem risco. Se os resultados não surpreenderem, devolvemos 100% do valor investido.</p>
-            <ul>
-              <li>Cancelamento simples por e-mail, sem burocracia</li>
-              <li>Acesso continua liberado até o último dia do plano</li>
-              <li>Equipe dedicada para acompanhar sua ativação</li>
-            </ul>
-          </article>
-          <article class="assurance-card assurance-card--support">
-            <h3>Suporte humano sempre perto</h3>
-            <p>Estamos disponíveis para tirar dúvidas e guiar a ativação do painel completo.</p>
-            <ul>
-              <li>Respostas em até 24h úteis via <strong>suporte@loter.ia</strong></li>
-              <li>Chat exclusivo dentro do painel dos assinantes</li>
-              <li>Guia rápido de primeiros passos enviado por e-mail</li>
-            </ul>
-          </article>
-        </div>
-
-        <div class="offer-faq">
-          <h3>Perguntas frequentes</h3>
-          <div class="faq faq--compact">
-            <details class="faq-item" open>
-              <summary>O que recebo imediatamente após a confirmação?</summary>
-              <p>Você recebe o acesso ao painel completo da Lotofácil e da Mega-Sena, além dos bônus das demais loterias, direto no seu e-mail em poucos minutos.</p>
-            </details>
-            <details class="faq-item">
-              <summary>Como recebo meus jogos e alertas diários?</summary>
-              <p>No painel você gera novas combinações quando quiser e ainda pode optar por notificações com padrões quentes.</p>
-            </details>
-            <details class="faq-item">
-              <summary>Posso atualizar meus dados depois?</summary>
-              <p>Sim. Basta acessar a área do cliente para ajustar e-mail, senha ou preferências quando precisar.</p>
-            </details>
-          </div>
-        </div>
-
         <a class="quiz-btn quiz-btn--primary quiz-btn--large" data-hubla-link href="https://pay.hub.la/KdtoUOEAt8J8w23kP93P">GARANTIR MEU ACESSO ANUAL</a>
         <span class="offer-subtext">Oferta válida enquanto houver vagas disponíveis.</span>
 
         <div class="secure-seals">
           <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Selo de site protegido e monitorado contra fraudes">
-          <img src="https://i.ibb.co/5XNzP9Gj/image-5.png" alt="Selo de pagamento processado pela Hubla com segurança">
         </div>
       </div>
     </section>
@@ -403,6 +430,8 @@
   <script src="quiz.js" defer></script>
 </body>
 </html>
+
+
 
 
 
