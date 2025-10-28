@@ -64,37 +64,68 @@ const fetchDirectFromCaixa = async (
     throw new Error("Não foi possível obter número do último concurso");
   }
 
-  // Buscar múltiplos concursos em paralelo
-  const startContest = Math.max(1, latestContest - maxDraws + 1);
-  const promises: Promise<HistoricalDraw | null>[] = [];
-
-  for (let i = latestContest; i >= startContest; i--) {
-    promises.push(
-      fetch(`${API_BASE_URL}/${endpoint}/${i}`, {
-        method: "GET",
-        headers: {
-          "Accept": "application/json",
-        },
-      })
-        .then(async (response) => {
-          if (!response.ok) return null;
+  const draws: HistoricalDraw[] = [];
+  
+  // Função auxiliar para buscar um concurso com retry
+  const fetchWithRetry = async (contestNumber: number, retries = 3): Promise<HistoricalDraw | null> => {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/${endpoint}/${contestNumber}`, {
+          method: "GET",
+          headers: {
+            "Accept": "application/json",
+          },
+        });
+        
+        if (response.ok) {
           const data = await response.json();
           return {
             contestNumber: data.numero,
             drawDate: formatBrazilianDate(data.dataApuracao),
             numbers: data.listaDezenas?.map((n: string) => parseInt(n)) || [],
           };
-        })
-        .catch(() => null)
-    );
-  }
+        }
+      } catch (error) {
+        if (attempt === retries - 1) return null;
+      }
+      // Delay antes do próximo retry (200ms)
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+    return null;
+  };
 
-  const results = await Promise.all(promises);
-  const draws = results.filter((draw): draw is HistoricalDraw => draw !== null);
+  // Buscar em lotes de 10 para evitar rate limiting
+  const batchSize = 10;
+  const startContest = Math.max(1, latestContest - maxDraws + 1);
+  
+  for (let batchStart = startContest; batchStart <= latestContest; batchStart += batchSize) {
+    const batchEnd = Math.min(batchStart + batchSize - 1, latestContest);
+    const batchPromises = [];
+    
+    for (let i = batchStart; i <= batchEnd; i++) {
+      batchPromises.push(fetchWithRetry(i));
+    }
+    
+    const batchResults = await Promise.all(batchPromises);
+    
+    batchResults.forEach(draw => {
+      if (draw) {
+        draws.push(draw);
+      }
+    });
+    
+    // Delay entre lotes (300ms)
+    if (batchEnd < latestContest) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
+  }
 
   if (draws.length === 0) {
     throw new Error("Nenhum concurso válido encontrado");
   }
+
+  // Ordenar do mais recente para o mais antigo
+  draws.sort((a, b) => b.contestNumber - a.contestNumber);
 
   console.log(`[lotteryHistory] Sucesso via requisição direta: ${draws.length} concursos`);
   return draws;

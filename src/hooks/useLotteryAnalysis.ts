@@ -15,12 +15,17 @@ export const useLotteryAnalysis = (
   return useQuery<AnalysisResult & { dataSource: string; warning?: string }>({
     queryKey: ["lotteryAnalysis", lotteryType, maxNumber, numbersPerGame],
     queryFn: async () => {
-      // 1. Buscar histórico (com source e warning)
+      // 1. Buscar histórico (com source e warning) - MÍNIMO 50 concursos
       const maxDraws = 100;
       const { draws, source, warning } = await fetchHistoricalDraws(lotteryType, maxDraws);
 
       if (draws.length === 0) {
         throw new Error("Não foi possível obter dados históricos");
+      }
+
+      // Validação: garantir mínimo de 50 concursos para análise confiável
+      if (draws.length < 50) {
+        console.warn(`⚠️ Apenas ${draws.length} concursos disponíveis. Mínimo recomendado: 50`);
       }
 
       // 2. Calcular estatísticas

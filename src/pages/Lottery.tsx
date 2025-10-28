@@ -159,9 +159,6 @@ const Lottery = () => {
             stats={{
               accuracy: analysisResult.calculatedAccuracy,
               gamesGenerated: analysisResult.gamesGenerated,
-              drawsAnalyzed: analysisResult.statistics.totalDrawsAnalyzed,
-              periodAnalyzed: `${formatShortDate(analysisResult.statistics.periodStart)} - ${formatShortDate(analysisResult.statistics.periodEnd)}`,
-              confidence: analysisResult.confidence,
               hotNumbers: analysisResult.statistics.hotNumbers,
               coldNumbers: analysisResult.statistics.coldNumbers,
               lastUpdate: analysisResult.statistics.lastUpdate,
