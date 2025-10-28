@@ -7,6 +7,8 @@ import { User, Mail, CheckCircle, LogOut } from "lucide-react";
 const Profile = () => {
   const { user, logout } = useAuth();
 
+  if (!user) return null;
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -34,7 +36,7 @@ const Profile = () => {
               <CheckCircle className="h-5 w-5 text-success" />
               <div>
                 <p className="text-sm font-medium text-success">Status da Conta</p>
-                <p className="text-sm text-muted-foreground">✅ Acesso Vitalício Ativo</p>
+                <p className="text-sm text-muted-foreground">✅ Conta Ativa</p>
               </div>
             </div>
           </div>

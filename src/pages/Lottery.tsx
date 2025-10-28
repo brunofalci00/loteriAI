@@ -6,9 +6,11 @@ import { ResultsDisplay } from "@/components/ResultsDisplay";
 import { NextDrawInfo } from "@/components/NextDrawInfo";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { ArrowLeft, WifiOff } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, WifiOff, Archive } from "lucide-react";
 import { toast } from "sonner";
 import { useLotteryAnalysis } from "@/hooks/useLotteryAnalysis";
+import { useAuth } from "@/contexts/AuthContext";
 import { formatShortDate } from "@/utils/formatters";
 
 const lotteryData: Record<string, { name: string; maxNumber: number; numbersPerGame: number }> = {
@@ -25,6 +27,7 @@ const Lottery = () => {
   const navigate = useNavigate();
   const [showLoading, setShowLoading] = useState(true);
   const [showResults, setShowResults] = useState(false);
+  const { user } = useAuth();
 
   const lottery = type ? lotteryData[type] : null;
 
@@ -37,6 +40,8 @@ const Lottery = () => {
     type || "",
     lottery?.maxNumber || 60,
     lottery?.numbersPerGame || 6,
+    parseInt(contestNumber || "0"),
+    user?.id || null,
     !!lottery // só habilita se loteria existe
   );
 
@@ -137,15 +142,29 @@ const Lottery = () => {
           <NextDrawInfo lotteryType={type} lotteryName={lottery.name} />
         </div>
 
-        {analysisResult?.warning && (
-          <Alert className="mb-6 border-yellow-500/50 bg-yellow-500/10">
-            <WifiOff className="h-4 w-4 text-yellow-500" />
-            <AlertTitle className="text-yellow-500">Modo Offline</AlertTitle>
-            <AlertDescription className="text-yellow-600">
-              {analysisResult.warning}
-            </AlertDescription>
-          </Alert>
-        )}
+        <div className="mb-6 space-y-4">
+          {analysisResult?.fromCache && (
+            <Alert className="border-primary/50 bg-primary/10">
+              <Archive className="h-4 w-4 text-primary" />
+              <AlertDescription className="flex items-center gap-2">
+                <span>Análise carregada do histórico</span>
+                <Badge variant="outline" className="ml-2">
+                  Instantâneo
+                </Badge>
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          {analysisResult?.warning && (
+            <Alert className="border-yellow-500/50 bg-yellow-500/10">
+              <WifiOff className="h-4 w-4 text-yellow-500" />
+              <AlertTitle className="text-yellow-500">Modo Offline</AlertTitle>
+              <AlertDescription className="text-yellow-600">
+                {analysisResult.warning}
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
 
         {showLoading ? (
           <LoadingAnalysis 

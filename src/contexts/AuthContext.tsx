@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { supabase } from '@/integrations/supabase/client';
+import type { User as SupabaseUser, Session } from '@supabase/supabase-js';
 
 const authSchema = z.object({
   email: z.string().trim().email('Email inválido').max(255, 'Email muito longo'),
@@ -10,10 +12,10 @@ const authSchema = z.object({
 });
 
 interface User {
+  id: string;
   email: string;
   name: string;
   isAuthenticated: boolean;
-  hasPaid: boolean;
 }
 
 interface AuthContextType {
@@ -36,23 +38,70 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    checkAuth();
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setSession(session);
+        
+        if (session?.user) {
+          // Defer profile fetch with setTimeout to avoid deadlock
+          setTimeout(() => {
+            fetchUserProfile(session.user);
+          }, 0);
+        } else {
+          setUser(null);
+        }
+        
+        setIsLoading(false);
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      
+      if (session?.user) {
+        setTimeout(() => {
+          fetchUserProfile(session.user);
+        }, 0);
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const checkAuth = () => {
+  const fetchUserProfile = async (supabaseUser: SupabaseUser) => {
     try {
-      const storedUser = localStorage.getItem('lottosort_user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', supabaseUser.id)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      setUser({
+        id: supabaseUser.id,
+        email: supabaseUser.email || '',
+        name: data?.full_name || supabaseUser.email?.split('@')[0] || 'Usuário',
+        isAuthenticated: true,
+      });
     } catch (error) {
-      console.error('Error loading user:', error);
-    } finally {
-      setIsLoading(false);
+      console.error('Error fetching profile:', error);
+      // Fallback to basic user data
+      setUser({
+        id: supabaseUser.id,
+        email: supabaseUser.email || '',
+        name: supabaseUser.email?.split('@')[0] || 'Usuário',
+        isAuthenticated: true,
+      });
     }
   };
 
@@ -63,26 +112,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Validação
       authSchema.parse({ email, password });
       
-      // Simular delay de autenticação
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      const userData: User = {
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        name: email.split('@')[0],
-        isAuthenticated: true,
-        hasPaid: true, // Simula usuário que já pagou
-      };
-      
-      localStorage.setItem('lottosort_user', JSON.stringify(userData));
-      setUser(userData);
-      
+        password,
+      });
+
+      if (error) throw error;
+
       toast.success('Login realizado com sucesso!');
       navigate('/dashboard');
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
       } else {
-        toast.error('Erro ao fazer login');
+        toast.error('Email ou senha inválidos');
       }
       throw error;
     } finally {
@@ -97,19 +140,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Validação
       authSchema.parse({ email, password, name });
       
-      // Simular delay de criação de conta
-      await new Promise(resolve => setTimeout(resolve, 300));
+      const redirectUrl = `${window.location.origin}/dashboard`;
       
-      const userData: User = {
+      const { data, error } = await supabase.auth.signUp({
         email,
-        name,
-        isAuthenticated: true,
-        hasPaid: true, // Simula usuário que já pagou
-      };
-      
-      localStorage.setItem('lottosort_user', JSON.stringify(userData));
-      setUser(userData);
-      
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            full_name: name,
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.user?.identities?.length === 0) {
+        toast.error('Este email já está cadastrado. Faça login.');
+        return;
+      }
+
       toast.success('Conta criada com sucesso!');
       navigate('/dashboard');
     } catch (error) {
@@ -124,11 +174,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('lottosort_user');
-    setUser(null);
-    toast.success('Você saiu da sua conta');
-    navigate('/');
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+      toast.success('Você saiu da sua conta');
+      navigate('/');
+    } catch (error) {
+      console.error('Error logging out:', error);
+      toast.error('Erro ao sair');
+    }
   };
 
   return (

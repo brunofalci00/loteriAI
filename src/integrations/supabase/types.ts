@@ -14,7 +14,83 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      lottery_analyses: {
+        Row: {
+          accuracy_rate: number
+          analyzed_at: string | null
+          cold_numbers: number[]
+          contest_number: number
+          data_source: string
+          draws_analyzed: number
+          generated_numbers: Json
+          hot_numbers: number[]
+          id: string
+          lottery_type: string
+          strategy_type: string
+          user_id: string
+        }
+        Insert: {
+          accuracy_rate: number
+          analyzed_at?: string | null
+          cold_numbers: number[]
+          contest_number: number
+          data_source: string
+          draws_analyzed: number
+          generated_numbers: Json
+          hot_numbers: number[]
+          id?: string
+          lottery_type: string
+          strategy_type: string
+          user_id: string
+        }
+        Update: {
+          accuracy_rate?: number
+          analyzed_at?: string | null
+          cold_numbers?: number[]
+          contest_number?: number
+          data_source?: string
+          draws_analyzed?: number
+          generated_numbers?: Json
+          hot_numbers?: number[]
+          id?: string
+          lottery_type?: string
+          strategy_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lottery_analyses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
