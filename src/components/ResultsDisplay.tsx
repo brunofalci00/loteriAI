@@ -1,6 +1,8 @@
-import { Card } from "./ui/card";
-import { Button } from "./ui/button";
-import { Download, TrendingUp, Target, Database } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Download, TrendingUp, Hash, Database, Flame, Snowflake, Calendar, Award } from "lucide-react";
+import { formatShortDate } from "@/utils/formatters";
 
 interface ResultsDisplayProps {
   lotteryName: string;
@@ -9,58 +11,166 @@ interface ResultsDisplayProps {
     accuracy: number;
     gamesGenerated: number;
     drawsAnalyzed: number;
+    periodAnalyzed?: string;
+    confidence?: "baixa" | "média" | "alta";
+    hotNumbers?: number[];
+    coldNumbers?: number[];
+    lastUpdate?: Date;
+  };
+  strategy?: {
+    type: string;
+    description: string;
   };
   onExport: () => void;
 }
 
-export const ResultsDisplay = ({ lotteryName, combinations, stats, onExport }: ResultsDisplayProps) => {
+export const ResultsDisplay = ({
+  lotteryName,
+  combinations,
+  stats,
+  strategy,
+  onExport,
+}: ResultsDisplayProps) => {
+  const confidenceColors = {
+    baixa: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
+    média: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+    alta: "bg-green-500/10 text-green-500 border-green-500/20",
+  };
+
+  const isHotNumber = (num: number) => stats.hotNumbers?.includes(num);
+  const isColdNumber = (num: number) => stats.coldNumbers?.includes(num);
+
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
+      {/* Estatísticas principais */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="border-border bg-card p-4 shadow-card">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg gradient-success">
-              <TrendingUp className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Taxa de Acerto</p>
-              <p className="text-2xl font-bold text-success">{stats.accuracy}%</p>
-            </div>
-          </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Taxa de Acerto Estimada
+            </CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.accuracy}%</div>
+            <p className="text-xs text-muted-foreground">
+              Baseado em {stats.drawsAnalyzed} concursos
+            </p>
+          </CardContent>
         </Card>
 
-        <Card className="border-border bg-card p-4 shadow-card">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg gradient-gold">
-              <Target className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Jogos Gerados</p>
-              <p className="text-2xl font-bold text-accent">{stats.gamesGenerated}</p>
-            </div>
-          </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Jogos Gerados
+            </CardTitle>
+            <Hash className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.gamesGenerated}</div>
+            <p className="text-xs text-muted-foreground">
+              Combinações inteligentes
+            </p>
+          </CardContent>
         </Card>
 
-        <Card className="border-border bg-card p-4 shadow-card">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg gradient-primary">
-              <Database className="h-5 w-5" />
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Confiabilidade
+            </CardTitle>
+            <Award className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-2">
+              <Badge className={stats.confidence ? confidenceColors[stats.confidence] : ""}>
+                {stats.confidence?.toUpperCase() || "MÉDIA"}
+              </Badge>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Concursos Analisados</p>
-              <p className="text-2xl font-bold text-primary">{stats.drawsAnalyzed}</p>
-            </div>
-          </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {stats.drawsAnalyzed} concursos analisados
+            </p>
+          </CardContent>
         </Card>
       </div>
+
+      {/* Como chegamos nestes números */}
+      {(stats.hotNumbers || stats.periodAnalyzed || strategy) && (
+        <Card className="border-primary/20 bg-primary/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              Como chegamos nestes números?
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {stats.periodAnalyzed && (
+              <div className="flex items-start gap-2">
+                <Calendar className="h-4 w-4 mt-1 text-muted-foreground" />
+                <div>
+                  <p className="text-sm font-medium">Período Analisado</p>
+                  <p className="text-sm text-muted-foreground">{stats.periodAnalyzed}</p>
+                </div>
+              </div>
+            )}
+
+            {stats.hotNumbers && stats.hotNumbers.length > 0 && (
+              <div className="flex items-start gap-2">
+                <Flame className="h-4 w-4 mt-1 text-orange-500" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Números Quentes (mais frequentes)</p>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {stats.hotNumbers.map((num) => (
+                      <Badge key={num} variant="outline" className="border-orange-500/30 bg-orange-500/10 text-orange-500">
+                        {num.toString().padStart(2, '0')}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {stats.coldNumbers && stats.coldNumbers.length > 0 && (
+              <div className="flex items-start gap-2">
+                <Snowflake className="h-4 w-4 mt-1 text-blue-500" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Números Frios (menos frequentes)</p>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {stats.coldNumbers.map((num) => (
+                      <Badge key={num} variant="outline" className="border-blue-500/30 bg-blue-500/10 text-blue-500">
+                        {num.toString().padStart(2, '0')}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {strategy && (
+              <div className="flex items-start gap-2">
+                <TrendingUp className="h-4 w-4 mt-1 text-muted-foreground" />
+                <div>
+                  <p className="text-sm font-medium">Estratégia Utilizada</p>
+                  <p className="text-sm text-muted-foreground">{strategy.description}</p>
+                </div>
+              </div>
+            )}
+
+            {stats.lastUpdate && (
+              <p className="text-xs text-muted-foreground pt-2 border-t">
+                Última atualização: {formatShortDate(stats.lastUpdate)}
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Results Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Números Sugeridos - {lotteryName}</h2>
           <p className="text-sm text-muted-foreground">
-            Baseado em análise estatística avançada e IA
+            Baseado em análise de {stats.drawsAnalyzed} concursos reais da Caixa
           </p>
         </div>
         <Button variant="gold" onClick={onExport}>
@@ -78,14 +188,28 @@ export const ResultsDisplay = ({ lotteryName, combinations, stats, onExport }: R
                 {index + 1}
               </div>
               <div className="flex flex-wrap gap-2">
-                {combo.map((number, numIndex) => (
-                  <div
-                    key={numIndex}
-                    className="flex h-10 w-10 items-center justify-center rounded-lg gradient-primary text-sm font-bold shadow-glow"
-                  >
-                    {number.toString().padStart(2, '0')}
-                  </div>
-                ))}
+                {combo.map((number, numIndex) => {
+                  const hot = isHotNumber(number);
+                  const cold = isColdNumber(number);
+                  
+                  return (
+                    <div
+                      key={numIndex}
+                      className={`flex h-10 w-10 items-center justify-center rounded-lg font-bold text-sm shadow-glow relative ${
+                        hot 
+                          ? "bg-orange-500 text-white ring-2 ring-orange-500/50" 
+                          : cold 
+                          ? "bg-blue-500 text-white ring-2 ring-blue-500/50" 
+                          : "gradient-primary"
+                      }`}
+                      title={hot ? "Número quente" : cold ? "Número frio" : ""}
+                    >
+                      {number.toString().padStart(2, "0")}
+                      {hot && <Flame className="absolute -top-1 -right-1 h-3 w-3 text-orange-300" />}
+                      {cold && <Snowflake className="absolute -top-1 -right-1 h-3 w-3 text-blue-300" />}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </Card>

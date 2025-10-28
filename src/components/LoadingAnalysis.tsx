@@ -1,29 +1,41 @@
 import { useEffect, useState } from "react";
-import { Loader2, Database, Brain, Sparkles } from "lucide-react";
+import { Loader2, TrendingUp, Database, Brain, Sparkles } from "lucide-react";
 
 const steps = [
-  { icon: Database, text: "Analisando concursos anteriores", duration: 2000 },
-  { icon: Brain, text: "Processando algoritmo e inteligência artificial", duration: 2500 },
-  { icon: Sparkles, text: "Gerando os melhores números", duration: 2000 },
+  { icon: Database, text: "Buscando últimos concursos da Caixa...", duration: 2000 },
+  { icon: Brain, text: "Calculando frequências e padrões estatísticos...", duration: 2500 },
+  { icon: TrendingUp, text: "Identificando números quentes e frios...", duration: 1500 },
+  { icon: Sparkles, text: "Gerando combinações inteligentes...", duration: 2000 },
 ];
 
 interface LoadingAnalysisProps {
   onComplete: () => void;
+  isAnalyzing?: boolean;
 }
 
-export const LoadingAnalysis = ({ onComplete }: LoadingAnalysisProps) => {
+export const LoadingAnalysis = ({ onComplete, isAnalyzing = false }: LoadingAnalysisProps) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
-    if (currentStep < steps.length) {
+    // Se a análise já foi concluída (isAnalyzing = false), completar imediatamente
+    if (!isAnalyzing && currentStep === steps.length - 1) {
+      onComplete();
+      return;
+    }
+
+    if (currentStep < steps.length - 1) {
       const timer = setTimeout(() => {
         setCurrentStep(prev => prev + 1);
       }, steps[currentStep].duration);
       return () => clearTimeout(timer);
-    } else {
-      onComplete();
+    } else if (!isAnalyzing) {
+      // Só completar quando a análise real terminou
+      const timer = setTimeout(() => {
+        onComplete();
+      }, 500);
+      return () => clearTimeout(timer);
     }
-  }, [currentStep, onComplete]);
+  }, [currentStep, onComplete, isAnalyzing]);
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-8 py-12">
