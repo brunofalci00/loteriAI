@@ -56,7 +56,7 @@ export const specialPrizeThresholds: Record<string, number> = {
   "dupla-sena": 20000000, // R$ 20 milhões
   "timemania": 8000000, // R$ 8 milhões
   "mais-milionaria": 100000000, // R$ 100 milhões
-  "federal": 50000000, // R$ 50 milhões
+  "federal": 500000, // R$ 500 mil (prêmio fixo - não acumula)
   "dia-de-sorte": 10000000, // R$ 10 milhões
   "super-sete": 5000000, // R$ 5 milhões
 };

@@ -84,7 +84,9 @@ export const NextDrawInfo = ({ lotteryType, lotteryName }: NextDrawInfoProps) =>
           </div>
 
           <div className="text-right">
-            <p className="text-sm text-muted-foreground">Prêmio Estimado</p>
+            <p className="text-sm text-muted-foreground">
+              {lotteryType === "federal" ? "1º Prêmio" : "Prêmio Estimado"}
+            </p>
             <p className="flex items-center gap-1 text-lg font-bold text-primary">
               <TrendingUp className="h-4 w-4" />
               {formatCurrency(data.estimatedPrize)}

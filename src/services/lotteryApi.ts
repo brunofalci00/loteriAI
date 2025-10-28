@@ -70,10 +70,15 @@ export const fetchLotteryDrawInfo = async (
       throw new Error('Dados da API inválidos');
     }
 
+    // Loteria Federal tem prêmio fixo (R$ 500 mil para 1º prêmio), não acumula
+    const estimatedPrize = lotteryType === "federal" 
+      ? 500000 
+      : (data.valorEstimadoProximoConcurso || 0);
+
     return {
       nextDrawNumber: data.numero + 1,
       nextDrawDate: formatBrazilianDate(data.dataProximoConcurso),
-      estimatedPrize: data.valorEstimadoProximoConcurso || 0,
+      estimatedPrize,
       lastDrawDate: formatBrazilianDate(data.dataApuracao),
       lastDrawNumbers: data.listaDezenas?.map(n => parseInt(n)),
     };
