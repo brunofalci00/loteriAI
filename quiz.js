@@ -47,9 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const manualState = new Map();
   const guidedState = new Map();
+  const iaActivationDisplay = createIaActivationDisplay();
 
   initManualGrids();
   initGuidedGrids();
+  initTestimonialSlider();
+  initHublaLink();
   wireControls();
 
   function fbSafeTrack(event, params) {
@@ -113,6 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (cashSlides.has(step)) playCashSound();
     if (failSlides.has(step)) playFailSound();
+    if (step === 'ia-activate') {
+      iaActivationDisplay.start();
+    } else {
+      iaActivationDisplay.stop();
+    }
 
     switch (step) {
       case 'manual-select-1':
@@ -355,6 +363,68 @@ document.addEventListener('DOMContentLoaded', () => {
     state.feedback.textContent = message;
   }
 
+  function createIaActivationDisplay() {
+    let timerId;
+
+    function clearTimer() {
+      if (timerId) {
+        window.clearTimeout(timerId);
+        timerId = undefined;
+      }
+    }
+
+    function renderState(lines, activeIndex) {
+      lines.forEach((line, index) => {
+        line.classList.toggle('is-active', index === activeIndex);
+        line.classList.toggle('is-complete', index < activeIndex);
+      });
+    }
+
+    function start() {
+      const container = document.querySelector('[data-ia-feed]');
+      if (!container) return;
+      const lines = Array.from(container.querySelectorAll('[data-line]'));
+      const typing = container.querySelector('[data-typing]');
+      if (!lines.length) return;
+
+      clearTimer();
+      lines.forEach((line) => line.classList.remove('is-active', 'is-complete'));
+      if (typing) typing.classList.remove('is-visible');
+
+      let activeIndex = -1;
+
+      const activateNext = () => {
+        activeIndex += 1;
+        renderState(lines, activeIndex);
+
+        if (activeIndex < lines.length - 1) {
+          if (typing) typing.classList.remove('is-visible');
+          timerId = window.setTimeout(activateNext, 1150);
+          return;
+        }
+
+        // Keep last line brilhando e exibir o efeito digitando após pequena pausa.
+        if (typing) {
+          timerId = window.setTimeout(() => typing.classList.add('is-visible'), 850);
+        }
+      };
+
+      activateNext();
+    }
+
+    function stop() {
+      clearTimer();
+      const container = document.querySelector('[data-ia-feed]');
+      if (!container) return;
+      const lines = container.querySelectorAll('[data-line]');
+      lines.forEach((line) => line.classList.remove('is-active', 'is-complete'));
+      const typing = container.querySelector('[data-typing]');
+      if (typing) typing.classList.remove('is-visible');
+    }
+
+    return { start, stop };
+  }
+
   function playClickSound() {
     playAudioClip('click', 0.7, () => {
       ToneGenerator.playSequence([780, 960], 0.07, 0.05, 'click');
@@ -402,7 +472,114 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const ToneGenerator = (() => {
+  
+
+  function initHublaLink() {
+    const link = document.querySelector('[data-hubla-link]');
+    if (!link) return;
+    const target = new URL(link.getAttribute('href'), window.location.href);
+    const params = new URLSearchParams(window.location.search);
+
+    params.forEach((value, key) => {
+      if (!target.searchParams.has(key)) {
+        target.searchParams.append(key, value);
+      }
+    });
+
+    link.href = target.toString();
+    link.addEventListener('click', () => {
+      if (typeof fbq === 'function') {
+        fbq('track', 'AddToCart');
+        fbq('track', 'InitiateCheckout');
+      }
+    });
+  }
+
+
+  function initTestimonialSlider() {
+    const container = document.querySelector('[data-testimonial-slider]');
+    if (!container) return;
+    container.setAttribute('tabindex', '0');
+    container.dataset.sliderReady = 'true';
+    let isPointerDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let pointerId = null;
+    let lastDelta = 0;
+    let velocity = 0;
+    let frame;
+
+    const stopInertia = () => {
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+        frame = undefined;
+      }
+      container.classList.remove('is-dragging');
+    };
+
+    const applyInertia = () => {
+      velocity *= 0.92;
+      if (Math.abs(velocity) < 0.08) {
+        stopInertia();
+        return;
+      }
+      container.scrollLeft -= velocity;
+      frame = window.requestAnimationFrame(applyInertia);
+    };
+
+    container.addEventListener('pointerdown', (event) => {
+      isPointerDown = true;
+      pointerId = event.pointerId;
+      startX = event.clientX;
+      scrollLeft = container.scrollLeft;
+      lastDelta = 0;
+      velocity = 0;
+      stopInertia();
+      try {
+        container.setPointerCapture(pointerId);
+      } catch (_) {}
+      container.classList.add('is-dragging');
+    });
+
+    container.addEventListener('pointermove', (event) => {
+      if (!isPointerDown || event.pointerId !== pointerId) return;
+      const delta = event.clientX - startX;
+      container.scrollLeft = scrollLeft - delta;
+      velocity = delta - lastDelta;
+      lastDelta = delta;
+    });
+
+    const endGesture = (event) => {
+      if (!isPointerDown || (pointerId !== null && event.pointerId !== pointerId)) return;
+      isPointerDown = false;
+      pointerId = null;
+      try {
+        container.releasePointerCapture(event.pointerId);
+      } catch (_) {}
+      container.classList.remove('is-dragging');
+      lastDelta = 0;
+      if (Math.abs(velocity) > 0.2) {
+        frame = window.requestAnimationFrame(applyInertia);
+      } else {
+        velocity = 0;
+        stopInertia();
+      }
+    };
+
+    container.addEventListener('pointerup', endGesture);
+    container.addEventListener('pointercancel', endGesture);
+    container.addEventListener('pointerleave', endGesture);
+
+    container.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') {
+        container.scrollBy({ left: container.clientWidth * 0.8, behavior: 'smooth' });
+      } else if (event.key === 'ArrowLeft') {
+        container.scrollBy({ left: -container.clientWidth * 0.8, behavior: 'smooth' });
+      }
+    });
+  }
+
+const ToneGenerator = (() => {
     let audioCtx;
     return {
       play(freq, duration, type = 'click') {

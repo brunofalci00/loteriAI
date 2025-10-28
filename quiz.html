@@ -56,7 +56,7 @@
 
     <!-- Slide 2 -->
     <section class="quiz-slide" data-step="preloading">
-      <div class="slide-card slide-card--center">
+      <div class="slide-card slide-card--center ia-activation-card">
         <h2 class="slide-title">Preparando seu acesso...</h2>
         <div class="loader-icon" aria-hidden="true">
           <svg viewBox="0 0 50 50">
@@ -166,16 +166,40 @@
 
     <!-- Slide 9 -->
     <section class="quiz-slide" data-step="ia-activate">
-      <div class="slide-card slide-card--center">
+      <div class="slide-card slide-card--center ia-activation-card">
         <span class="badge badge--success">IA ativada</span>
         <h2 class="slide-title">IA ativada com sucesso</h2>
-        <div class="loader-icon loader-icon--pulse" aria-hidden="true"></div>
-        <div class="status-list">
-          <span class="status">Detectando padrões de alto rendimento…</span>
-          <span class="status">Gerando sequência sugerida número a número…</span>
+        <p class="slide-lead">Conectando algoritmos estat?sticos aos seus jogos...</p>
+        <div class="ia-activation">
+          <div class="ia-activation__visual" aria-hidden="true">
+            <span class="ia-activation__core"></span>
+            <span class="ia-activation__ring ia-activation__ring--outer"></span>
+            <span class="ia-activation__ring ia-activation__ring--inner"></span>
+            <span class="ia-activation__glow"></span>
+          </div>
+          <div class="ia-activation__feed" data-ia-feed role="log" aria-live="polite">
+            <div class="ia-feed__line" data-line="0">
+              <span class="ia-feed__icon" aria-hidden="true"></span>
+              <span class="ia-feed__text">Carregando hist?rico completo dos concursos.</span>
+            </div>
+            <div class="ia-feed__line" data-line="1">
+              <span class="ia-feed__icon" aria-hidden="true"></span>
+              <span class="ia-feed__text">Detectando padr?es de alto rendimento em tempo real.</span>
+            </div>
+            <div class="ia-feed__line" data-line="2">
+              <span class="ia-feed__icon" aria-hidden="true"></span>
+              <span class="ia-feed__text">Gerando sequ?ncia recomendada n?mero a n?mero.</span>
+            </div>
+            <div class="ia-feed__typing" data-typing aria-hidden="true">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
+
 
     <!-- Slide 10 -->
     <section class="quiz-slide" data-step="guided-select-1">
@@ -293,39 +317,85 @@
         <h2>Antes de acessar a Loter.IA, veja o que nossos usuários estão dizendo</h2>
         <p class="offer-lead">Mais de 12 mil pessoas já testaram a IA. Esses são alguns resultados reais compartilhados com nossa equipe.</p>
 
-        <div class="testimonials">
+        <div class="testimonials" data-testimonial-slider>
           <article class="testimonial">
-            <img src="https://i.ibb.co/kV8Fn1x2/depoimento-01.png" alt="Depoimento de usuário da Loter.IA mostrando evolução de ganhos">
+            <img src="https://i.ibb.co/ZR5DvT1L/Whats-App-Image-2025-10-27-at-16-26-21.jpg" alt="Relato de apostador que atingiu 13 pontos em dois jogos consecutivos">
           </article>
           <article class="testimonial">
-            <img src="https://i.ibb.co/WpHjFrRv/depoimento-02.png" alt="Comentário em rede social sobre os resultados com a Loter.IA">
+            <img src="https://i.ibb.co/dJX303yc/Whats-App-Image-2025-10-27-at-16-29-26.jpg" alt="Bilhete vencedor de apostador que utilizou a IA para planejar as apostas">
           </article>
           <article class="testimonial">
-            <img src="https://i.ibb.co/MxZkRrTW/depoimento-03.png" alt="Print de conversa destacando acertos com a IA da Loter.IA">
+            <img src="https://i.ibb.co/vxwch5Z3/Whats-App-Image-2025-10-27-at-16-32-16.jpg" alt="Comprovante mostrando ganhos após seguir recomendações da Loter.IA">
           </article>
         </div>
 
-        <p class="offer-note">
-          Infelizmente, não temos muitas vagas disponíveis. Para manter a qualidade das análises, liberamos acesso para novos membros por tempo limitado.
-        </p>
+        <div class="offer-pricing">
+          <p class="offer-note">
+            Infelizmente, não temos muitas vagas disponíveis. Para manter a qualidade das análises, liberamos acesso para novos membros por tempo limitado.
+          </p>
 
-        <h3>Acesso anual único à Loter.IA</h3>
-        <p class="offer-highlight">Receba 3 jogos prontos todos os dias + atualizações em tempo real por apenas:</p>
-        <div class="price-card">
-          <span class="price">R$ 47,90</span>
-          <span class="price-tag">Pagamento único anual</span>
+          <h3>Acesso anual único à Loter.IA</h3>
+          <p class="offer-highlight">Receba 3 jogos prontos todos os dias + atualizações em tempo real por apenas:</p>
+          <div class="price-card">
+            <span class="price">R$ 47,90</span>
+            <span class="price-tag">Pagamento único anual</span>
+          </div>
+          <p class="offer-bonus">Bônus imediato: desbloqueie a IA da Mega-Sena e de mais 5 loterias (Quina, Lotomania, Dupla Sena, Timemania e Dia de Sorte).</p>
+
+          <ul class="benefits">
+            <li>Acesso imediato ao simulador avançado + dashboard</li>
+            <li>Atualizações diárias com base nos últimos concursos</li>
+            <li>Média de 14 acertos relatada pelos usuários que seguem a IA</li>
+            <li>Mais de 10 combinações inteligentes por sorteio para planejar apostas de forma estratégica</li>
+          </ul>
         </div>
-        <p class="offer-bonus">Bônus imediato: desbloqueie a IA da Mega-Sena e de mais 5 loterias (Quina, Lotomania, Dupla Sena, Timemania e Dia de Sorte).</p>
 
-        <ul class="benefits">
-          <li>Acesso imediato ao simulador avançado + dashboard</li>
-          <li>Atualizações diárias com base nos últimos concursos</li>
-          <li>Média de 14 acertos relatada pelos usuários que seguem a IA</li>
-          <li>Mais de 10 combinações inteligentes por sorteio para planejar apostas de forma estratégica</li>
-        </ul>
+        <div class="offer-assurance">
+          <article class="assurance-card">
+            <h3>Garantia incondicional de 7 dias</h3>
+            <p>Teste a Loter.IA sem risco. Se os resultados não surpreenderem, devolvemos 100% do valor investido.</p>
+            <ul>
+              <li>Cancelamento simples por e-mail, sem burocracia</li>
+              <li>Acesso continua liberado até o último dia do plano</li>
+              <li>Equipe dedicada para acompanhar sua ativação</li>
+            </ul>
+          </article>
+          <article class="assurance-card assurance-card--support">
+            <h3>Suporte humano sempre perto</h3>
+            <p>Estamos disponíveis para tirar dúvidas e guiar a ativação do painel completo.</p>
+            <ul>
+              <li>Respostas em até 24h úteis via <strong>suporte@loter.ia</strong></li>
+              <li>Chat exclusivo dentro do painel dos assinantes</li>
+              <li>Guia rápido de primeiros passos enviado por e-mail</li>
+            </ul>
+          </article>
+        </div>
 
-        <a class="quiz-btn quiz-btn--primary quiz-btn--large" href="checkout.html" onclick="if (typeof fbq === 'function') { fbq('track', 'AddToCart'); }">GARANTIR MEU ACESSO ANUAL</a>
+        <div class="offer-faq">
+          <h3>Perguntas frequentes</h3>
+          <div class="faq faq--compact">
+            <details class="faq-item" open>
+              <summary>O que recebo imediatamente após a confirmação?</summary>
+              <p>Você recebe o acesso ao painel completo da Lotofácil e da Mega-Sena, além dos bônus das demais loterias, direto no seu e-mail em poucos minutos.</p>
+            </details>
+            <details class="faq-item">
+              <summary>Como recebo meus jogos e alertas diários?</summary>
+              <p>No painel você gera novas combinações quando quiser e ainda pode optar por notificações com padrões quentes.</p>
+            </details>
+            <details class="faq-item">
+              <summary>Posso atualizar meus dados depois?</summary>
+              <p>Sim. Basta acessar a área do cliente para ajustar e-mail, senha ou preferências quando precisar.</p>
+            </details>
+          </div>
+        </div>
+
+        <a class="quiz-btn quiz-btn--primary quiz-btn--large" data-hubla-link href="https://pay.hub.la/KdtoUOEAt8J8w23kP93P">GARANTIR MEU ACESSO ANUAL</a>
         <span class="offer-subtext">Oferta válida enquanto houver vagas disponíveis.</span>
+
+        <div class="secure-seals">
+          <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Selo de site protegido e monitorado contra fraudes">
+          <img src="https://i.ibb.co/5XNzP9Gj/image-5.png" alt="Selo de pagamento processado pela Hubla com segurança">
+        </div>
       </div>
     </section>
   </main>
@@ -333,6 +403,11 @@
   <script src="quiz.js" defer></script>
 </body>
 </html>
+
+
+
+
+
 
 
 
