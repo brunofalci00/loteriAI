@@ -11,6 +11,7 @@ import Lottery from "./pages/Lottery";
 import LotteryContests from "./pages/LotteryContests";
 import Profile from "./pages/Profile";
 import HowItWorks from "./pages/HowItWorks";
+import EmailConfirmation from "./pages/EmailConfirmation";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,8 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Auth />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/email-confirmation" element={<EmailConfirmation />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/lottery/:type/contests" element={<ProtectedRoute><LotteryContests /></ProtectedRoute>} />
             <Route path="/lottery/:type/analysis/:contestNumber" element={<ProtectedRoute><Lottery /></ProtectedRoute>} />

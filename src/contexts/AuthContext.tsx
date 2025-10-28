@@ -24,6 +24,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
+  resendConfirmationEmail: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -140,7 +141,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Validação
       authSchema.parse({ email, password, name });
       
-      const redirectUrl = `${window.location.origin}/dashboard`;
+      const redirectUrl = `${window.location.origin}/auth?confirmed=true`;
       
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -160,8 +161,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
 
-      toast.success('Conta criada com sucesso!');
-      navigate('/dashboard');
+      // Check if email is confirmed
+      if (!data.user?.email_confirmed_at) {
+        // Redirect to email confirmation page
+        navigate('/email-confirmation', { state: { email } });
+      } else {
+        // Already confirmed (edge case)
+        toast.success('Conta criada com sucesso!');
+        navigate('/dashboard');
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
@@ -171,6 +179,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       throw error;
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const resendConfirmationEmail = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth?confirmed=true`,
+        },
+      });
+
+      if (error) throw error;
+    } catch (error: any) {
+      console.error('Resend email error:', error);
+      throw error;
     }
   };
 
@@ -188,7 +213,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, signup, logout, resendConfirmationEmail }}>
       {children}
     </AuthContext.Provider>
   );

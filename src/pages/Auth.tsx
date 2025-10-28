@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 import logo from "@/assets/logo-loterai.png";
 
 const Auth = () => {
@@ -15,6 +16,14 @@ const Auth = () => {
   const [name, setName] = useState("");
   const { user, login, signup, isLoading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    // Check if user just confirmed email
+    if (searchParams.get('confirmed') === 'true') {
+      toast.success('Email confirmado! Você já pode fazer login.');
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (user?.isAuthenticated) {
