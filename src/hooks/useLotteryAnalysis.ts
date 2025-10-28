@@ -12,19 +12,19 @@ export const useLotteryAnalysis = (
   numbersPerGame: number,
   enabled: boolean = true
 ) => {
-  return useQuery<AnalysisResult>({
+  return useQuery<AnalysisResult & { dataSource: string; warning?: string }>({
     queryKey: ["lotteryAnalysis", lotteryType, maxNumber, numbersPerGame],
     queryFn: async () => {
-      // 1. Buscar histórico (últimos 100 concursos para otimizar)
+      // 1. Buscar histórico (com source e warning)
       const maxDraws = 100;
-      const history = await fetchHistoricalDraws(lotteryType, maxDraws);
+      const { draws, source, warning } = await fetchHistoricalDraws(lotteryType, maxDraws);
 
-      if (history.length === 0) {
+      if (draws.length === 0) {
         throw new Error("Não foi possível obter dados históricos");
       }
 
       // 2. Calcular estatísticas
-      const statistics = analyzeHistoricalData(history, maxNumber);
+      const statistics = analyzeHistoricalData(draws, maxNumber);
 
       // 3. Gerar análise completa com combinações inteligentes
       const result = generateAnalysisResult(
@@ -35,7 +35,12 @@ export const useLotteryAnalysis = (
         10
       );
 
-      return result;
+      // 4. Adicionar informação sobre fonte de dados
+      return {
+        ...result,
+        dataSource: source === "api" ? "Dados em tempo real" : "Dados históricos (offline)",
+        warning,
+      };
     },
     staleTime: 24 * 60 * 60 * 1000, // 24 horas
     gcTime: 48 * 60 * 60 * 1000, // 48 horas

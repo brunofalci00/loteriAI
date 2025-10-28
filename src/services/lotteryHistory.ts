@@ -1,7 +1,6 @@
 import { HistoricalDraw } from "@/types/analysis";
-import { formatBrazilianDate } from "./lotteryApi";
-
-const API_BASE_URL = "https://servicebus2.caixa.gov.br/portaldeloterias/api";
+import { supabase } from "@/integrations/supabase/client";
+import { getMockDraws, getMockDataAge } from "./lotteryMockData";
 
 const lotteryEndpoints: Record<string, string> = {
   "mega-sena": "megasena",
@@ -12,73 +11,66 @@ const lotteryEndpoints: Record<string, string> = {
   "timemania": "timemania",
 };
 
+const fetchFromProxy = async (
+  lotteryType: string,
+  maxDraws: number
+): Promise<HistoricalDraw[]> => {
+  const { data, error } = await supabase.functions.invoke("lottery-proxy", {
+    body: {
+      lotteryType,
+      action: "history",
+      maxDraws,
+    },
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data?.success) {
+    throw new Error(data?.error || "Erro desconhecido ao buscar dados");
+  }
+
+  // Convert string dates to Date objects
+  return data.data.map((draw: any) => ({
+    ...draw,
+    drawDate: new Date(draw.drawDate),
+  }));
+};
+
 export const fetchHistoricalDraws = async (
   lotteryType: string,
   maxDraws: number = 100
-): Promise<HistoricalDraw[]> => {
-  const endpoint = lotteryEndpoints[lotteryType];
-  
-  if (!endpoint) {
-    throw new Error(`Tipo de loteria não suportado: ${lotteryType}`);
-  }
-
+): Promise<{
+  draws: HistoricalDraw[];
+  source: "api" | "mock";
+  warning?: string;
+}> => {
+  // TENTATIVA 1: Edge Function Proxy
   try {
-    // Primeiro, buscar o último concurso para saber o número atual
-    const latestResponse = await fetch(`${API_BASE_URL}/${endpoint}`, {
-      method: "GET",
-      headers: { "Accept": "application/json" },
-    });
-
-    if (!latestResponse.ok) {
-      throw new Error(`Erro ao buscar último concurso: ${latestResponse.status}`);
-    }
-
-    const latestData = await latestResponse.json();
-    const latestContestNumber = latestData.numero;
-
-    // Buscar histórico em lote (últimos N concursos)
-    const draws: HistoricalDraw[] = [];
-    const startContest = Math.max(1, latestContestNumber - maxDraws + 1);
+    console.log(`[lotteryHistory] Tentando buscar via proxy: ${lotteryType}`);
+    const draws = await fetchFromProxy(lotteryType, maxDraws);
+    console.log(`[lotteryHistory] Sucesso via proxy: ${draws.length} concursos`);
+    return { draws, source: "api" };
+  } catch (proxyError) {
+    console.warn("[lotteryHistory] Proxy falhou, tentando mock data:", proxyError);
     
-    // Fazer requisições em paralelo (mas limitadas para não sobrecarregar a API)
-    const batchSize = 10;
-    for (let i = startContest; i <= latestContestNumber; i += batchSize) {
-      const batchPromises = [];
+    // TENTATIVA 2: Dados Mock
+    try {
+      const mockDraws = getMockDraws(lotteryType, maxDraws);
+      const age = getMockDataAge(lotteryType);
       
-      for (let j = i; j < Math.min(i + batchSize, latestContestNumber + 1); j++) {
-        batchPromises.push(
-          fetch(`${API_BASE_URL}/${endpoint}/${j}`, {
-            method: "GET",
-            headers: { "Accept": "application/json" },
-          })
-            .then(res => res.ok ? res.json() : null)
-            .then(data => {
-              if (data && data.listaDezenas) {
-                return {
-                  contestNumber: data.numero,
-                  drawDate: formatBrazilianDate(data.dataApuracao),
-                  numbers: data.listaDezenas.map((n: string) => parseInt(n)),
-                };
-              }
-              return null;
-            })
-            .catch(() => null)
-        );
-      }
-
-      const batchResults = await Promise.all(batchPromises);
-      draws.push(...batchResults.filter((d): d is HistoricalDraw => d !== null));
+      console.log(`[lotteryHistory] Usando mock data: ${mockDraws.length} concursos (${age} dias atrás)`);
       
-      // Pequeno delay entre lotes para não sobrecarregar a API
-      if (i + batchSize <= latestContestNumber) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
+      return {
+        draws: mockDraws,
+        source: "mock",
+        warning: `Usando dados históricos salvos (última atualização: ${age} ${age === 1 ? 'dia' : 'dias'} atrás)`,
+      };
+    } catch (mockError) {
+      console.error("[lotteryHistory] Mock data também falhou:", mockError);
+      throw new Error("Não foi possível obter dados históricos. Tente novamente mais tarde.");
     }
-
-    return draws.sort((a, b) => b.contestNumber - a.contestNumber);
-  } catch (error) {
-    console.error(`Erro ao buscar histórico da ${lotteryType}:`, error);
-    throw error;
   }
 };
 
@@ -86,32 +78,22 @@ export const fetchDrawByNumber = async (
   lotteryType: string,
   contestNumber: number
 ): Promise<HistoricalDraw | null> => {
-  const endpoint = lotteryEndpoints[lotteryType];
-  
-  if (!endpoint) {
-    throw new Error(`Tipo de loteria não suportado: ${lotteryType}`);
-  }
-
   try {
-    const response = await fetch(`${API_BASE_URL}/${endpoint}/${contestNumber}`, {
-      method: "GET",
-      headers: { "Accept": "application/json" },
+    const { data, error } = await supabase.functions.invoke("lottery-proxy", {
+      body: {
+        lotteryType,
+        action: "byNumber",
+        contestNumber,
+      },
     });
 
-    if (!response.ok) {
-      return null;
-    }
-
-    const data = await response.json();
-    
-    if (!data || !data.listaDezenas) {
+    if (error || !data?.success) {
       return null;
     }
 
     return {
-      contestNumber: data.numero,
-      drawDate: formatBrazilianDate(data.dataApuracao),
-      numbers: data.listaDezenas.map((n: string) => parseInt(n)),
+      ...data.data,
+      drawDate: new Date(data.data.drawDate),
     };
   } catch (error) {
     console.error(`Erro ao buscar concurso ${contestNumber}:`, error);

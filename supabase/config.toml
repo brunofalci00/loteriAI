@@ -1,1 +1,4 @@
 project_id = "aaqthgqsuhyagsrlnyqk"
+
+[functions.lottery-proxy]
+verify_jwt = false

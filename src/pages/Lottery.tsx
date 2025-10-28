@@ -5,7 +5,8 @@ import { LoadingAnalysis } from "@/components/LoadingAnalysis";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
 import { NextDrawInfo } from "@/components/NextDrawInfo";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ArrowLeft, WifiOff } from "lucide-react";
 import { toast } from "sonner";
 import { useLotteryAnalysis } from "@/hooks/useLotteryAnalysis";
 import { formatShortDate } from "@/utils/formatters";
@@ -136,6 +137,16 @@ const Lottery = () => {
           <NextDrawInfo lotteryType={type} lotteryName={lottery.name} />
         </div>
 
+        {analysisResult?.warning && (
+          <Alert className="mb-6 border-yellow-500/50 bg-yellow-500/10">
+            <WifiOff className="h-4 w-4 text-yellow-500" />
+            <AlertTitle className="text-yellow-500">Modo Offline</AlertTitle>
+            <AlertDescription className="text-yellow-600">
+              {analysisResult.warning}
+            </AlertDescription>
+          </Alert>
+        )}
+
         {showLoading ? (
           <LoadingAnalysis 
             onComplete={handleLoadingComplete} 
@@ -154,6 +165,7 @@ const Lottery = () => {
               hotNumbers: analysisResult.statistics.hotNumbers,
               coldNumbers: analysisResult.statistics.coldNumbers,
               lastUpdate: analysisResult.statistics.lastUpdate,
+              dataSource: analysisResult.dataSource,
             }}
             strategy={analysisResult.strategy}
             onExport={handleExport}

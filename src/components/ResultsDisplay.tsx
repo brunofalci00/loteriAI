@@ -16,6 +16,7 @@ interface ResultsDisplayProps {
     hotNumbers?: number[];
     coldNumbers?: number[];
     lastUpdate?: Date;
+    dataSource?: string;
   };
   strategy?: {
     type: string;
@@ -169,9 +170,12 @@ export const ResultsDisplay = ({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Números Sugeridos - {lotteryName}</h2>
-          <p className="text-sm text-muted-foreground">
-            Baseado em análise de {stats.drawsAnalyzed} concursos reais da Caixa
-          </p>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Database className="h-3 w-3" />
+            <span>
+              {stats.dataSource || "Dados em tempo real"} • {stats.drawsAnalyzed} concursos analisados
+            </span>
+          </div>
         </div>
         <Button variant="gold" onClick={onExport}>
           <Download className="mr-2 h-4 w-4" />
