@@ -110,7 +110,7 @@
       </p>
       <a id="quiz" class="button button--primary" href="quiz.html">FAZER TESTE GRATUITO AGORA</a>
       <p class="cta-note">Use com responsabilidade. A plataforma é educativa e estatística. Não garante resultados financeiros ou prêmios.</p>
-      <p class="cta-note cta-note--deadline">ATENÇÃO: O acesso ao simulador gratuito ficará disponível apenas até &lt;variavel de dia&gt; para novos testadores. Após esse período, será necessário assinar um dos planos da plataforma.</p>
+      <p class="cta-note cta-note--deadline">ATENÇÃO: O acesso ao simulador gratuito ficará disponível apenas até <span id="deadline-date"></span> para novos testadores. Após esse período, será necessário assinar um dos planos da plataforma.</p>
     </section>
   </main>
 
@@ -119,6 +119,23 @@
       ⚠️ Aviso legal: Ferramenta com fins estatísticos e educacionais. Não garante prêmios ou lucros. Aposte com responsabilidade.
     </p>
   </footer>
+
+  <script>
+    (function() {
+      const dateElement = document.getElementById('deadline-date');
+      if (!dateElement) return;
+
+      const today = new Date();
+      const daysOfWeek = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+      const months = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+
+      const dayName = daysOfWeek[today.getDay()];
+      const day = today.getDate();
+      const month = months[today.getMonth()];
+
+      dateElement.textContent = `${dayName}, ${day} de ${month}`;
+    })();
+  </script>
 </body>
 </html>
 
