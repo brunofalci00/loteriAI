@@ -1,27 +1,19 @@
 {
-  "version": 2,
   "buildCommand": "cd app && npm install && npm run build && cd .. && node scripts/organize-dist.js",
   "outputDirectory": "dist",
   "installCommand": "cd app && npm install",
-  "framework": null,
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/public/$1"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/app/assets/(.*)",
-      "dest": "/app/assets/$1"
+      "source": "/app/:path*",
+      "destination": "/app/:path*"
     },
     {
-      "src": "/app/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
-      "dest": "/app/$1"
+      "source": "/app",
+      "destination": "/app/index.html"
     },
     {
-      "src": "/app(/.*)?",
-      "dest": "/app/index.html"
+      "source": "/:path*",
+      "destination": "/public/:path*"
     }
   ],
   "headers": [
