@@ -10,10 +10,6 @@
     {
       "source": "/app",
       "destination": "/app/index.html"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/public/:path*"
     }
   ],
   "headers": [
