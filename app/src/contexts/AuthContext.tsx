@@ -25,6 +25,7 @@ interface AuthContextType {
   signup: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
   resendConfirmationEmail: (email: string) => Promise<void>;
+  updatePassword: (password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -212,8 +213,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updatePassword = async (password: string) => {
+    try {
+      setIsLoading(true);
+
+      // Validação
+      if (password.length < 6) {
+        throw new Error('Senha deve ter no mínimo 6 caracteres');
+      }
+
+      const { error } = await supabase.auth.updateUser({
+        password: password,
+      });
+
+      if (error) throw error;
+
+      toast.success('Senha definida com sucesso! Redirecionando...');
+
+      // Aguarda um pouco para mostrar a mensagem antes de redirecionar
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
+    } catch (error: any) {
+      console.error('Update password error:', error);
+      toast.error(error.message || 'Erro ao definir senha');
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, signup, logout, resendConfirmationEmail }}>
+    <AuthContext.Provider value={{ user, isLoading, login, signup, logout, resendConfirmationEmail, updatePassword }}>
       {children}
     </AuthContext.Provider>
   );

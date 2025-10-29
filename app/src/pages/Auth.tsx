@@ -13,32 +13,42 @@ import logo from "@/assets/logo-loterai.png";
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user, login, isLoading } = useAuth();
+  const { user, login, updatePassword, isLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isInvited = searchParams.get('invited') === 'true';
   const hasToken = searchParams.get('token') !== null;
+  const isRecovery = searchParams.get('type') === 'recovery';
 
   useEffect(() => {
     // Mensagens especiais
-    if (isInvited || hasToken) {
+    if (isRecovery) {
+      toast.success('🎉 Bem-vindo ao loter.AI! Defina sua senha para acessar sua conta.');
+    } else if (isInvited || hasToken) {
       toast.success('🎉 Bem-vindo ao loter.AI! Defina sua senha para começar.');
     } else if (searchParams.get('confirmed') === 'true') {
       toast.success('Email confirmado! Você já pode fazer login.');
     }
-  }, [searchParams, isInvited, hasToken]);
+  }, [searchParams, isInvited, hasToken, isRecovery]);
 
   useEffect(() => {
-    if (user?.isAuthenticated) {
+    // Se já está autenticado e não está em recovery mode, redireciona
+    if (user?.isAuthenticated && !isRecovery) {
       navigate('/dashboard');
     }
-  }, [user, navigate]);
+  }, [user, navigate, isRecovery]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
-      await login(email, password);
+      if (isRecovery) {
+        // Modo recovery: apenas definir senha
+        await updatePassword(password);
+      } else {
+        // Modo login normal
+        await login(email, password);
+      }
     } catch (error) {
       // Erros já são tratados no AuthContext
     }
@@ -55,11 +65,13 @@ const Auth = () => {
               <img src={logo} alt="loter.AI" className="h-32 w-auto" />
             </div>
             
-            {isInvited || hasToken ? (
+            {isRecovery || isInvited || hasToken ? (
               <>
                 <h1 className="mb-2 text-2xl font-bold">Defina sua senha</h1>
                 <p className="text-sm text-muted-foreground">
-                  Seu pagamento foi confirmado! Configure sua senha para acessar o sistema.
+                  {isRecovery
+                    ? 'Seu pagamento foi confirmado! Configure sua senha para acessar sua conta.'
+                    : 'Seu pagamento foi confirmado! Configure sua senha para acessar o sistema.'}
                 </p>
               </>
             ) : (
@@ -73,22 +85,25 @@ const Auth = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">E-mail</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="bg-input border-border"
-              />
-            </div>
+            {/* Mostrar email apenas se NÃO estiver em recovery mode */}
+            {!isRecovery && (
+              <div className="space-y-2">
+                <Label htmlFor="email">E-mail</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="bg-input border-border"
+                />
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="password">
-                {isInvited || hasToken ? 'Nova Senha' : 'Senha'}
+                {isRecovery || isInvited || hasToken ? 'Nova Senha' : 'Senha'}
               </Label>
               <Input
                 id="password"
@@ -100,17 +115,17 @@ const Auth = () => {
                 minLength={6}
                 className="bg-input border-border"
               />
-              {(isInvited || hasToken) && (
+              {(isRecovery || isInvited || hasToken) && (
                 <p className="text-xs text-muted-foreground">
                   Mínimo de 6 caracteres
                 </p>
               )}
             </div>
 
-            <Button 
-              type="submit" 
-              variant="hero" 
-              className="w-full" 
+            <Button
+              type="submit"
+              variant="hero"
+              className="w-full"
               size="lg"
               disabled={isLoading}
             >
@@ -120,7 +135,7 @@ const Auth = () => {
                   <span>Processando...</span>
                 </div>
               ) : (
-                isInvited || hasToken ? "Ativar Conta" : "Entrar"
+                isRecovery || isInvited || hasToken ? "Definir Senha e Acessar" : "Entrar"
               )}
             </Button>
           </form>
