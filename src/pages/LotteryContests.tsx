@@ -61,6 +61,12 @@ const LotteryContests = () => {
         </Button>
 
         <div className="mb-8">
+          {/* Logo e Nome do Concurso */}
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-5xl">{lottery.icon}</span>
+            <h1 className="text-4xl font-bold">{lottery.name}</h1>
+          </div>
+
           {/* Banner Informativo */}
           <Alert className="mb-6 bg-primary/5 border-primary/20">
             <Info className="h-4 w-4 text-primary" />
@@ -80,10 +86,6 @@ const LotteryContests = () => {
             </AlertDescription>
           </Alert>
 
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-5xl">{lottery.icon}</span>
-            <h1 className="text-4xl font-bold">{lottery.name}</h1>
-          </div>
           <p className="text-lg text-muted-foreground">
             Escolha o concurso que deseja analisar
           </p>
