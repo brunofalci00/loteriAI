@@ -107,7 +107,7 @@ export const ContestCard = ({
               </div>
             </div>
 
-            <div className="mt-4 text-sm text-muted-foreground group-hover:text-primary transition-colors">
+            <div className="mt-4 text-sm text-muted-foreground group-hover:text-white transition-colors">
               Clique para analisar este concurso →
             </div>
           </div>
