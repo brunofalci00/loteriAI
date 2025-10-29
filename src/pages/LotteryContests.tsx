@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Header } from "@/components/Header";
 import { ContestCard } from "@/components/ContestCard";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -33,8 +32,7 @@ const LotteryContests = () => {
   if (!lottery || !type) {
     return (
       <div className="min-h-screen">
-        <Header />
-        <div className="container mx-auto px-4 pt-24">
+        <div className="container mx-auto px-4 pt-8">
           <p className="text-center text-muted-foreground">Loteria não encontrada</p>
         </div>
       </div>
@@ -48,9 +46,7 @@ const LotteryContests = () => {
 
   return (
     <div className="min-h-screen">
-      <Header />
-      
-      <div className="container mx-auto px-4 pt-24 pb-12">
+      <div className="container mx-auto px-4 pt-8 pb-12">
         <Button
           variant="ghost"
           onClick={() => navigate("/dashboard")}
@@ -62,9 +58,9 @@ const LotteryContests = () => {
 
         <div className="mb-8">
           {/* Logo e Nome do Concurso */}
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-5xl">{lottery.icon}</span>
-            <h1 className="text-4xl font-bold">{lottery.name}</h1>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-3xl">{lottery.icon}</span>
+            <h1 className="text-2xl font-bold">{lottery.name}</h1>
           </div>
 
           {/* Banner Informativo */}
