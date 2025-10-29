@@ -47,9 +47,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      async (event, session) => {
+        console.log('Auth state changed:', event, session);
+
         setSession(session);
-        
+
         if (session?.user) {
           // Defer profile fetch with setTimeout to avoid deadlock
           setTimeout(() => {
@@ -58,23 +60,53 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           setUser(null);
         }
-        
+
         setIsLoading(false);
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      
-      if (session?.user) {
-        setTimeout(() => {
-          fetchUserProfile(session.user);
-        }, 0);
+    // Check for recovery/magic link in URL hash
+    const handleAuthCallback = async () => {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token');
+      const type = hashParams.get('type');
+
+      if (accessToken && type === 'recovery') {
+        console.log('Processing recovery token from URL');
+        try {
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken || '',
+          });
+
+          if (error) {
+            console.error('Error setting session:', error);
+            toast.error('Link de acesso inválido ou expirado');
+          } else {
+            console.log('Session set successfully:', data);
+            // Limpa hash da URL
+            window.history.replaceState(null, '', window.location.pathname + window.location.search);
+          }
+        } catch (error) {
+          console.error('Error processing recovery:', error);
+        }
       } else {
-        setIsLoading(false);
+        // THEN check for existing session
+        const { data: { session } } = await supabase.auth.getSession();
+        setSession(session);
+
+        if (session?.user) {
+          setTimeout(() => {
+            fetchUserProfile(session.user);
+          }, 0);
+        } else {
+          setIsLoading(false);
+        }
       }
-    });
+    };
+
+    handleAuthCallback();
 
     return () => subscription.unsubscribe();
   }, []);
