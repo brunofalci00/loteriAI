@@ -1,10 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { ContestCard } from "@/components/ContestCard";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowLeft, Info } from "lucide-react";
 import { useUpcomingDraws } from "@/hooks/useUpcomingDraws";
 import { Skeleton } from "@/components/ui/skeleton";
+import { LotteryGuideDialog } from "@/components/LotteryGuideDialog";
 
 const lotteryData: Record<string, { name: string; icon: string }> = {
   "mega-sena": { name: "Mega-Sena", icon: "🎱" },
@@ -22,6 +25,7 @@ const lotteryData: Record<string, { name: string; icon: string }> = {
 const LotteryContests = () => {
   const { type } = useParams<{ type: string }>();
   const navigate = useNavigate();
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
   
   const lottery = type ? lotteryData[type] : null;
   const { data: upcomingDraws, isLoading, error } = useUpcomingDraws(type || "", 7);
@@ -57,6 +61,25 @@ const LotteryContests = () => {
         </Button>
 
         <div className="mb-8">
+          {/* Banner Informativo */}
+          <Alert className="mb-6 bg-primary/5 border-primary/20">
+            <Info className="h-4 w-4 text-primary" />
+            <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <span className="text-sm text-foreground">
+                Quer entender melhor como funciona a {lottery.name}? 
+                Veja as regras, chances de premiação e dicas!
+              </span>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setIsGuideOpen(true)}
+                className="sm:ml-4 whitespace-nowrap"
+              >
+                Ver Guia Completo
+              </Button>
+            </AlertDescription>
+          </Alert>
+
           <div className="flex items-center gap-3 mb-2">
             <span className="text-5xl">{lottery.icon}</span>
             <h1 className="text-4xl font-bold">{lottery.name}</h1>
@@ -64,6 +87,13 @@ const LotteryContests = () => {
           <p className="text-lg text-muted-foreground">
             Escolha o concurso que deseja analisar
           </p>
+
+          {/* Dialog do Guia */}
+          <LotteryGuideDialog
+            lotteryId={type}
+            open={isGuideOpen}
+            onOpenChange={setIsGuideOpen}
+          />
         </div>
 
         {error && (
