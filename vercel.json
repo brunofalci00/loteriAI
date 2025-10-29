@@ -4,8 +4,8 @@
   "installCommand": "cd app && npm install",
   "rewrites": [
     {
-      "source": "/app/:path*",
-      "destination": "/app/:path*"
+      "source": "/app/:path((?!.*\\.).*)",
+      "destination": "/app/index.html"
     },
     {
       "source": "/app",
