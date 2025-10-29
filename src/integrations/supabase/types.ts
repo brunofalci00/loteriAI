@@ -67,6 +67,51 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string | null
+          customer_email: string
+          customer_name: string | null
+          hubla_invoice_id: string | null
+          hubla_transaction_id: string
+          id: string
+          payment_method: string | null
+          processed_at: string | null
+          product_name: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          customer_email: string
+          customer_name?: string | null
+          hubla_invoice_id?: string | null
+          hubla_transaction_id: string
+          id?: string
+          payment_method?: string | null
+          processed_at?: string | null
+          product_name?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          customer_email?: string
+          customer_name?: string | null
+          hubla_invoice_id?: string | null
+          hubla_transaction_id?: string
+          id?: string
+          payment_method?: string | null
+          processed_at?: string | null
+          product_name?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
