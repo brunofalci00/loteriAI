@@ -19,17 +19,29 @@ const Auth = () => {
   const isInvited = searchParams.get('invited') === 'true';
   const hasToken = searchParams.get('token') !== null;
   const isRecovery = searchParams.get('type') === 'recovery';
+  const [showEmailField, setShowEmailField] = useState(!isRecovery);
 
   useEffect(() => {
     // Mensagens especiais
     if (isRecovery) {
-      toast.success('🎉 Bem-vindo ao loter.AI! Defina sua senha para acessar sua conta.');
+      // Aguarda 2 segundos para ver se sessão foi estabelecida
+      const timer = setTimeout(() => {
+        if (!user?.isAuthenticated) {
+          // Se após 2s ainda não autenticou, mostra campo de email
+          setShowEmailField(true);
+          toast.error('Link expirado. Faça login com email e senha.');
+        } else {
+          toast.success('🎉 Bem-vindo ao loter.AI! Defina sua senha para acessar sua conta.');
+        }
+      }, 2000);
+
+      return () => clearTimeout(timer);
     } else if (isInvited || hasToken) {
       toast.success('🎉 Bem-vindo ao loter.AI! Defina sua senha para começar.');
     } else if (searchParams.get('confirmed') === 'true') {
       toast.success('Email confirmado! Você já pode fazer login.');
     }
-  }, [searchParams, isInvited, hasToken, isRecovery]);
+  }, [searchParams, isInvited, hasToken, isRecovery, user]);
 
   useEffect(() => {
     // Se já está autenticado e não está em recovery mode, redireciona
@@ -42,11 +54,11 @@ const Auth = () => {
     e.preventDefault();
 
     try {
-      if (isRecovery) {
-        // Modo recovery: apenas definir senha
+      if (isRecovery && user?.isAuthenticated) {
+        // Modo recovery: apenas definir senha (se já estiver autenticado)
         await updatePassword(password);
       } else {
-        // Modo login normal
+        // Modo login normal (com email e senha)
         await login(email, password);
       }
     } catch (error) {
@@ -85,8 +97,8 @@ const Auth = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Mostrar email apenas se NÃO estiver em recovery mode */}
-            {!isRecovery && (
+            {/* Mostrar email se não estiver autenticado OU se showEmailField for true */}
+            {showEmailField && (
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
                 <Input

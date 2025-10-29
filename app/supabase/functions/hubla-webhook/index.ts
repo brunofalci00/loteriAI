@@ -102,14 +102,19 @@ serve(async (req) => {
       console.log(`[hubla-webhook] ✅ Usuário existente encontrado: ${existingUser.id}`);
       userId = existingUser.id;
     } else {
-      // 8. Criar novo usuário no Supabase Auth
+      // 8. Criar novo usuário no Supabase Auth com senha temporária
+      // Gera senha temporária: primeiros 3 chars do nome + últimos 6 do invoice ID
+      const tempPassword = `${firstName.substring(0, 3)}${invoiceId.slice(-6)}`.toLowerCase();
+
       const { data: newUser, error: authError } = await supabase.auth.admin.createUser({
         email: customerEmail,
+        password: tempPassword,
         email_confirm: true, // Email já confirmado (pagamento = confiável)
         user_metadata: {
           full_name: customerName,
           hubla_payer_id: payer?.id || customer?.id || user?.id,
-          created_via: 'hubla_webhook'
+          created_via: 'hubla_webhook',
+          temp_password: tempPassword // Armazena para enviar no email
         }
       });
 
@@ -121,30 +126,39 @@ serve(async (req) => {
       userId = newUser.user.id;
       isNewUser = true;
       console.log(`[hubla-webhook] ✨ Novo usuário criado: ${userId}`);
+      console.log(`[hubla-webhook] 🔑 Senha temporária: ${tempPassword}`);
     }
 
-    // 9. Gerar link de acesso mágico
-    const { data: magicLinkData, error: linkError } = await supabase.auth.admin.generateLink({
-      type: 'magiclink',
-      email: customerEmail,
-      options: {
-        redirectTo: `${appUrl}/dashboard`
-      }
-    });
+    // 9. Preparar instruções de login
+    const { data: userData } = await supabase.auth.admin.getUserById(userId);
+    const tempPassword = userData?.user?.user_metadata?.temp_password || '';
+    const loginUrl = `${appUrl}/auth`;
 
-    if (linkError) {
-      console.error('[hubla-webhook] ⚠️ Erro ao gerar link:', linkError);
-      throw linkError;
-    }
+    console.log(`[hubla-webhook] 🔗 URL de login: ${loginUrl}`);
 
-    const accessLink = magicLinkData.properties.action_link;
-    console.log(`[hubla-webhook] 🔗 Link de acesso gerado: ${accessLink}`);
-
-    // 10. Enviar email via Resend (SEMPRE funciona)
+    // 10. Enviar email via Resend ou Supabase (fallback)
     const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
     if (!RESEND_API_KEY) {
-      console.error('[hubla-webhook] ⚠️ RESEND_API_KEY não configurada - pulando envio de email');
+      console.log('[hubla-webhook] ⚠️ RESEND_API_KEY não configurada - usando email do Supabase');
+
+      // Fallback: usa resetPasswordForEmail do Supabase
+      const supabaseClient = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_ANON_KEY')!
+      );
+
+      const { error: emailError } = await supabaseClient.auth.resetPasswordForEmail(
+        customerEmail,
+        { redirectTo: `${loginUrl}?type=recovery` }
+      );
+
+      if (emailError) {
+        console.error('[hubla-webhook] ⚠️ Erro ao enviar email:', emailError);
+      } else {
+        console.log(`[hubla-webhook] ✉️ Email do Supabase enviado para: ${customerEmail}`);
+        console.log(`[hubla-webhook] 🔑 Senha temporária (para suporte): ${tempPassword}`);
+      }
     } else {
       const emailResponse = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -175,12 +189,32 @@ serve(async (req) => {
                   Seu pagamento foi confirmado com sucesso! 🎊
                 </p>
 
-                <p style="font-size: 16px; margin-bottom: 30px;">
-                  Clique no botão abaixo para acessar sua conta e começar a usar o loter.AI:
-                </p>
+                ${isNewUser ? `
+                  <p style="font-size: 16px; margin-bottom: 20px;">
+                    Use as credenciais abaixo para fazer seu primeiro acesso:
+                  </p>
+
+                  <div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 20px; margin: 20px 0; border-radius: 6px;">
+                    <p style="margin: 0 0 10px 0; font-weight: bold; color: #1e40af;">📧 Email:</p>
+                    <p style="margin: 0 0 20px 0; font-family: monospace; background: white; padding: 12px; border-radius: 4px; font-size: 16px;">${customerEmail}</p>
+
+                    <p style="margin: 0 0 10px 0; font-weight: bold; color: #1e40af;">🔑 Senha Temporária:</p>
+                    <p style="margin: 0 0 10px 0; font-family: monospace; background: white; padding: 12px; border-radius: 4px; font-size: 20px; font-weight: bold; color: #059669;">${tempPassword}</p>
+
+                    <p style="font-size: 13px; color: #666; margin: 15px 0 0 0;">
+                      ⚠️ Após fazer login, você poderá alterar sua senha nas configurações.
+                    </p>
+                  </div>
+                ` : `
+                  <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 20px 0; border-radius: 6px;">
+                    <p style="margin: 0; color: #92400e;">
+                      ✅ Você já possui uma conta! Use sua senha atual para fazer login.
+                    </p>
+                  </div>
+                `}
 
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="${accessLink}"
+                  <a href="${loginUrl}"
                      style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                             color: white;
                             padding: 15px 40px;
@@ -190,7 +224,7 @@ serve(async (req) => {
                             font-size: 16px;
                             display: inline-block;
                             box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                    🚀 Acessar loter.AI
+                    🚀 Fazer Login
                   </a>
                 </div>
 
