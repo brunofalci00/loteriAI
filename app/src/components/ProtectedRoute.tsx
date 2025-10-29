@@ -56,7 +56,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
               variant="hero"
               size="lg"
               className="w-full"
-              onClick={() => window.location.href = 'https://pay.hub.la/KdtoUOEAt8J8w23kP93P'}
+              onClick={() => window.location.href = 'https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689'}
             >
               <ShoppingCart className="mr-2 h-5 w-5" />
               Adquirir Acesso Agora
