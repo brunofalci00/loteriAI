@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Header } from "@/components/Header";
+
 import { LoadingAnalysis } from "@/components/LoadingAnalysis";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
 import { NextDrawInfo } from "@/components/NextDrawInfo";
@@ -48,8 +48,7 @@ const Lottery = () => {
   if (!lottery) {
     return (
       <div className="min-h-screen">
-        <Header />
-        <div className="container mx-auto px-4 pt-24">
+        <div className="container mx-auto px-4 pt-8">
           <p className="text-center text-muted-foreground">Loteria não encontrada</p>
         </div>
       </div>
@@ -117,9 +116,7 @@ const Lottery = () => {
 
   return (
     <div className="min-h-screen">
-      <Header />
-      
-      <div className="container mx-auto px-4 pt-24 pb-12">
+      <div className="container mx-auto px-4 pt-8 pb-12">
         <Button
           variant="ghost"
           onClick={() => navigate(`/lottery/${type}/contests`)}
@@ -130,7 +127,7 @@ const Lottery = () => {
         </Button>
 
         <div className="mb-8">
-          <h1 className="mb-2 text-4xl font-bold">
+          <h1 className="mb-2 text-2xl font-bold">
             {lottery.name} - Concurso {contestNumber || "N/A"}
           </h1>
           <p className="text-lg text-muted-foreground">
