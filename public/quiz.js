@@ -1,19 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
   const slides = Array.from(document.querySelectorAll('.quiz-slide'));
   const slideByStep = new Map(slides.map((s) => [s.dataset.step, s]));
-  let autoTimer;
-
+  const modal = document.querySelector('[data-modal]');
+  const modalContent = modal?.querySelector('[data-modal-content]');
+  const modalBackdrop = modal?.querySelector('[data-modal-backdrop]');
+  const emojiRain = document.querySelector('[data-emoji-rain]');
+  const currencyFormatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+  const emojiChoices = ['💰', '💸', '💎', '🤑', '🎉'];
   const autoAdvance = {
-    preloading: { next: 'video-manual-intro', delay: 5000 },
-    'manual-loading-1': { next: 'manual-result-1', delay: 3000 },
-    'manual-loading-2': { next: 'manual-result-2', delay: 3000 },
-    'ia-activate': { next: 'guided-select-1', delay: 4000 },
-    'ia-loading-1': { next: 'ia-result-1', delay: 3000 },
-    'ia-loading-2': { next: 'summary', delay: 3000 },
+    'ia-activate': { next: 'guided-select-1', delay: 5200 },
   };
-
-  const cashSlides = new Set(['ia-result-1', 'summary']);
-  const failSlides = new Set(['manual-result-1', 'manual-result-2']);
 
   const audioClips = {
     click: 'money-pickup-2-89563.mp3',
@@ -24,24 +20,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const audioCache = new Map();
 
   const manualRounds = {
-    1: { select: 'manual-select-1', loading: 'manual-loading-1', result: 'manual-result-1' },
-    2: { select: 'manual-select-2', loading: 'manual-loading-2', result: 'manual-result-2' },
+    1: {
+      select: 'manual-select-1',
+      next: 'manual-select-2',
+      hits: 8,
+      result: {
+        icon: '😞',
+        title: 'Você teve 8 acertos.',
+        message: 'Não foi dessa vez, tente na próxima rodada!',
+        note: 'Avançando automaticamente...',
+        sound: 'fail',
+      },
+    },
+    2: {
+      select: 'manual-select-2',
+      next: 'video-pre-ia',
+      hits: 7,
+      result: {
+        icon: '😔',
+        title: 'Você teve 7 acertos.',
+        message: 'Sem IA fica difícil. Veja como a inteligência artificial melhora seus jogos!',
+        note: 'Avançando automaticamente...',
+        sound: 'fail',
+      },
+    },
   };
 
   const guidedRounds = {
     1: {
       select: 'guided-select-1',
-      loading: 'ia-loading-1',
-      next: 'ia-result-1',
-      sequence: [7, 3, 11, 14, 18, 20, 21, 5, 9, 1, 24, 25, 6, 12, 15],
+      next: 'guided-select-2',
+      sequence: [3, 7, 12, 14, 18, 21, 24, 1, 4, 5, 9, 11, 16, 19, 25],
       progressKey: 'guided-1',
+      hits: 14,
+      payout: 2253.94,
     },
     2: {
       select: 'guided-select-2',
-      loading: 'ia-loading-2',
-      next: null,
-      sequence: [2, 4, 8, 10, 13, 16, 19, 22, 3, 17, 23, 11, 5, 7, 24],
+      next: 'ia-summary',
+      sequence: [2, 6, 8, 10, 13, 15, 17, 20, 22, 23, 5, 7, 11, 14, 24],
       progressKey: 'guided-2',
+      hits: 13,
+      payout: 1169.44,
     },
   };
 
@@ -49,11 +69,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const guidedState = new Map();
   const videoGates = new Map();
   let activeVideoGate = null;
+  let autoTimer;
+  let preloadingStarted = false;
+  let iaActivationStarted = false;
+  let manualSummaryTotal = 0;
+  let guidedSummaryTotal = 0;
+  let summaryAnimated = false;
 
   initManualGrids();
   initGuidedGrids();
   initVideoGates();
   wireControls();
+  if (modalBackdrop) {
+    modalBackdrop.addEventListener('click', () => closeModal());
+  }
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modal && !modal.hasAttribute('hidden')) {
+      closeModal();
+    }
+  });
 
   function fbSafeTrack(event, params) {
     if (typeof fbq === 'function') {
@@ -95,10 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const kirvanoBtn = target.closest('[data-kirvano-link]');
-      if (kirvanoBtn) {
+      const checkoutLink = target.closest('a[data-hubla-link]');
+      if (checkoutLink) {
         fbSafeTrack('InitiateCheckout');
-        return;
       }
     });
   }
@@ -293,6 +326,10 @@ document.addEventListener('DOMContentLoaded', () => {
       activeVideoGate = null;
     }
 
+    if (modal) {
+      closeModal(true);
+    }
+
     slides.forEach((slide) => slide.classList.toggle('is-active', slide.dataset.step === step));
     clearTimeout(autoTimer);
     if (nextGate) {
@@ -304,6 +341,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (config?.next) {
       autoTimer = window.setTimeout(() => showSlide(config.next), config.delay);
     }
+
+    if (step === 'preloading' && !preloadingStarted) {
+      preloadingStarted = true;
+      runPreloadingSequence();
+    }
+
+    if (step === 'ia-activate') {
+      runIaActivationSequence();
+    }
+
     if (step === 'manual-select-1' || step === 'manual-select-2') {
       resetManualRound(Number(step.endsWith('2') ? 2 : 1));
     }
@@ -313,8 +360,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (step === 'guided-select-2') {
       resetGuidedRound(2);
     }
-    if (cashSlides.has(step)) playCashSound();
-    if (failSlides.has(step)) playFailSound();
+    if (step === 'ia-summary') {
+      startSummaryCounters();
+    }
 
     switch (step) {
       case 'manual-select-1':
@@ -323,28 +371,16 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'manual-select-2':
         fbSafeTrackCustom('Quiz_Manual2_Start');
         break;
-      case 'manual-result-1':
-        fbSafeTrackCustom('Quiz_Manual1_Result');
-        break;
-      case 'manual-result-2':
-        fbSafeTrackCustom('Quiz_Manual2_Result');
-        break;
       case 'ia-activate':
         fbSafeTrackCustom('IA_Activated');
         break;
       case 'guided-select-1':
         fbSafeTrackCustom('Quiz_IA1_Start');
         break;
-      case 'ia-result-1':
-        fbSafeTrackCustom('Quiz_IA1_Result');
-        break;
       case 'guided-select-2':
         fbSafeTrackCustom('Quiz_IA2_Start');
         break;
-      case 'ia-result-2':
-        fbSafeTrackCustom('Quiz_IA2_Result');
-        break;
-      case 'summary':
+      case 'ia-summary':
         fbSafeTrack('CompleteRegistration');
         break;
       default:
@@ -355,23 +391,20 @@ document.addEventListener('DOMContentLoaded', () => {
   function initManualGrids() {
     document.querySelectorAll('.number-grid[data-mode="manual"]').forEach((grid) => {
       const round = Number(grid.dataset.round);
+      const feedback = document.querySelector(`[data-manual-feedback="${round}"]`);
+      const status = document.querySelector(`[data-manual-status="${round}"]`);
       manualState.set(round, {
         selected: new Set(),
         limit: 15,
         grid,
-        feedback: attachManualFeedback(grid),
+        feedback,
+        status,
+        completed: false,
+        processing: false,
       });
       populateNumberButtons(grid, (value, button) => toggleManualNumber(round, value, button));
       updateManualFeedback(round);
     });
-  }
-
-  function attachManualFeedback(grid) {
-    const feedback = document.createElement('p');
-    feedback.className = 'validation-message';
-    feedback.setAttribute('aria-live', 'polite');
-    grid.insertAdjacentElement('afterend', feedback);
-    return feedback;
   }
 
   function populateNumberButtons(container, onClick) {
@@ -415,19 +448,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (override) {
       feedback.textContent = override;
-      feedback.classList.add('is-visible');
-      feedback.classList.remove('is-success');
+      feedback.dataset.state = 'error';
       return;
     }
 
     const remaining = state.limit - state.selected.size;
     if (remaining === 0) {
-      feedback.textContent = 'Tudo pronto! Clique em "Conferir resultado".';
-      feedback.classList.add('is-visible', 'is-success');
+      feedback.textContent = 'Tudo pronto! Clique em "Verificar resultado".';
+      feedback.dataset.state = 'ready';
     } else {
       feedback.textContent = `Selecione mais ${remaining} número${remaining > 1 ? 's' : ''}.`;
-      feedback.classList.add('is-visible');
-      feedback.classList.remove('is-success');
+      feedback.dataset.state = 'default';
+    }
+    if (state.status) {
+      state.status.textContent = `Rodada ${round} de 2 • ${state.selected.size}/15 escolhidos`;
     }
   }
 
@@ -435,25 +469,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const state = manualState.get(round);
     if (!state?.feedback) return;
     state.feedback.textContent = 'Você já escolheu 15 números.';
-    state.feedback.classList.add('is-visible');
-    state.feedback.classList.remove('is-success');
+    state.feedback.dataset.state = 'warning';
     window.setTimeout(() => updateManualFeedback(round), 1400);
   }
 
   function handleManualVerification(round, button) {
     const state = manualState.get(round);
-    if (!state) return;
+    if (!state || state.processing) return;
     if (state.selected.size !== state.limit) {
       updateManualFeedback(round, 'Selecione os 15 números antes de continuar.');
       button.classList.add('shake');
-        playErrorSound();
+      playErrorSound();
       window.setTimeout(() => button.classList.remove('shake'), 400);
       return;
     }
-    const loadingStep = manualRounds[round]?.loading;
-    if (loadingStep) {
-      showSlide(loadingStep);
-    }
+    const config = manualRounds[round];
+    if (!config) return;
+    state.processing = true;
+    state.completed = true;
+    manualSummaryTotal += config.hits || 0;
+    openResultModal({
+      role: 'manual',
+      icon: config.result.icon,
+      title: config.result.title,
+      message: config.result.message,
+      note: config.result.note,
+      sound: config.result.sound,
+    });
+    fbSafeTrackCustom(round === 1 ? 'Quiz_Manual1_Result' : 'Quiz_Manual2_Result');
+    window.setTimeout(() => {
+      closeModal();
+      showSlide(config.next);
+      state.processing = false;
+    }, 3000);
   }
 
   function resetManualRound(round) {
@@ -461,6 +509,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!state) return;
     state.selected.clear();
     state.grid.querySelectorAll('button.selected').forEach((btn) => btn.classList.remove('selected'));
+    state.processing = false;
+    state.completed = false;
     updateManualFeedback(round);
   }
 
@@ -469,13 +519,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const sequenceId = Number(grid.dataset.sequence);
       const round = guidedRounds[sequenceId];
       if (!round) return;
+      const feedback =
+        document.querySelector(`[data-guided-feedback="${sequenceId}"]`) || grid.previousElementSibling;
       guidedState.set(sequenceId, {
+        id: sequenceId,
         grid,
         index: 0,
         sequence: round.sequence,
-        feedback: grid.previousElementSibling,
+        feedback,
         progress: document.querySelector(`[data-progress="guided-${sequenceId}"]`),
+        balance: document.querySelector(`[data-guided-balance="${sequenceId}"]`),
+        balanceValue: 0,
         completed: false,
+        next: round.next,
+        hits: round.hits,
+        payout: round.payout,
       });
       populateNumberButtons(grid, (value, button) => handleGuidedClick(sequenceId, value, button));
     });
@@ -490,6 +548,8 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.disabled = false;
       btn.classList.remove('guided-target', 'guided-success', 'guided-error');
     });
+    state.balanceValue = sequenceId === 1 ? 0 : guidedSummaryTotal;
+    updateGuidedBalance(state);
     updateGuidedFeedback(sequenceId, 'Clique no número indicado pela IA.');
     updateGuidedProgress(sequenceId);
     highlightNextGuided(sequenceId);
@@ -524,19 +584,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (state.index >= state.sequence.length) {
         state.completed = true;
         updateGuidedFeedback(sequenceId, 'Sequência concluída! Calculando resultado...');
-        const round = guidedRounds[sequenceId];
-        window.setTimeout(() => showSlide(round?.loading || 'summary'), 600);
+        window.setTimeout(() => completeGuidedRound(sequenceId), 600);
       } else {
         updateGuidedFeedback(
           sequenceId,
-          `Perfeito! Numero ${String(value).padStart(2, '0')} confirmado. Proximo indicado em destaque.`
+          `Perfeito! Número ${String(value).padStart(2, '0')} confirmado. Próximo indicado em destaque.`
         );
         highlightNextGuided(sequenceId);
       }
     } else {
       button.classList.add('guided-error');
       playErrorSound();
-      updateGuidedFeedback(sequenceId, 'Ops! Clique apenas no numero destacado pela IA.');
+      updateGuidedFeedback(sequenceId, 'Ops! Clique apenas no número destacado pela IA.');
       window.setTimeout(() => button.classList.remove('guided-error'), 320);
     }
   }
@@ -552,6 +611,285 @@ document.addEventListener('DOMContentLoaded', () => {
     const state = guidedState.get(sequenceId);
     if (!state || !state.feedback) return;
     state.feedback.textContent = message;
+  }
+
+  function updateGuidedBalance(state) {
+    if (!state?.balance) return;
+    state.balance.textContent = currencyFormatter.format(state.balanceValue || 0);
+  }
+
+  function completeGuidedRound(sequenceId) {
+    const state = guidedState.get(sequenceId);
+    if (!state) return;
+    state.balanceValue = guidedSummaryTotal + (state.payout || 0);
+    guidedSummaryTotal = state.balanceValue;
+    updateGuidedBalance(state);
+    openResultModal({
+      role: 'success',
+      icon: '🎉',
+      title: `Você teve ${state.hits} acertos!`,
+      message: `Ganhou ${currencyFormatter.format(state.payout || 0)}.`,
+      note: 'Avançando automaticamente...',
+      sound: 'cash',
+      emojiRain: true,
+    });
+    fbSafeTrackCustom(sequenceId === 1 ? 'Quiz_IA1_Result' : 'Quiz_IA2_Result');
+    window.setTimeout(() => {
+      closeModal();
+      if (state.next) {
+        showSlide(state.next);
+      }
+    }, 3200);
+  }
+
+  function runIaActivationSequence() {
+    if (iaActivationStarted) return;
+    iaActivationStarted = true;
+    const stepsWrapper = document.querySelector('[data-ia-steps]');
+    if (!stepsWrapper) return;
+    const steps = Array.from(stepsWrapper.querySelectorAll('[data-ia-step]'));
+    const badge = document.querySelector('[data-ia-badge]');
+    const title = document.querySelector('[data-ia-title]');
+    const subtitle = document.querySelector('[data-ia-subtitle]');
+    const status = document.querySelector('[data-ia-status]');
+    const stepDuration = 1300;
+
+    steps.forEach((step) => {
+      step.setAttribute('data-state', 'pending');
+      const bar = step.querySelector('.ia-step__bar span');
+      if (bar) {
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+      }
+    });
+
+    const advance = (index) => {
+      if (index >= steps.length) {
+        if (title) {
+          title.textContent = 'IA carregada com sucesso';
+        }
+        if (status) {
+          status.textContent = 'IA ativada. Direcionando você para a sequência guiada.';
+        }
+        if (badge) {
+          badge.hidden = false;
+        }
+        if (subtitle) {
+          subtitle.textContent = 'Conectando algoritmos estatísticos aos seus jogos...';
+        }
+        return;
+      }
+
+      const current = steps[index];
+      current.setAttribute('data-state', 'active');
+      const feedback = current.getAttribute('data-ia-status');
+      if (status && feedback) {
+        status.textContent = feedback;
+      }
+      const bar = current.querySelector('.ia-step__bar span');
+      if (bar) {
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        // force reflow
+        void bar.offsetWidth;
+        bar.style.transition = 'width 1s ease';
+        requestAnimationFrame(() => {
+          bar.style.width = '100%';
+        });
+      }
+
+      window.setTimeout(() => {
+        current.setAttribute('data-state', 'done');
+        advance(index + 1);
+      }, stepDuration);
+    };
+
+    advance(0);
+  }
+
+  function runPreloadingSequence() {
+    const steps = Array.from(document.querySelectorAll('[data-preloading-step]'));
+    if (!steps.length) {
+      window.setTimeout(() => showSlide('video-manual-intro'), 1200);
+      return;
+    }
+    const stepDuration = 1150;
+    steps.forEach((step) => step.setAttribute('data-state', 'pending'));
+    const animateStep = (index) => {
+      if (index >= steps.length) {
+        window.setTimeout(() => showSlide('video-manual-intro'), 450);
+        return;
+      }
+      const stepEl = steps[index];
+      stepEl.setAttribute('data-state', 'active');
+      const bar = stepEl.querySelector('.preloading-step__bar span');
+      if (bar) {
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        bar.getBoundingClientRect();
+        bar.style.transition = 'width 1s ease';
+        requestAnimationFrame(() => {
+          bar.style.width = '100%';
+        });
+      }
+      window.setTimeout(() => {
+        stepEl.setAttribute('data-state', 'done');
+        animateStep(index + 1);
+      }, stepDuration);
+    };
+    animateStep(0);
+  }
+
+  function openResultModal({
+    role = 'manual',
+    icon = 'ℹ️',
+    title = '',
+    message = '',
+    note = '',
+    sound,
+    emojiRain: withEmoji = false,
+  } = {}) {
+    if (!modal || !modalContent) return;
+    modalContent.innerHTML = '';
+    const wrapper = document.createElement('div');
+    wrapper.className = `result-modal result-modal--${role}`;
+
+    if (icon) {
+      const iconEl = document.createElement('span');
+      iconEl.className = 'result-modal__icon';
+      iconEl.textContent = icon;
+      wrapper.appendChild(iconEl);
+    }
+
+    if (title) {
+      const titleEl = document.createElement('h3');
+      titleEl.className = 'result-modal__title';
+      titleEl.textContent = title;
+      wrapper.appendChild(titleEl);
+    }
+
+    if (message) {
+      const messageEl = document.createElement('p');
+      messageEl.className = 'result-modal__message';
+      messageEl.textContent = message;
+      wrapper.appendChild(messageEl);
+    }
+
+    if (note) {
+      const noteEl = document.createElement('span');
+      noteEl.className = 'result-modal__note';
+      noteEl.textContent = note;
+      wrapper.appendChild(noteEl);
+    }
+
+    modalContent.appendChild(wrapper);
+    modal.dataset.visible = 'false';
+    modal.removeAttribute('hidden');
+    requestAnimationFrame(() => {
+      modal.dataset.visible = 'true';
+    });
+
+    if (sound === 'cash') {
+      playCashSound();
+    } else if (sound === 'fail') {
+      playFailSound();
+    } else if (sound === 'click') {
+      playClickSound();
+    }
+
+    if (withEmoji) {
+      spawnEmojiRain();
+    }
+  }
+
+  function closeModal(immediate = false) {
+    if (!modal) return;
+    if (immediate) {
+      modal.dataset.visible = 'false';
+      modal.setAttribute('hidden', 'true');
+      if (modalContent) {
+        modalContent.innerHTML = '';
+      }
+      hideEmojiRain();
+      return;
+    }
+    modal.dataset.visible = 'false';
+    window.setTimeout(() => {
+      modal.setAttribute('hidden', 'true');
+      if (modalContent) {
+        modalContent.innerHTML = '';
+      }
+      hideEmojiRain();
+    }, 260);
+  }
+
+  function spawnEmojiRain() {
+    if (!emojiRain) return;
+    hideEmojiRain();
+    emojiRain.removeAttribute('hidden');
+    const total = 16;
+    for (let i = 0; i < total; i += 1) {
+      const item = document.createElement('span');
+      item.className = 'emoji-rain__item';
+      item.textContent = emojiChoices[Math.floor(Math.random() * emojiChoices.length)];
+      item.style.left = `${Math.random() * 100}%`;
+      item.style.animationDelay = `${Math.random() * 0.6}s`;
+      item.style.fontSize = `${1.7 + Math.random() * 0.9}rem`;
+      emojiRain.appendChild(item);
+    }
+    window.setTimeout(() => hideEmojiRain(), 3400);
+  }
+
+  function hideEmojiRain() {
+    if (!emojiRain) return;
+    emojiRain.setAttribute('hidden', 'true');
+    emojiRain.innerHTML = '';
+  }
+
+  function startSummaryCounters() {
+    if (summaryAnimated) return;
+    summaryAnimated = true;
+    const counters = document.querySelectorAll('[data-counter]');
+    counters.forEach((element) => {
+      const key = element.dataset.counter;
+      const format = element.dataset.format || (key?.startsWith('ia-') ? 'currency' : 'number');
+      let target = Number(element.dataset.target) || 0;
+      if (key === 'manual-total') {
+        target = manualSummaryTotal || target;
+      } else if (key === 'ia-total' || key === 'ia-cash') {
+        target = guidedSummaryTotal || target;
+      }
+      animateCounter(element, target, { format });
+    });
+  }
+
+  function animateCounter(element, target, { format = 'number', duration = 1800 } = {}) {
+    const start = performance.now();
+    const from = 0;
+    const step = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeOutCubic(progress);
+      const value = from + (target - from) * eased;
+      element.textContent = formatValue(value, format);
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        element.textContent = formatValue(target, format);
+      }
+    };
+    requestAnimationFrame(step);
+  }
+
+  function formatValue(value, format) {
+    if (format === 'currency') {
+      return currencyFormatter.format(value);
+    }
+    return Math.round(value).toString();
+  }
+
+  function easeOutCubic(t) {
+    return 1 - (1 - t) ** 3;
   }
 
   function playClickSound() {
