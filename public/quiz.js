@@ -999,4 +999,50 @@ document.addEventListener('DOMContentLoaded', () => {
       },
     };
   })();
+
+  // ========================================
+  // Sticky CTA Logic
+  // ========================================
+  (function initStickyCta() {
+    const stickyCta = document.querySelector('[data-sticky-cta]');
+    const stickyCtaBtn = document.querySelector('[data-sticky-cta-btn]');
+    const offerSection = document.querySelector('[data-step="offer"]');
+
+    if (!stickyCta || !offerSection) return;
+
+    // Track if user has scrolled past the paywall
+    let hasPassedPaywall = false;
+
+    // IntersectionObserver to detect when offer section is in/out of view
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // When offer section is NOT intersecting (user scrolled past it)
+          if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+            // User scrolled down past the paywall
+            hasPassedPaywall = true;
+            stickyCta.classList.remove('is-hidden');
+          } else if (entry.isIntersecting && hasPassedPaywall) {
+            // User scrolled back up to the paywall
+            stickyCta.classList.add('is-hidden');
+          }
+        });
+      },
+      {
+        root: null,
+        threshold: 0,
+        rootMargin: '0px'
+      }
+    );
+
+    observer.observe(offerSection);
+
+    // Pixel tracking on CTA click
+    if (stickyCtaBtn && typeof fbq === 'function') {
+      stickyCtaBtn.addEventListener('click', function() {
+        fbq('track', 'InitiateCheckout');
+        fbq('trackCustom', 'StickyCtaClick');
+      });
+    }
+  })();
 });
