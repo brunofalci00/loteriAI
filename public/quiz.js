@@ -441,6 +441,11 @@ document.addEventListener('DOMContentLoaded', () => {
       startSummaryCounters();
     }
 
+    // Scroll to top when entering offer section (testimonials)
+    if (step === 'offer') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     switch (step) {
       case 'manual-select-1':
         fbSafeTrackCustom('Quiz_Manual1_Start');
@@ -518,6 +523,18 @@ document.addEventListener('DOMContentLoaded', () => {
       selected.add(value);
       button.classList.add('selected');
       playClickSound();
+
+      // Auto-advance when all 15 numbers are selected (like IA behavior)
+      if (selected.size === limit) {
+        updateManualFeedback(round, 'Sequência completa! Verificando resultado...');
+        window.setTimeout(() => {
+          const verifyButton = document.querySelector(`[data-action="verify-manual"][data-round="${round}"]`);
+          if (verifyButton) {
+            handleManualVerification(round, verifyButton);
+          }
+        }, 600); // Same delay as guided rounds (line 669)
+        return;
+      }
     }
     updateManualFeedback(round);
   }
@@ -1100,8 +1117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const buttonSelectors = {
       'intro': '[data-next="preloading"]',
       'video-manual-intro': '[data-role="video-continue"][data-next="manual-select-1"]',
-      'manual-select-1': '[data-action="verify-manual"][data-round="1"]',
-      'manual-select-2': '[data-action="verify-manual"][data-round="2"]',
+      // 'manual-select-1' and 'manual-select-2' removed - auto-advance on 15th number
       'video-pre-ia': '[data-role="video-continue"][data-next="ia-activate"]',
       'ia-summary': '[data-next="video-post-ia"]',
       'video-post-ia': '[data-role="video-continue"][data-next="offer"]',
