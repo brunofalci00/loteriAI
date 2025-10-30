@@ -463,6 +463,11 @@ document.addEventListener('DOMContentLoaded', () => {
       default:
         break;
     }
+
+    // Update sticky button for mobile
+    if (stickyButtonManager) {
+      stickyButtonManager.show(step);
+    }
   }
 
   function initManualGrids() {
@@ -1074,6 +1079,120 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return audioCtx;
       },
+    };
+  })();
+
+  // ========================================
+  // Quiz Sticky Button Logic (Mobile)
+  // ========================================
+  const stickyButtonManager = (function() {
+    const stickyContainer = document.querySelector('[data-quiz-sticky-button]');
+    const buttonSlot = document.querySelector('[data-sticky-button-slot]');
+
+    if (!stickyContainer || !buttonSlot) return null;
+
+    let currentButton = null;
+    let currentButtonOriginalParent = null;
+    let showTimeout = null;
+
+    // Map of steps to their button selectors
+    const buttonSelectors = {
+      'intro': '[data-next="preloading"]',
+      'video-manual-intro': '[data-role="video-continue"][data-next="manual-select-1"]',
+      'manual-select-1': '[data-action="verify-manual"][data-round="1"]',
+      'manual-select-2': '[data-action="verify-manual"][data-round="2"]',
+      'video-pre-ia': '[data-role="video-continue"][data-next="ia-activate"]',
+      'ia-summary': '[data-next="video-post-ia"]',
+      'video-post-ia': '[data-role="video-continue"][data-next="offer"]',
+      // 'offer' is skipped - has separate sticky CTA
+    };
+
+    function hideSticky() {
+      clearTimeout(showTimeout);
+      stickyContainer.classList.add('is-hidden');
+
+      // Return button to original position if exists
+      if (currentButton && currentButtonOriginalParent) {
+        currentButtonOriginalParent.appendChild(currentButton);
+        currentButton = null;
+        currentButtonOriginalParent = null;
+      }
+    }
+
+    function showSticky(step) {
+      // Skip offer section (has its own sticky CTA)
+      if (step === 'offer') {
+        hideSticky();
+        return;
+      }
+
+      // Check if this step has an eligible button
+      const buttonSelector = buttonSelectors[step];
+      if (!buttonSelector) {
+        hideSticky();
+        return;
+      }
+
+      // Find the button in the active slide
+      const activeSlide = document.querySelector(`[data-step="${step}"].is-active`);
+      if (!activeSlide) {
+        hideSticky();
+        return;
+      }
+
+      const button = activeSlide.querySelector(buttonSelector);
+      if (!button) {
+        hideSticky();
+        return;
+      }
+
+      // For video steps, only show sticky after video ends
+      const isVideoStep = step.includes('video');
+      if (isVideoStep) {
+        // Check if button is still hidden/disabled (video not finished)
+        if (button.hasAttribute('hidden') || button.classList.contains('is-hidden') || button.disabled) {
+          // Don't show sticky yet - button not ready
+          hideSticky();
+
+          // Setup observer to show sticky when button becomes visible
+          const observer = new MutationObserver((mutations) => {
+            const isNowVisible = !button.hasAttribute('hidden') &&
+                                !button.classList.contains('is-hidden') &&
+                                !button.disabled;
+
+            if (isNowVisible) {
+              observer.disconnect();
+              // Trigger sticky show now that video finished
+              showSticky(step);
+            }
+          });
+
+          observer.observe(button, {
+            attributes: true,
+            attributeFilter: ['hidden', 'class', 'disabled']
+          });
+
+          return;
+        }
+      }
+
+      // Store original parent
+      currentButtonOriginalParent = button.parentElement;
+      currentButton = button;
+
+      // Move button to sticky container
+      buttonSlot.appendChild(button);
+
+      // Show sticky with delay for motion effect
+      clearTimeout(showTimeout);
+      showTimeout = setTimeout(() => {
+        stickyContainer.classList.remove('is-hidden');
+      }, 300); // 300ms delay for smooth entrance
+    }
+
+    return {
+      show: showSticky,
+      hide: hideSticky
     };
   })();
 

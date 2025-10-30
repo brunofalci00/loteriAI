@@ -1715,3 +1715,73 @@ body {
     transform: translateY(0);
   }
 }
+
+/* ========================================
+   Quiz Sticky Button (Mobile Only)
+   ======================================== */
+
+.quiz-sticky-button {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 950;
+  transition: opacity 0.3s ease-in, transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+  transform: translateY(0);
+}
+
+.quiz-sticky-button.is-hidden {
+  opacity: 0;
+  transform: translateY(100%);
+  pointer-events: none;
+}
+
+/* Mobile Only (≤768px) */
+@media (max-width: 768px) {
+  .quiz-sticky-button {
+    display: block;
+    background: linear-gradient(to top, var(--bg-main) 70%, transparent);
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+
+  .quiz-sticky-button__container {
+    width: 100%;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Override button styles when inside sticky container */
+  .quiz-sticky-button__container .quiz-btn {
+    width: 100%;
+    min-height: 64px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 18px 32px;
+    box-shadow: 0 4px 20px rgba(54, 242, 143, 0.3);
+    letter-spacing: 0.02em;
+  }
+
+  .quiz-sticky-button__container .quiz-btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Ensure button is always visible when in sticky */
+  .quiz-sticky-button__container .quiz-btn.is-hidden {
+    display: flex !important;
+    opacity: 1 !important;
+  }
+
+  .quiz-sticky-button__container .video-continue {
+    display: flex !important;
+  }
+}
+
+/* Desktop: Hide quiz sticky button */
+@media (min-width: 769px) {
+  .quiz-sticky-button {
+    display: none !important;
+  }
+}
