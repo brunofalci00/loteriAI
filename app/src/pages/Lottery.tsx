@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { LoadingAnalysis } from "@/components/LoadingAnalysis";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
 import { NextDrawInfo } from "@/components/NextDrawInfo";
+import { StrategyOptimizer } from "@/components/StrategyOptimizer";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -84,7 +85,6 @@ const Lottery = () => {
 
     content += `📊 ESTATÍSTICAS\n`;
     content += `Números quentes: ${statistics.hotNumbers.map(n => n.toString().padStart(2, '0')).join(', ')}\n`;
-    content += `Números frios: ${statistics.coldNumbers.map(n => n.toString().padStart(2, '0')).join(', ')}\n`;
     const totalNumbers = statistics.pairOddRatio.pairs + statistics.pairOddRatio.odds;
     const pairPercent = ((statistics.pairOddRatio.pairs / totalNumbers) * 100).toFixed(1);
     const oddPercent = ((statistics.pairOddRatio.odds / totalNumbers) * 100).toFixed(1);
@@ -95,13 +95,12 @@ const Lottery = () => {
       const numbersFormatted = combo.map(n => {
         const numStr = n.toString().padStart(2, '0');
         if (statistics.hotNumbers.includes(n)) return `${numStr}♨`;
-        if (statistics.coldNumbers.includes(n)) return `${numStr}❄`;
         return numStr;
       }).join(' - ');
       content += `Jogo ${index + 1}: ${numbersFormatted}\n`;
     });
 
-    content += `\nLegenda: ♨ = Número quente | ❄ = Número frio\n`;
+    content += `\nLegenda: ♨ = Número quente (alta frequência histórica)\n`;
 
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -164,25 +163,30 @@ const Lottery = () => {
         </div>
 
         {showLoading ? (
-          <LoadingAnalysis 
-            onComplete={handleLoadingComplete} 
+          <LoadingAnalysis
+            onComplete={handleLoadingComplete}
             isAnalyzing={isAnalyzing}
           />
         ) : showResults && analysisResult ? (
-          <ResultsDisplay
-            lotteryName={lottery.name}
-            combinations={analysisResult.combinations}
-            stats={{
-              accuracy: analysisResult.calculatedAccuracy,
-              gamesGenerated: analysisResult.gamesGenerated,
-              hotNumbers: analysisResult.statistics.hotNumbers,
-              coldNumbers: analysisResult.statistics.coldNumbers,
-              lastUpdate: analysisResult.statistics.lastUpdate,
-              dataSource: analysisResult.dataSource,
-            }}
-            strategy={analysisResult.strategy}
-            onExport={handleExport}
-          />
+          <>
+            <ResultsDisplay
+              lotteryName={lottery.name}
+              combinations={analysisResult.combinations}
+              stats={{
+                accuracy: analysisResult.calculatedAccuracy,
+                gamesGenerated: analysisResult.gamesGenerated,
+                hotNumbers: analysisResult.statistics.hotNumbers,
+                lastUpdate: analysisResult.statistics.lastUpdate,
+                dataSource: analysisResult.dataSource,
+              }}
+              strategy={analysisResult.strategy}
+              onExport={handleExport}
+            />
+
+            <div className="mt-8">
+              <StrategyOptimizer lotteryType={type || ""} lotteryName={lottery.name} />
+            </div>
+          </>
         ) : null}
       </div>
     </div>

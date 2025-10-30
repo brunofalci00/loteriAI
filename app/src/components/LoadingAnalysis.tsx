@@ -4,7 +4,7 @@ import { Loader2, TrendingUp, Database, Brain, Sparkles } from "lucide-react";
 const steps = [
   { icon: Database, text: "Buscando últimos concursos da Caixa...", duration: 2000 },
   { icon: Brain, text: "Calculando frequências e padrões estatísticos...", duration: 2500 },
-  { icon: TrendingUp, text: "Identificando números quentes e frios...", duration: 1500 },
+  { icon: TrendingUp, text: "Analisando tendências históricas...", duration: 1500 },
   { icon: Sparkles, text: "Gerando combinações inteligentes...", duration: 2000 },
 ];
 
