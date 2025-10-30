@@ -254,6 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
         section.removeEventListener('contextmenu', preventContextMenu);
         video.removeEventListener('contextmenu', preventContextMenu);
         refreshProgress();
+        hideLoading(); // Ensure loading is hidden when video ends
         continueButton.disabled = false;
         continueButton.classList.remove('is-hidden');
         if (hint) {
@@ -268,6 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
           this.active = true;
           resetting = true;
           lastTime = 0;
+          retryCount = 0; // Reset retry count
           continueButton.disabled = true;
           continueButton.classList.add('is-hidden');
           if (hint) {
@@ -279,6 +281,8 @@ document.addEventListener('DOMContentLoaded', () => {
           if (playButton) {
             playButton.classList.remove('is-hidden');
           }
+          // CRITICAL: Always start with loading hidden
+          hideLoading();
           try {
             video.pause();
           } catch (error) {
@@ -342,6 +346,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (playButton) {
         playButton.addEventListener('click', () => {
           playButton.classList.add('is-hidden');
+          // Show loading when user initiates play
+          showLoading();
           gate.requestPlay();
         });
       }
@@ -350,6 +356,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (gate.active && playButton) {
           playButton.classList.add('is-hidden');
         }
+        // Hide loading when video starts playing
+        hideLoading();
       });
 
       // Removed automatic resumePlayback on pause to prevent infinite loops
@@ -364,10 +372,19 @@ document.addEventListener('DOMContentLoaded', () => {
       video.addEventListener('stalled', handleStalled);
       video.addEventListener('suspend', handleStalled);
 
-      // Loading states
+      // Loading states - multiple redundant hideLoading calls to handle race conditions
       video.addEventListener('waiting', showLoading);
-      video.addEventListener('canplay', handleCanPlay);
-      video.addEventListener('playing', hideLoading);
+      video.addEventListener('loadeddata', hideLoading);    // First frame loaded
+      video.addEventListener('canplay', handleCanPlay);     // Enough buffer to start
+      video.addEventListener('playing', hideLoading);       // Actually playing
+      video.addEventListener('pause', hideLoading);         // Paused (hide spinner)
+
+      // Fallback: if video is playing for 500ms, force hide loading
+      video.addEventListener('timeupdate', () => {
+        if (!video.paused && !video.ended && video.currentTime > 0) {
+          hideLoading();
+        }
+      });
 
       continueButton.addEventListener('click', () => {
         gate.deactivate();
