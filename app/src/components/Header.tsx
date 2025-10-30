@@ -22,11 +22,11 @@ export const Header = () => {
           <img src={logo} alt="loter.AI" className="h-16 w-auto" />
         </Link>
         
-        <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+        <nav className="flex items-center gap-4 md:gap-6">
+          <Link to="/" className="text-xs md:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Início
           </Link>
-          <Link to="/how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <Link to="/how-it-works" className="text-xs md:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">
             Como Funciona
           </Link>
         </nav>
