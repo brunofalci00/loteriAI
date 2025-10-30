@@ -1190,10 +1190,54 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
+        // For manual select steps, only show when all numbers selected
+        const isManualStep = step.includes('manual-select');
+        if (isManualStep) {
+          // Get round number
+          const round = step.endsWith('2') ? 2 : 1;
+          const state = manualState.get(round);
+
+          // Check if all numbers are selected
+          if (state && state.selected.size < 15) {
+            // Don't show sticky yet - not all numbers selected
+            hideSticky();
+
+            // Setup observer to watch manual selection
+            const checkManualComplete = () => {
+              if (state.selected.size === 15) {
+                // All numbers selected, show sticky
+                showSticky(step);
+              }
+            };
+
+            // Listen for number selections (poor man's observer via interval)
+            const manualInterval = setInterval(() => {
+              if (state.selected.size === 15) {
+                clearInterval(manualInterval);
+                showSticky(step);
+              }
+              // Stop if slide changed
+              const stillActive = document.querySelector(`[data-step="${step}"].is-active`);
+              if (!stillActive) {
+                clearInterval(manualInterval);
+              }
+            }, 300);
+
+            return;
+          }
+        }
+
         // Store original parent and step
         currentButtonOriginalParent = button.parentElement;
         currentButton = button;
         currentStep = step;
+
+        // Add click listener to hide sticky when button is clicked
+        const clickHandler = () => {
+          hideSticky();
+          button.removeEventListener('click', clickHandler);
+        };
+        button.addEventListener('click', clickHandler, { once: true });
 
         // Move button to sticky container
         buttonSlot.appendChild(button);
