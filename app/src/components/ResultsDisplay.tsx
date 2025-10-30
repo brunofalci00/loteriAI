@@ -1,11 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, TrendingUp, Hash, Database, Flame, Snowflake, Calendar, Award } from "lucide-react";
+import { Download, TrendingUp, Hash, Database, Flame, Calendar, Award } from "lucide-react";
 import { formatShortDate } from "@/utils/formatters";
+import { StrategyOptimizerDialog } from "@/components/StrategyOptimizerDialog";
 
 interface ResultsDisplayProps {
   lotteryName: string;
+  lotteryType: string;
   combinations: number[][];
   stats: {
     accuracy: number;
@@ -24,6 +26,7 @@ interface ResultsDisplayProps {
 
 export const ResultsDisplay = ({
   lotteryName,
+  lotteryType,
   combinations,
   stats,
   strategy,
@@ -36,7 +39,6 @@ export const ResultsDisplay = ({
   };
 
   const isHotNumber = (num: number) => stats.hotNumbers?.includes(num);
-  const isColdNumber = (num: number) => stats.coldNumbers?.includes(num);
 
   return (
     <div className="space-y-6">
@@ -99,22 +101,6 @@ export const ResultsDisplay = ({
               </div>
             )}
 
-            {stats.coldNumbers && stats.coldNumbers.length > 0 && (
-              <div className="flex items-start gap-2">
-                <Snowflake className="h-4 w-4 mt-1 text-blue-500" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Números Frios (menos frequentes)</p>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {stats.coldNumbers.map((num) => (
-                      <Badge key={num} variant="outline" className="border-blue-500/30 bg-blue-500/10 text-blue-500">
-                        {num.toString().padStart(2, '0')}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
             {strategy && (
               <div className="flex items-start gap-2">
                 <TrendingUp className="h-4 w-4 mt-1 text-muted-foreground" />
@@ -135,18 +121,21 @@ export const ResultsDisplay = ({
       )}
 
       {/* Results Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Números Sugeridos - {lotteryName}</h2>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex-1">
+          <h2 className="text-xl font-bold">Números Sugeridos</h2>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
             <Database className="h-3 w-3" />
             <span>{stats.dataSource || "Dados em tempo real"}</span>
           </div>
         </div>
-        <Button variant="gold" onClick={onExport}>
-          <Download className="mr-2 h-4 w-4" />
-          Exportar .txt
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <StrategyOptimizerDialog lotteryType={lotteryType} lotteryName={lotteryName} />
+          <Button variant="gold" onClick={onExport} className="w-full sm:w-auto">
+            <Download className="mr-2 h-4 w-4" />
+            Exportar .txt
+          </Button>
+        </div>
       </div>
 
       {/* Combinations Grid */}
@@ -160,23 +149,19 @@ export const ResultsDisplay = ({
               <div className="flex flex-wrap gap-2">
                 {combo.map((number, numIndex) => {
                   const hot = isHotNumber(number);
-                  const cold = isColdNumber(number);
-                  
+
                   return (
                     <div
                       key={numIndex}
                       className={`flex h-10 w-10 items-center justify-center rounded-lg font-bold text-sm shadow-glow relative ${
-                        hot 
-                          ? "bg-orange-500 text-white ring-2 ring-orange-500/50" 
-                          : cold 
-                          ? "bg-blue-500 text-white ring-2 ring-blue-500/50" 
+                        hot
+                          ? "bg-orange-500 text-white ring-2 ring-orange-500/50"
                           : "gradient-primary"
                       }`}
-                      title={hot ? "Número quente" : cold ? "Número frio" : ""}
+                      title={hot ? "Número quente" : ""}
                     >
                       {number.toString().padStart(2, "0")}
                       {hot && <Flame className="absolute -top-1 -right-1 h-3 w-3 text-orange-300" />}
-                      {cold && <Snowflake className="absolute -top-1 -right-1 h-3 w-3 text-blue-300" />}
                     </div>
                   );
                 })}

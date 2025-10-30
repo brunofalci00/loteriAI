@@ -84,7 +84,6 @@ const Lottery = () => {
 
     content += `📊 ESTATÍSTICAS\n`;
     content += `Números quentes: ${statistics.hotNumbers.map(n => n.toString().padStart(2, '0')).join(', ')}\n`;
-    content += `Números frios: ${statistics.coldNumbers.map(n => n.toString().padStart(2, '0')).join(', ')}\n`;
     const totalNumbers = statistics.pairOddRatio.pairs + statistics.pairOddRatio.odds;
     const pairPercent = ((statistics.pairOddRatio.pairs / totalNumbers) * 100).toFixed(1);
     const oddPercent = ((statistics.pairOddRatio.odds / totalNumbers) * 100).toFixed(1);
@@ -95,13 +94,12 @@ const Lottery = () => {
       const numbersFormatted = combo.map(n => {
         const numStr = n.toString().padStart(2, '0');
         if (statistics.hotNumbers.includes(n)) return `${numStr}♨`;
-        if (statistics.coldNumbers.includes(n)) return `${numStr}❄`;
         return numStr;
       }).join(' - ');
       content += `Jogo ${index + 1}: ${numbersFormatted}\n`;
     });
 
-    content += `\nLegenda: ♨ = Número quente | ❄ = Número frio\n`;
+    content += `\nLegenda: ♨ = Número quente (alta frequência histórica)\n`;
 
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -164,19 +162,19 @@ const Lottery = () => {
         </div>
 
         {showLoading ? (
-          <LoadingAnalysis 
-            onComplete={handleLoadingComplete} 
+          <LoadingAnalysis
+            onComplete={handleLoadingComplete}
             isAnalyzing={isAnalyzing}
           />
         ) : showResults && analysisResult ? (
           <ResultsDisplay
             lotteryName={lottery.name}
+            lotteryType={type || ""}
             combinations={analysisResult.combinations}
             stats={{
               accuracy: analysisResult.calculatedAccuracy,
               gamesGenerated: analysisResult.gamesGenerated,
               hotNumbers: analysisResult.statistics.hotNumbers,
-              coldNumbers: analysisResult.statistics.coldNumbers,
               lastUpdate: analysisResult.statistics.lastUpdate,
               dataSource: analysisResult.dataSource,
             }}
