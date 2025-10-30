@@ -146,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const continueButton = section.querySelector('[data-role="video-continue"]');
       const hint = section.querySelector('[data-role="video-hint"]');
       const progressBar = section.querySelector('[data-role="video-progress-bar"]');
+      const loadingIndicator = section.querySelector('[data-role="video-loading"]');
 
       if (!step || !video || !continueButton) {
         return;
@@ -153,6 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let lastTime = 0;
       let resetting = false;
+      let retryCount = 0;
+      const MAX_RETRIES = 3;
 
       const blockedKeys = new Set(['ArrowRight', 'ArrowLeft', ' ', 'f', 'F', 'k', 'K', 'm', 'M']);
 
@@ -198,16 +201,51 @@ document.addEventListener('DOMContentLoaded', () => {
         refreshProgress();
       };
 
-      const resumePlayback = () => {
-        if (!gate.active || resetting || video.ended) return;
-        const attempt = video.play();
-        if (attempt && typeof attempt.catch === 'function') {
-          attempt.catch(() => {
-            if (gate.active && playButton) {
-              playButton.classList.remove('is-hidden');
-            }
-          });
+      const showLoading = () => {
+        if (loadingIndicator) {
+          loadingIndicator.hidden = false;
         }
+      };
+
+      const hideLoading = () => {
+        if (loadingIndicator) {
+          loadingIndicator.hidden = true;
+        }
+      };
+
+      const handleError = () => {
+        if (!gate.active) return;
+        hideLoading();
+
+        if (retryCount < MAX_RETRIES) {
+          retryCount++;
+          console.log(`Video error, retrying (${retryCount}/${MAX_RETRIES})...`);
+
+          // Wait 2 seconds before retry
+          window.setTimeout(() => {
+            if (gate.active) {
+              video.load();
+              gate.requestPlay();
+            }
+          }, 2000);
+        } else {
+          // Max retries reached, show error to user
+          if (playButton) {
+            playButton.classList.remove('is-hidden');
+            playButton.textContent = 'Tentar novamente';
+          }
+        }
+      };
+
+      const handleStalled = () => {
+        if (gate.active) {
+          showLoading();
+        }
+      };
+
+      const handleCanPlay = () => {
+        hideLoading();
+        retryCount = 0; // Reset retry count on successful load
       };
 
       const handleEnded = () => {
@@ -246,10 +284,25 @@ document.addEventListener('DOMContentLoaded', () => {
           } catch (error) {
             // Ignore browsers that throw when pausing before metadata loads.
           }
-          try {
-            video.currentTime = 0;
-          } catch (error) {
+          // Only reset currentTime if video has loaded metadata
+          if (video.readyState >= 1) {
+            try {
+              video.currentTime = 0;
+            } catch (error) {
+              // Silently ignore - metadata may not be ready yet
+            }
+          } else {
+            // Load video and set currentTime after metadata loads
             video.load();
+            const metadataHandler = () => {
+              try {
+                video.currentTime = 0;
+              } catch (e) {
+                // Ignore
+              }
+              video.removeEventListener('loadedmetadata', metadataHandler);
+            };
+            video.addEventListener('loadedmetadata', metadataHandler, { once: true });
           }
           video.controls = false;
           video.setAttribute('controlsList', 'nodownload noplaybackrate noremoteplayback');
@@ -299,15 +352,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      video.addEventListener('pause', () => {
-        resumePlayback();
-      });
+      // Removed automatic resumePlayback on pause to prevent infinite loops
 
       video.addEventListener('timeupdate', updateLastTime);
-      video.addEventListener('waiting', updateLastTime);
       video.addEventListener('seeking', enforceSeekLock);
       video.addEventListener('loadedmetadata', refreshProgress);
       video.addEventListener('ended', handleEnded);
+
+      // Error handling
+      video.addEventListener('error', handleError);
+      video.addEventListener('stalled', handleStalled);
+      video.addEventListener('suspend', handleStalled);
+
+      // Loading states
+      video.addEventListener('waiting', showLoading);
+      video.addEventListener('canplay', handleCanPlay);
+      video.addEventListener('playing', hideLoading);
 
       continueButton.addEventListener('click', () => {
         gate.deactivate();
