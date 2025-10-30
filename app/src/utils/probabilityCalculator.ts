@@ -222,3 +222,19 @@ export const calculateProbabilityIncrease = (
 
   return parseFloat((probWithTo - probWithFrom).toFixed(2));
 };
+
+/**
+ * Formata probabilidade para exibição
+ * Se < 0.001%, mostra "< 0.001%" ao invés de 0.00%
+ */
+export const formatProbability = (probability: number): string => {
+  if (probability < 0.001) {
+    return "< 0.001%";
+  }
+
+  if (probability >= 1) {
+    return `${probability.toFixed(1)}%`;
+  }
+
+  return `${probability.toFixed(2)}%`;
+};

@@ -14,7 +14,8 @@ import { formatCurrency } from "@/utils/formatters";
 import { getBetCost, getAvailableNumberOptions, getMinNumbers } from "@/utils/lotteryCosts";
 import {
   calculateProbabilitiesWithTickets,
-  calculateProbabilityIncrease
+  calculateProbabilityIncrease,
+  formatProbability
 } from "@/utils/probabilityCalculator";
 
 interface StrategyOptimizerDialogProps {
@@ -160,8 +161,8 @@ export const StrategyOptimizerDialog = ({ lotteryType, lotteryName }: StrategyOp
                         style={{ width: `${Math.min(probability, 100)}%` }}
                       />
                     </div>
-                    <span className="text-sm font-bold min-w-[3rem] text-right">
-                      {probability >= 1 ? probability.toFixed(1) : probability.toFixed(2)}%
+                    <span className="text-sm font-bold min-w-[3.5rem] text-right">
+                      {formatProbability(probability)}
                     </span>
                   </div>
                 </div>
