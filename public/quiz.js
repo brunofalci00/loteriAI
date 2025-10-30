@@ -94,6 +94,12 @@ document.addEventListener('DOMContentLoaded', () => {
         handleManualVerification(round, manualBtn);
         return;
       }
+
+      const kirvanoBtn = target.closest('[data-kirvano-link]');
+      if (kirvanoBtn) {
+        fbSafeTrack('InitiateCheckout');
+        return;
+      }
     });
   }
 
@@ -340,9 +346,6 @@ document.addEventListener('DOMContentLoaded', () => {
         break;
       case 'summary':
         fbSafeTrack('CompleteRegistration');
-        break;
-      case 'offer':
-        fbSafeTrack('InitiateCheckout');
         break;
       default:
         break;
