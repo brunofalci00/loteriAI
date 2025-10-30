@@ -1085,16 +1085,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const stickyCtaBtn = document.querySelector('[data-sticky-cta-btn]');
     const offerSection = document.querySelector('[data-step="offer"]');
 
-    if (!stickyCta || !offerSection) return;
+    // Observe the pricing element specifically (the "paywall")
+    const pricingElement = offerSection ? offerSection.querySelector('.offer-pricing') : null;
+
+    if (!stickyCta || !pricingElement) return;
 
     // Track if user has scrolled past the paywall
     let hasPassedPaywall = false;
 
-    // IntersectionObserver to detect when offer section is in/out of view
+    // IntersectionObserver to detect when pricing element is in/out of view
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          // When offer section is NOT intersecting (user scrolled past it)
+          // When pricing is NOT intersecting (user scrolled past the paywall)
           if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
             // User scrolled down past the paywall
             hasPassedPaywall = true;
@@ -1112,7 +1115,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     );
 
-    observer.observe(offerSection);
+    observer.observe(pricingElement);
 
     // Pixel tracking on CTA click (using same functions as main Kirvano button)
     if (stickyCtaBtn) {
