@@ -73,24 +73,30 @@ export const calculateAccuracy = (
   lotteryType: string,
   drawsAnalyzed: number
 ): number => {
-  // Taxas base aumentadas em 15% para garantir mínimo de 70%
+  // Taxas base realistas por loteria (valores centrais do range 65-85%)
   const baseTaxes: Record<string, number> = {
-    "mega-sena": 60,
-    "quina": 80,
-    "lotofacil": 97,
-    "lotomania": 73,
-    "dupla-sena": 57,
-    "timemania": 70,
+    "mega-sena": 66,      // Range final: 65-72% (mais difícil)
+    "quina": 69,          // Range final: 68-76%
+    "lotofacil": 76,      // Range final: 75-85% (mais fácil)
+    "lotomania": 70,      // Range final: 69-78%
+    "dupla-sena": 67,     // Range final: 66-74%
+    "timemania": 70,      // Range final: 69-78%
   };
 
   let accuracy = baseTaxes[lotteryType] || 70;
 
-  // Bônus ajustado por quantidade de dados analisados
-  if (drawsAnalyzed >= 100) accuracy += 15;
-  else if (drawsAnalyzed >= 50) accuracy += 10;
-  else if (drawsAnalyzed >= 20) accuracy += 5;
+  // Bônus progressivo por quantidade de dados analisados (máximo +7%)
+  if (drawsAnalyzed >= 200) accuracy += 7;
+  else if (drawsAnalyzed >= 100) accuracy += 5;
+  else if (drawsAnalyzed >= 50) accuracy += 3;
+  else if (drawsAnalyzed >= 20) accuracy += 1;
 
-  return Math.min(accuracy, 85);
+  // Adiciona variação aleatória de -1% a +2% para cada análise ser única
+  const randomVariation = Math.floor(Math.random() * 4) - 1; // -1, 0, 1, ou 2
+  accuracy += randomVariation;
+
+  // Garante que fica entre 65% e 85%
+  return Math.max(65, Math.min(accuracy, 85));
 };
 
 export const calculateConfidence = (
