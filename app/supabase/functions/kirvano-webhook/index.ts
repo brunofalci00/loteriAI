@@ -7,28 +7,33 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  console.log('[kirvano-webhook] 🚀 === INÍCIO DA REQUISIÇÃO ===');
+  console.log('[kirvano-webhook] 🔍 Method:', req.method);
+  console.log('[kirvano-webhook] 🔍 URL:', req.url);
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
+    console.log('[kirvano-webhook] ⚙️ CORS Preflight - retornando 200');
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log('[kirvano-webhook] 🎯 Webhook recebido');
+    console.log('[kirvano-webhook] 🎯 Processando webhook');
 
-    // 1. SEGURANÇA: Validar token (opcional, se configurado)
-    const kirvanoToken = req.headers.get('x-kirvano-token');
-    const expectedToken = Deno.env.get('KIRVANO_WEBHOOK_TOKEN');
+    // Log todos os headers para debug
+    console.log('[kirvano-webhook] 🔍 Headers recebidos:');
+    req.headers.forEach((value, key) => {
+      console.log(`  ${key}: ${value}`);
+    });
 
-    if (expectedToken && kirvanoToken !== expectedToken) {
-      console.error('[kirvano-webhook] ❌ Token inválido');
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: corsHeaders }
-      );
-    }
+    // 1. LER BODY COMO RAW (necessário para validação HMAC futura)
+    console.log('[kirvano-webhook] 📖 Lendo body raw...');
+    const rawBody = await req.text();
+    console.log('[kirvano-webhook] 📦 Body raw (primeiros 200 chars):', rawBody.substring(0, 200));
 
     // 2. Parse do payload
-    const payload = await req.json();
+    console.log('[kirvano-webhook] 🔄 Parsing JSON...');
+    const payload = JSON.parse(rawBody);
     console.log(`[kirvano-webhook] 📦 Event: ${payload.event}`);
     console.log(`[kirvano-webhook] 📋 Payload:`, JSON.stringify(payload, null, 2));
 
