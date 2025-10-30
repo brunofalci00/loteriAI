@@ -1037,11 +1037,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     observer.observe(offerSection);
 
-    // Pixel tracking on CTA click
-    if (stickyCtaBtn && typeof fbq === 'function') {
+    // Pixel tracking on CTA click (using same functions as main Kirvano button)
+    if (stickyCtaBtn) {
       stickyCtaBtn.addEventListener('click', function() {
-        fbq('track', 'InitiateCheckout');
-        fbq('trackCustom', 'StickyCtaClick');
+        fbSafeTrack('InitiateCheckout');
+        fbSafeTrackCustom('StickyCtaClick');
       });
     }
   })();

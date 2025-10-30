@@ -637,6 +637,27 @@ body {
   line-height: 1.45;
 }
 
+.offer-guarantee-seal {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
+  padding: 20px 0;
+}
+
+.offer-guarantee-seal img {
+  max-width: min(280px, 100%);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 4px 16px rgba(54, 242, 143, 0.15));
+  transition: transform 0.3s ease;
+}
+
+.offer-guarantee-seal img:hover {
+  transform: scale(1.05);
+}
+
 .quiz-modal {
   position: fixed;
   inset: 0;
