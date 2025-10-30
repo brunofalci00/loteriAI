@@ -118,15 +118,15 @@ export const ResultsDisplay = ({
       )}
 
       {/* Results Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Números Sugeridos - {lotteryName}</h2>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex-1">
+          <h2 className="text-xl font-bold">Números Sugeridos</h2>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
             <Database className="h-3 w-3" />
             <span>{stats.dataSource || "Dados em tempo real"}</span>
           </div>
         </div>
-        <Button variant="gold" onClick={onExport}>
+        <Button variant="gold" onClick={onExport} className="w-full sm:w-auto">
           <Download className="mr-2 h-4 w-4" />
           Exportar .txt
         </Button>

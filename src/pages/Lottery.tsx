@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { LoadingAnalysis } from "@/components/LoadingAnalysis";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
 import { NextDrawInfo } from "@/components/NextDrawInfo";
+import { StrategyOptimizer } from "@/components/StrategyOptimizer";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -162,24 +163,30 @@ const Lottery = () => {
         </div>
 
         {showLoading ? (
-          <LoadingAnalysis 
-            onComplete={handleLoadingComplete} 
+          <LoadingAnalysis
+            onComplete={handleLoadingComplete}
             isAnalyzing={isAnalyzing}
           />
         ) : showResults && analysisResult ? (
-          <ResultsDisplay
-            lotteryName={lottery.name}
-            combinations={analysisResult.combinations}
-            stats={{
-              accuracy: analysisResult.calculatedAccuracy,
-              gamesGenerated: analysisResult.gamesGenerated,
-              hotNumbers: analysisResult.statistics.hotNumbers,
-              lastUpdate: analysisResult.statistics.lastUpdate,
-              dataSource: analysisResult.dataSource,
-            }}
-            strategy={analysisResult.strategy}
-            onExport={handleExport}
-          />
+          <>
+            <ResultsDisplay
+              lotteryName={lottery.name}
+              combinations={analysisResult.combinations}
+              stats={{
+                accuracy: analysisResult.calculatedAccuracy,
+                gamesGenerated: analysisResult.gamesGenerated,
+                hotNumbers: analysisResult.statistics.hotNumbers,
+                lastUpdate: analysisResult.statistics.lastUpdate,
+                dataSource: analysisResult.dataSource,
+              }}
+              strategy={analysisResult.strategy}
+              onExport={handleExport}
+            />
+
+            <div className="mt-8">
+              <StrategyOptimizer lotteryType={type || ""} lotteryName={lottery.name} />
+            </div>
+          </>
         ) : null}
       </div>
     </div>
