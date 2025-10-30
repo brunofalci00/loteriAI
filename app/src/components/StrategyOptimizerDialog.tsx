@@ -12,56 +12,15 @@ import { Badge } from "./ui/badge";
 import { Calculator, TrendingUp, DollarSign, Target, Award } from "lucide-react";
 import { formatCurrency } from "@/utils/formatters";
 import { getBetCost, getAvailableNumberOptions, getMinNumbers } from "@/utils/lotteryCosts";
+import {
+  calculateProbabilitiesWithTickets,
+  calculateProbabilityIncrease
+} from "@/utils/probabilityCalculator";
 
 interface StrategyOptimizerDialogProps {
   lotteryType: string;
   lotteryName: string;
 }
-
-// Fórmulas simplificadas de probabilidade baseadas em combinações
-const calculateProbabilities = (
-  lotteryType: string,
-  numbersSelected: number
-): Record<string, number> => {
-  if (lotteryType === "lotofacil") {
-    const baseProbabilities = {
-      15: { 11: 42, 12: 18, 13: 5, 14: 0.8, 15: 0.08 },
-      16: { 11: 68, 12: 32, 13: 9, 14: 1.5, 15: 0.15 },
-      17: { 11: 82, 12: 45, 13: 15, 14: 2.8, 15: 0.35 },
-      18: { 11: 91, 12: 58, 13: 22, 14: 5, 15: 0.65 },
-      19: { 11: 96, 12: 69, 13: 31, 14: 8, 15: 1.2 },
-      20: { 11: 98, 12: 78, 13: 42, 14: 12, 15: 2 },
-    };
-    return baseProbabilities[numbersSelected as keyof typeof baseProbabilities] || baseProbabilities[15];
-  }
-
-  if (lotteryType === "mega-sena") {
-    const baseProbabilities = {
-      6: { 4: 2.5, 5: 0.15, 6: 0.000007 },
-      7: { 4: 12, 5: 0.9, 6: 0.00005 },
-      8: { 4: 28, 5: 2.8, 6: 0.00018 },
-      9: { 4: 45, 5: 5.8, 6: 0.00042 },
-      10: { 4: 58, 5: 9.5, 6: 0.00084 },
-      11: { 4: 68, 5: 13.5, 6: 0.0015 },
-      12: { 4: 75, 5: 17.8, 6: 0.0024 },
-    };
-    return baseProbabilities[numbersSelected as keyof typeof baseProbabilities] || baseProbabilities[6];
-  }
-
-  if (lotteryType === "quina") {
-    const baseProbabilities = {
-      5: { 2: 35, 3: 8, 4: 0.8, 5: 0.01 },
-      6: { 2: 62, 3: 18, 4: 2.5, 5: 0.06 },
-      7: { 2: 78, 3: 32, 4: 5.5, 5: 0.18 },
-      8: { 2: 87, 3: 45, 4: 9.5, 5: 0.4 },
-      9: { 2: 92, 3: 56, 4: 14, 5: 0.75 },
-      10: { 2: 95, 3: 65, 4: 19, 5: 1.2 },
-    };
-    return baseProbabilities[numbersSelected as keyof typeof baseProbabilities] || baseProbabilities[5];
-  }
-
-  return { default: 50 };
-};
 
 const getRecommendedNumbers = (lotteryType: string): number => {
   const recommendations: Record<string, number> = {
@@ -82,8 +41,13 @@ export const StrategyOptimizerDialog = ({ lotteryType, lotteryName }: StrategyOp
 
   const singleTicketCost = getBetCost(lotteryType, selectedNumbers);
   const totalCost = singleTicketCost * selectedTickets;
-  const probabilities = calculateProbabilities(lotteryType, selectedNumbers);
+  const probabilities = calculateProbabilitiesWithTickets(lotteryType, selectedNumbers, selectedTickets);
   const isRecommended = selectedNumbers === recommendedNumbers;
+
+  // Calcula aumento de probabilidade com mais cartelas
+  const probabilityBoost = selectedTickets > 1
+    ? calculateProbabilityIncrease(lotteryType, selectedNumbers, 1, selectedTickets)
+    : 0;
 
   const ticketOptions = [1, 3, 5, 10];
 
@@ -204,6 +168,15 @@ export const StrategyOptimizerDialog = ({ lotteryType, lotteryName }: StrategyOp
               ))}
             </div>
           </div>
+
+          {/* Probability Boost Card */}
+          {selectedTickets > 1 && probabilityBoost > 0 && (
+            <div className="rounded-lg bg-green-500/10 border border-green-500/20 p-4">
+              <p className="text-sm text-green-600 dark:text-green-400">
+                <strong>📈 Aumento de Probabilidade:</strong> Com {selectedTickets} cartelas, suas chances aumentam em <strong>+{probabilityBoost.toFixed(2)}%</strong> comparado a 1 cartela!
+              </p>
+            </div>
+          )}
 
           {/* Info Card */}
           <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 p-4">
