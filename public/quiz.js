@@ -1093,6 +1093,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentButton = null;
     let currentButtonOriginalParent = null;
+    let currentStep = null;
     let showTimeout = null;
 
     // Map of steps to their button selectors
@@ -1107,19 +1108,29 @@ document.addEventListener('DOMContentLoaded', () => {
       // 'offer' is skipped - has separate sticky CTA
     };
 
-    function hideSticky() {
-      clearTimeout(showTimeout);
-      stickyContainer.classList.add('is-hidden');
-
-      // Return button to original position if exists
+    function returnButtonToOriginal() {
+      // Return button to its ORIGINAL slide, not current slide
       if (currentButton && currentButtonOriginalParent) {
-        currentButtonOriginalParent.appendChild(currentButton);
+        // Check if original parent still exists in DOM
+        if (document.body.contains(currentButtonOriginalParent)) {
+          currentButtonOriginalParent.appendChild(currentButton);
+        }
         currentButton = null;
         currentButtonOriginalParent = null;
+        currentStep = null;
       }
     }
 
+    function hideSticky() {
+      clearTimeout(showTimeout);
+      stickyContainer.classList.add('is-hidden');
+      returnButtonToOriginal();
+    }
+
     function showSticky(step) {
+      // CRITICAL: Always return previous button first
+      returnButtonToOriginal();
+
       // Skip offer section (has its own sticky CTA)
       if (step === 'offer') {
         hideSticky();
@@ -1133,61 +1144,66 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Find the button in the active slide
-      const activeSlide = document.querySelector(`[data-step="${step}"].is-active`);
-      if (!activeSlide) {
-        hideSticky();
-        return;
-      }
-
-      const button = activeSlide.querySelector(buttonSelector);
-      if (!button) {
-        hideSticky();
-        return;
-      }
-
-      // For video steps, only show sticky after video ends
-      const isVideoStep = step.includes('video');
-      if (isVideoStep) {
-        // Check if button is still hidden/disabled (video not finished)
-        if (button.hasAttribute('hidden') || button.classList.contains('is-hidden') || button.disabled) {
-          // Don't show sticky yet - button not ready
+      // Wait for DOM to update (nextTick)
+      requestAnimationFrame(() => {
+        // Find the button in the active slide
+        const activeSlide = document.querySelector(`[data-step="${step}"].is-active`);
+        if (!activeSlide) {
           hideSticky();
-
-          // Setup observer to show sticky when button becomes visible
-          const observer = new MutationObserver((mutations) => {
-            const isNowVisible = !button.hasAttribute('hidden') &&
-                                !button.classList.contains('is-hidden') &&
-                                !button.disabled;
-
-            if (isNowVisible) {
-              observer.disconnect();
-              // Trigger sticky show now that video finished
-              showSticky(step);
-            }
-          });
-
-          observer.observe(button, {
-            attributes: true,
-            attributeFilter: ['hidden', 'class', 'disabled']
-          });
-
           return;
         }
-      }
 
-      // Store original parent
-      currentButtonOriginalParent = button.parentElement;
-      currentButton = button;
+        const button = activeSlide.querySelector(buttonSelector);
+        if (!button) {
+          console.warn(`Sticky button not found for step: ${step}, selector: ${buttonSelector}`);
+          hideSticky();
+          return;
+        }
 
-      // Move button to sticky container
-      buttonSlot.appendChild(button);
+        // For video steps, only show sticky after video ends
+        const isVideoStep = step.includes('video');
+        if (isVideoStep) {
+          // Check if button is still hidden/disabled (video not finished)
+          if (button.hasAttribute('hidden') || button.classList.contains('is-hidden') || button.disabled) {
+            // Don't show sticky yet - button not ready
+            hideSticky();
 
-      // Show sticky with delay for motion effect
-      clearTimeout(showTimeout);
-      showTimeout = setTimeout(() => {
-        stickyContainer.classList.remove('is-hidden');
-      }, 300); // 300ms delay for smooth entrance
+            // Setup observer to show sticky when button becomes visible
+            const observer = new MutationObserver((mutations) => {
+              const isNowVisible = !button.hasAttribute('hidden') &&
+                                  !button.classList.contains('is-hidden') &&
+                                  !button.disabled;
+
+              if (isNowVisible) {
+                observer.disconnect();
+                // Trigger sticky show now that video finished
+                showSticky(step);
+              }
+            });
+
+            observer.observe(button, {
+              attributes: true,
+              attributeFilter: ['hidden', 'class', 'disabled']
+            });
+
+            return;
+          }
+        }
+
+        // Store original parent and step
+        currentButtonOriginalParent = button.parentElement;
+        currentButton = button;
+        currentStep = step;
+
+        // Move button to sticky container
+        buttonSlot.appendChild(button);
+
+        // Show sticky with delay for motion effect
+        clearTimeout(showTimeout);
+        showTimeout = setTimeout(() => {
+          stickyContainer.classList.remove('is-hidden');
+        }, 300); // 300ms delay for smooth entrance
+      });
     }
 
     return {
