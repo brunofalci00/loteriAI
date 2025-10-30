@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, TrendingUp, Hash, Database, Flame, Calendar, Award } from "lucide-react";
 import { formatShortDate } from "@/utils/formatters";
+import { StrategyOptimizerDialog } from "@/components/StrategyOptimizerDialog";
 
 interface ResultsDisplayProps {
   lotteryName: string;
+  lotteryType: string;
   combinations: number[][];
   stats: {
     accuracy: number;
@@ -24,6 +26,7 @@ interface ResultsDisplayProps {
 
 export const ResultsDisplay = ({
   lotteryName,
+  lotteryType,
   combinations,
   stats,
   strategy,
@@ -126,10 +129,13 @@ export const ResultsDisplay = ({
             <span>{stats.dataSource || "Dados em tempo real"}</span>
           </div>
         </div>
-        <Button variant="gold" onClick={onExport} className="w-full sm:w-auto">
-          <Download className="mr-2 h-4 w-4" />
-          Exportar .txt
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <StrategyOptimizerDialog lotteryType={lotteryType} lotteryName={lotteryName} />
+          <Button variant="gold" onClick={onExport} className="w-full sm:w-auto">
+            <Download className="mr-2 h-4 w-4" />
+            Exportar .txt
+          </Button>
+        </div>
       </div>
 
       {/* Combinations Grid */}
