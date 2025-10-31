@@ -326,6 +326,7 @@
       let resetting = false;
       let retryCount = 0;
       const MAX_RETRIES = 3;
+      let loadingTimeout = null;
 
       const blockedKeys = new Set(['ArrowRight', 'ArrowLeft', ' ', 'f', 'F', 'k', 'K', 'm', 'M']);
 
@@ -371,16 +372,40 @@
         refreshProgress();
       };
 
-      const showLoading = () => {
-        if (loadingIndicator) {
+      const showLoading = (immediate = false) => {
+        if (!loadingIndicator) return;
+
+        // Clear any pending timeout
+        if (loadingTimeout) {
+          window.clearTimeout(loadingTimeout);
+          loadingTimeout = null;
+        }
+
+        if (immediate) {
+          // Show immediately (used on initial play click)
           loadingIndicator.hidden = false;
+        } else {
+          // Debounce: only show if buffering lasts more than 400ms
+          loadingTimeout = window.setTimeout(() => {
+            if (loadingIndicator) {
+              loadingIndicator.hidden = false;
+            }
+            loadingTimeout = null;
+          }, 400);
         }
       };
 
       const hideLoading = () => {
-        if (loadingIndicator) {
-          loadingIndicator.hidden = true;
+        if (!loadingIndicator) return;
+
+        // Clear any pending show timeout
+        if (loadingTimeout) {
+          window.clearTimeout(loadingTimeout);
+          loadingTimeout = null;
         }
+
+        // Hide immediately
+        loadingIndicator.hidden = true;
       };
 
       const handleError = () => {
@@ -512,8 +537,8 @@
       if (playButton) {
         playButton.addEventListener('click', () => {
           playButton.classList.add('is-hidden');
-          // Show loading when user initiates play
-          showLoading();
+          // Show loading immediately when user initiates play
+          showLoading(true);
           gate.requestPlay();
         });
       }
