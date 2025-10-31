@@ -62,6 +62,38 @@
         </div>
       </div>
 
+      <div class="instant-access-card">
+        <h3>🚀 Acesse sua conta AGORA (sem precisar do email)</h3>
+        <p>
+          Não conseguiu acessar o email? Sem problemas! Defina sua senha aqui e acesse imediatamente.
+        </p>
+        <form id="instant-access-form" class="instant-access-form">
+          <div class="form-group">
+            <label for="user-email">Seu e-mail de compra</label>
+            <input
+              type="email"
+              id="user-email"
+              placeholder="seu@email.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="user-password">Criar senha (mínimo 6 caracteres)</label>
+            <input
+              type="password"
+              id="user-password"
+              placeholder="••••••••"
+              minlength="6"
+              required
+            />
+          </div>
+          <button type="submit" class="quiz-btn quiz-btn--primary" id="instant-access-btn">
+            CRIAR SENHA E ACESSAR
+          </button>
+          <div id="instant-access-feedback" class="instant-access-feedback"></div>
+        </form>
+      </div>
+
       <div class="contact-card">
         <h3>Precisa de ajuda?</h3>
         <p>
@@ -80,6 +112,60 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Instant access form handler
+    const instantAccessForm = document.getElementById('instant-access-form');
+    const instantAccessBtn = document.getElementById('instant-access-btn');
+    const instantAccessFeedback = document.getElementById('instant-access-feedback');
+
+    if (instantAccessForm) {
+      instantAccessForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('user-email').value;
+        const password = document.getElementById('user-password').value;
+
+        // Disable button and show loading
+        instantAccessBtn.disabled = true;
+        instantAccessBtn.textContent = 'CRIANDO ACESSO...';
+        instantAccessFeedback.textContent = '';
+        instantAccessFeedback.className = 'instant-access-feedback';
+
+        try {
+          const response = await fetch('https://qcvlxzrxyisjpzriwikp.supabase.co/functions/v1/create-password-direct', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // Success!
+            instantAccessFeedback.className = 'instant-access-feedback instant-access-feedback--success';
+            instantAccessFeedback.textContent = '✅ ' + data.message + ' Redirecionando...';
+
+            // Redirect to login after 2 seconds
+            setTimeout(() => {
+              window.location.href = 'https://www.fqdigital.com.br/app/auth';
+            }, 2000);
+          } else {
+            // Error from API
+            throw new Error(data.error || 'Erro ao criar senha');
+          }
+        } catch (error) {
+          console.error('Instant access error:', error);
+          instantAccessFeedback.className = 'instant-access-feedback instant-access-feedback--error';
+          instantAccessFeedback.textContent = '❌ ' + (error.message || 'Erro ao criar senha. Tente novamente.');
+
+          // Re-enable button
+          instantAccessBtn.disabled = false;
+          instantAccessBtn.textContent = 'CRIAR SENHA E ACESSAR';
+        }
+      });
+    }
   </script>
 </body>
 </html>
