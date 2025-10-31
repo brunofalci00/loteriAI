@@ -181,13 +181,23 @@ body {
 
 /* Instant Access Card */
 .instant-access-card {
-  background: linear-gradient(135deg, rgba(54, 242, 143, 0.08), rgba(42, 199, 122, 0.05));
+  background: linear-gradient(135deg, rgba(54, 242, 143, 0.12), rgba(42, 199, 122, 0.08));
   border: 2px solid var(--accent-primary);
   border-radius: 24px;
   padding: 32px 36px;
   display: grid;
   gap: 18px;
-  box-shadow: 0 8px 32px rgba(54, 242, 143, 0.2);
+  box-shadow: 0 12px 40px rgba(54, 242, 143, 0.25);
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 12px 40px rgba(54, 242, 143, 0.25);
+  }
+  50% {
+    box-shadow: 0 12px 48px rgba(54, 242, 143, 0.35);
+  }
 }
 
 .instant-access-card h3 {
@@ -271,6 +281,29 @@ body {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none !important;
+}
+
+/* Separator */
+.separator {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 32px 0;
+  opacity: 0.7;
+}
+
+.separator__line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-soft), transparent);
+}
+
+.separator__text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
 }
 
 @media (max-width: 640px) {
