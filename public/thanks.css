@@ -306,6 +306,80 @@ body {
   white-space: nowrap;
 }
 
+/* WhatsApp Card */
+.whatsapp-card {
+  background: linear-gradient(135deg, rgba(37, 211, 102, 0.08), rgba(18, 140, 126, 0.05));
+  border: 2px solid rgba(37, 211, 102, 0.3);
+  border-radius: 24px;
+  padding: 32px 36px;
+  display: grid;
+  gap: 18px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(37, 211, 102, 0.15);
+}
+
+.whatsapp-card__icon {
+  font-size: 3rem;
+  margin: 0 auto 8px;
+  filter: drop-shadow(0 4px 12px rgba(37, 211, 102, 0.3));
+}
+
+.whatsapp-card h3 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.whatsapp-card > p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: #ffffff;
+  padding: 16px 32px;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+  letter-spacing: 0.02em;
+}
+
+.whatsapp-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(37, 211, 102, 0.45);
+  background: linear-gradient(135deg, #2BE376, #15A085);
+}
+
+.whatsapp-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
+}
+
+.whatsapp-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.whatsapp-card__note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+.whatsapp-card__note strong {
+  color: var(--text-secondary);
+}
+
 @media (max-width: 640px) {
   .brand-logo {
     height: 96px;
@@ -317,5 +391,22 @@ body {
 
   .instant-access-card {
     padding: 24px 20px;
+  }
+
+  .whatsapp-card {
+    padding: 24px 20px;
+  }
+
+  .whatsapp-card__icon {
+    font-size: 2.5rem;
+  }
+
+  .whatsapp-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .whatsapp-btn {
+    font-size: 1rem;
+    padding: 14px 24px;
   }
 }
