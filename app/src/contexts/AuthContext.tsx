@@ -26,6 +26,7 @@ interface AuthContextType {
   logout: () => void;
   resendConfirmationEmail: (email: string) => Promise<void>;
   updatePassword: (password: string) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -275,8 +276,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const resetPassword = async (email: string) => {
+    try {
+      setIsLoading(true);
+
+      // Validação
+      const emailSchema = z.string().trim().email('Email inválido');
+      emailSchema.parse(email);
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth?type=recovery`,
+      });
+
+      if (error) throw error;
+
+      toast.success('Link de recuperação enviado! Verifique seu email.');
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+      } else {
+        console.error('Reset password error:', error);
+        toast.error('Erro ao enviar email de recuperação');
+      }
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, signup, logout, resendConfirmationEmail, updatePassword }}>
+    <AuthContext.Provider value={{ user, isLoading, login, signup, logout, resendConfirmationEmail, updatePassword, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

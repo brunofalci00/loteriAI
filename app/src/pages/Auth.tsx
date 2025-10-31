@@ -13,7 +13,8 @@ import logo from "@/assets/logo-loterai.png";
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user, login, updatePassword, isLoading } = useAuth();
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const { user, login, updatePassword, resetPassword, isLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isInvited = searchParams.get('invited') === 'true';
@@ -54,7 +55,11 @@ const Auth = () => {
     e.preventDefault();
 
     try {
-      if (isRecovery && user?.isAuthenticated) {
+      if (isForgotPassword) {
+        // Modo esqueci senha: enviar email de recuperação
+        await resetPassword(email);
+        setIsForgotPassword(false); // Volta para tela de login após enviar
+      } else if (isRecovery && user?.isAuthenticated) {
         // Modo recovery: apenas definir senha (se já estiver autenticado)
         await updatePassword(password);
       } else {
@@ -77,7 +82,14 @@ const Auth = () => {
               <img src={logo} alt="loter.AI" className="h-32 w-auto" />
             </div>
             
-            {isRecovery || isInvited || hasToken ? (
+            {isForgotPassword ? (
+              <>
+                <h1 className="mb-2 text-2xl font-bold">Recuperar senha</h1>
+                <p className="text-sm text-muted-foreground">
+                  Digite seu email para receber um link de recuperação
+                </p>
+              </>
+            ) : isRecovery || isInvited || hasToken ? (
               <>
                 <h1 className="mb-2 text-2xl font-bold">Defina sua senha</h1>
                 <p className="text-sm text-muted-foreground">
@@ -97,8 +109,8 @@ const Auth = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Mostrar email se não estiver autenticado OU se showEmailField for true */}
-            {showEmailField && (
+            {/* Mostrar email se não estiver autenticado OU se showEmailField for true OU se estiver em forgot password */}
+            {(showEmailField || isForgotPassword) && (
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
                 <Input
@@ -113,26 +125,29 @@ const Auth = () => {
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="password">
-                {isRecovery || isInvited || hasToken ? 'Nova Senha' : 'Senha'}
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                className="bg-input border-border"
-              />
-              {(isRecovery || isInvited || hasToken) && (
-                <p className="text-xs text-muted-foreground">
-                  Mínimo de 6 caracteres
-                </p>
-              )}
-            </div>
+            {/* Esconder senha se estiver em forgot password */}
+            {!isForgotPassword && (
+              <div className="space-y-2">
+                <Label htmlFor="password">
+                  {isRecovery || isInvited || hasToken ? 'Nova Senha' : 'Senha'}
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="bg-input border-border"
+                />
+                {(isRecovery || isInvited || hasToken) && (
+                  <p className="text-xs text-muted-foreground">
+                    Mínimo de 6 caracteres
+                  </p>
+                )}
+              </div>
+            )}
 
             <Button
               type="submit"
@@ -146,10 +161,25 @@ const Auth = () => {
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                   <span>Processando...</span>
                 </div>
+              ) : isForgotPassword ? (
+                "Enviar Link de Recuperação"
               ) : (
                 isRecovery || isInvited || hasToken ? "Definir Senha e Acessar" : "Entrar"
               )}
             </Button>
+
+            {/* Link para toggle forgot password / voltar ao login */}
+            {!isRecovery && !isInvited && !hasToken && (
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => setIsForgotPassword(!isForgotPassword)}
+                  className="text-sm text-primary hover:underline"
+                >
+                  {isForgotPassword ? 'Voltar ao login' : 'Esqueci minha senha'}
+                </button>
+              </div>
+            )}
           </form>
 
           {/* Separador */}
