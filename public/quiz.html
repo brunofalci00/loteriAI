@@ -41,16 +41,14 @@
           <span class="intro-pulse__ring"></span>
           <span class="intro-pulse__icon">🍀</span>
         </div>
-        <h1 class="slide-title">Você foi aprovado para testar a IA da Loter.IA</h1>
-        <p class="slide-lead">Vamos comparar o seu desempenho com e sem inteligência artificial.</p>
+        <h1 class="slide-title">Cansado de perder na Lotofácil?</h1>
+        <p class="slide-lead">⚠️ 99% das pessoas perdem porque jogam no escuro. Veja agora a IA que está mudando tudo!</p>
 
         <div class="info-box info-box--list">
           <h2>Etapas do teste</h2>
           <ul>
-            <li>Rodada 1 — Você joga manualmente</li>
-            <li>Rodada 2 — Outro jogo manual</li>
-            <li>Rodada 3 — IA ativa, siga as sugestões da máquina</li>
-            <li>Rodada 4 — Última rodada com a IA liberada</li>
+            <li>Rodada 1 — Você monta o jogo manualmente</li>
+            <li>Rodada 2 — A IA da Loter.IA guia o seu jogo</li>
           </ul>
         </div>
 
@@ -66,7 +64,7 @@
           <span class="preloading-glow"></span>
         </div>
         <h2 class="slide-title">Preparando seu acesso inteligente</h2>
-        <p class="slide-lead">Estamos configurando o simulador para iniciar suas duas rodadas manuais.</p>
+        <p class="slide-lead">Estamos configurando o simulador para iniciar sua rodada manual e liberar a IA.</p>
         <div class="preloading-steps" data-preloading>
           <div class="preloading-step" data-preloading-step="0">
             <span class="preloading-step__label">Validando sua aprovação no teste.</span>
@@ -127,43 +125,20 @@
         <div class="manual-card__content">
           <header class="slide-head">
             <div>
-              <h2>Monte seu primeiro jogo manual</h2>
-              <p class="slide-instruction">Escolha 15 números. Você está jogando por conta própria.</p>
+              <h2>Monte seu jogo manual</h2>
+              <p class="slide-instruction">Escolha 15 números. Esta etapa depende só de você.</p>
             </div>
             <div class="chip chip--alert">IA desligada</div>
           </header>
-          <div class="manual-status" data-manual-status="1">Rodada 1 de 2</div>
+          <div class="manual-status" data-manual-status="1">Etapa 1 de 2</div>
           <div class="number-grid" data-mode="manual" data-round="1"></div>
           <div class="manual-feedback" data-manual-feedback="1">Toque nos números até completar os 15 escolhidos.</div>
-          <button class="quiz-btn quiz-btn--primary" data-action="verify-manual" data-round="1" style="display: none;">VERIFICAR RESULTADO</button>
+          <button class="quiz-btn quiz-btn--primary" data-action="verify-manual" data-round="1">VERIFICAR RESULTADO</button>
         </div>
       </div>
     </section>
 
     <!-- Slide 5 -->
-    <section class="quiz-slide" data-step="manual-select-2">
-      <div class="slide-card slide-card--wide manual-card">
-        <aside class="manual-card__poster manual-card__poster--alt" aria-hidden="true">
-          <span class="manual-card__brand">LOTOFÁCIL</span>
-          <span class="manual-card__tagline">Modo sem IA</span>
-        </aside>
-        <div class="manual-card__content">
-          <header class="slide-head">
-            <div>
-              <h2>Seu segundo jogo manual</h2>
-              <p class="slide-instruction">Monte outra combinação de 15 números sem ajuda da IA.</p>
-            </div>
-            <div class="chip chip--alert">IA desligada</div>
-          </header>
-          <div class="manual-status" data-manual-status="2">Rodada 2 de 2</div>
-          <div class="number-grid" data-mode="manual" data-round="2"></div>
-          <div class="manual-feedback" data-manual-feedback="2">Vamos ver se você melhora o desempenho.</div>
-          <button class="quiz-btn quiz-btn--primary" data-action="verify-manual" data-round="2" style="display: none;">VERIFICAR RESULTADO</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Slide 6 -->
     <section class="quiz-slide" data-step="video-pre-ia" data-video-gate>
       <div class="slide-card slide-card--video">
         <h2 class="slide-title">Agora veja como usar a IA ao seu favor</h2>
@@ -211,73 +186,55 @@
       </div>
     </section>
 
-    <!-- Slide 8 -->
+    <!-- Slide 6 -->
     <section class="quiz-slide" data-step="guided-select-1">
-      <div class="slide-card slide-card--wide guided-card">
-        <header class="slide-head">
-          <div>
-            <h2>IA da Loter.IA guiando sua escolha</h2>
-            <p class="slide-instruction">Clique no número sugerido pela IA na ordem exibida.</p>
-          </div>
-          <div class="guided-stats">
-            <span class="chip chip--success">Seleção guiada 1/2</span>
-            <span class="guided-balance">Saldo: <strong data-guided-balance="1">R$ 0,00</strong></span>
-          </div>
-        </header>
-        <div class="guided-feedback" data-guided-feedback="1" aria-live="polite">Vamos começar! Clique no número em destaque.</div>
-        <div class="number-grid" data-mode="guided" data-sequence="1"></div>
-        <footer class="slide-foot">
-          <span class="foot-label">Rodada 3/4</span>
-          <div class="progress progress--thin">
-            <div class="progress__bar" data-progress="guided-1"></div>
-          </div>
-        </footer>
+      <div class="slide-card slide-card--wide manual-card manual-card--ia">
+        <aside class="manual-card__poster manual-card__poster--alt" aria-hidden="true">
+          <span class="manual-card__brand">LOTER.IA</span>
+          <span class="manual-card__tagline">Seleção guiada pela IA</span>
+        </aside>
+        <div class="manual-card__content">
+          <header class="slide-head">
+            <div>
+              <h2>IA da Loter.IA guiando sua escolha</h2>
+              <p class="slide-instruction">Clique no número sugerido pela IA na ordem exibida.</p>
+            </div>
+            <div class="guided-stats">
+              <span class="chip chip--success">Seleção guiada</span>
+              <span class="guided-balance">Saldo: <strong data-guided-balance="1">R$ 0,00</strong></span>
+            </div>
+          </header>
+          <div class="guided-feedback" data-guided-feedback="1" aria-live="polite">Vamos começar! Clique no número em destaque.</div>
+          <div class="number-grid" data-mode="guided" data-sequence="1"></div>
+          <footer class="slide-foot">
+            <span class="foot-label">Etapa 2 de 2</span>
+            <div class="progress progress--thin">
+              <div class="progress__bar" data-progress="guided-1"></div>
+            </div>
+          </footer>
+        </div>
       </div>
     </section>
 
-    <!-- Slide 9 -->
-    <section class="quiz-slide" data-step="guided-select-2">
-      <div class="slide-card slide-card--wide guided-card">
-        <header class="slide-head">
-          <div>
-            <h2>Última sequência com a IA ligada</h2>
-            <p class="slide-instruction">Repita o processo: escolha apenas o número indicado.</p>
-          </div>
-          <div class="guided-stats">
-            <span class="chip chip--success">Seleção guiada 2/2</span>
-            <span class="guided-balance">Saldo: <strong data-guided-balance="2">R$ 0,00</strong></span>
-          </div>
-        </header>
-        <div class="guided-feedback" data-guided-feedback="2" aria-live="polite">Siga o número em verde para completar os 15.</div>
-        <div class="number-grid" data-mode="guided" data-sequence="2"></div>
-        <footer class="slide-foot">
-          <span class="foot-label">Rodada 4/4</span>
-          <div class="progress progress--thin">
-            <div class="progress__bar" data-progress="guided-2"></div>
-          </div>
-        </footer>
-      </div>
-    </section>
-
-    <!-- Slide 10 -->
+    <!-- Slide 7 -->
     <section class="quiz-slide" data-step="ia-summary">
       <div class="slide-card slide-card--center summary-card">
         <h2 class="slide-title">Você foi incrível!</h2>
         <p class="slide-lead">Veja a diferença entre jogar sozinho e contar com a inteligência artificial.</p>
         <div class="summary-metrics">
           <div class="summary-metric">
-            <span class="summary-metric__label">Total manual</span>
-            <strong class="summary-metric__value" data-counter="manual-total" data-target="15">0</strong>
-            <span class="summary-metric__detail">Acertos somados nas duas rodadas sem IA</span>
+            <span class="summary-metric__label">Rodada manual</span>
+            <strong class="summary-metric__value" data-counter="manual-total" data-target="6">0</strong>
+            <span class="summary-metric__detail">Seus acertos sem ajuda da IA</span>
           </div>
           <div class="summary-metric summary-metric--highlight">
-            <span class="summary-metric__label">Total com IA</span>
-            <strong class="summary-metric__value" data-counter="ia-total" data-target="3423.38" data-format="currency">R$ 0,00</strong>
-            <span class="summary-metric__detail">Ganho simulado em apenas duas rodadas</span>
+            <span class="summary-metric__label">Rodada IA</span>
+            <strong class="summary-metric__value" data-counter="ia-total" data-target="2253.94" data-format="currency">R$ 0,00</strong>
+            <span class="summary-metric__detail">Ganho simulado com a sequência guiada</span>
           </div>
         </div>
         <div class="summary-callout">
-          <p>Com nossa IA, você ganhou: <strong data-counter="ia-cash" data-target="3423.38" data-format="currency">R$ 0,00</strong> em apenas 2 rodadas!</p>
+          <p>Com nossa IA, você saiu de 6 para 14 acertos e ganhou <strong data-counter="ia-cash" data-target="2253.94" data-format="currency">R$ 0,00</strong> em apenas 2 etapas!</p>
           <button class="quiz-btn quiz-btn--primary" data-next="video-post-ia">CONTINUAR</button>
         </div>
       </div>
@@ -312,6 +269,10 @@
       <div class="slide-card slide-card--offer">
         <h2>Quem usa tem Resultado 👇</h2>
         <p class="offer-lead">Milhares de apostadores já viram a diferença de seguir os jogos sugeridos pela Loter.IA.</p>
+
+        <div class="scarcity-stats">
+          </div>
+        </div>
 
         <div class="offer-video">
           <video controls playsinline preload="metadata" poster="" controlsList="nodownload">
@@ -410,8 +371,24 @@
           </details>
         </div>
 
-        <div class="offer-guarantee-seal">
-          <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Selo de Garantia de 7 dias - 100% do dinheiro de volta">
+        <div class="offer-whatsapp-support">
+          <div class="support-card">
+            <div class="support-card__icon">💬</div>
+            <h3>Ainda tem dúvidas sobre pagamento ou acesso?</h3>
+            <p>Nossa equipe está disponível para te ajudar com qualquer dúvida antes da compra</p>
+            <a
+              href="https://api.whatsapp.com/send?phone=5511993371766&text=Ol%C3%A1!%20Estou%20interessado%20no%20Loter.IA%20mas%20tenho%20algumas%20d%C3%BAvidas."
+              target="_blank"
+              rel="noopener noreferrer"
+              class="support-whatsapp-btn"
+            >
+              <svg class="support-whatsapp-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              Tirar Dúvidas pelo WhatsApp
+            </a>
+            <p class="support-card__note">Respondemos em até 5 minutos • Seg a Sex, 9h às 18h</p>
+          </div>
         </div>
       </div>
     </section>
@@ -426,6 +403,19 @@
 
   <div class="emoji-rain" data-emoji-rain hidden aria-hidden="true"></div>
 
+  <div class="offer-modal" data-offer-modal hidden>
+    <div class="offer-modal__backdrop" data-offer-close></div>
+    <div class="offer-modal__dialog" role="dialog" aria-live="assertive" aria-modal="true">
+      <span class="offer-modal__badge">Atenção</span>
+      <h3 class="offer-modal__title">Essa oferta sai do ar em <span data-offer-timer>05:00</span></h3>
+      <p class="offer-modal__text">Garantimos o valor especial enquanto o contador estiver ativo. Depois disso, as vagas retornam ao preço normal.</p>
+      <div class="offer-modal__actions">
+        <a class="quiz-btn quiz-btn--primary quiz-btn--large" data-hubla-link href="https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689">GARANTIR MEU ACESSO AGORA</a>
+        <button class="quiz-btn quiz-btn--ghost" type="button" data-offer-close>Continuar explorando</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Sticky CTA (Offer Section) -->
   <div class="sticky-cta is-hidden" data-sticky-cta>
     <div class="sticky-cta__content">
@@ -433,19 +423,17 @@
         <span class="sticky-cta__title">Acesso liberado por tempo limitado</span>
         <span class="sticky-cta__subtitle">Garanta sua vaga agora</span>
       </div>
-      <a href="https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689" class="sticky-cta__btn" data-sticky-cta-btn>
+      <a href="https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689" class="sticky-cta__btn" data-sticky-cta-btn data-hubla-link>
         Acesse Agora
       </a>
-    </div>
-  </div>
-
-  <!-- Sticky Button Container (Quiz Steps) -->
-  <div class="quiz-sticky-button is-hidden" data-quiz-sticky-button>
-    <div class="quiz-sticky-button__container" data-sticky-button-slot>
-      <!-- Button will be moved here dynamically -->
     </div>
   </div>
 
   <script src="quiz.js" defer></script>
 </body>
 </html>
+
+
+
+
+

@@ -1,108 +1,98 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
   const slides = Array.from(document.querySelectorAll('.quiz-slide'));
-  const slideByStep = new Map(slides.map((s) => [s.dataset.step, s]));
-  const modal = document.querySelector('[data-modal]');
-  const modalContent = modal?.querySelector('[data-modal-content]');
-  const modalBackdrop = modal?.querySelector('[data-modal-backdrop]');
-  const emojiRain = document.querySelector('[data-emoji-rain]');
-  const currencyFormatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-  const emojiChoices = ['💰', '💸', '💎', '🤑', '🎉'];
-  const autoAdvance = {
-    'ia-activate': { next: 'guided-select-1', delay: 5200 },
-  };
-
-  const audioClips = {
-    click: 'money-pickup-2-89563.mp3',
-    cash: 'cashier-quotka-chingquot-sound-effect-129698.mp3',
-    fail: 'error-126627.mp3',
-  };
-
-  const audioCache = new Map();
-
-  const manualRounds = {
-    1: {
-      select: 'manual-select-1',
-      next: 'manual-select-2',
-      hits: 8,
-      result: {
-        icon: '😞',
-        title: 'Você teve 8 acertos.',
-        message: 'Não foi dessa vez, tente na próxima rodada!',
-        note: 'Avançando automaticamente...',
-        sound: 'fail',
-      },
-    },
-    2: {
-      select: 'manual-select-2',
-      next: 'video-pre-ia',
-      hits: 7,
-      result: {
-        icon: '😔',
-        title: 'Você teve 7 acertos.',
-        message: 'Sem IA fica difícil. Veja como a inteligência artificial melhora seus jogos!',
-        note: 'Avançando automaticamente...',
-        sound: 'fail',
-      },
-    },
-  };
-
-  const guidedRounds = {
-    1: {
-      select: 'guided-select-1',
-      next: 'guided-select-2',
-      sequence: [3, 7, 12, 14, 18, 21, 24, 1, 4, 5, 9, 11, 16, 19, 25],
-      progressKey: 'guided-1',
-      hits: 14,
-      payout: 2253.94,
-    },
-    2: {
-      select: 'guided-select-2',
-      next: 'ia-summary',
-      sequence: [2, 6, 8, 10, 13, 15, 17, 20, 22, 23, 5, 7, 11, 14, 24],
-      progressKey: 'guided-2',
-      hits: 13,
-      payout: 1169.44,
-    },
-  };
-
-  const manualState = new Map();
-  const guidedState = new Map();
-  const videoGates = new Map();
-  let activeVideoGate = null;
+  const slideByStep = new Map(slides.map((slide) => [slide.dataset.step, slide]));
   let autoTimer;
-  let preloadingStarted = false;
-  let iaActivationStarted = false;
-  let manualSummaryTotal = 0;
-  let guidedSummaryTotal = 0;
-  let summaryAnimated = false;
+  let currentStep =
+    slides.find((slide) => slide.classList.contains('is-active'))?.dataset.step ?? null;
 
-  initManualGrids();
-  initGuidedGrids();
-  initVideoGates();
-  wireControls();
-  if (modalBackdrop) {
-    modalBackdrop.addEventListener('click', () => closeModal());
-  }
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && modal && !modal.hasAttribute('hidden')) {
-      closeModal();
-    }
+  const autoAdvance = {
+    preloading: { next: 'video-manual-intro', delay: 5000 },
+    'ia-activate': { next: 'guided-select-1', delay: 4000 },
+  };
+
+  const MANUAL_CONFIG = {
+    round: 1,
+    limit: 15,
+    hits: 6,
+    nextStep: 'video-pre-ia',
+  };
+
+  const IA_CONFIG = {
+    sequence: [3, 7, 12, 14, 18, 20, 21, 5, 9, 1, 24, 25, 6, 11, 15],
+    hits: 14,
+    gain: 2253.94,
+    progressKey: 'guided-1',
+    balanceKey: '1',
+    nextStep: 'ia-summary',
+  };
+
+  const currencyFormatter = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
   });
 
-  function fbSafeTrack(event, params) {
-    if (typeof fbq === 'function') {
-      if (params) {
-        fbq('track', event, params);
-      } else {
-        fbq('track', event);
-      }
-    }
-  }
+  const manualState = {
+    selected: new Set(),
+    limit: MANUAL_CONFIG.limit,
+    grid: null,
+    feedback: null,
+    status: null,
+  };
 
-  function fbSafeTrackCustom(event, params) {
-    if (typeof fbq === 'function') {
-      fbq('trackCustom', event, params);
-    }
+  const guidedState = {
+    grid: null,
+    feedback: null,
+    progress: null,
+    balanceEl: null,
+    sequence: IA_CONFIG.sequence.slice(),
+    index: 0,
+    completed: false,
+    gainTarget: IA_CONFIG.gain,
+    balance: 0,
+    revealed: false,
+  };
+
+  const videoGates = new Map();
+  let activeVideoGate = null;
+
+  const quizModal = document.querySelector('[data-modal]');
+  const quizModalContent = quizModal?.querySelector('[data-modal-content]');
+  const quizModalBackdrop = quizModal?.querySelector('[data-modal-backdrop]');
+  const modalCallbacks = { primary: null, secondary: null };
+  let modalOptions = { dismissible: true };
+
+  const emojiContainer = document.querySelector('[data-emoji-rain]');
+  let emojiCleanupTimer = null;
+  let manualResultTimer = null;
+  let iaResultTimer = null;
+
+  const offerModal = document.querySelector('[data-offer-modal]');
+  const offerTimerDisplay = offerModal?.querySelector('[data-offer-timer]');
+  let offerModalShown = false;
+  let offerTimerId = null;
+  let offerRemaining = 300;
+
+  const stickyCta = document.querySelector('[data-sticky-cta]');
+  let stickyHideTimer = null;
+
+  const preloadingController = createPreloadingController();
+  const iaActivationController = createIaActivationController();
+
+  let manualCompleted = false;
+  let summaryAnimated = false;
+
+  initManualGrid();
+  initGuidedGrid();
+  initVideoGates();
+  wireControls();
+  updateOfferTimerDisplay();
+
+  if (currentStep === 'preloading') {
+    preloadingController.start();
+  }
+  if (currentStep === 'ia-activate') {
+    iaActivationController.start();
   }
 
   function wireControls() {
@@ -124,16 +114,196 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const manualBtn = target.closest('[data-action="verify-manual"]');
       if (manualBtn) {
-        const round = Number(manualBtn.dataset.round);
+        const round = Number(manualBtn.dataset.round) || MANUAL_CONFIG.round;
         handleManualVerification(round, manualBtn);
         return;
       }
 
-      const checkoutLink = target.closest('a[data-hubla-link]');
-      if (checkoutLink) {
-        fbSafeTrack('InitiateCheckout');
+      if (target.closest('[data-modal-primary]')) {
+        event.preventDefault();
+        const callback = modalCallbacks.primary;
+        closeQuizModal();
+        callback?.();
+        return;
+      }
+
+      if (target.closest('[data-modal-secondary]')) {
+        event.preventDefault();
+        const callback = modalCallbacks.secondary;
+        closeQuizModal();
+        callback?.();
+        return;
+      }
+
+      if (
+        target.closest('[data-modal-close]') ||
+        (quizModalBackdrop && target.closest('[data-modal-backdrop]'))
+      ) {
+        event.preventDefault();
+        if (!modalOptions.dismissible) {
+          return;
+        }
+        closeQuizModal();
+        return;
+      }
+
+      if (target.closest('[data-offer-close]')) {
+        event.preventDefault();
+        closeOfferModal();
+        return;
+      }
+
+      const hublaLink = target.closest('[data-hubla-link]');
+      if (hublaLink) {
+        let origin = 'cta';
+        if (hublaLink.hasAttribute('data-sticky-cta-btn')) {
+          origin = 'sticky';
+        } else if (hublaLink.closest('[data-offer-modal]')) {
+          origin = 'offer-modal';
+        } else if (hublaLink.closest('[data-step="ia-summary"]')) {
+          origin = 'summary';
+        }
+        fbSafeTrackCustom('StickyCtaClick', { origin });
       }
     });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        if (isQuizModalOpen()) {
+          event.preventDefault();
+          if (!modalOptions.dismissible) {
+            return;
+          }
+          closeQuizModal();
+          return;
+        }
+        if (offerModal && !offerModal.hidden) {
+          event.preventDefault();
+          closeOfferModal();
+        }
+      }
+    });
+  }
+
+  function showSlide(step) {
+    if (!slideByStep.has(step)) return;
+    if (currentStep === step) return;
+
+    if (manualResultTimer) {
+      window.clearTimeout(manualResultTimer);
+      manualResultTimer = null;
+    }
+    if (iaResultTimer) {
+      window.clearTimeout(iaResultTimer);
+      iaResultTimer = null;
+    }
+
+    if (currentStep === 'preloading') {
+      preloadingController.stop();
+    }
+    if (currentStep === 'ia-activate') {
+      iaActivationController.stop();
+    }
+
+    if (activeVideoGate && activeVideoGate.step !== step) {
+      activeVideoGate.deactivate();
+      activeVideoGate = null;
+    }
+
+    slides.forEach((slide) => slide.classList.toggle('is-active', slide.dataset.step === step));
+
+    currentStep = step;
+    clearTimeout(autoTimer);
+
+    const gate = videoGates.get(step);
+    if (gate) {
+      gate.activate();
+      activeVideoGate = gate;
+    }
+
+    if (step === 'preloading') {
+      preloadingController.start();
+    }
+    if (step === 'ia-activate') {
+      iaActivationController.start();
+    }
+
+    if (step === 'manual-select-1') {
+      resetManualRound(true);
+    }
+
+    if (step === 'guided-select-1') {
+      resetGuidedRound();
+    }
+
+    if (step === IA_CONFIG.nextStep) {
+      animateSummaryCounters();
+    }
+
+    if (step === 'offer') {
+      // Scroll to top when entering offer section (testimonials)
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (!offerModalShown) {
+        offerModalShown = true;
+        openOfferModal();
+      }
+      showStickyCta();
+    } else {
+      hideStickyCta();
+      closeOfferModal();
+    }
+
+    const config = autoAdvance[step];
+    if (config?.next) {
+      autoTimer = window.setTimeout(() => showSlide(config.next), config.delay);
+    }
+
+    switch (step) {
+      case 'manual-select-1':
+        fbSafeTrackCustom('Quiz_Manual1_Start');
+        break;
+      case 'video-pre-ia':
+        fbSafeTrackCustom('Quiz_Manual1_Result_Viewed');
+        break;
+      case 'ia-activate':
+        fbSafeTrackCustom('IA_Activated');
+        break;
+      case 'guided-select-1':
+        fbSafeTrackCustom('Quiz_IA1_Start');
+        break;
+      case 'ia-summary':
+        fbSafeTrack('CompleteRegistration');
+        playCashSound();
+        break;
+      case 'offer':
+        fbSafeTrack('InitiateCheckout');
+        break;
+      default:
+        break;
+    }
+  }
+
+  function initManualGrid() {
+    const grid = document.querySelector('.number-grid[data-mode="manual"][data-round="1"]');
+    if (!grid) return;
+    manualState.grid = grid;
+    manualState.feedback =
+      document.querySelector('[data-manual-feedback="1"]') || attachManualFeedback(grid);
+    manualState.status = document.querySelector('[data-manual-status="1"]') || null;
+    populateNumberButtons(grid, (value, button) => toggleManualNumber(value, button));
+    updateManualFeedback();
+  }
+
+  function initGuidedGrid() {
+    const grid = document.querySelector('.number-grid[data-mode="guided"][data-sequence="1"]');
+    if (!grid) return;
+    guidedState.grid = grid;
+    guidedState.feedback = document.querySelector('[data-guided-feedback="1"]') || null;
+    guidedState.progress = document.querySelector(`[data-progress="${IA_CONFIG.progressKey}"]`);
+    guidedState.balanceEl = document.querySelector(`[data-guided-balance="${IA_CONFIG.balanceKey}"]`);
+    populateNumberButtons(grid, (value, button) => handleGuidedClick(value, button));
+    resetGuidedRound();
   }
 
   function initVideoGates() {
@@ -248,6 +418,18 @@ document.addEventListener('DOMContentLoaded', () => {
         retryCount = 0; // Reset retry count on successful load
       };
 
+      const resumePlayback = () => {
+        if (!gate.active || resetting || video.ended) return;
+        const attempt = video.play();
+        if (attempt && typeof attempt.catch === 'function') {
+          attempt.catch(() => {
+            if (gate.active && playButton) {
+              playButton.classList.remove('is-hidden');
+            }
+          });
+        }
+      };
+
       const handleEnded = () => {
         gate.active = false;
         window.removeEventListener('keydown', preventKeySkip, true);
@@ -269,7 +451,6 @@ document.addEventListener('DOMContentLoaded', () => {
           this.active = true;
           resetting = true;
           lastTime = 0;
-          retryCount = 0; // Reset retry count
           continueButton.disabled = true;
           continueButton.classList.add('is-hidden');
           if (hint) {
@@ -293,42 +474,27 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
               video.currentTime = 0;
             } catch (error) {
-              // Silently ignore - metadata may not be ready yet
+              video.load();
             }
           } else {
-            // Load video and set currentTime after metadata loads
             video.load();
-            const metadataHandler = () => {
-              try {
-                video.currentTime = 0;
-              } catch (e) {
-                // Ignore
-              }
-              video.removeEventListener('loadedmetadata', metadataHandler);
-            };
-            video.addEventListener('loadedmetadata', metadataHandler, { once: true });
           }
-          video.controls = false;
-          video.setAttribute('controlsList', 'nodownload noplaybackrate noremoteplayback');
-          video.setAttribute('disablePictureInPicture', '');
-          window.addEventListener('keydown', preventKeySkip, { capture: true, passive: false });
-          section.addEventListener('contextmenu', preventContextMenu);
-          video.addEventListener('contextmenu', preventContextMenu);
           window.setTimeout(() => {
             resetting = false;
-          }, 0);
+            refreshProgress();
+            resumePlayback();
+            window.addEventListener('keydown', preventKeySkip, true);
+            section.addEventListener('contextmenu', preventContextMenu);
+            video.addEventListener('contextmenu', preventContextMenu);
+          }, 40);
         },
         deactivate() {
-          if (!this.active) return;
           this.active = false;
           window.removeEventListener('keydown', preventKeySkip, true);
           section.removeEventListener('contextmenu', preventContextMenu);
           video.removeEventListener('contextmenu', preventContextMenu);
-           refreshProgress();
-          try {
+          if (!video.paused) {
             video.pause();
-          } catch (error) {
-            // Ignore silently.
           }
         },
         requestPlay() {
@@ -360,7 +526,13 @@ document.addEventListener('DOMContentLoaded', () => {
         hideLoading();
       });
 
-      // Removed automatic resumePlayback on pause to prevent infinite loops
+      video.addEventListener('pause', () => {
+        if (gate.active && !resetting && !video.ended) {
+          resumePlayback();
+        }
+        // Hide loading when paused
+        hideLoading();
+      });
 
       video.addEventListener('timeupdate', updateLastTime);
       video.addEventListener('seeking', enforceSeekLock);
@@ -377,7 +549,6 @@ document.addEventListener('DOMContentLoaded', () => {
       video.addEventListener('loadeddata', hideLoading);    // First frame loaded
       video.addEventListener('canplay', handleCanPlay);     // Enough buffer to start
       video.addEventListener('playing', hideLoading);       // Actually playing
-      video.addEventListener('pause', hideLoading);         // Paused (hide spinner)
 
       // Fallback: if video is playing for 500ms, force hide loading
       video.addEventListener('timeupdate', () => {
@@ -387,111 +558,419 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       continueButton.addEventListener('click', () => {
-        gate.deactivate();
+        const next = continueButton.getAttribute('data-next');
+        if (next) {
+          showSlide(next);
+        }
       });
 
       videoGates.set(step, gate);
     });
   }
 
-  function showSlide(step) {
-    if (!slideByStep.has(step)) return;
-    const nextGate = videoGates.get(step);
+  function toggleManualNumber(value, button) {
+    if (manualCompleted) return;
+    const { selected, limit } = manualState;
+    if (selected.has(value)) {
+      selected.delete(value);
+      button.classList.remove('selected');
+      playClickSound();
+    } else {
+      if (selected.size >= limit) {
+        flashManualLimit();
+        return;
+      }
+      selected.add(value);
+      button.classList.add('selected');
+      playClickSound();
 
-    if (activeVideoGate && activeVideoGate !== nextGate) {
-      activeVideoGate.deactivate();
-      activeVideoGate = null;
+      // Auto-advance when all 15 numbers are selected (like IA behavior)
+      if (selected.size === limit) {
+        updateManualFeedback('Sequência completa! Verificando resultado...', 'ready');
+        const verifyButton = document.querySelector('[data-action="verify-manual"]');
+        if (verifyButton) {
+          window.setTimeout(() => {
+            handleManualVerification(MANUAL_CONFIG.round, verifyButton);
+          }, 600);
+        }
+        return;
+      }
     }
+    updateManualFeedback();
+  }
 
-    if (modal) {
-      closeModal(true);
-    }
+  function updateManualFeedback(override, state) {
+    const { feedback, status, selected, limit } = manualState;
+    if (!feedback) return;
 
-    slides.forEach((slide) => slide.classList.toggle('is-active', slide.dataset.step === step));
-    clearTimeout(autoTimer);
-    if (nextGate) {
-      nextGate.activate();
-      activeVideoGate = nextGate;
-    }
-
-    const config = autoAdvance[step];
-    if (config?.next) {
-      autoTimer = window.setTimeout(() => showSlide(config.next), config.delay);
-    }
-
-    if (step === 'preloading' && !preloadingStarted) {
-      preloadingStarted = true;
-      runPreloadingSequence();
-    }
-
-    if (step === 'ia-activate') {
-      runIaActivationSequence();
-    }
-
-    if (step === 'manual-select-1' || step === 'manual-select-2') {
-      resetManualRound(Number(step.endsWith('2') ? 2 : 1));
-    }
-    if (step === 'guided-select-1') {
-      resetGuidedRound(1);
-    }
-    if (step === 'guided-select-2') {
-      resetGuidedRound(2);
-    }
-    if (step === 'ia-summary') {
-      startSummaryCounters();
-    }
-
-    // Scroll to top when entering offer section (testimonials)
-    if (step === 'offer') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    switch (step) {
-      case 'manual-select-1':
-        fbSafeTrackCustom('Quiz_Manual1_Start');
-        break;
-      case 'manual-select-2':
-        fbSafeTrackCustom('Quiz_Manual2_Start');
-        break;
-      case 'ia-activate':
-        fbSafeTrackCustom('IA_Activated');
-        break;
-      case 'guided-select-1':
-        fbSafeTrackCustom('Quiz_IA1_Start');
-        break;
-      case 'guided-select-2':
-        fbSafeTrackCustom('Quiz_IA2_Start');
-        break;
-      case 'ia-summary':
-        fbSafeTrack('CompleteRegistration');
-        break;
-      default:
-        break;
+    if (override) {
+      feedback.textContent = override;
+      if (state) {
+        feedback.dataset.state = state;
+      } else {
+        feedback.removeAttribute('data-state');
+      }
+    } else {
+      const remaining = limit - selected.size;
+      if (remaining <= 0) {
+        feedback.textContent = 'Pronto! Você completou os 15 números.';
+        feedback.dataset.state = 'ready';
+      } else if (remaining <= 3) {
+        feedback.textContent = `Faltam apenas ${remaining} número${remaining === 1 ? '' : 's'}.`;
+        feedback.dataset.state = 'warning';
+      } else {
+        feedback.textContent = 'Toque nos números até completar os 15 escolhidos.';
+        feedback.removeAttribute('data-state');
+      }
     }
 
-    // Update sticky button for mobile
-    if (stickyButtonManager) {
-      stickyButtonManager.show(step);
+    if (status) {
+      status.textContent = `Etapa 1 de 2 · ${selected.size}/${limit} selecionados`;
     }
   }
 
-  function initManualGrids() {
-    document.querySelectorAll('.number-grid[data-mode="manual"]').forEach((grid) => {
-      const round = Number(grid.dataset.round);
-      const feedback = document.querySelector(`[data-manual-feedback="${round}"]`);
-      const status = document.querySelector(`[data-manual-status="${round}"]`);
-      manualState.set(round, {
-        selected: new Set(),
-        limit: 15,
-        grid,
-        feedback,
-        status,
-        completed: false,
-        processing: false,
+  function flashManualLimit() {
+    const { feedback } = manualState;
+    if (!feedback) return;
+    feedback.dataset.state = 'error';
+    feedback.textContent = 'Você já escolheu 15 números.';
+    playErrorSound();
+    window.setTimeout(() => updateManualFeedback(), 1200);
+  }
+
+  function handleManualVerification(round, button) {
+    if (manualCompleted) {
+      showSlide(MANUAL_CONFIG.nextStep);
+      return;
+    }
+
+    const { selected, limit } = manualState;
+    if (selected.size !== limit) {
+      updateManualFeedback('Selecione os 15 números antes de continuar.', 'error');
+      button.classList.add('shake');
+      playErrorSound();
+      window.setTimeout(() => button.classList.remove('shake'), 400);
+      return;
+    }
+
+    updateManualFeedback('Analisando sua combinação manual...', 'warning');
+    button.disabled = true;
+
+    window.setTimeout(() => {
+      button.disabled = false;
+      manualCompleted = true;
+      manualState.grid?.querySelectorAll('button').forEach((btn) => {
+        btn.disabled = true;
       });
-      populateNumberButtons(grid, (value, button) => toggleManualNumber(round, value, button));
-      updateManualFeedback(round);
+      showManualResultModal();
+    }, 900);
+  }
+
+  function resetManualRound(force = false) {
+    if (!manualState.grid) return;
+    if (force) {
+      manualCompleted = false;
+    } else if (manualCompleted) {
+      return;
+    }
+    manualState.selected.clear();
+    manualState.grid.querySelectorAll('button').forEach((btn) => {
+      btn.disabled = false;
+      btn.classList.remove('selected');
     });
+    updateManualFeedback();
+  }
+
+  function handleGuidedClick(value, button) {
+    if (guidedState.completed) return;
+    const expected = guidedState.sequence[guidedState.index];
+    if (value === expected) {
+      button.classList.remove('guided-target');
+      button.classList.add('guided-success');
+      button.disabled = true;
+      guidedState.index += 1;
+      updateGuidedProgress();
+      updateGuidedBalance();
+      playClickSound();
+
+      if (guidedState.index >= guidedState.sequence.length) {
+        guidedState.completed = true;
+        guidedState.revealed = false;
+        guidedState.grid?.querySelectorAll('button').forEach((btn) => (btn.disabled = true));
+        updateGuidedFeedback('Sequência concluída! Calculando resultado da IA...');
+        window.setTimeout(showIaResultModal, 700);
+      } else {
+        updateGuidedFeedback(
+          `Perfeito! Número ${String(value).padStart(2, '0')} confirmado. Próximo destacado na grade.`
+        );
+        highlightNextGuided();
+      }
+    } else {
+      button.classList.add('guided-error');
+      playErrorSound();
+      updateGuidedFeedback('Ops! Clique apenas no número destacado pela IA.');
+      window.setTimeout(() => button.classList.remove('guided-error'), 320);
+    }
+  }
+
+  function resetGuidedRound() {
+    guidedState.index = 0;
+    guidedState.completed = false;
+    guidedState.balance = 0;
+    guidedState.revealed = false;
+    if (guidedState.grid) {
+      guidedState.grid.querySelectorAll('button').forEach((btn) => {
+        btn.disabled = false;
+        btn.classList.remove('guided-target', 'guided-success', 'guided-error');
+      });
+    }
+    updateGuidedBalance();
+    updateGuidedProgress();
+    updateGuidedFeedback('Vamos começar! Clique no número destacado.');
+    highlightNextGuided();
+  }
+
+  function highlightNextGuided() {
+    if (!guidedState.grid) return;
+    const nextValue = guidedState.sequence[guidedState.index];
+    guidedState.grid.querySelectorAll('button').forEach((btn) => btn.classList.remove('guided-target'));
+    if (typeof nextValue === 'number') {
+      const targetBtn = guidedState.grid.querySelector(`button[data-value="${nextValue}"]`);
+      if (targetBtn) {
+        targetBtn.classList.add('guided-target');
+      }
+    }
+  }
+
+  function updateGuidedProgress() {
+    if (!guidedState.progress) return;
+    const percent = Math.min(
+      (guidedState.index / guidedState.sequence.length) * 100,
+      100
+    );
+    guidedState.progress.style.width = `${percent}%`;
+  }
+
+  function updateGuidedBalance() {
+    if (!guidedState.balanceEl) return;
+    const value = guidedState.revealed ? guidedState.gainTarget : 0;
+    guidedState.balance = value;
+    guidedState.balanceEl.textContent = formatCurrency(value);
+  }
+
+  function updateGuidedFeedback(message) {
+    if (!guidedState.feedback) return;
+    guidedState.feedback.textContent = message;
+  }
+
+  function showManualResultModal() {
+    playFailSound();
+    fbSafeTrackCustom('Quiz_Manual1_Result');
+    const content = `
+      <div class="result-modal result-modal--manual">
+        <div class="result-modal__icon" aria-hidden="true">😔</div>
+        <h3 class="result-modal__headline">
+          <span class="result-modal__status result-modal__status--fail">✖️ Você teve ${MANUAL_CONFIG.hits} acertos.</span>
+        </h3>
+        <p class="result-modal__message">Não foi dessa vez, tente na próxima rodada!</p>
+        <p class="result-modal__note">Avançando automaticamente...</p>
+      </div>
+    `;
+    openQuizModal(content, {}, { dismissible: false });
+    manualResultTimer = window.setTimeout(() => {
+      manualResultTimer = null;
+      closeQuizModal();
+      showSlide(MANUAL_CONFIG.nextStep);
+    }, 1800);
+  }
+
+  function showIaResultModal() {
+    playCashSound();
+    startEmojiRain();
+    guidedState.revealed = true;
+    updateGuidedBalance();
+    fbSafeTrackCustom('Quiz_IA1_Result');
+    const content = `
+      <div class="result-modal result-modal--success">
+        <div class="result-modal__icon" aria-hidden="true">🏆</div>
+        <h3 class="result-modal__headline">
+          <span class="result-modal__status result-modal__status--success">✅ IA garantiu ${IA_CONFIG.hits} acertos!</span>
+        </h3>
+        <p class="result-modal__message">Saldo simulado de ${formatCurrency(
+          IA_CONFIG.gain
+        )} liberado seguindo a sequência inteligente.</p>
+        <p class="result-modal__note">Avançando automaticamente...</p>
+      </div>
+    `;
+    openQuizModal(content, {}, { dismissible: false });
+    iaResultTimer = window.setTimeout(() => {
+      iaResultTimer = null;
+      closeQuizModal();
+      showSlide(IA_CONFIG.nextStep);
+    }, 2000);
+  }
+
+  function openQuizModal(content, callbacks = {}, options = {}) {
+    if (!quizModal || !quizModalContent) return;
+    quizModalContent.innerHTML = content;
+    modalCallbacks.primary = callbacks.onPrimary || null;
+    modalCallbacks.secondary = callbacks.onSecondary || null;
+    modalOptions.dismissible = options.dismissible !== false;
+    quizModal.hidden = false;
+    requestAnimationFrame(() => quizModal.setAttribute('data-visible', 'true'));
+    window.setTimeout(() => {
+      const autoFocus = quizModalContent.querySelector('[data-modal-autofocus]');
+      if (autoFocus instanceof HTMLElement) {
+        autoFocus.focus();
+      }
+    }, 40);
+    document.body.classList.add('quiz-modal-open');
+  }
+
+  function closeQuizModal() {
+    if (!quizModal || quizModal.hidden) return;
+    quizModal.setAttribute('data-visible', 'false');
+    window.setTimeout(() => {
+      if (quizModal.getAttribute('data-visible') === 'false') {
+        quizModal.hidden = true;
+        quizModal.removeAttribute('data-visible');
+        quizModalContent.innerHTML = '';
+      }
+    }, 220);
+    modalCallbacks.primary = null;
+    modalCallbacks.secondary = null;
+    modalOptions.dismissible = true;
+    document.body.classList.remove('quiz-modal-open');
+  }
+
+  function isQuizModalOpen() {
+    return Boolean(quizModal && !quizModal.hidden);
+  }
+
+  function startEmojiRain() {
+    if (!emojiContainer) return;
+    emojiContainer.hidden = false;
+    const emojis = ['💰', '💸', '🎯', '🏆'];
+    const total = 18;
+    for (let i = 0; i < total; i += 1) {
+      const item = document.createElement('span');
+      item.className = 'emoji-rain__item';
+      item.textContent = emojis[i % emojis.length];
+      item.style.left = `${Math.random() * 100}%`;
+      item.style.animationDelay = `${Math.random() * 0.8}s`;
+      item.style.animationDuration = `${2.4 + Math.random() * 1.2}s`;
+      emojiContainer.appendChild(item);
+    }
+    window.clearTimeout(emojiCleanupTimer);
+    emojiCleanupTimer = window.setTimeout(() => {
+      emojiContainer.innerHTML = '';
+      emojiContainer.hidden = true;
+    }, 4200);
+  }
+
+  function showStickyCta() {
+    if (!stickyCta) return;
+    window.clearTimeout(stickyHideTimer);
+    stickyCta.classList.remove('is-hidden');
+    requestAnimationFrame(() => stickyCta.classList.add('sticky-cta--visible'));
+  }
+
+  function hideStickyCta() {
+    if (!stickyCta) return;
+    stickyCta.classList.remove('sticky-cta--visible');
+    window.clearTimeout(stickyHideTimer);
+    stickyHideTimer = window.setTimeout(() => {
+      stickyCta.classList.add('is-hidden');
+    }, 240);
+  }
+
+  function animateSummaryCounters() {
+    if (summaryAnimated) return;
+    summaryAnimated = true;
+    const container = slideByStep.get(IA_CONFIG.nextStep);
+    if (!container) return;
+    container.querySelectorAll('[data-counter]').forEach((element) => {
+      const target = Number(element.dataset.target);
+      if (!Number.isFinite(target)) return;
+      const format = element.dataset.format;
+      animateCounter(element, target, format);
+    });
+  }
+
+  function animateCounter(element, target, format) {
+    const duration = 1600;
+    const start = performance.now();
+
+    const step = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = easeOutCubic(progress);
+      const value = target * eased;
+      if (format === 'currency') {
+        element.textContent = formatCurrency(value);
+      } else {
+        element.textContent = Math.round(value).toLocaleString('pt-BR');
+      }
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    };
+
+    requestAnimationFrame(step);
+  }
+
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function openOfferModal() {
+    if (!offerModal) return;
+    offerModal.hidden = false;
+    requestAnimationFrame(() => offerModal.setAttribute('data-visible', 'true'));
+    startOfferTimer();
+  }
+
+  function closeOfferModal() {
+    if (!offerModal || offerModal.hidden) return;
+    offerModal.setAttribute('data-visible', 'false');
+    window.setTimeout(() => {
+      if (offerModal.getAttribute('data-visible') === 'false') {
+        offerModal.hidden = true;
+        offerModal.removeAttribute('data-visible');
+      }
+    }, 220);
+  }
+
+  function startOfferTimer() {
+    if (!offerTimerDisplay) return;
+    updateOfferTimerDisplay();
+    if (offerTimerId) return;
+    offerTimerId = window.setInterval(() => {
+      if (offerRemaining <= 0) {
+        offerRemaining = 0;
+        updateOfferTimerDisplay();
+        stopOfferTimer();
+        return;
+      }
+      offerRemaining -= 1;
+      updateOfferTimerDisplay();
+    }, 1000);
+  }
+
+  function stopOfferTimer() {
+    if (offerTimerId) {
+      window.clearInterval(offerTimerId);
+      offerTimerId = null;
+    }
+  }
+
+  function updateOfferTimerDisplay() {
+    if (!offerTimerDisplay) return;
+    const minutes = Math.floor(offerRemaining / 60);
+    const seconds = offerRemaining % 60;
+    offerTimerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(
+      2,
+      '0'
+    )}`;
   }
 
   function populateNumberButtons(container, onClick) {
@@ -506,489 +985,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function toggleManualNumber(round, value, button) {
-    const state = manualState.get(round);
-    if (!state) return;
-    const { selected, limit } = state;
-
-    if (selected.has(value)) {
-      selected.delete(value);
-      button.classList.remove('selected');
-      playClickSound();
-    } else {
-      if (selected.size >= limit) {
-        flashManualLimit(round);
-        return;
-      }
-      selected.add(value);
-      button.classList.add('selected');
-      playClickSound();
-
-      // Auto-advance when all 15 numbers are selected (like IA behavior)
-      if (selected.size === limit) {
-        updateManualFeedback(round, 'Sequência completa! Verificando resultado...');
-        window.setTimeout(() => {
-          const verifyButton = document.querySelector(`[data-action="verify-manual"][data-round="${round}"]`);
-          if (verifyButton) {
-            handleManualVerification(round, verifyButton);
-          }
-        }, 600); // Same delay as guided rounds (line 669)
-        return;
-      }
-    }
-    updateManualFeedback(round);
-  }
-
-  function updateManualFeedback(round, override) {
-    const state = manualState.get(round);
-    if (!state) return;
-    const feedback = state.feedback;
-    if (!feedback) return;
-
-    if (override) {
-      feedback.textContent = override;
-      feedback.dataset.state = 'error';
-      return;
-    }
-
-    const remaining = state.limit - state.selected.size;
-    if (remaining === 0) {
-      feedback.textContent = 'Tudo pronto! Clique em "Verificar resultado".';
-      feedback.dataset.state = 'ready';
-    } else {
-      feedback.textContent = `Selecione mais ${remaining} número${remaining > 1 ? 's' : ''}.`;
-      feedback.dataset.state = 'default';
-    }
-    if (state.status) {
-      state.status.textContent = `Rodada ${round} de 2 • ${state.selected.size}/15 escolhidos`;
-    }
-  }
-
-  function flashManualLimit(round) {
-    const state = manualState.get(round);
-    if (!state?.feedback) return;
-    state.feedback.textContent = 'Você já escolheu 15 números.';
-    state.feedback.dataset.state = 'warning';
-    window.setTimeout(() => updateManualFeedback(round), 1400);
-  }
-
-  function handleManualVerification(round, button) {
-    const state = manualState.get(round);
-    if (!state || state.processing) return;
-    if (state.selected.size !== state.limit) {
-      updateManualFeedback(round, 'Selecione os 15 números antes de continuar.');
-      button.classList.add('shake');
-      playErrorSound();
-      window.setTimeout(() => button.classList.remove('shake'), 400);
-      return;
-    }
-    const config = manualRounds[round];
-    if (!config) return;
-    state.processing = true;
-    state.completed = true;
-    manualSummaryTotal += config.hits || 0;
-    openResultModal({
-      role: 'manual',
-      icon: config.result.icon,
-      title: config.result.title,
-      message: config.result.message,
-      note: config.result.note,
-      sound: config.result.sound,
-    });
-    fbSafeTrackCustom(round === 1 ? 'Quiz_Manual1_Result' : 'Quiz_Manual2_Result');
-    window.setTimeout(() => {
-      closeModal();
-      showSlide(config.next);
-      state.processing = false;
-    }, 3000);
-  }
-
-  function resetManualRound(round) {
-    const state = manualState.get(round);
-    if (!state) return;
-    state.selected.clear();
-    state.grid.querySelectorAll('button.selected').forEach((btn) => btn.classList.remove('selected'));
-    state.processing = false;
-    state.completed = false;
-    updateManualFeedback(round);
-  }
-
-  function initGuidedGrids() {
-    document.querySelectorAll('.number-grid[data-mode="guided"]').forEach((grid) => {
-      const sequenceId = Number(grid.dataset.sequence);
-      const round = guidedRounds[sequenceId];
-      if (!round) return;
-      const feedback =
-        document.querySelector(`[data-guided-feedback="${sequenceId}"]`) || grid.previousElementSibling;
-      guidedState.set(sequenceId, {
-        id: sequenceId,
-        grid,
-        index: 0,
-        sequence: round.sequence,
-        feedback,
-        progress: document.querySelector(`[data-progress="guided-${sequenceId}"]`),
-        balance: document.querySelector(`[data-guided-balance="${sequenceId}"]`),
-        balanceValue: 0,
-        completed: false,
-        next: round.next,
-        hits: round.hits,
-        payout: round.payout,
-      });
-      populateNumberButtons(grid, (value, button) => handleGuidedClick(sequenceId, value, button));
-    });
-  }
-
-  function resetGuidedRound(sequenceId) {
-    const state = guidedState.get(sequenceId);
-    if (!state) return;
-    state.index = 0;
-    state.completed = false;
-    state.grid.querySelectorAll('button').forEach((btn) => {
-      btn.disabled = false;
-      btn.classList.remove('guided-target', 'guided-success', 'guided-error');
-    });
-    state.balanceValue = sequenceId === 1 ? 0 : guidedSummaryTotal;
-    updateGuidedBalance(state);
-    updateGuidedFeedback(sequenceId, 'Clique no número indicado pela IA.');
-    updateGuidedProgress(sequenceId);
-    highlightNextGuided(sequenceId);
-  }
-
-  function highlightNextGuided(sequenceId) {
-    const state = guidedState.get(sequenceId);
-    if (!state) return;
-    const nextValue = state.sequence[state.index];
-    state.grid.querySelectorAll('button').forEach((btn) => {
-      btn.classList.remove('guided-target');
-    });
-    if (typeof nextValue === 'number') {
-      const targetBtn = state.grid.querySelector(`button[data-value="${nextValue}"]`);
-      if (targetBtn) {
-        targetBtn.classList.add('guided-target');
-      }
-    }
-  }
-
-  function handleGuidedClick(sequenceId, value, button) {
-    const state = guidedState.get(sequenceId);
-    if (!state || state.completed) return;
-    const expected = state.sequence[state.index];
-    if (value === expected) {
-      button.classList.remove('guided-target');
-      button.classList.add('guided-success');
-      button.disabled = true;
-      state.index += 1;
-      updateGuidedProgress(sequenceId);
-      playClickSound();
-      if (state.index >= state.sequence.length) {
-        state.completed = true;
-        updateGuidedFeedback(sequenceId, 'Sequência concluída! Calculando resultado...');
-        window.setTimeout(() => completeGuidedRound(sequenceId), 600);
-      } else {
-        updateGuidedFeedback(
-          sequenceId,
-          `Perfeito! Número ${String(value).padStart(2, '0')} confirmado. Próximo indicado em destaque.`
-        );
-        highlightNextGuided(sequenceId);
-      }
-    } else {
-      button.classList.add('guided-error');
-      playErrorSound();
-      updateGuidedFeedback(sequenceId, 'Ops! Clique apenas no número destacado pela IA.');
-      window.setTimeout(() => button.classList.remove('guided-error'), 320);
-    }
-  }
-
-  function updateGuidedProgress(sequenceId) {
-    const state = guidedState.get(sequenceId);
-    if (!state || !state.progress) return;
-    const percent = Math.min((state.index / state.sequence.length) * 100, 100);
-    state.progress.style.width = `${percent}%`;
-  }
-
-  function updateGuidedFeedback(sequenceId, message) {
-    const state = guidedState.get(sequenceId);
-    if (!state || !state.feedback) return;
-    state.feedback.textContent = message;
-  }
-
-  function updateGuidedBalance(state) {
-    if (!state?.balance) return;
-    state.balance.textContent = currencyFormatter.format(state.balanceValue || 0);
-  }
-
-  function completeGuidedRound(sequenceId) {
-    const state = guidedState.get(sequenceId);
-    if (!state) return;
-    state.balanceValue = guidedSummaryTotal + (state.payout || 0);
-    guidedSummaryTotal = state.balanceValue;
-    updateGuidedBalance(state);
-    openResultModal({
-      role: 'success',
-      icon: '🎉',
-      title: `Você teve ${state.hits} acertos!`,
-      message: `Ganhou ${currencyFormatter.format(state.payout || 0)}.`,
-      note: 'Avançando automaticamente...',
-      sound: 'cash',
-      emojiRain: true,
-    });
-    fbSafeTrackCustom(sequenceId === 1 ? 'Quiz_IA1_Result' : 'Quiz_IA2_Result');
-    window.setTimeout(() => {
-      closeModal();
-      if (state.next) {
-        showSlide(state.next);
-      }
-    }, 3200);
-  }
-
-  function runIaActivationSequence() {
-    if (iaActivationStarted) return;
-    iaActivationStarted = true;
-    const stepsWrapper = document.querySelector('[data-ia-steps]');
-    if (!stepsWrapper) return;
-    const steps = Array.from(stepsWrapper.querySelectorAll('[data-ia-step]'));
-    const badge = document.querySelector('[data-ia-badge]');
-    const title = document.querySelector('[data-ia-title]');
-    const subtitle = document.querySelector('[data-ia-subtitle]');
-    const status = document.querySelector('[data-ia-status]');
-    const stepDuration = 1300;
-
-    steps.forEach((step) => {
-      step.setAttribute('data-state', 'pending');
-      const bar = step.querySelector('.ia-step__bar span');
-      if (bar) {
-        bar.style.transition = 'none';
-        bar.style.width = '0%';
-      }
-    });
-
-    const advance = (index) => {
-      if (index >= steps.length) {
-        if (title) {
-          title.textContent = 'IA carregada com sucesso';
-        }
-        if (status) {
-          status.textContent = 'IA ativada. Direcionando você para a sequência guiada.';
-        }
-        if (badge) {
-          badge.hidden = false;
-        }
-        if (subtitle) {
-          subtitle.textContent = 'Conectando algoritmos estatísticos aos seus jogos...';
-        }
-        return;
-      }
-
-      const current = steps[index];
-      current.setAttribute('data-state', 'active');
-      const feedback = current.getAttribute('data-ia-status');
-      if (status && feedback) {
-        status.textContent = feedback;
-      }
-      const bar = current.querySelector('.ia-step__bar span');
-      if (bar) {
-        bar.style.transition = 'none';
-        bar.style.width = '0%';
-        // force reflow
-        void bar.offsetWidth;
-        bar.style.transition = 'width 1s ease';
-        requestAnimationFrame(() => {
-          bar.style.width = '100%';
-        });
-      }
-
-      window.setTimeout(() => {
-        current.setAttribute('data-state', 'done');
-        advance(index + 1);
-      }, stepDuration);
-    };
-
-    advance(0);
-  }
-
-  function runPreloadingSequence() {
-    const steps = Array.from(document.querySelectorAll('[data-preloading-step]'));
-    if (!steps.length) {
-      window.setTimeout(() => showSlide('video-manual-intro'), 1200);
-      return;
-    }
-    const stepDuration = 1150;
-    steps.forEach((step) => step.setAttribute('data-state', 'pending'));
-    const animateStep = (index) => {
-      if (index >= steps.length) {
-        window.setTimeout(() => showSlide('video-manual-intro'), 450);
-        return;
-      }
-      const stepEl = steps[index];
-      stepEl.setAttribute('data-state', 'active');
-      const bar = stepEl.querySelector('.preloading-step__bar span');
-      if (bar) {
-        bar.style.transition = 'none';
-        bar.style.width = '0%';
-        bar.getBoundingClientRect();
-        bar.style.transition = 'width 1s ease';
-        requestAnimationFrame(() => {
-          bar.style.width = '100%';
-        });
-      }
-      window.setTimeout(() => {
-        stepEl.setAttribute('data-state', 'done');
-        animateStep(index + 1);
-      }, stepDuration);
-    };
-    animateStep(0);
-  }
-
-  function openResultModal({
-    role = 'manual',
-    icon = 'ℹ️',
-    title = '',
-    message = '',
-    note = '',
-    sound,
-    emojiRain: withEmoji = false,
-  } = {}) {
-    if (!modal || !modalContent) return;
-    modalContent.innerHTML = '';
-    const wrapper = document.createElement('div');
-    wrapper.className = `result-modal result-modal--${role}`;
-
-    if (icon) {
-      const iconEl = document.createElement('span');
-      iconEl.className = 'result-modal__icon';
-      iconEl.textContent = icon;
-      wrapper.appendChild(iconEl);
-    }
-
-    if (title) {
-      const titleEl = document.createElement('h3');
-      titleEl.className = 'result-modal__title';
-      titleEl.textContent = title;
-      wrapper.appendChild(titleEl);
-    }
-
-    if (message) {
-      const messageEl = document.createElement('p');
-      messageEl.className = 'result-modal__message';
-      messageEl.textContent = message;
-      wrapper.appendChild(messageEl);
-    }
-
-    if (note) {
-      const noteEl = document.createElement('span');
-      noteEl.className = 'result-modal__note';
-      noteEl.textContent = note;
-      wrapper.appendChild(noteEl);
-    }
-
-    modalContent.appendChild(wrapper);
-    modal.dataset.visible = 'false';
-    modal.removeAttribute('hidden');
-    requestAnimationFrame(() => {
-      modal.dataset.visible = 'true';
-    });
-
-    if (sound === 'cash') {
-      playCashSound();
-    } else if (sound === 'fail') {
-      playFailSound();
-    } else if (sound === 'click') {
-      playClickSound();
-    }
-
-    if (withEmoji) {
-      spawnEmojiRain();
-    }
-  }
-
-  function closeModal(immediate = false) {
-    if (!modal) return;
-    if (immediate) {
-      modal.dataset.visible = 'false';
-      modal.setAttribute('hidden', 'true');
-      if (modalContent) {
-        modalContent.innerHTML = '';
-      }
-      hideEmojiRain();
-      return;
-    }
-    modal.dataset.visible = 'false';
-    window.setTimeout(() => {
-      modal.setAttribute('hidden', 'true');
-      if (modalContent) {
-        modalContent.innerHTML = '';
-      }
-      hideEmojiRain();
-    }, 260);
-  }
-
-  function spawnEmojiRain() {
-    if (!emojiRain) return;
-    hideEmojiRain();
-    emojiRain.removeAttribute('hidden');
-    const total = 16;
-    for (let i = 0; i < total; i += 1) {
-      const item = document.createElement('span');
-      item.className = 'emoji-rain__item';
-      item.textContent = emojiChoices[Math.floor(Math.random() * emojiChoices.length)];
-      item.style.left = `${Math.random() * 100}%`;
-      item.style.animationDelay = `${Math.random() * 0.6}s`;
-      item.style.fontSize = `${1.7 + Math.random() * 0.9}rem`;
-      emojiRain.appendChild(item);
-    }
-    window.setTimeout(() => hideEmojiRain(), 3400);
-  }
-
-  function hideEmojiRain() {
-    if (!emojiRain) return;
-    emojiRain.setAttribute('hidden', 'true');
-    emojiRain.innerHTML = '';
-  }
-
-  function startSummaryCounters() {
-    if (summaryAnimated) return;
-    summaryAnimated = true;
-    const counters = document.querySelectorAll('[data-counter]');
-    counters.forEach((element) => {
-      const key = element.dataset.counter;
-      const format = element.dataset.format || (key?.startsWith('ia-') ? 'currency' : 'number');
-      let target = Number(element.dataset.target) || 0;
-      if (key === 'manual-total') {
-        target = manualSummaryTotal || target;
-      } else if (key === 'ia-total' || key === 'ia-cash') {
-        target = guidedSummaryTotal || target;
-      }
-      animateCounter(element, target, { format });
-    });
-  }
-
-  function animateCounter(element, target, { format = 'number', duration = 1800 } = {}) {
-    const start = performance.now();
-    const from = 0;
-    const step = (now) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = easeOutCubic(progress);
-      const value = from + (target - from) * eased;
-      element.textContent = formatValue(value, format);
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        element.textContent = formatValue(target, format);
-      }
-    };
-    requestAnimationFrame(step);
-  }
-
-  function formatValue(value, format) {
-    if (format === 'currency') {
-      return currencyFormatter.format(value);
-    }
-    return Math.round(value).toString();
-  }
-
-  function easeOutCubic(t) {
-    return 1 - (1 - t) ** 3;
+  function attachManualFeedback(grid) {
+    const feedback = document.createElement('p');
+    feedback.className = 'validation-message';
+    feedback.setAttribute('aria-live', 'polite');
+    grid.insertAdjacentElement('afterend', feedback);
+    return feedback;
   }
 
   function playClickSound() {
@@ -1012,6 +1014,14 @@ document.addEventListener('DOMContentLoaded', () => {
       ToneGenerator.playSequence([180, 140, 110], 0.14, 0.08, 'error');
     });
   }
+
+  const audioClips = {
+    click: 'money-pickup-2-89563.mp3',
+    cash: 'cashier-quotka-chingquot-sound-effect-129698.mp3',
+    fail: 'error-126627.mp3',
+  };
+
+  const audioCache = new Map();
 
   function playAudioClip(key, volume = 1, fallback) {
     const src = audioClips[key];
@@ -1099,225 +1109,147 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   })();
 
-  // ========================================
-  // Quiz Sticky Button Logic (Mobile)
-  // ========================================
-  const stickyButtonManager = (function() {
-    const stickyContainer = document.querySelector('[data-quiz-sticky-button]');
-    const buttonSlot = document.querySelector('[data-sticky-button-slot]');
+  function formatCurrency(value) {
+    return currencyFormatter.format(Math.max(0, value));
+  }
 
-    if (!stickyContainer || !buttonSlot) return null;
-
-    let currentButton = null;
-    let currentButtonOriginalParent = null;
-    let currentStep = null;
-    let showTimeout = null;
-
-    // Map of steps to their button selectors
-    const buttonSelectors = {
-      'intro': '[data-next="preloading"]',
-      'video-manual-intro': '[data-role="video-continue"][data-next="manual-select-1"]',
-      // 'manual-select-1' and 'manual-select-2' removed - auto-advance on 15th number
-      'video-pre-ia': '[data-role="video-continue"][data-next="ia-activate"]',
-      'ia-summary': '[data-next="video-post-ia"]',
-      'video-post-ia': '[data-role="video-continue"][data-next="offer"]',
-      // 'offer' is skipped - has separate sticky CTA
-    };
-
-    function returnButtonToOriginal() {
-      // Return button to its ORIGINAL slide, not current slide
-      if (currentButton && currentButtonOriginalParent) {
-        // Check if original parent still exists in DOM
-        if (document.body.contains(currentButtonOriginalParent)) {
-          currentButtonOriginalParent.appendChild(currentButton);
-        }
-        currentButton = null;
-        currentButtonOriginalParent = null;
-        currentStep = null;
-      }
+  function createIaActivationController() {
+    const container = document.querySelector('[data-ia-steps]');
+    const statusEl = document.querySelector('[data-ia-status]');
+    if (!container || !statusEl) {
+      return { start: () => {}, stop: () => {} };
     }
+    const steps = Array.from(container.querySelectorAll('[data-ia-step]'));
+    const defaultStatus = statusEl.textContent || '';
+    const statuses = steps.map((step) => step.dataset.iaStatus || defaultStatus);
+    let timers = [];
+    let running = false;
 
-    function hideSticky() {
-      clearTimeout(showTimeout);
-      stickyContainer.classList.add('is-hidden');
-      returnButtonToOriginal();
-    }
-
-    function showSticky(step) {
-      // CRITICAL: Always return previous button first
-      returnButtonToOriginal();
-
-      // Skip offer section (has its own sticky CTA)
-      if (step === 'offer') {
-        hideSticky();
-        return;
-      }
-
-      // Check if this step has an eligible button
-      const buttonSelector = buttonSelectors[step];
-      if (!buttonSelector) {
-        hideSticky();
-        return;
-      }
-
-      // Wait for DOM to update (nextTick)
-      requestAnimationFrame(() => {
-        // Find the button in the active slide
-        const activeSlide = document.querySelector(`[data-step="${step}"].is-active`);
-        if (!activeSlide) {
-          hideSticky();
-          return;
+    const reset = () => {
+      steps.forEach((step) => {
+        step.removeAttribute('data-state');
+        const bar = step.querySelector('.ia-step__bar span');
+        if (bar) {
+          bar.style.width = '0%';
         }
-
-        const button = activeSlide.querySelector(buttonSelector);
-        if (!button) {
-          console.warn(`Sticky button not found for step: ${step}, selector: ${buttonSelector}`);
-          hideSticky();
-          return;
-        }
-
-        // For video steps, only show sticky after video ends
-        const isVideoStep = step.includes('video');
-        if (isVideoStep) {
-          // Check if button is still hidden/disabled (video not finished)
-          if (button.hasAttribute('hidden') || button.classList.contains('is-hidden') || button.disabled) {
-            // Don't show sticky yet - button not ready
-            hideSticky();
-
-            // Setup observer to show sticky when button becomes visible
-            const observer = new MutationObserver((mutations) => {
-              const isNowVisible = !button.hasAttribute('hidden') &&
-                                  !button.classList.contains('is-hidden') &&
-                                  !button.disabled;
-
-              if (isNowVisible) {
-                observer.disconnect();
-                // Trigger sticky show now that video finished
-                showSticky(step);
-              }
-            });
-
-            observer.observe(button, {
-              attributes: true,
-              attributeFilter: ['hidden', 'class', 'disabled']
-            });
-
-            return;
-          }
-        }
-
-        // For manual select steps, only show when all numbers selected
-        const isManualStep = step.includes('manual-select');
-        if (isManualStep) {
-          // Get round number
-          const round = step.endsWith('2') ? 2 : 1;
-          const state = manualState.get(round);
-
-          // Check if all numbers are selected
-          if (state && state.selected.size < 15) {
-            // Don't show sticky yet - not all numbers selected
-            hideSticky();
-
-            // Setup observer to watch manual selection
-            const checkManualComplete = () => {
-              if (state.selected.size === 15) {
-                // All numbers selected, show sticky
-                showSticky(step);
-              }
-            };
-
-            // Listen for number selections (poor man's observer via interval)
-            const manualInterval = setInterval(() => {
-              if (state.selected.size === 15) {
-                clearInterval(manualInterval);
-                showSticky(step);
-              }
-              // Stop if slide changed
-              const stillActive = document.querySelector(`[data-step="${step}"].is-active`);
-              if (!stillActive) {
-                clearInterval(manualInterval);
-              }
-            }, 300);
-
-            return;
-          }
-        }
-
-        // Store original parent and step
-        currentButtonOriginalParent = button.parentElement;
-        currentButton = button;
-        currentStep = step;
-
-        // Add click listener to hide sticky when button is clicked
-        const clickHandler = () => {
-          hideSticky();
-          button.removeEventListener('click', clickHandler);
-        };
-        button.addEventListener('click', clickHandler, { once: true });
-
-        // Move button to sticky container
-        buttonSlot.appendChild(button);
-
-        // Show sticky with delay for motion effect
-        clearTimeout(showTimeout);
-        showTimeout = setTimeout(() => {
-          stickyContainer.classList.remove('is-hidden');
-        }, 300); // 300ms delay for smooth entrance
       });
-    }
+      statusEl.textContent = defaultStatus;
+    };
 
     return {
-      show: showSticky,
-      hide: hideSticky
-    };
-  })();
-
-  // ========================================
-  // Sticky CTA Logic
-  // ========================================
-  (function initStickyCta() {
-    const stickyCta = document.querySelector('[data-sticky-cta]');
-    const stickyCtaBtn = document.querySelector('[data-sticky-cta-btn]');
-    const offerSection = document.querySelector('[data-step="offer"]');
-
-    // Observe the pricing element specifically (the "paywall")
-    const pricingElement = offerSection ? offerSection.querySelector('.offer-pricing') : null;
-
-    if (!stickyCta || !pricingElement) return;
-
-    // Track if user has scrolled past the paywall
-    let hasPassedPaywall = false;
-
-    // IntersectionObserver to detect when pricing element is in/out of view
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          // When pricing is NOT intersecting (user scrolled past the paywall)
-          if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
-            // User scrolled down past the paywall
-            hasPassedPaywall = true;
-            stickyCta.classList.remove('is-hidden');
-          } else if (entry.isIntersecting && hasPassedPaywall) {
-            // User scrolled back up to the paywall
-            stickyCta.classList.add('is-hidden');
-          }
+      start() {
+        if (running) return;
+        running = true;
+        reset();
+        steps.forEach((step, index) => {
+          const activateDelay = index * 900;
+          const completeDelay = activateDelay + 640;
+          timers.push(
+            window.setTimeout(() => {
+              step.dataset.state = 'active';
+              const bar = step.querySelector('.ia-step__bar span');
+              if (bar) {
+                bar.style.width = '100%';
+              }
+              if (statuses[index]) {
+                statusEl.textContent = statuses[index];
+              }
+            }, activateDelay)
+          );
+          timers.push(
+            window.setTimeout(() => {
+              step.dataset.state = 'done';
+            }, completeDelay)
+          );
         });
+        const finalDelay = steps.length * 900 + 760;
+        timers.push(
+          window.setTimeout(() => {
+            statusEl.textContent = 'IA pronta! Sequência liberada.';
+            running = false;
+          }, finalDelay)
+        );
       },
-      {
-        root: null,
-        threshold: 0,
-        rootMargin: '0px'
-      }
-    );
+      stop() {
+        timers.forEach((id) => window.clearTimeout(id));
+        timers = [];
+        running = false;
+        reset();
+      },
+    };
+  }
 
-    observer.observe(pricingElement);
-
-    // Pixel tracking on CTA click (using same functions as main Kirvano button)
-    if (stickyCtaBtn) {
-      stickyCtaBtn.addEventListener('click', function() {
-        fbSafeTrack('InitiateCheckout');
-        fbSafeTrackCustom('StickyCtaClick');
-      });
+  function createPreloadingController() {
+    const container = document.querySelector('[data-preloading]');
+    if (!container) {
+      return { start: () => {}, stop: () => {} };
     }
-  })();
+    const steps = Array.from(container.querySelectorAll('[data-preloading-step]'));
+    let timers = [];
+    let running = false;
+
+    const reset = () => {
+      steps.forEach((step) => {
+        step.removeAttribute('data-state');
+        const bar = step.querySelector('.preloading-step__bar span');
+        if (bar) {
+          bar.style.width = '0%';
+        }
+      });
+    };
+
+    return {
+      start() {
+        if (running) return;
+        running = true;
+        reset();
+        steps.forEach((step, index) => {
+          const activateDelay = index * 900;
+          const completeDelay = activateDelay + 740;
+          timers.push(
+            window.setTimeout(() => {
+              step.dataset.state = 'active';
+              const bar = step.querySelector('.preloading-step__bar span');
+              if (bar) {
+                bar.style.width = '100%';
+              }
+            }, activateDelay)
+          );
+          timers.push(
+            window.setTimeout(() => {
+              step.dataset.state = 'done';
+            }, completeDelay)
+          );
+        });
+        const total = steps.length * 900 + 800;
+        timers.push(
+          window.setTimeout(() => {
+            running = false;
+          }, total)
+        );
+      },
+      stop() {
+        timers.forEach((id) => window.clearTimeout(id));
+        timers = [];
+        running = false;
+        reset();
+      },
+    };
+  }
+
+  function fbSafeTrack(event, params) {
+    if (typeof fbq === 'function') {
+      if (params) {
+        fbq('track', event, params);
+      } else {
+        fbq('track', event);
+      }
+    }
+  }
+
+  function fbSafeTrackCustom(event, params) {
+    if (typeof fbq === 'function') {
+      fbq('trackCustom', event, params);
+    }
+  }
 });
