@@ -32,7 +32,22 @@ export const useLotteryAnalysis = (
           if (!error && cachedAnalysis) {
             // Retorna análise do cache
             const combinations = cachedAnalysis.generated_numbers as number[][];
-            return {
+
+            // ⚠️ VALIDAR: Se cache tem 0 jogos, deletar e gerar novos
+            if (combinations.length === 0) {
+              console.log(`🗑️ Cache inválido (0 jogos) - Deletando Contest ${contestNumber}`);
+
+              await supabase
+                .from('lottery_analyses')
+                .delete()
+                .eq('user_id', userId)
+                .eq('lottery_type', lotteryType)
+                .eq('contest_number', contestNumber);
+
+              // Continua para gerar nova análise
+            } else {
+              console.log(`📦 Cache válido: ${combinations.length} jogos (Contest ${contestNumber})`);
+              return {
               combinations,
               statistics: {
                 totalDrawsAnalyzed: cachedAnalysis.draws_analyzed,
@@ -58,7 +73,8 @@ export const useLotteryAnalysis = (
               gamesGenerated: combinations.length,
               dataSource: cachedAnalysis.data_source,
               fromCache: true,
-            };
+              };
+            }
           }
         } catch (error) {
           console.error('Error checking cache:', error);
@@ -80,6 +96,7 @@ export const useLotteryAnalysis = (
       }
 
       // 2. Calcular estatísticas
+      console.log(`🔄 Gerando NOVA análise para ${lotteryType} (${numbersPerGame} números)`);
       const statistics = analyzeHistoricalData(draws, maxNumber);
 
       // 3. Gerar análise completa com combinações inteligentes

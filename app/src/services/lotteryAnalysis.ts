@@ -167,7 +167,9 @@ const validateCombination = (
 
   // Validar soma (deve estar próxima da média histórica)
   // EXCEÇÃO: Desativar para Lotomania (50 números) - API retorna dados incompletos
-  if (numbers.length !== 50) {
+  if (numbers.length === 50) {
+    console.log(`✅ Lotomania: Validação de desvio DESATIVADA (50 números)`);
+  } else {
     const sum = numbers.reduce((acc, n) => acc + n, 0);
     const deviation = Math.abs(sum - averageSum) / averageSum;
     if (deviation > 0.3) return false; // Não mais que 30% de desvio
@@ -203,9 +205,11 @@ export const generateIntelligentCombinations = (
   const maxAttempts = numberOfGames * 10; // Limite de tentativas
   let attempts = 0;
 
+  console.log(`🎲 Gerando ${numberOfGames} combinações (${numbersPerGame} números de 1-${maxNumber})`);
+
   while (combinations.length < numberOfGames && attempts < maxAttempts) {
     attempts++;
-    
+
     const numbers = selectWeightedNumbers(
       statistics,
       strategy,
@@ -219,12 +223,17 @@ export const generateIntelligentCombinations = (
       const isDuplicate = combinations.some(
         combo => JSON.stringify(combo) === JSON.stringify(numbers)
       );
-      
+
       if (!isDuplicate) {
         combinations.push(numbers);
+        if (combinations.length === 1 || combinations.length === numberOfGames) {
+          console.log(`✅ Jogo ${combinations.length}/${numberOfGames} gerado!`);
+        }
       }
     }
   }
+
+  console.log(`📊 Resultado: ${combinations.length}/${numberOfGames} jogos gerados em ${attempts} tentativas`);
 
   // Se não conseguiu gerar todas, completar com as que conseguiu
   // (melhor ter menos jogos validados do que jogos inválidos)
