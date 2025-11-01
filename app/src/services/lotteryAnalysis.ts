@@ -160,15 +160,18 @@ const validateCombination = (
   // Validar proporção pares/ímpares
   const pairs = numbers.filter(n => n % 2 === 0).length;
   const odds = numbers.length - pairs;
-  
+
   if (numbers.length >= 6) {
     if (pairs < 2 || odds < 2) return false;
   }
 
   // Validar soma (deve estar próxima da média histórica)
-  const sum = numbers.reduce((acc, n) => acc + n, 0);
-  const deviation = Math.abs(sum - averageSum) / averageSum;
-  if (deviation > 0.3) return false; // Não mais que 30% de desvio
+  // EXCEÇÃO: Desativar para Lotomania (50 números) - API retorna dados incompletos
+  if (numbers.length !== 50) {
+    const sum = numbers.reduce((acc, n) => acc + n, 0);
+    const deviation = Math.abs(sum - averageSum) / averageSum;
+    if (deviation > 0.3) return false; // Não mais que 30% de desvio
+  }
 
   // Validar números consecutivos (máximo 3)
   const sorted = [...numbers].sort((a, b) => a - b);
