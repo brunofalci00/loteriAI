@@ -25,6 +25,8 @@ const lotteryData: Record<string, { name: string; maxNumber: number; numbersPerG
   "lotomania": { name: "Lotomania", maxNumber: 100, numbersPerGame: 50 },
   "dupla-sena": { name: "Dupla Sena", maxNumber: 50, numbersPerGame: 6 },
   "timemania": { name: "Timemania", maxNumber: 80, numbersPerGame: 10 },
+  "dia-de-sorte": { name: "Dia de Sorte", maxNumber: 31, numbersPerGame: 7 },
+  "mais-milionaria": { name: "+Milionária", maxNumber: 50, numbersPerGame: 6 },
 };
 
 const Lottery = () => {

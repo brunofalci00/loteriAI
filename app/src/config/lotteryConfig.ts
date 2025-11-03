@@ -15,7 +15,9 @@ export type LotteryType =
   | 'lotofacil'
   | 'lotomania'
   | 'dupla_sena'
-  | 'timemania';
+  | 'timemania'
+  | 'dia_de_sorte'
+  | 'mais_milionaria';
 
 export interface LotteryConfig {
   id: LotteryType;
@@ -102,6 +104,30 @@ export const LOTTERY_CONFIGS: Record<LotteryType, LotteryConfig> = {
     maxNumber: 80,
     drawDays: 'Terça, Quinta e Sábado',
     color: 'green'
+  },
+  dia_de_sorte: {
+    id: 'dia_de_sorte',
+    name: 'dia-de-sorte',
+    displayName: 'Dia de Sorte',
+    description: '7 números entre 1 e 31',
+    icon: '🍀',
+    numbersToSelect: 7,
+    minNumber: 1,
+    maxNumber: 31,
+    drawDays: 'Terça, Quinta e Sábado',
+    color: 'teal'
+  },
+  mais_milionaria: {
+    id: 'mais_milionaria',
+    name: 'mais-milionaria',
+    displayName: '+Milionária',
+    description: '6 números entre 1 e 50',
+    icon: '💰',
+    numbersToSelect: 6,
+    minNumber: 1,
+    maxNumber: 50,
+    drawDays: 'Quarta e Sábado',
+    color: 'amber'
   }
 };
 

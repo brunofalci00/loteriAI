@@ -17,6 +17,8 @@ const colorClasses: Record<string, string> = {
   pink: "border-pink-500 bg-pink-500/5",
   red: "border-red-500 bg-red-500/5",
   green: "border-green-500 bg-green-500/5",
+  teal: "border-teal-500 bg-teal-500/5",
+  amber: "border-amber-500 bg-amber-500/5",
 };
 
 export function Step1_LotterySelector({ selected, onSelect, onNext }: Step1_LoterySelectorProps) {
