@@ -1,6 +1,7 @@
 import { Header } from "@/components/Header";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 import {
   Sparkles,
   LineChart,
@@ -14,6 +15,8 @@ import {
 } from "lucide-react";
 
 const HowItWorks = () => {
+  const navigate = useNavigate();
+
   const mainFeatures = [
     {
       icon: LineChart,
@@ -22,6 +25,7 @@ const HowItWorks = () => {
         "Nossa IA analisa milhares de resultados históricos e identifica padrões estatísticos para gerar combinações otimizadas.",
       color: "text-blue-500",
       badge: null,
+      link: "/dashboard",
     },
     {
       icon: PlusCircle,
@@ -30,6 +34,7 @@ const HowItWorks = () => {
         "Monte seus próprios jogos e receba análise completa da IA com score de 0-10, sugestões de melhoria e 5 variações otimizadas.",
       color: "text-purple-500",
       badge: "Novo",
+      link: "/criar-jogo",
     },
     {
       icon: Heart,
@@ -38,6 +43,7 @@ const HowItWorks = () => {
         "Salve até 50 jogos favoritos, organize por loteria, edite nomes personalizados e acesse seu histórico completo.",
       color: "text-red-500",
       badge: "Novo",
+      link: "/meus-jogos",
     },
     {
       icon: Coins,
@@ -46,6 +52,7 @@ const HowItWorks = () => {
         "Receba 50 créditos gratuitos todo mês para usar em análises, regenerações e variações. Salvar jogos é sempre gratuito!",
       color: "text-yellow-500",
       badge: "Gratuito",
+      link: null,
     },
   ];
 
@@ -100,36 +107,42 @@ const HowItWorks = () => {
       cost: "1 crédito",
       description: "Analisa e gera 10 jogos otimizados",
       icon: Sparkles,
+      link: "/dashboard",
     },
     {
       action: "Regenerar Jogos",
       cost: "1 crédito",
       description: "Novas combinações da mesma análise",
       icon: RefreshCw,
+      link: null,
     },
     {
       action: "Gerar Variações",
       cost: "1 crédito",
       description: "5 variações do seu jogo manual",
       icon: PlusCircle,
+      link: null,
     },
     {
       action: "Criar Manual",
       cost: "Gratuito",
       description: "Monte seus jogos sem custo",
       icon: PlusCircle,
+      link: "/criar-jogo",
     },
     {
       action: "Salvar Jogos",
       cost: "Gratuito",
       description: "Até 50 jogos salvos",
       icon: Heart,
+      link: "/meus-jogos",
     },
     {
       action: "Exportar",
       cost: "Gratuito",
       description: "TXT ou WhatsApp ilimitado",
       icon: Share2,
+      link: null,
     },
   ];
 
@@ -153,10 +166,16 @@ const HowItWorks = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-16">
           {mainFeatures.map((feature, index) => {
             const Icon = feature.icon;
+            const isClickable = feature.link !== null;
             return (
               <Card
                 key={index}
-                className="p-6 hover:shadow-lg transition-all duration-300 border-border/50 relative overflow-hidden"
+                onClick={isClickable ? () => navigate(feature.link!) : undefined}
+                className={`p-6 transition-all duration-300 border-border/50 relative overflow-hidden ${
+                  isClickable
+                    ? "cursor-pointer hover:shadow-lg hover:scale-[1.02] hover:border-primary/50"
+                    : "hover:shadow-lg"
+                }`}
               >
                 {feature.badge && (
                   <Badge className="absolute top-3 right-3 text-xs">
@@ -228,23 +247,36 @@ const HowItWorks = () => {
               {creditsInfo.map((item, index) => {
                 const Icon = item.icon;
                 const isFree = item.cost === "Gratuito";
-                return (
-                  <div
-                    key={index}
-                    className={`p-4 rounded-lg border ${
-                      isFree
-                        ? "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800"
-                        : "bg-background border-border"
-                    }`}
-                  >
+                const isClickable = item.link !== null;
+
+                const cardContent = (
+                  <>
                     <div className="flex items-center gap-2 mb-2">
-                      <Icon className={`h-4 w-4 ${isFree ? "text-green-600" : "text-primary"}`} />
+                      <Icon className={`h-4 w-4 ${isFree ? "text-green-600 dark:text-green-400" : "text-primary"}`} />
                       <span className="font-medium text-sm">{item.action}</span>
                     </div>
                     <Badge variant={isFree ? "secondary" : "default"} className="mb-2 text-xs">
                       {item.cost}
                     </Badge>
                     <p className="text-xs text-muted-foreground">{item.description}</p>
+                  </>
+                );
+
+                return (
+                  <div
+                    key={index}
+                    onClick={isClickable ? () => navigate(item.link!) : undefined}
+                    className={`p-4 rounded-lg border transition-all duration-200 ${
+                      isFree
+                        ? "bg-green-100/50 dark:bg-green-950/30 border-green-300 dark:border-green-800"
+                        : "bg-card border-border"
+                    } ${
+                      isClickable
+                        ? "cursor-pointer hover:shadow-lg hover:scale-[1.02] hover:border-primary/50"
+                        : ""
+                    }`}
+                  >
+                    {cardContent}
                   </div>
                 );
               })}
