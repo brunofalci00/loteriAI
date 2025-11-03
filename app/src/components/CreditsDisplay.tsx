@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useCreditsStatus } from '@/hooks/useUserCredits';
+import { CreditsInfoPopover } from '@/components/CreditsInfoPopover';
 
 export interface CreditsDisplayProps {
   userId: string;
@@ -72,30 +73,22 @@ export function CreditsDisplay({
     red: 'text-red-600 dark:text-red-400'
   };
 
-  // Badge variant
+  // Badge variant with interactive popover
   if (variant === 'badge') {
     return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Badge
-              variant={creditsRemaining > 0 ? 'default' : 'destructive'}
-              className={cn('gap-1 cursor-help', className)}
-            >
-              <Zap className="h-3 w-3" />
-              {creditsRemaining}
-            </Badge>
-          </TooltipTrigger>
-          <TooltipContent>
-            <div className="space-y-1 text-xs">
-              <div>{creditsRemaining} de {creditsTotal} créditos restantes</div>
-              {daysUntilReset !== null && (
-                <div className="text-muted-foreground">{formatResetMessage()}</div>
-              )}
-            </div>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <CreditsInfoPopover
+        creditsRemaining={creditsRemaining}
+        creditsTotal={creditsTotal}
+        lastResetDate={undefined}
+      >
+        <Badge
+          variant={creditsRemaining > 0 ? 'default' : 'destructive'}
+          className={cn('gap-1 cursor-pointer hover:opacity-80 transition-opacity', className)}
+        >
+          <Zap className="h-3 w-3" />
+          {creditsRemaining}
+        </Badge>
+      </CreditsInfoPopover>
     );
   }
 
