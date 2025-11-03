@@ -1,7 +1,8 @@
 import { supabase } from '@/integrations/supabase/client';
+import { LotteryType, getLotteryConfig } from '@/config/lotteryConfig';
 
 export interface ManualGameAnalysisParams {
-  lotteryType: 'lotofacil' | 'lotomania';
+  lotteryType: LotteryType;
   contestNumber: number;
   selectedNumbers: number[];
 }
@@ -47,11 +48,24 @@ export class ManualGameAnalysisService {
       }
 
       // Validações básicas
-      const expectedCount = params.lotteryType === 'lotofacil' ? 15 : 50;
+      const lotteryConfig = getLotteryConfig(params.lotteryType);
+      const expectedCount = lotteryConfig.numbersToSelect;
+
       if (params.selectedNumbers.length !== expectedCount) {
         return {
           success: false,
           error: `Quantidade inválida. Esperado: ${expectedCount} números.`
+        };
+      }
+
+      // Validar range dos números
+      const invalidNumbers = params.selectedNumbers.filter(
+        num => num < lotteryConfig.minNumber || num > lotteryConfig.maxNumber
+      );
+      if (invalidNumbers.length > 0) {
+        return {
+          success: false,
+          error: `Números fora do range válido (${lotteryConfig.minNumber}-${lotteryConfig.maxNumber}): ${invalidNumbers.join(', ')}`
         };
       }
 

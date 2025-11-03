@@ -1,16 +1,29 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { LotteryType, getAllSupportedLotteries, LotteryConfig } from "@/config/lotteryConfig";
 
 interface Step1_LoterySelectorProps {
-  selected: 'lotofacil' | 'lotomania' | null;
-  onSelect: (type: 'lotofacil' | 'lotomania') => void;
+  selected: LotteryType | null;
+  onSelect: (type: LotteryType) => void;
   onNext: () => void;
 }
 
+const colorClasses: Record<string, string> = {
+  emerald: "border-emerald-500 bg-emerald-500/5",
+  blue: "border-blue-500 bg-blue-500/5",
+  purple: "border-purple-500 bg-purple-500/5",
+  pink: "border-pink-500 bg-pink-500/5",
+  red: "border-red-500 bg-red-500/5",
+  green: "border-green-500 bg-green-500/5",
+};
+
 export function Step1_LotterySelector({ selected, onSelect, onNext }: Step1_LoterySelectorProps) {
+  const lotteries = getAllSupportedLotteries();
+
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto space-y-8">
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold">Escolha a Loteria</h2>
         <p className="text-muted-foreground">
@@ -18,84 +31,56 @@ export function Step1_LotterySelector({ selected, onSelect, onNext }: Step1_Lote
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Lotofácil Card */}
-        <Card
-          className={cn(
-            "p-8 cursor-pointer transition-all hover:shadow-lg",
-            "border-2",
-            selected === 'lotofacil' ? "border-primary bg-primary/5" : "border-border"
-          )}
-          onClick={() => onSelect('lotofacil')}
-        >
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="text-5xl">🎱</div>
-              <div
-                className={cn(
-                  "w-6 h-6 rounded-full border-2 transition-all",
-                  selected === 'lotofacil'
-                    ? "bg-primary border-primary"
-                    : "border-muted-foreground"
-                )}
-              >
-                {selected === 'lotofacil' && (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-white" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {lotteries.map((lottery: LotteryConfig) => {
+          const isSelected = selected === lottery.id;
+          const colorClass = colorClasses[lottery.color] || "border-border";
+
+          return (
+            <Card
+              key={lottery.id}
+              className={cn(
+                "p-6 cursor-pointer transition-all hover:shadow-lg",
+                "border-2",
+                isSelected ? colorClass : "border-border"
+              )}
+              onClick={() => onSelect(lottery.id)}
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-4xl">{lottery.icon}</div>
+                  <div
+                    className={cn(
+                      "w-6 h-6 rounded-full border-2 transition-all",
+                      isSelected
+                        ? `bg-${lottery.color}-500 border-${lottery.color}-500`
+                        : "border-muted-foreground"
+                    )}
+                  >
+                    {isSelected && (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-white" />
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-bold mb-2">{lottery.displayName}</h3>
+                  <ul className="space-y-1.5 text-sm text-muted-foreground">
+                    <li>• {lottery.description}</li>
+                    <li>• Sorteios: {lottery.drawDays}</li>
+                  </ul>
+                  {lottery.id === 'megasena' && (
+                    <Badge variant="default" className="mt-2 text-xs">
+                      Mais Popular
+                    </Badge>
+                  )}
+                </div>
               </div>
-            </div>
-
-            <div>
-              <h3 className="text-2xl font-bold mb-2">Lotofácil</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Selecione 15 números</li>
-                <li>• Range: 1 a 25</li>
-                <li>• Sorteios: Segunda a Sábado</li>
-              </ul>
-            </div>
-          </div>
-        </Card>
-
-        {/* Lotomania Card */}
-        <Card
-          className={cn(
-            "p-8 cursor-pointer transition-all hover:shadow-lg",
-            "border-2",
-            selected === 'lotomania' ? "border-primary bg-primary/5" : "border-border"
-          )}
-          onClick={() => onSelect('lotomania')}
-        >
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="text-5xl">🎰</div>
-              <div
-                className={cn(
-                  "w-6 h-6 rounded-full border-2 transition-all",
-                  selected === 'lotomania'
-                    ? "bg-primary border-primary"
-                    : "border-muted-foreground"
-                )}
-              >
-                {selected === 'lotomania' && (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-white" />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-2xl font-bold mb-2">Lotomania</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Selecione 50 números</li>
-                <li>• Range: 1 a 100</li>
-                <li>• Sorteios: Terça, Quinta e Sábado</li>
-              </ul>
-            </div>
-          </div>
-        </Card>
+            </Card>
+          );
+        })}
       </div>
 
       <div className="flex justify-end">

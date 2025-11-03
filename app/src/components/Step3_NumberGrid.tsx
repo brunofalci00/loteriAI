@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Trash2, Shuffle, Check } from "lucide-react";
+import { LotteryType, getLotteryConfig } from "@/config/lotteryConfig";
 
 interface Step3_NumberGridProps {
-  lotteryType: 'lotofacil' | 'lotomania';
+  lotteryType: LotteryType;
   selectedNumbers: number[];
   onToggleNumber: (number: number) => void;
   onClear: () => void;
@@ -22,32 +23,40 @@ export function Step3_NumberGrid({
   onNext,
   onBack
 }: Step3_NumberGridProps) {
-  const maxNumber = lotteryType === 'lotofacil' ? 25 : 100;
-  const expectedCount = lotteryType === 'lotofacil' ? 15 : 50;
-  const numbers = Array.from({ length: maxNumber }, (_, i) => i + 1);
+  const config = getLotteryConfig(lotteryType);
+  const { minNumber, maxNumber, numbersToSelect } = config;
+  const numbers = Array.from({ length: maxNumber - minNumber + 1 }, (_, i) => i + minNumber);
 
-  const isComplete = selectedNumbers.length === expectedCount;
-  const progress = (selectedNumbers.length / expectedCount) * 100;
+  const isComplete = selectedNumbers.length === numbersToSelect;
+  const progress = (selectedNumbers.length / numbersToSelect) * 100;
+
+  // Grid columns baseado no total de números
+  const getGridCols = () => {
+    if (maxNumber <= 25) return "grid-cols-5 sm:grid-cols-7 md:grid-cols-10"; // Lotofácil
+    if (maxNumber <= 60) return "grid-cols-5 sm:grid-cols-8 md:grid-cols-10"; // Mega-Sena, Dupla-Sena
+    if (maxNumber <= 80) return "grid-cols-5 sm:grid-cols-10 md:grid-cols-12"; // Quina, Timemania
+    return "grid-cols-5 sm:grid-cols-10 md:grid-cols-12"; // Lotomania
+  };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8">
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold">Selecione os Números</h2>
         <p className="text-muted-foreground">
-          Clique nos números para montar seu jogo
+          {config.description}
         </p>
       </div>
 
       {/* Progress Bar and Actions */}
       <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="space-y-2 flex-1">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-2 flex-1 w-full">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">
-                Selecionados: {selectedNumbers.length}/{expectedCount}
+                Selecionados: {selectedNumbers.length}/{numbersToSelect}
               </span>
               <span className="text-xs text-muted-foreground">
-                {isComplete ? '✓ Completo!' : `Faltam ${expectedCount - selectedNumbers.length}`}
+                {isComplete ? '✓ Completo!' : `Faltam ${numbersToSelect - selectedNumbers.length}`}
               </span>
             </div>
             <div className="w-full bg-muted rounded-full h-2">
@@ -61,7 +70,7 @@ export function Step3_NumberGrid({
             </div>
           </div>
 
-          <div className="flex gap-2 ml-6">
+          <div className="flex gap-2">
             <Button
               onClick={onClear}
               variant="outline"
@@ -84,14 +93,7 @@ export function Step3_NumberGrid({
       </Card>
 
       {/* Numbers Grid */}
-      <div
-        className={cn(
-          "grid gap-2",
-          lotteryType === 'lotofacil'
-            ? "grid-cols-5 sm:grid-cols-7 md:grid-cols-10"
-            : "grid-cols-5 sm:grid-cols-10 md:grid-cols-12"
-        )}
-      >
+      <div className={cn("grid gap-2", getGridCols())}>
         {numbers.map((number) => {
           const isSelected = selectedNumbers.includes(number);
 
@@ -100,7 +102,7 @@ export function Step3_NumberGrid({
               key={number}
               onClick={() => onToggleNumber(number)}
               className={cn(
-                "relative aspect-square rounded-lg font-semibold text-lg",
+                "relative aspect-square rounded-lg font-semibold text-base sm:text-lg",
                 "transition-all duration-200 hover:scale-110",
                 "border-2",
                 isSelected
@@ -152,7 +154,7 @@ export function Step3_NumberGrid({
           size="lg"
           className="min-w-[150px]"
         >
-          {isComplete ? 'Analisar Jogo →' : `Selecione ${expectedCount - selectedNumbers.length} números`}
+          {isComplete ? 'Analisar Jogo →' : `Selecione ${numbersToSelect - selectedNumbers.length} números`}
         </Button>
       </div>
     </div>

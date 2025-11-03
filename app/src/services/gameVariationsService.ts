@@ -1,9 +1,10 @@
 import { supabase } from '@/integrations/supabase/client';
 import { ManualGameAnalysisService, type AnalysisResult } from './manualGameAnalysisService';
+import { LotteryType } from '@/config/lotteryConfig';
 
 export interface GenerateVariationsParams {
   originalNumbers: number[];
-  lotteryType: 'lotofacil' | 'lotomania';
+  lotteryType: LotteryType;
   contestNumber: number;
 }
 

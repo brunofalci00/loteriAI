@@ -2,13 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { ManualGameAnalysisService, type ManualGameAnalysisParams, type AnalysisResult } from '@/services/manualGameAnalysisService';
 import { GameVariationsService, type GenerateVariationsParams, type Variation } from '@/services/gameVariationsService';
+import { LotteryType, getLotteryConfig } from '@/config/lotteryConfig';
 import { toast } from 'sonner';
 
 export type StepNumber = 1 | 2 | 3 | 4;
 
 export interface ManualGameState {
   currentStep: StepNumber;
-  lotteryType: 'lotofacil' | 'lotomania' | null;
+  lotteryType: LotteryType | null;
   contestNumber: number | null;
   selectedNumbers: number[];
   analysisResult: AnalysisResult | null;
@@ -70,8 +71,8 @@ export function useManualGameCreation() {
   }, [state.currentStep, goToStep]);
 
   // Etapa 1: Selecionar loteria
-  const selectLottery = useCallback((lotteryType: 'lotofacil' | 'lotomania') => {
-    setState(prev => ({ ...prev, lotteryType }));
+  const selectLottery = useCallback((lotteryType: LotteryType) => {
+    setState(prev => ({ ...prev, lotteryType, selectedNumbers: [] })); // Limpar números ao trocar de loteria
   }, []);
 
   // Etapa 2: Selecionar concurso
@@ -82,8 +83,11 @@ export function useManualGameCreation() {
   // Etapa 3: Adicionar/remover número
   const toggleNumber = useCallback((number: number) => {
     setState(prev => {
+      if (!prev.lotteryType) return prev;
+
       const isSelected = prev.selectedNumbers.includes(number);
-      const expectedCount = prev.lotteryType === 'lotofacil' ? 15 : 50;
+      const config = getLotteryConfig(prev.lotteryType);
+      const expectedCount = config.numbersToSelect;
 
       if (isSelected) {
         return {
@@ -113,12 +117,14 @@ export function useManualGameCreation() {
   const randomSelection = useCallback(() => {
     if (!state.lotteryType) return;
 
-    const expectedCount = state.lotteryType === 'lotofacil' ? 15 : 50;
-    const maxNumber = state.lotteryType === 'lotofacil' ? 25 : 100;
+    const config = getLotteryConfig(state.lotteryType);
+    const expectedCount = config.numbersToSelect;
+    const minNumber = config.minNumber;
+    const maxNumber = config.maxNumber;
 
     const numbers: number[] = [];
     while (numbers.length < expectedCount) {
-      const num = Math.floor(Math.random() * maxNumber) + 1;
+      const num = Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber;
       if (!numbers.includes(num)) {
         numbers.push(num);
       }
@@ -215,7 +221,7 @@ export function useManualGameCreation() {
   const canProceedToStep2 = state.lotteryType !== null;
   const canProceedToStep3 = state.contestNumber !== null;
   const canProceedToStep4 = state.lotteryType &&
-    state.selectedNumbers.length === (state.lotteryType === 'lotofacil' ? 15 : 50);
+    state.selectedNumbers.length === getLotteryConfig(state.lotteryType).numbersToSelect;
 
   return {
     // Estado
