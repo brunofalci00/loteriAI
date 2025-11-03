@@ -10,7 +10,7 @@ interface Step1_LoterySelectorProps {
 
 export function Step1_LotterySelector({ selected, onSelect, onNext }: Step1_LoterySelectorProps) {
   return (
-    <div className="max-w-4xl mx-auto space-y-8" data-tour="lottery-selector">
+    <div className="max-w-4xl mx-auto space-y-8">
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold">Escolha a Loteria</h2>
         <p className="text-muted-foreground">

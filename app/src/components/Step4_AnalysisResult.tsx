@@ -38,7 +38,7 @@ export function Step4_AnalysisResult({
   const halfStar = score % 2 >= 1;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8" data-tour="analysis-result">
+    <div className="max-w-4xl mx-auto space-y-8">
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold">Análise da IA</h2>
         <p className="text-muted-foreground">
@@ -104,7 +104,6 @@ export function Step4_AnalysisResult({
             onClick={onViewDetails}
             variant="outline"
             className="w-full"
-            data-tour="view-details"
           >
             <Eye className="h-4 w-4 mr-2" />
             Ver Detalhes da Análise
@@ -160,7 +159,6 @@ export function Step4_AnalysisResult({
             disabled={isGeneratingVariations}
             variant="default"
             className="w-full"
-            data-tour="generate-variations"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${isGeneratingVariations ? 'animate-spin' : ''}`} />
             Gerar 5 Variações

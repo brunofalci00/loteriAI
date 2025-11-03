@@ -30,7 +30,7 @@ export function Step3_NumberGrid({
   const progress = (selectedNumbers.length / expectedCount) * 100;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8" data-tour="number-grid">
+    <div className="max-w-5xl mx-auto space-y-8">
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold">Selecione os Números</h2>
         <p className="text-muted-foreground">

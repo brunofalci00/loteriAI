@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useManualGameCreation } from "@/hooks/useManualGameCreation";
-import { useTourGuide } from "@/hooks/useTourGuide";
+import { useWelcomeGuide } from "@/hooks/useTourGuide";
 import { useAuth } from "@/contexts/AuthContext";
 import { ManualGameStepper } from "@/components/ManualGameStepper";
 import { Step1_LotterySelector } from "@/components/Step1_LotterySelector";
@@ -9,51 +9,55 @@ import { Step3_NumberGrid } from "@/components/Step3_NumberGrid";
 import { Step4_AnalysisResult } from "@/components/Step4_AnalysisResult";
 import { AnalysisDetailsModal } from "@/components/AnalysisDetailsModal";
 import { VariationsGrid } from "@/components/VariationsGrid";
-import { TourGuideOverlay } from "@/components/TourGuideOverlay";
+import { WelcomeGuideModal, GuideStep } from "@/components/WelcomeGuideModal";
 import { Header } from "@/components/Header";
+import {
+  Sparkles,
+  ListTodo,
+  Grid3x3,
+  BarChart3,
+  Shuffle,
+  Zap
+} from "lucide-react";
 
-const tourSteps = [
+const guideSteps: GuideStep[] = [
   {
     id: 'welcome',
-    target: 'body',
     title: 'Bem-vindo à Criação Manual!',
-    content: 'Aqui você cria seus próprios jogos e recebe análise completa da IA. Vamos fazer um tour rápido?',
-    placement: 'center' as const
+    description: 'Aqui você cria seus próprios jogos de loteria e recebe análise completa da IA com score, sugestões e variações otimizadas. Vamos conhecer o passo a passo?',
+    icon: <Sparkles className="h-12 w-12 text-primary" />,
+    badge: 'Novo'
   },
   {
     id: 'step1',
-    target: '[data-tour="lottery-selector"]',
-    title: 'Escolha a Loteria',
-    content: 'Primeiro, selecione se quer jogar Lotofácil (15 números) ou Lotomania (50 números).',
-    placement: 'bottom' as const
+    title: 'Escolha sua Loteria',
+    description: 'Primeiro, selecione se quer jogar Lotofácil (15 números de 1 a 25) ou Lotomania (50 números de 00 a 99).',
+    icon: <ListTodo className="h-12 w-12 text-blue-500" />,
   },
   {
     id: 'step2',
-    target: '[data-tour="contest-selector"]',
-    title: 'Escolha o Concurso',
-    content: 'Selecione o concurso para a IA usar o histórico correto na análise.',
-    placement: 'bottom' as const
+    title: 'Selecione o Concurso',
+    description: 'Escolha o concurso para que a IA use o histórico correto na análise. Você pode ver os últimos sorteios de cada concurso.',
+    icon: <Zap className="h-12 w-12 text-yellow-500" />,
   },
   {
     id: 'step3',
-    target: '[data-tour="number-grid"]',
-    title: 'Selecione os Números',
-    content: 'Clique nos números para montar seu jogo. Use "Aleatório" para preencher rapidamente!',
-    placement: 'top' as const
+    title: 'Monte seu Jogo',
+    description: 'Clique nos números para criar seu jogo personalizado. Use o botão "Aleatório" se quiser preencher rapidamente ou "Limpar" para recomeçar.',
+    icon: <Grid3x3 className="h-12 w-12 text-purple-500" />,
   },
   {
     id: 'step4',
-    target: '[data-tour="analysis-result"]',
-    title: 'Veja a Análise',
-    content: 'A IA analisa seu jogo e dá um score de 0-10. Clique em "Ver Detalhes" para análise completa!',
-    placement: 'top' as const
+    title: 'Análise da IA',
+    description: 'A IA analisa automaticamente seu jogo e dá um score de 0 a 10, mostrando números quentes/frios, distribuição e padrões. Clique em "Ver Detalhes" para análise completa!',
+    icon: <BarChart3 className="h-12 w-12 text-green-500" />,
   },
   {
     id: 'variations',
-    target: '[data-tour="generate-variations"]',
-    title: 'Gere Variações',
-    content: 'A IA pode gerar 5 variações otimizadas mantendo parte dos seus números!',
-    placement: 'top' as const
+    title: 'Gere Variações Otimizadas',
+    description: 'Por apenas 1 crédito, a IA gera 5 variações do seu jogo mantendo 60-70% dos números originais, cada uma com estratégia diferente de otimização.',
+    icon: <Shuffle className="h-12 w-12 text-orange-500" />,
+    badge: '1 Crédito'
   },
 ];
 
@@ -79,7 +83,7 @@ const ManualGameCreationPage = () => {
 
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
 
-  const tour = useTourGuide('manual-creation-tour', tourSteps);
+  const guide = useWelcomeGuide();
 
   // Trigger análise when reaching step 4
   useEffect(() => {
@@ -217,16 +221,12 @@ const ManualGameCreationPage = () => {
         />
       )}
 
-      {/* Tour Guide Overlay */}
-      <TourGuideOverlay
-        isActive={tour.isActive}
-        currentStep={tour.currentStep}
-        currentStepIndex={tour.currentStepIndex}
-        totalSteps={tour.totalSteps}
-        isLastStep={tour.isLastStep}
-        onNext={tour.nextStep}
-        onPrev={tour.prevStep}
-        onSkip={tour.skipTour}
+      {/* Welcome Guide Modal */}
+      <WelcomeGuideModal
+        open={guide.isOpen}
+        steps={guideSteps}
+        onComplete={guide.markAsComplete}
+        onSkip={guide.skip}
       />
     </div>
   );
