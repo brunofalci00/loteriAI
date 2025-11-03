@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.hubla-webhook]
 verify_jwt = false
+
+[functions.facebook-capi]
+verify_jwt = false
