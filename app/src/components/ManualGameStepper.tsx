@@ -25,13 +25,13 @@ export function ManualGameStepper({ currentStep, onStepClick }: ManualGameSteppe
 
           return (
             <div key={step.number} className="flex items-center flex-1">
-              {/* Step Circle */}
-              <div className="flex flex-col items-center">
+              {/* Step Circle and Label Container */}
+              <div className="flex flex-col items-center relative">
                 <button
                   onClick={() => isClickable && onStepClick(step.number)}
                   disabled={!isClickable}
                   className={cn(
-                    "w-12 h-12 rounded-full flex items-center justify-center font-semibold transition-all",
+                    "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-semibold transition-all",
                     "border-2",
                     isCompleted && "bg-green-500 border-green-500 text-white",
                     isCurrent && "bg-primary border-primary text-primary-foreground",
@@ -41,16 +41,16 @@ export function ManualGameStepper({ currentStep, onStepClick }: ManualGameSteppe
                   )}
                 >
                   {isCompleted ? (
-                    <Check className="w-6 h-6" />
+                    <Check className="w-5 h-5 sm:w-6 sm:h-6" />
                   ) : (
-                    <span>{step.number}</span>
+                    <span className="text-sm sm:text-base">{step.number}</span>
                   )}
                 </button>
 
                 {/* Step Label */}
                 <span
                   className={cn(
-                    "mt-2 text-sm font-medium",
+                    "mt-2 text-xs sm:text-sm font-medium text-center",
                     isCurrent && "text-foreground",
                     isCompleted && "text-green-600",
                     !isCompleted && !isCurrent && "text-muted-foreground"
@@ -60,9 +60,9 @@ export function ManualGameStepper({ currentStep, onStepClick }: ManualGameSteppe
                 </span>
               </div>
 
-              {/* Connector Line */}
+              {/* Connector Line - Centralizado com o círculo */}
               {index < steps.length - 1 && (
-                <div className="flex-1 h-0.5 mx-2 -mt-7">
+                <div className="flex-1 h-0.5 mx-1 sm:mx-2 self-start mt-5 sm:mt-6">
                   <div
                     className={cn(
                       "h-full transition-all",
