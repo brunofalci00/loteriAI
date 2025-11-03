@@ -7,6 +7,7 @@ import { Separator } from "./ui/separator";
 import { Badge } from "./ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSavedGamesStats } from "@/hooks/useSavedGames";
+import { CreditsDisplay } from "./CreditsDisplay";
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
@@ -45,7 +46,7 @@ export function MobileMenu() {
         <div className="flex flex-col gap-1 mt-6">
           {/* User Info */}
           <div className="px-4 py-3 mb-2 bg-muted/50 rounded-lg">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mb-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full gradient-primary text-lg font-semibold">
                 {user.name.charAt(0).toUpperCase()}
               </div>
@@ -54,6 +55,18 @@ export function MobileMenu() {
                 <p className="text-xs text-muted-foreground truncate">{user.email}</p>
               </div>
             </div>
+
+            {/* Credits Display in Mobile Menu */}
+            {user.id && (
+              <div className="pt-3 border-t">
+                <CreditsDisplay
+                  userId={user.id}
+                  variant="compact"
+                  showProgress={true}
+                  showResetInfo={true}
+                />
+              </div>
+            )}
           </div>
 
           {/* Navigation Links */}

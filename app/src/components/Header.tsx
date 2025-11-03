@@ -69,11 +69,9 @@ export const Header = () => {
         <div className="flex items-center gap-2 md:gap-3">
           {user?.isAuthenticated ? (
             <>
-              {/* Credits Badge - Always visible */}
+              {/* Credits Badge - Visible on all screens */}
               {user.id && (
-                <div className="hidden sm:block">
-                  <CreditsDisplay userId={user.id} variant="badge" />
-                </div>
+                <CreditsDisplay userId={user.id} variant="badge" />
               )}
 
               {/* Saved Games Badge - Desktop only */}
