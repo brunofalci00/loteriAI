@@ -1,0 +1,250 @@
+import { useState, useEffect, useCallback } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { ManualGameAnalysisService, type ManualGameAnalysisParams, type AnalysisResult } from '@/services/manualGameAnalysisService';
+import { GameVariationsService, type GenerateVariationsParams, type Variation } from '@/services/gameVariationsService';
+import { toast } from 'sonner';
+
+export type StepNumber = 1 | 2 | 3 | 4;
+
+export interface ManualGameState {
+  currentStep: StepNumber;
+  lotteryType: 'lotofacil' | 'lotomania' | null;
+  contestNumber: number | null;
+  selectedNumbers: number[];
+  analysisResult: AnalysisResult | null;
+  variations: Variation[];
+  timeSpent: {
+    step1: number;
+    step2: number;
+    step3: number;
+    step4: number;
+  };
+}
+
+export function useManualGameCreation() {
+  const [state, setState] = useState<ManualGameState>({
+    currentStep: 1,
+    lotteryType: null,
+    contestNumber: null,
+    selectedNumbers: [],
+    analysisResult: null,
+    variations: [],
+    timeSpent: { step1: 0, step2: 0, step3: 0, step4: 0 }
+  });
+
+  // Rastrear tempo gasto em cada etapa
+  const [stepStartTime, setStepStartTime] = useState<number>(Date.now());
+
+  useEffect(() => {
+    setStepStartTime(Date.now());
+  }, [state.currentStep]);
+
+  // Atualizar tempo gasto ao mudar de etapa
+  const updateTimeSpent = useCallback((step: StepNumber) => {
+    const timeSpent = Math.floor((Date.now() - stepStartTime) / 1000);
+    setState(prev => ({
+      ...prev,
+      timeSpent: {
+        ...prev.timeSpent,
+        [`step${step}`]: prev.timeSpent[`step${step}` as keyof typeof prev.timeSpent] + timeSpent
+      }
+    }));
+  }, [stepStartTime]);
+
+  // Navegação entre etapas
+  const goToStep = useCallback((step: StepNumber) => {
+    updateTimeSpent(state.currentStep);
+    setState(prev => ({ ...prev, currentStep: step }));
+  }, [state.currentStep, updateTimeSpent]);
+
+  const nextStep = useCallback(() => {
+    if (state.currentStep < 4) {
+      goToStep((state.currentStep + 1) as StepNumber);
+    }
+  }, [state.currentStep, goToStep]);
+
+  const prevStep = useCallback(() => {
+    if (state.currentStep > 1) {
+      goToStep((state.currentStep - 1) as StepNumber);
+    }
+  }, [state.currentStep, goToStep]);
+
+  // Etapa 1: Selecionar loteria
+  const selectLottery = useCallback((lotteryType: 'lotofacil' | 'lotomania') => {
+    setState(prev => ({ ...prev, lotteryType }));
+  }, []);
+
+  // Etapa 2: Selecionar concurso
+  const selectContest = useCallback((contestNumber: number) => {
+    setState(prev => ({ ...prev, contestNumber }));
+  }, []);
+
+  // Etapa 3: Adicionar/remover número
+  const toggleNumber = useCallback((number: number) => {
+    setState(prev => {
+      const isSelected = prev.selectedNumbers.includes(number);
+      const expectedCount = prev.lotteryType === 'lotofacil' ? 15 : 50;
+
+      if (isSelected) {
+        return {
+          ...prev,
+          selectedNumbers: prev.selectedNumbers.filter(n => n !== number)
+        };
+      } else {
+        if (prev.selectedNumbers.length >= expectedCount) {
+          toast.error(`Limite atingido: você já selecionou ${expectedCount} números.`);
+          return prev;
+        }
+        return {
+          ...prev,
+          selectedNumbers: [...prev.selectedNumbers, number].sort((a, b) => a - b)
+        };
+      }
+    });
+  }, []);
+
+  // Limpar seleção
+  const clearSelection = useCallback(() => {
+    setState(prev => ({ ...prev, selectedNumbers: [] }));
+    toast.info('Seleção limpa');
+  }, []);
+
+  // Seleção aleatória
+  const randomSelection = useCallback(() => {
+    if (!state.lotteryType) return;
+
+    const expectedCount = state.lotteryType === 'lotofacil' ? 15 : 50;
+    const maxNumber = state.lotteryType === 'lotofacil' ? 25 : 100;
+
+    const numbers: number[] = [];
+    while (numbers.length < expectedCount) {
+      const num = Math.floor(Math.random() * maxNumber) + 1;
+      if (!numbers.includes(num)) {
+        numbers.push(num);
+      }
+    }
+
+    setState(prev => ({ ...prev, selectedNumbers: numbers.sort((a, b) => a - b) }));
+
+    toast.success(`${expectedCount} números selecionados aleatoriamente!`);
+  }, [state.lotteryType]);
+
+  // Etapa 4: Analisar jogo
+  const analyzeGame = useMutation({
+    mutationFn: () => {
+      if (!state.lotteryType || !state.contestNumber) {
+        throw new Error('Dados incompletos');
+      }
+
+      const params: ManualGameAnalysisParams = {
+        lotteryType: state.lotteryType,
+        contestNumber: state.contestNumber,
+        selectedNumbers: state.selectedNumbers
+      };
+
+      return ManualGameAnalysisService.analyzeManualGame(params);
+    },
+    onSuccess: (result) => {
+      if (result.success && result.data) {
+        setState(prev => ({ ...prev, analysisResult: result.data! }));
+        toast.success('Análise concluída!', {
+          description: `Score: ${result.data.score}/10`
+        });
+      } else {
+        toast.error('Erro na análise', {
+          description: result.error || 'Erro desconhecido'
+        });
+      }
+    },
+    onError: (error: Error) => {
+      toast.error('Erro ao analisar jogo', {
+        description: error.message
+      });
+    }
+  });
+
+  // Gerar variações
+  const generateVariations = useMutation({
+    mutationFn: () => {
+      if (!state.lotteryType || !state.contestNumber) {
+        throw new Error('Dados incompletos');
+      }
+
+      const params: GenerateVariationsParams = {
+        originalNumbers: state.selectedNumbers,
+        lotteryType: state.lotteryType,
+        contestNumber: state.contestNumber
+      };
+
+      return GameVariationsService.generateVariations(params);
+    },
+    onSuccess: (result) => {
+      if (result.success && result.data) {
+        setState(prev => ({ ...prev, variations: result.data! }));
+        toast.success('5 variações geradas!', {
+          description: 'Explore as opções otimizadas pela IA.'
+        });
+      } else {
+        toast.error('Erro ao gerar variações', {
+          description: result.error || 'Erro desconhecido'
+        });
+      }
+    },
+    onError: (error: Error) => {
+      toast.error('Erro ao gerar variações', {
+        description: error.message
+      });
+    }
+  });
+
+  // Reiniciar stepper
+  const resetStepper = useCallback(() => {
+    setState({
+      currentStep: 1,
+      lotteryType: null,
+      contestNumber: null,
+      selectedNumbers: [],
+      analysisResult: null,
+      variations: [],
+      timeSpent: { step1: 0, step2: 0, step3: 0, step4: 0 }
+    });
+    toast.info('Criando novo jogo');
+  }, []);
+
+  // Validações por etapa
+  const canProceedToStep2 = state.lotteryType !== null;
+  const canProceedToStep3 = state.contestNumber !== null;
+  const canProceedToStep4 = state.lotteryType &&
+    state.selectedNumbers.length === (state.lotteryType === 'lotofacil' ? 15 : 50);
+
+  return {
+    // Estado
+    state,
+
+    // Navegação
+    goToStep,
+    nextStep,
+    prevStep,
+    resetStepper,
+
+    // Etapa 1
+    selectLottery,
+
+    // Etapa 2
+    selectContest,
+
+    // Etapa 3
+    toggleNumber,
+    clearSelection,
+    randomSelection,
+
+    // Etapa 4
+    analyzeGame,
+    generateVariations,
+
+    // Validações
+    canProceedToStep2,
+    canProceedToStep3,
+    canProceedToStep4,
+  };
+}

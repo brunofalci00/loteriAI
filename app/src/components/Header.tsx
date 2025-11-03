@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
-import { User, LogOut } from "lucide-react";
+import { User, LogOut, Heart } from "lucide-react";
 import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
+import { CreditsDisplay } from "./CreditsDisplay";
+import { useSavedGamesStats } from "@/hooks/useSavedGames";
 import logo from "@/assets/logo-loterai.png";
 import {
   DropdownMenu,
@@ -15,13 +18,17 @@ import {
 export const Header = () => {
   const { user, logout } = useAuth();
 
+  // Buscar estatísticas de jogos salvos
+  const { data: savedGamesStats } = useSavedGamesStats();
+  const savedCount = savedGamesStats?.totalSaved || 0;
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center">
           <img src={logo} alt="loter.AI" className="h-16 w-auto" />
         </Link>
-        
+
         <nav className="flex items-center gap-4 md:gap-6">
           <Link to="/" className="text-xs md:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Início
@@ -33,15 +40,36 @@ export const Header = () => {
 
         <div className="flex items-center gap-3">
           {user?.isAuthenticated && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full gradient-primary text-sm font-semibold">
-                    {user.name.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="hidden md:inline">{user.name}</span>
-                </Button>
-              </DropdownMenuTrigger>
+            <>
+              {/* Credits Badge */}
+              {user.id && (
+                <CreditsDisplay userId={user.id} variant="badge" />
+              )}
+
+              {/* Saved Games Badge */}
+              <Button variant="ghost" size="icon" className="relative" asChild>
+                <Link to="/meus-jogos">
+                  <Heart className="h-5 w-5" />
+                  {savedCount > 0 && (
+                    <Badge
+                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                      variant="destructive"
+                    >
+                      {savedCount}
+                    </Badge>
+                  )}
+                </Link>
+              </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full gradient-primary text-sm font-semibold">
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="hidden md:inline">{user.name}</span>
+                  </Button>
+                </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div>
@@ -68,6 +96,7 @@ export const Header = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            </>
           )}
         </div>
       </div>

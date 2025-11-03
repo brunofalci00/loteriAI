@@ -12,6 +12,8 @@ import LotteryContests from "./pages/LotteryContests";
 import Profile from "./pages/Profile";
 import HowItWorks from "./pages/HowItWorks";
 import EmailConfirmation from "./pages/EmailConfirmation";
+import SavedGamesPage from "./pages/SavedGamesPage";
+import ManualGameCreationPage from "./pages/ManualGameCreationPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +33,8 @@ const App = () => (
             <Route path="/lottery/:type/contests" element={<ProtectedRoute><LotteryContests /></ProtectedRoute>} />
             <Route path="/lottery/:type/analysis/:contestNumber" element={<ProtectedRoute><Lottery /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/meus-jogos" element={<ProtectedRoute><SavedGamesPage /></ProtectedRoute>} />
+            <Route path="/criar-jogo" element={<ProtectedRoute><ManualGameCreationPage /></ProtectedRoute>} />
             <Route path="/how-it-works" element={<HowItWorks />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

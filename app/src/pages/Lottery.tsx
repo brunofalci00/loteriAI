@@ -4,6 +4,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { LoadingAnalysis } from "@/components/LoadingAnalysis";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
 import { NextDrawInfo } from "@/components/NextDrawInfo";
+import { RegenerateButton } from "@/components/RegenerateButton";
+import { GenerationSelector } from "@/components/GenerationSelector";
+import { GenerationHistoryModal } from "@/components/GenerationHistoryModal";
+import { CreditsDisplay } from "@/components/CreditsDisplay";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +16,7 @@ import { toast } from "sonner";
 import { useLotteryAnalysis } from "@/hooks/useLotteryAnalysis";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatShortDate } from "@/utils/formatters";
+import { useActiveGeneration } from "@/hooks/useGenerationHistory";
 
 const lotteryData: Record<string, { name: string; maxNumber: number; numbersPerGame: number }> = {
   "mega-sena": { name: "Mega-Sena", maxNumber: 60, numbersPerGame: 6 },
@@ -27,23 +32,37 @@ const Lottery = () => {
   const navigate = useNavigate();
   const [showLoading, setShowLoading] = useState(true);
   const [showResults, setShowResults] = useState(false);
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const { user } = useAuth();
 
   const lottery = type ? lotteryData[type] : null;
+  const parsedContestNumber = parseInt(contestNumber || "0");
 
   // Iniciar análise real
-  const { 
-    data: analysisResult, 
+  const {
+    data: analysisResult,
     isLoading: isAnalyzing,
     error: analysisError
   } = useLotteryAnalysis(
     type || "",
     lottery?.maxNumber || 60,
     lottery?.numbersPerGame || 6,
-    parseInt(contestNumber || "0"),
+    parsedContestNumber,
     user?.id || null,
     !!lottery // só habilita se loteria existe
   );
+
+  // Buscar geração ativa (se existir)
+  const { data: activeGeneration } = useActiveGeneration(
+    user?.id,
+    type || "",
+    parsedContestNumber,
+    showResults && !!user?.id
+  );
+
+  // Usar combinações da geração ativa se disponível, senão usar da análise original
+  const displayedCombinations = activeGeneration?.generated_numbers || analysisResult?.combinations || [];
+  const displayedHotNumbers = activeGeneration?.hot_numbers || analysisResult?.statistics.hotNumbers || [];
 
   if (!lottery) {
     return (
@@ -167,21 +186,85 @@ const Lottery = () => {
             isAnalyzing={isAnalyzing}
           />
         ) : showResults && analysisResult ? (
-          <ResultsDisplay
-            lotteryName={lottery.name}
-            lotteryType={type || ""}
-            combinations={analysisResult.combinations}
-            stats={{
-              accuracy: analysisResult.calculatedAccuracy,
-              gamesGenerated: analysisResult.gamesGenerated,
-              hotNumbers: analysisResult.statistics.hotNumbers,
-              lastUpdate: analysisResult.statistics.lastUpdate,
-              dataSource: analysisResult.dataSource,
-            }}
-            strategy={analysisResult.strategy}
-            onExport={handleExport}
-          />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Generation Selector */}
+              {user?.id && (
+                <GenerationSelector
+                  userId={user.id}
+                  lotteryType={type || ""}
+                  contestNumber={parsedContestNumber}
+                  onOpenHistory={() => setHistoryModalOpen(true)}
+                />
+              )}
+
+              {/* Regenerate Button */}
+              {user?.id && analysisResult.statistics && (
+                <div className="flex gap-3">
+                  <RegenerateButton
+                    userId={user.id}
+                    lotteryType={type || ""}
+                    contestNumber={parsedContestNumber}
+                    statistics={analysisResult.statistics}
+                    numbersPerGame={lottery.numbersPerGame}
+                    maxNumber={lottery.maxNumber}
+                    numberOfGames={10}
+                    variant="hero"
+                    showCreditsCount
+                  />
+                  <Button variant="outline" onClick={handleExport}>
+                    Exportar Jogos
+                  </Button>
+                </div>
+              )}
+
+              {/* Results Display */}
+              <ResultsDisplay
+                lotteryName={lottery.name}
+                lotteryType={type || ""}
+                combinations={displayedCombinations}
+                stats={{
+                  accuracy: analysisResult.calculatedAccuracy,
+                  gamesGenerated: displayedCombinations.length,
+                  hotNumbers: displayedHotNumbers,
+                  coldNumbers: analysisResult.statistics.coldNumbers,
+                  lastUpdate: analysisResult.statistics.lastUpdate,
+                  dataSource: analysisResult.dataSource,
+                }}
+                strategy={analysisResult.strategy}
+                onExport={handleExport}
+                contestNumber={parsedContestNumber}
+                generationId={activeGeneration?.id || null}
+                userId={user?.id || null}
+              />
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:col-span-1">
+              {user?.id && (
+                <CreditsDisplay
+                  userId={user.id}
+                  variant="default"
+                  showProgress
+                  showResetInfo
+                  className="sticky top-4"
+                />
+              )}
+            </div>
+          </div>
         ) : null}
+
+        {/* Generation History Modal */}
+        {user?.id && (
+          <GenerationHistoryModal
+            userId={user.id}
+            lotteryType={type || ""}
+            contestNumber={parsedContestNumber}
+            open={historyModalOpen}
+            onOpenChange={setHistoryModalOpen}
+          />
+        )}
       </div>
     </div>
   );

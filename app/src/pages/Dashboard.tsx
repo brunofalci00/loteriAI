@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { LotteryCard } from "@/components/LotteryCard";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
 import { useLotteryDrawInfo } from "@/hooks/useLotteryDrawInfo";
 import { useMemo } from "react";
 
@@ -172,6 +175,34 @@ const Dashboard = () => {
             Selecione a modalidade que deseja analisar
           </p>
         </div>
+
+        {/* Manual Game Creation Card */}
+        <Card className="mb-8 p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                ✏️ Criar Jogo Manualmente
+              </h2>
+              <p className="text-muted-foreground">
+                Monte seus próprios jogos e receba análise completa da IA com sugestões de melhoria
+              </p>
+              <div className="flex flex-wrap gap-2 pt-2">
+                <span className="text-xs px-2 py-1 bg-primary/20 rounded-full">Lotofácil</span>
+                <span className="text-xs px-2 py-1 bg-primary/20 rounded-full">Lotomania</span>
+                <span className="text-xs px-2 py-1 bg-green-500/20 rounded-full">Análise com IA</span>
+                <span className="text-xs px-2 py-1 bg-green-500/20 rounded-full">5 Variações</span>
+              </div>
+            </div>
+            <Button
+              onClick={() => navigate('/criar-jogo')}
+              size="lg"
+              className="min-w-[150px]"
+            >
+              <PlusCircle className="h-5 w-5 mr-2" />
+              Criar Jogo
+            </Button>
+          </div>
+        </Card>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {sortedLotteries.map((lottery) => (

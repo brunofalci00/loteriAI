@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Download, TrendingUp, Hash, Database, Flame, Calendar, Award } from "lucide-react";
 import { formatShortDate } from "@/utils/formatters";
 import { StrategyOptimizerDialog } from "@/components/StrategyOptimizerDialog";
+import { SaveToggleButton } from "@/components/SaveToggleButton";
 
 interface ResultsDisplayProps {
   lotteryName: string;
@@ -22,6 +23,10 @@ interface ResultsDisplayProps {
     description: string;
   };
   onExport: () => void;
+  // Props para SaveToggleButton (Fase 2)
+  contestNumber?: number;
+  generationId?: string | null;
+  userId?: string | null;
 }
 
 export const ResultsDisplay = ({
@@ -31,6 +36,9 @@ export const ResultsDisplay = ({
   stats,
   strategy,
   onExport,
+  contestNumber,
+  generationId = null,
+  userId = null,
 }: ResultsDisplayProps) => {
   const confidenceColors = {
     baixa: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
@@ -140,35 +148,64 @@ export const ResultsDisplay = ({
 
       {/* Combinations Grid */}
       <div className="grid gap-4">
-        {combinations.map((combo, index) => (
-          <Card key={index} className="border-border bg-card p-4 shadow-card">
-            <div className="flex items-center gap-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/20 text-sm font-bold text-primary">
-                {index + 1}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {combo.map((number, numIndex) => {
-                  const hot = isHotNumber(number);
+        {combinations.map((combo, index) => {
+          // Calcular análise para cada jogo individual
+          const hotCount = combo.filter(n => stats.hotNumbers?.includes(n)).length;
+          const coldCount = combo.filter(n => stats.coldNumbers?.includes(n)).length;
+          const balancedCount = combo.length - hotCount - coldCount;
 
-                  return (
-                    <div
-                      key={numIndex}
-                      className={`flex h-10 w-10 items-center justify-center rounded-lg font-bold text-sm shadow-glow relative ${
-                        hot
-                          ? "bg-orange-500 text-white ring-2 ring-orange-500/50"
-                          : "gradient-primary"
-                      }`}
-                      title={hot ? "Número quente" : ""}
-                    >
-                      {number.toString().padStart(2, "0")}
-                      {hot && <Flame className="absolute -top-1 -right-1 h-3 w-3 text-orange-300" />}
-                    </div>
-                  );
-                })}
+          return (
+            <Card key={index} className="border-border bg-card p-4 shadow-card">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/20 text-sm font-bold text-primary">
+                    {index + 1}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {combo.map((number, numIndex) => {
+                      const hot = isHotNumber(number);
+
+                      return (
+                        <div
+                          key={numIndex}
+                          className={`flex h-10 w-10 items-center justify-center rounded-lg font-bold text-sm shadow-glow relative ${
+                            hot
+                              ? "bg-orange-500 text-white ring-2 ring-orange-500/50"
+                              : "gradient-primary"
+                          }`}
+                          title={hot ? "Número quente" : ""}
+                        >
+                          {number.toString().padStart(2, "0")}
+                          {hot && <Flame className="absolute -top-1 -right-1 h-3 w-3 text-orange-300" />}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Botão de Salvar (Fase 2) */}
+                {userId && contestNumber && (
+                  <SaveToggleButton
+                    lotteryType={lotteryType}
+                    contestNumber={contestNumber}
+                    numbers={combo}
+                    analysisResult={{
+                      hotCount,
+                      coldCount,
+                      balancedCount,
+                      accuracy: stats.accuracy,
+                    }}
+                    generationId={generationId}
+                    source="ai_generated"
+                    strategyType={strategy?.type || 'balanced'}
+                    variant="outline"
+                    size="icon"
+                  />
+                )}
               </div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
