@@ -55,9 +55,6 @@ export function Step3_NumberGrid({
               <span className="text-sm font-medium">
                 Selecionados: {selectedNumbers.length}/{numbersToSelect}
               </span>
-              <span className="text-xs text-muted-foreground">
-                {isComplete ? '✓ Completo!' : `Faltam ${numbersToSelect - selectedNumbers.length}`}
-              </span>
             </div>
             <div className="w-full bg-muted rounded-full h-2">
               <div

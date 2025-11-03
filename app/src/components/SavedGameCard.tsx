@@ -181,8 +181,8 @@ export function SavedGameCard({ game }: SavedGameCardProps) {
               <span>{hotCount} quentes</span>
             </div>
             <div className="flex items-center gap-1">
-              <span>❄️</span>
-              <span>{coldCount} frios</span>
+              <span>📊</span>
+              <span>{coldCount} outros</span>
             </div>
             <div className="flex items-center gap-1">
               <span>⚖️</span>

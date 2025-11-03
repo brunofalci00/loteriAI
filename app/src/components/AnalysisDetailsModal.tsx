@@ -85,7 +85,7 @@ export function AnalysisDetailsModal({
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium">Números Frios</span>
+                  <span className="text-sm font-medium">Outros Números</span>
                   <span className="text-sm text-muted-foreground">
                     {coldCount} ({((coldCount / totalNumbers) * 100).toFixed(1)}%)
                   </span>

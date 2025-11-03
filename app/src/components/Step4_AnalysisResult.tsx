@@ -33,9 +33,9 @@ export function Step4_AnalysisResult({
 }: Step4_AnalysisResultProps) {
   const { score, summary, hotCount, coldCount, balancedCount, evenOddDistribution, comparisonWithAverage } = analysisResult;
 
-  // Convert score (0-10) to stars (0-5)
-  const stars = Math.round(score / 2);
-  const halfStar = score % 2 >= 1;
+  // Score agora já está em escala 0-5
+  const stars = Math.floor(score);
+  const halfStar = (score % 1) >= 0.5;
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -54,14 +54,21 @@ export function Step4_AnalysisResult({
             Números selecionados:
           </h3>
           <div className="flex flex-wrap gap-2">
-            {selectedNumbers.map((num) => (
-              <span
-                key={num}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-base font-semibold"
-              >
-                {num.toString().padStart(2, '0')}
-              </span>
-            ))}
+            {selectedNumbers.map((num) => {
+              const isHot = analysisResult.detailedAnalysis.hotNumbers.includes(num);
+              return (
+                <span
+                  key={num}
+                  className={`px-4 py-2 rounded-lg text-base font-semibold ${
+                    isHot
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-primary text-primary-foreground'
+                  }`}
+                >
+                  {num.toString().padStart(2, '0')}
+                </span>
+              );
+            })}
           </div>
         </div>
 
@@ -70,7 +77,7 @@ export function Step4_AnalysisResult({
           <div className="flex items-center justify-between mb-4">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <span className="text-4xl font-bold">{score.toFixed(1)}/10</span>
+                <span className="text-4xl font-bold">{score.toFixed(1)}/5</span>
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
@@ -86,7 +93,7 @@ export function Step4_AnalysisResult({
                   ))}
                 </div>
               </div>
-              <Badge variant={score >= 7 ? 'default' : score >= 5 ? 'secondary' : 'destructive'}>
+              <Badge variant={score >= 3.5 ? 'default' : score >= 2.5 ? 'secondary' : 'destructive'}>
                 {comparisonWithAverage}
               </Badge>
             </div>
@@ -117,7 +124,7 @@ export function Step4_AnalysisResult({
             <p className="text-2xl font-bold text-orange-500">{hotCount}</p>
           </div>
           <div className="space-y-1">
-            <p className="text-xs text-muted-foreground">Números Frios</p>
+            <p className="text-xs text-muted-foreground">Outros Números</p>
             <p className="text-2xl font-bold text-blue-500">{coldCount}</p>
           </div>
           <div className="space-y-1">

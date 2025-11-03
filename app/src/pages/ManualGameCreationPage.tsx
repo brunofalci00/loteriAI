@@ -49,7 +49,7 @@ const guideSteps: GuideStep[] = [
   {
     id: 'step4',
     title: 'Análise da IA',
-    description: 'A IA analisa automaticamente seu jogo e dá um score de 0 a 10, mostrando números quentes/frios, distribuição e padrões. Clique em "Ver Detalhes" para análise completa!',
+    description: 'A IA analisa automaticamente seu jogo e dá um score de 0 a 5, mostrando números quentes, distribuição e padrões. Clique em "Ver Detalhes" para análise completa!',
     icon: <BarChart3 className="h-12 w-12 text-green-500" />,
   },
   {

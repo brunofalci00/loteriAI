@@ -92,7 +92,9 @@ export function useManualGameCreation() {
       if (isSelected) {
         return {
           ...prev,
-          selectedNumbers: prev.selectedNumbers.filter(n => n !== number)
+          selectedNumbers: prev.selectedNumbers.filter(n => n !== number),
+          analysisResult: null, // Limpar análise ao editar
+          variations: [] // Limpar variações ao editar
         };
       } else {
         if (prev.selectedNumbers.length >= expectedCount) {
@@ -101,7 +103,9 @@ export function useManualGameCreation() {
         }
         return {
           ...prev,
-          selectedNumbers: [...prev.selectedNumbers, number].sort((a, b) => a - b)
+          selectedNumbers: [...prev.selectedNumbers, number].sort((a, b) => a - b),
+          analysisResult: null, // Limpar análise ao editar
+          variations: [] // Limpar variações ao editar
         };
       }
     });
@@ -109,7 +113,12 @@ export function useManualGameCreation() {
 
   // Limpar seleção
   const clearSelection = useCallback(() => {
-    setState(prev => ({ ...prev, selectedNumbers: [] }));
+    setState(prev => ({
+      ...prev,
+      selectedNumbers: [],
+      analysisResult: null, // Limpar análise ao limpar
+      variations: [] // Limpar variações ao limpar
+    }));
     toast.info('Seleção limpa');
   }, []);
 
@@ -130,7 +139,12 @@ export function useManualGameCreation() {
       }
     }
 
-    setState(prev => ({ ...prev, selectedNumbers: numbers.sort((a, b) => a - b) }));
+    setState(prev => ({
+      ...prev,
+      selectedNumbers: numbers.sort((a, b) => a - b),
+      analysisResult: null, // Limpar análise ao gerar aleatório
+      variations: [] // Limpar variações ao gerar aleatório
+    }));
 
     toast.success(`${expectedCount} números selecionados aleatoriamente!`);
   }, [state.lotteryType]);
@@ -154,7 +168,7 @@ export function useManualGameCreation() {
       if (result.success && result.data) {
         setState(prev => ({ ...prev, analysisResult: result.data! }));
         toast.success('Análise concluída!', {
-          description: `Score: ${result.data.score}/10`
+          description: `Score: ${result.data.score.toFixed(1)}/5`
         });
       } else {
         toast.error('Erro na análise', {

@@ -64,16 +64,18 @@ export function VariationsGrid({
                 {variation.numbers.map((num) => {
                   const isKept = originalNumbers.includes(num);
                   const isAdded = variation.changedNumbers.added.includes(num);
+                  const isHot = variation.analysisResult.detailedAnalysis?.hotNumbers?.includes(num);
 
                   return (
                     <span
                       key={num}
                       className={cn(
                         "px-3 py-2 rounded-lg text-sm font-semibold",
-                        isKept && "bg-primary text-primary-foreground border-2 border-primary",
-                        isAdded && "bg-green-500 text-white border-2 border-green-600"
+                        isHot && "bg-orange-500 text-white border-2 border-orange-600",
+                        !isHot && isKept && "bg-primary text-primary-foreground border-2 border-primary",
+                        !isHot && isAdded && "bg-green-500 text-white border-2 border-green-600"
                       )}
-                      title={isKept ? "Mantido do original" : "Número novo"}
+                      title={isHot ? "Número quente" : isKept ? "Mantido do original" : "Número novo"}
                     >
                       {num.toString().padStart(2, '0')}
                     </span>
@@ -82,7 +84,11 @@ export function VariationsGrid({
               </div>
 
               {/* Changes Summary */}
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded bg-orange-500" />
+                  <span>Quentes</span>
+                </div>
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded bg-primary" />
                   <span>Mantidos ({keptCount})</span>
@@ -102,7 +108,7 @@ export function VariationsGrid({
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground">Frios</p>
+                  <p className="text-xs text-muted-foreground">Outros</p>
                   <p className="text-lg font-bold text-blue-500">
                     {variation.analysisResult.coldCount}
                   </p>
@@ -144,7 +150,7 @@ export function VariationsGrid({
       <Card className="p-4 bg-muted/50">
         <p className="text-sm text-muted-foreground">
           <strong>Como funcionam as variações?</strong> A IA mantém 60-70% dos seus números originais
-          e substitui o restante com números otimizados para cada estratégia (balanceada, focada em quentes/frios, etc).
+          e substitui o restante com números otimizados para cada estratégia (balanceada, focada em padrões históricos, etc).
         </p>
       </Card>
     </div>

@@ -8,7 +8,7 @@ export interface ManualGameAnalysisParams {
 }
 
 export interface AnalysisResult {
-  score: number; // 0-10
+  score: number; // 0-5
   summary: string;
   hotCount: number;
   coldCount: number;
@@ -174,8 +174,9 @@ export class ManualGameAnalysisService {
       // -0.5 para cada sequência consecutiva longa (não é estatisticamente ideal)
       score -= Math.min(2, consecutiveSequences.length * 0.5);
 
-      // Limitar score entre 0-10
+      // Limitar score entre 0-10 e depois converter para 0-5
       score = Math.max(0, Math.min(10, score));
+      score = score / 2; // Converter de 0-10 para 0-5
 
       // Gerar resumo textual
       const summary = this.generateSummary({
@@ -200,9 +201,9 @@ export class ManualGameAnalysisService {
         expectedCount
       });
 
-      // Comparar com média histórica (simulado)
-      const comparisonWithAverage = score >= 7 ? 'Acima da média'
-        : score >= 5 ? 'Na média'
+      // Comparar com média histórica (simulado) - Score agora é 0-5
+      const comparisonWithAverage = score >= 3.5 ? 'Acima da média'
+        : score >= 2.5 ? 'Na média'
         : 'Abaixo da média';
 
       const result: AnalysisResult = {
@@ -253,13 +254,13 @@ export class ManualGameAnalysisService {
 
     // Análise hot/cold/balanced
     if (Math.abs(hotCount - coldCount) <= 2 && Math.abs(hotCount - balancedCount) <= 2) {
-      summary += `balanceada com ${hotCount} números quentes, ${coldCount} frios e ${balancedCount} balanceados. `;
+      summary += `balanceada com ${hotCount} números quentes, ${coldCount} outros e ${balancedCount} balanceados. `;
     } else if (hotCount > coldCount + 3) {
-      summary += `focada em números quentes (${hotCount} quentes vs ${coldCount} frios). `;
+      summary += `focada em números quentes (${hotCount} quentes vs ${coldCount} outros). `;
     } else if (coldCount > hotCount + 3) {
-      summary += `focada em números frios (${coldCount} frios vs ${hotCount} quentes). `;
+      summary += `com mais números de padrão histórico variado (${coldCount} outros vs ${hotCount} quentes). `;
     } else {
-      summary += `com ${hotCount} números quentes, ${coldCount} frios e ${balancedCount} balanceados. `;
+      summary += `com ${hotCount} números quentes, ${coldCount} outros e ${balancedCount} balanceados. `;
     }
 
     // Análise par/ímpar
@@ -274,10 +275,10 @@ export class ManualGameAnalysisService {
       summary += `Identificamos ${patterns.length} padrão(ões) no seu jogo. `;
     }
 
-    // Score geral
-    if (score >= 8) {
+    // Score geral (agora 0-5)
+    if (score >= 4) {
       summary += `Excelente escolha!`;
-    } else if (score >= 6) {
+    } else if (score >= 3) {
       summary += `Boas chances!`;
     } else {
       summary += `Considere as sugestões de melhoria.`;
@@ -308,9 +309,7 @@ export class ManualGameAnalysisService {
       suggestions.push(`Adicione mais números quentes para melhorar a probabilidade.`);
     }
 
-    if (coldCount > idealRatio + 3) {
-      suggestions.push(`Reduza a quantidade de números frios (${coldCount} é alto).`);
-    }
+    // Removido sugestão sobre "números frios" (percepção negativa)
 
     // Sugestões par/ímpar
     if (Math.abs(evenCount - oddCount) > 4) {

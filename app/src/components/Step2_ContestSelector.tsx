@@ -59,7 +59,7 @@ export function Step2_ContestSelector({
               <TooltipContent>
                 <p className="max-w-xs">
                   A análise contextual usa dados históricos do concurso selecionado
-                  para identificar números quentes, frios e padrões.
+                  para identificar números quentes e padrões estatísticos.
                 </p>
               </TooltipContent>
             </Tooltip>
