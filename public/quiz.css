@@ -1077,3 +1077,105 @@ body.quiz-body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ========================================
+   VIDEO LOADING STATES
+   Estados visuais de carregamento de video
+   ======================================== */
+
+.proofs-media__video,
+.media-shell__video {
+  position: relative;
+}
+
+/* Loading indicator */
+.video-loading::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--accent-primary, #36f28f);
+  border-radius: 50%;
+  animation: video-spin 0.8s linear infinite;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.video-loading::after {
+  content: 'Carregando vídeo...';
+  position: absolute;
+  top: calc(50% + 40px);
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 0.9rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@keyframes video-spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* Video ready (fade in) */
+.video-ready video {
+  animation: video-fade-in 0.5s ease-in;
+}
+
+@keyframes video-fade-in {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Error state */
+.video-error video {
+  opacity: 0.3;
+  filter: grayscale(1);
+}
+
+.video-error-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 82, 82, 0.95);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 280px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  z-index: 20;
+}
+
+.video-error-message p {
+  margin: 8px 0;
+}
+
+.video-error-message a {
+  color: white;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.video-error-message a:hover {
+  text-decoration: none;
+}
+
+/* Otimizacao: esconde video antes de carregar */
+video[data-lazy-video] {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  min-height: 200px;
+}

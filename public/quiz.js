@@ -536,6 +536,89 @@
       window.clearInterval(offerTimerId);
     }
   });
+
+  // ========================================
+  // VIDEO LAZY LOADING & OPTIMIZATION
+  // Carrega videos apenas quando visiveis
+  // ========================================
+  function initVideoLazyLoading() {
+    const lazyVideos = document.querySelectorAll('[data-lazy-video]');
+
+    if (!lazyVideos.length) return;
+
+    // Cria observer para detectar quando video fica visivel
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const video = entry.target;
+          const sources = video.querySelectorAll('source[data-src]');
+
+          // Carrega o video
+          sources.forEach(source => {
+            source.src = source.dataset.src;
+            source.removeAttribute('data-src');
+          });
+
+          video.load();
+          video.removeAttribute('data-lazy-video');
+
+          // Para de observar este video
+          videoObserver.unobserve(video);
+
+          console.log('📹 Video carregado:', video.dataset.videoSrc);
+        }
+      });
+    }, {
+      rootMargin: '50px', // Comeca a carregar 50px antes de ficar visivel
+      threshold: 0.1
+    });
+
+    // Observa todos os videos lazy
+    lazyVideos.forEach(video => videoObserver.observe(video));
+  }
+
+  // Adiciona indicador de loading aos videos
+  function addVideoLoadingStates() {
+    const videos = document.querySelectorAll('video[controls]');
+
+    videos.forEach(video => {
+      // Evento quando comeca a carregar
+      video.addEventListener('loadstart', () => {
+        const parent = video.parentElement;
+        parent.classList.add('video-loading');
+      });
+
+      // Evento quando pode comecar a tocar
+      video.addEventListener('canplay', () => {
+        const parent = video.parentElement;
+        parent.classList.remove('video-loading');
+        parent.classList.add('video-ready');
+      });
+
+      // Evento de erro
+      video.addEventListener('error', (e) => {
+        console.error('Erro ao carregar video:', e);
+        const parent = video.parentElement;
+        parent.classList.add('video-error');
+
+        // Mostra mensagem de erro user-friendly
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'video-error-message';
+        errorMsg.innerHTML = `
+          <p>⚠️ Erro ao carregar vídeo</p>
+          <p style="font-size: 0.9em">Sua conexão pode estar lenta.
+          <a href="${video.dataset.videoSrc}" download>Baixar vídeo</a></p>
+        `;
+        parent.appendChild(errorMsg);
+      });
+    });
+  }
+
+  // Inicializa otimizacoes de video
+  initVideoLazyLoading();
+  addVideoLoadingStates();
+
+  console.log('🎬 Video optimization initialized');
 });
 
 
