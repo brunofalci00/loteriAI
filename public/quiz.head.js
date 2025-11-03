@@ -338,11 +338,34 @@
       case 'ia-result-2':
         fbSafeTrackCustom('Quiz_IA2_Result');
         break;
+      case 'preloading':
+        // CAPI: Lead (usuário iniciou quiz)
+        if (typeof fbCAPI_trackLead === 'function') {
+          fbCAPI_trackLead({
+            contentName: 'Quiz Loter.IA - Iniciado'
+          });
+        }
+        break;
       case 'summary':
         fbSafeTrack('CompleteRegistration');
+        // CAPI: CompleteRegistration
+        if (typeof fbCAPI_trackCompleteRegistration === 'function') {
+          fbCAPI_trackCompleteRegistration({
+            contentName: 'Quiz Loter.IA - Completo'
+          });
+        }
         break;
       case 'offer':
         fbSafeTrack('InitiateCheckout');
+        // CAPI: InitiateCheckout
+        if (typeof fbCAPI_trackInitiateCheckout === 'function') {
+          fbCAPI_trackInitiateCheckout({
+            contentName: 'Plano Básico - Loter.IA',
+            value: 37.00,
+            currency: 'BRL',
+            numItems: 1
+          });
+        }
         break;
       default:
         break;
