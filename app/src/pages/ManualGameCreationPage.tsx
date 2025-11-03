@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useManualGameCreation } from "@/hooks/useManualGameCreation";
 import { useWelcomeGuide } from "@/hooks/useTourGuide";
 import { useAuth } from "@/contexts/AuthContext";
+import { useMutation } from "@tanstack/react-query";
+import { GameVariationsService } from "@/services/gameVariationsService";
 import { ManualGameStepper } from "@/components/ManualGameStepper";
 import { Step1_LotterySelector } from "@/components/Step1_LotterySelector";
 import { Step2_ContestSelector } from "@/components/Step2_ContestSelector";
@@ -11,6 +13,7 @@ import { AnalysisDetailsModal } from "@/components/AnalysisDetailsModal";
 import { VariationsGrid } from "@/components/VariationsGrid";
 import { WelcomeGuideModal, GuideStep } from "@/components/WelcomeGuideModal";
 import { Header } from "@/components/Header";
+import { toast } from "sonner";
 import {
   Sparkles,
   ListTodo,
@@ -91,6 +94,54 @@ const ManualGameCreationPage = () => {
       analyzeGame.mutate();
     }
   }, [state.currentStep, state.analysisResult, analyzeGame]);
+
+  // Mutation para otimizar jogo com IA
+  const optimizeGame = useMutation({
+    mutationFn: async () => {
+      if (!state.lotteryType || !state.contestNumber) {
+        throw new Error('Dados incompletos');
+      }
+
+      const result = await GameVariationsService.generateVariations({
+        originalNumbers: state.selectedNumbers,
+        lotteryType: state.lotteryType,
+        contestNumber: state.contestNumber
+      });
+
+      if (!result.success || !result.data) {
+        throw new Error(result.error || 'Erro ao gerar variação');
+      }
+
+      // Retornar apenas a primeira variação (balanced)
+      const balancedVariation = result.data.find(v => v.strategy === 'balanced') || result.data[0];
+      return balancedVariation.numbers;
+    },
+    onSuccess: (optimizedNumbers) => {
+      // Limpar seleção atual
+      clearSelection();
+
+      // Adicionar novos números otimizados um por um
+      // Timeout para garantir que clearSelection completou
+      setTimeout(() => {
+        optimizedNumbers.forEach(num => toggleNumber(num));
+
+        // Fechar modal
+        setDetailsModalOpen(false);
+
+        // Voltar para Step 3
+        goToStep(3);
+
+        toast.success('Jogo otimizado pela IA!', {
+          description: 'Números atualizados com base na análise'
+        });
+      }, 100);
+    },
+    onError: (error: Error) => {
+      toast.error('Erro ao otimizar jogo', {
+        description: error.message
+      });
+    }
+  });
 
   const handleStep1Next = () => {
     if (canProceedToStep2) {
@@ -218,6 +269,8 @@ const ManualGameCreationPage = () => {
           open={detailsModalOpen}
           onOpenChange={setDetailsModalOpen}
           analysisResult={state.analysisResult}
+          onOptimize={() => optimizeGame.mutate()}
+          isOptimizing={optimizeGame.isPending}
         />
       )}
 

@@ -2,28 +2,35 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Star, Sparkles } from "lucide-react";
 import type { AnalysisResult } from "@/services/manualGameAnalysisService";
 
 interface AnalysisDetailsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   analysisResult: AnalysisResult;
+  onOptimize?: () => void; // Callback para otimizar jogo com IA
+  isOptimizing?: boolean; // Estado de loading
 }
 
 export function AnalysisDetailsModal({
   open,
   onOpenChange,
-  analysisResult
+  analysisResult,
+  onOptimize,
+  isOptimizing = false
 }: AnalysisDetailsModalProps) {
   const { score, hotCount, coldCount, balancedCount, evenOddDistribution, dezenaDistribution, patterns, suggestions, comparisonWithAverage, detailedAnalysis } = analysisResult;
 
-  const stars = Math.round(score / 2);
+  // Score agora é 0-5
+  const stars = Math.floor(score);
   const totalNumbers = hotCount + coldCount + balancedCount;
 
   return (
@@ -42,7 +49,7 @@ export function AnalysisDetailsModal({
             <div className="flex items-center justify-between mb-4">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-4xl font-bold">{score.toFixed(1)}/10</span>
+                  <span className="text-4xl font-bold">{score.toFixed(1)}/5</span>
                   <div className="flex gap-1">
                     {[...Array(5)].map((_, i) => (
                       <Star
@@ -54,7 +61,7 @@ export function AnalysisDetailsModal({
                     ))}
                   </div>
                 </div>
-                <Badge variant={score >= 7 ? 'default' : score >= 5 ? 'secondary' : 'destructive'}>
+                <Badge variant={score >= 3.5 ? 'default' : score >= 2.5 ? 'secondary' : 'destructive'}>
                   {comparisonWithAverage}
                 </Badge>
               </div>
@@ -198,6 +205,20 @@ export function AnalysisDetailsModal({
             </ul>
           </Card>
         </div>
+
+        {/* Footer com botão de otimização */}
+        {onOptimize && (
+          <DialogFooter className="border-t pt-4">
+            <Button
+              onClick={onOptimize}
+              disabled={isOptimizing}
+              className="w-full sm:w-auto"
+            >
+              <Sparkles className="h-4 w-4 mr-2" />
+              {isOptimizing ? 'Otimizando...' : 'Otimizar com IA'}
+            </Button>
+          </DialogFooter>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Trash2, Shuffle, Check } from "lucide-react";
 import { LotteryType, getLotteryConfig } from "@/config/lotteryConfig";
+import { useClickSound } from "@/hooks/useClickSound";
 
 interface Step3_NumberGridProps {
   lotteryType: LotteryType;
@@ -30,6 +31,21 @@ export function Step3_NumberGrid({
   const isComplete = selectedNumbers.length === numbersToSelect;
   const progress = (selectedNumbers.length / numbersToSelect) * 100;
 
+  // Hook para som de clique
+  const { playClick } = useClickSound();
+
+  // Handler para click com som
+  const handleNumberClick = (number: number) => {
+    const isSelected = selectedNumbers.includes(number);
+
+    // Tocar som apenas ao SELECIONAR (não ao desselecionar)
+    if (!isSelected) {
+      playClick();
+    }
+
+    onToggleNumber(number);
+  };
+
   // Grid columns baseado no total de números
   const getGridCols = () => {
     if (maxNumber <= 25) return "grid-cols-5 sm:grid-cols-7 md:grid-cols-10"; // Lotofácil
@@ -49,7 +65,31 @@ export function Step3_NumberGrid({
 
       {/* Progress Bar and Actions */}
       <Card className="p-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex flex-col-reverse sm:flex-row items-start sm:items-center justify-between gap-4">
+          {/* Botões - Mobile: acima | Desktop: ao lado */}
+          <div className="flex gap-2 w-full sm:w-auto">
+            <Button
+              onClick={onClear}
+              variant="outline"
+              size="sm"
+              disabled={selectedNumbers.length === 0}
+              className="flex-1 sm:flex-none"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Limpar
+            </Button>
+            <Button
+              onClick={onRandom}
+              variant="outline"
+              size="sm"
+              className="flex-1 sm:flex-none"
+            >
+              <Shuffle className="h-4 w-4 mr-2" />
+              Aleatório
+            </Button>
+          </div>
+
+          {/* Progress Bar */}
           <div className="space-y-2 flex-1 w-full">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">
@@ -66,26 +106,6 @@ export function Step3_NumberGrid({
               />
             </div>
           </div>
-
-          <div className="flex gap-2">
-            <Button
-              onClick={onClear}
-              variant="outline"
-              size="sm"
-              disabled={selectedNumbers.length === 0}
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Limpar
-            </Button>
-            <Button
-              onClick={onRandom}
-              variant="outline"
-              size="sm"
-            >
-              <Shuffle className="h-4 w-4 mr-2" />
-              Aleatório
-            </Button>
-          </div>
         </div>
       </Card>
 
@@ -97,7 +117,7 @@ export function Step3_NumberGrid({
           return (
             <button
               key={number}
-              onClick={() => onToggleNumber(number)}
+              onClick={() => handleNumberClick(number)}
               className={cn(
                 "relative aspect-square rounded-lg font-semibold text-base sm:text-lg",
                 "transition-all duration-200 hover:scale-110",
