@@ -75,7 +75,7 @@ export function formatGameForSharing(game: SavedGame): string {
   }
 
   text += `\n💡 *Use LOTER.IA e aumente suas chances:*\n`;
-  text += `https://loter.ia\n`;
+  text += `https://www.fqdigital.com.br/\n`;
 
   return text;
 }

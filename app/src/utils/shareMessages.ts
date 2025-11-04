@@ -11,7 +11,7 @@
  */
 
 const BASE_MESSAGE = "Testei esse app de loteria com IA e curti\n\n";
-const LINK = "\n\nhttps://loter.ia";
+const LINK = "\n\nhttps://www.fqdigital.com.br/";
 
 /**
  * Contexto #1: Score alto em jogo manual (4.0+)
@@ -99,7 +99,7 @@ export function formatScoreHighMessageAlt(score: number): string {
   const scoreRounded = score.toFixed(1);
   return `Achei esse app de loteria que analisa com IA\n\n` +
     `Fiz um jogo aqui e ficou bem avaliado (${scoreRounded}/5)\n\n` +
-    `loter.ia`;
+    `www.fqdigital.com.br`;
 }
 
 /**
@@ -109,7 +109,7 @@ export function formatScoreHighMessageAlt(score: number): string {
 export function formatVariationsMessageAlt(): string {
   return `Tem um app de loteria que gera variações automáticas\n\n` +
     `Ele criou 5 versões do meu jogo, cada uma diferente\n\n` +
-    `loter.ia`;
+    `www.fqdigital.com.br`;
 }
 
 /**
@@ -121,7 +121,7 @@ export function formatHighRateMessageAlt(accuracyRate: number): string {
   return `Testei esse app de IA pra loteria\n\n` +
     `Taxa de acerto: ${rateRounded}%\n` +
     `Bem melhor que o normal\n\n` +
-    `loter.ia`;
+    `www.fqdigital.com.br`;
 }
 
 // ============================================
