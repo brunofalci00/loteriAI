@@ -53,11 +53,80 @@ interface FacebookCAPIPayload {
 }
 
 /**
+ * Normalizar email seguindo padrão oficial Meta
+ * - Remover plus addressing (john+promo@example.com → john@example.com)
+ * - Remover pontos em Gmail/Googlemail (john.doe@gmail.com → johndoe@gmail.com)
+ * - Converter para lowercase
+ */
+function normalizeEmail(email: string): string {
+  let normalized = email.toLowerCase().trim();
+
+  const parts = normalized.split('@');
+  if (parts.length !== 2) return normalized; // Email inválido
+
+  let [localPart, domain] = parts;
+
+  // Remover plus addressing
+  if (localPart.includes('+')) {
+    localPart = localPart.split('+')[0];
+  }
+
+  // Remover pontos APENAS para Gmail/Googlemail
+  if (domain === 'gmail.com' || domain === 'googlemail.com') {
+    localPart = localPart.replace(/\./g, '');
+  }
+
+  return `${localPart}@${domain}`;
+}
+
+/**
+ * Normalizar telefone seguindo padrão oficial Meta
+ * - Remover caracteres não-numéricos
+ * - Adicionar código do país (55 para Brasil)
+ */
+function normalizePhone(phone: string, countryCode: string = '55'): string {
+  // Remover tudo exceto números
+  let normalized = phone.replace(/\D/g, '');
+
+  // Remover prefixo 00
+  if (normalized.startsWith('00')) {
+    normalized = normalized.substring(2);
+  }
+
+  // Adicionar código do país se necessário
+  if (!normalized.startsWith(countryCode)) {
+    // Números brasileiros: 10 ou 11 dígitos (DDD + número)
+    if (normalized.length === 10 || normalized.length === 11) {
+      normalized = countryCode + normalized;
+    }
+  }
+
+  return normalized;
+}
+
+/**
+ * Normalizar nome seguindo padrão oficial Meta
+ * - Remover acentos
+ * - Remover números e caracteres especiais
+ * - Converter para lowercase
+ */
+function normalizeName(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .normalize('NFD') // Decompor caracteres acentuados
+    .replace(/[\u0300-\u036f]/g, '') // Remover marcas diacríticas
+    .replace(/[^a-z\s]/g, '') // Remover números e especiais
+    .replace(/\s+/g, ' '); // Normalizar espaços
+}
+
+/**
  * Hash data using SHA256 (as required by Facebook)
+ * IMPORTANTE: Não converter para lowercase aqui - normalização já foi feita
  */
 function hashSHA256(data: string): string {
   const hash = createHash('sha256');
-  hash.update(data.toLowerCase().trim());
+  hash.update(data);
   return hash.toString();
 }
 
@@ -67,46 +136,68 @@ function hashSHA256(data: string): string {
 function normalizeUserData(userData: Partial<UserData>): UserData {
   const normalized: UserData = {};
 
-  // Hash email
+  // Email: normalizar + hash
   if (userData.em && userData.em.length > 0) {
-    normalized.em = userData.em.map(email => hashSHA256(email));
+    normalized.em = userData.em.map(email => {
+      const normalizedEmail = normalizeEmail(email);
+      return hashSHA256(normalizedEmail);
+    });
   }
 
-  // Hash phone (remove non-numeric first, then hash)
+  // Phone: normalizar + hash
   if (userData.ph && userData.ph.length > 0) {
-    normalized.ph = userData.ph.map(phone =>
-      hashSHA256(phone.replace(/\D/g, ''))
-    );
+    normalized.ph = userData.ph.map(phone => {
+      const normalizedPhone = normalizePhone(phone, '55'); // Código BR
+      return hashSHA256(normalizedPhone);
+    });
   }
 
-  // Hash first name
+  // First name: normalizar + hash
   if (userData.fn && userData.fn.length > 0) {
-    normalized.fn = userData.fn.map(name => hashSHA256(name));
+    normalized.fn = userData.fn.map(name => {
+      const normalizedName = normalizeName(name);
+      return hashSHA256(normalizedName);
+    });
   }
 
-  // Hash last name
+  // Last name: normalizar + hash
   if (userData.ln && userData.ln.length > 0) {
-    normalized.ln = userData.ln.map(name => hashSHA256(name));
+    normalized.ln = userData.ln.map(name => {
+      const normalizedName = normalizeName(name);
+      return hashSHA256(normalizedName);
+    });
   }
 
-  // Hash city
+  // City: normalizar + hash
   if (userData.ct && userData.ct.length > 0) {
-    normalized.ct = userData.ct.map(city => hashSHA256(city));
+    normalized.ct = userData.ct.map(city => {
+      const normalizedCity = normalizeName(city); // Mesma lógica de nome
+      return hashSHA256(normalizedCity);
+    });
   }
 
-  // Hash state
+  // State: normalizar + hash
   if (userData.st && userData.st.length > 0) {
-    normalized.st = userData.st.map(state => hashSHA256(state));
+    normalized.st = userData.st.map(state => {
+      const normalizedState = state.toLowerCase().trim();
+      return hashSHA256(normalizedState);
+    });
   }
 
-  // Hash zip
+  // Zip: normalizar + hash
   if (userData.zp && userData.zp.length > 0) {
-    normalized.zp = userData.zp.map(zip => hashSHA256(zip.replace(/\D/g, '')));
+    normalized.zp = userData.zp.map(zip => {
+      const normalizedZip = zip.replace(/\D/g, ''); // Apenas números
+      return hashSHA256(normalizedZip);
+    });
   }
 
-  // Hash country (lowercase 2-letter country code)
+  // Country: normalizar + hash
   if (userData.country && userData.country.length > 0) {
-    normalized.country = userData.country.map(c => hashSHA256(c));
+    normalized.country = userData.country.map(c => {
+      const normalizedCountry = c.toLowerCase().trim();
+      return hashSHA256(normalizedCountry);
+    });
   }
 
   // External ID doesn't need hashing
