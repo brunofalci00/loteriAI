@@ -33,11 +33,17 @@ export class GameVariationsService {
     error?: string;
     creditsRemaining?: number;
   }> {
+    console.log('🚀 GameVariationsService: generateVariations() chamado');
+    console.log('📋 Params recebidos:', params);
+
     try {
+      console.log('👤 Verificando autenticação...');
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        console.error('❌ Usuário não autenticado');
         return { success: false, error: 'Usuário não autenticado' };
       }
+      console.log(`✅ Usuário autenticado: ${user.id}`);
 
       // **CONSUMIR 1 CRÉDITO ANTES DE GERAR**
       console.log('🎯 Consumindo 1 crédito para gerar variações...');
@@ -85,7 +91,12 @@ export class GameVariationsService {
 
       const variations: Variation[] = [];
 
-      for (const strategy of strategies) {
+      console.log(`🔄 Gerando ${strategies.length} variações...`);
+
+      for (let i = 0; i < strategies.length; i++) {
+        const strategy = strategies[i];
+        console.log(`📝 Variação ${i + 1}/${strategies.length}: ${strategy.label}`);
+
         const variation = this.generateSingleVariation({
           originalNumbers: params.originalNumbers,
           strategy: strategy.key,
@@ -94,13 +105,16 @@ export class GameVariationsService {
           allNumbers,
           expectedCount
         });
+        console.log(`✅ Variação gerada: [${variation.slice(0, 5).join(', ')}...]`);
 
         // Analisar variação (reutilizar ManualGameAnalysisService)
+        console.log(`🔍 Analisando variação ${i + 1}...`);
         const analysisResult = await ManualGameAnalysisService.analyzeManualGame({
           lotteryType: params.lotteryType,
           contestNumber: params.contestNumber,
           selectedNumbers: variation
         });
+        console.log(`📊 Análise ${i + 1}: success=${analysisResult.success}, score=${analysisResult.data?.score || 'N/A'}`);
 
         if (analysisResult.success && analysisResult.data) {
           // Identificar números alterados
@@ -116,8 +130,13 @@ export class GameVariationsService {
             analysisResult: analysisResult.data,
             changedNumbers: { removed, added }
           });
+          console.log(`✅ Variação ${i + 1} adicionada ao array (${variations.length} total)`);
+        } else {
+          console.error(`❌ Variação ${i + 1} falhou na análise: ${analysisResult.error || 'Erro desconhecido'}`);
         }
       }
+
+      console.log(`📊 Total de variações geradas: ${variations.length}/${strategies.length}`);
 
       // Salvar variações no banco (opcional)
       const variationsToInsert = variations.map(v => ({
@@ -141,6 +160,12 @@ export class GameVariationsService {
       }
 
       console.log(`✅ ${variations.length} variações geradas com sucesso!`);
+      console.log('📦 Retornando resultado:', {
+        success: true,
+        variationsCount: variations.length,
+        creditsRemaining: creditResult.credits_remaining
+      });
+
       return {
         success: true,
         data: variations,

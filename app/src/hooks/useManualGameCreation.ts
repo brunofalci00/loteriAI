@@ -186,6 +186,7 @@ export function useManualGameCreation() {
   // Gerar variações
   const generateVariations = useMutation({
     mutationFn: () => {
+      console.log('🚀 useManualGameCreation: Iniciando geração de variações...');
       if (!state.lotteryType || !state.contestNumber) {
         throw new Error('Dados incompletos');
       }
@@ -196,21 +197,27 @@ export function useManualGameCreation() {
         contestNumber: state.contestNumber
       };
 
+      console.log('📋 Params:', params);
       return GameVariationsService.generateVariations(params);
     },
     onSuccess: (result) => {
+      console.log('✅ useManualGameCreation: Resultado recebido:', result);
       if (result.success && result.data) {
+        console.log(`📦 Atualizando estado com ${result.data.length} variações`);
         setState(prev => ({ ...prev, variations: result.data! }));
         toast.success('5 variações geradas!', {
           description: 'Explore as opções otimizadas pela IA.'
         });
+        console.log('✅ Estado atualizado! variations.length =', result.data.length);
       } else {
+        console.error('❌ Resultado sem sucesso:', result.error);
         toast.error('Erro ao gerar variações', {
           description: result.error || 'Erro desconhecido'
         });
       }
     },
     onError: (error: Error) => {
+      console.error('❌ useManualGameCreation: Erro na mutação:', error);
       toast.error('Erro ao gerar variações', {
         description: error.message
       });

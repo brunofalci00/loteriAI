@@ -247,6 +247,12 @@ const ManualGameCreationPage = () => {
                   />
 
                   {/* Variations Grid */}
+                  {(() => {
+                    console.log('🔍 ManualGameCreationPage: Verificando renderização de variações');
+                    console.log('📊 state.variations.length =', state.variations.length);
+                    console.log('📦 state.variations =', state.variations);
+                    return null;
+                  })()}
                   {state.variations.length > 0 && (
                     <VariationsGrid
                       variations={state.variations}
