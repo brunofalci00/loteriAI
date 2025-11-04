@@ -242,49 +242,14 @@ export function ShareButton({
         description += ' Limite diário atingido.';
       }
 
-      // Decidir qual botão mostrar (prioridade: Usar créditos > Feedback)
-      let toastAction;
-      if (userId && newBalance && newBalance > 0) {
-        // Mostrar botão "Usar créditos" se tem créditos
-        toastAction = (
-          <Button
-            size="sm"
-            variant="default"
-            onClick={() => navigate('/criar-jogo')}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            <Zap className="h-4 w-4 mr-1" />
-            Usar créditos
-          </Button>
-        );
-      } else if (canShowFeedback) {
-        // Mostrar botão de feedback se pode
-        toastAction = (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => {
-              dispatchFeedbackEvent('post-share', 'suggestion');
-              markFeedbackToastShown();
-            }}
-          >
-            <MessageCircle className="h-4 w-4 mr-1" />
-            Feedback
-          </Button>
-        );
-      }
+      // Não mostrar botões no toast - usuário achou desnecessário
+      let toastAction = undefined;
 
       toast({
         title: `🎉 Compartilhado com sucesso!`,
         description,
-        duration: toastAction ? 8000 : 5000, // Mais tempo se tem botão
-        action: toastAction,
+        duration: 5000,
       });
-
-      // Marcar que mostrou toast (se mostrou o botão)
-      if (canShowFeedback) {
-        console.log('📢 Toast de feedback exibido (pós-compartilhamento)');
-      }
 
       // Callback de sucesso
       onShareSuccess?.(credits);

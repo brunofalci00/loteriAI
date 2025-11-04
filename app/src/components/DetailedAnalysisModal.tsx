@@ -300,6 +300,42 @@ export function DetailedAnalysisModal({
           />
         </div>
 
+        {/* Números Quentes Disponíveis */}
+        {detailedAnalysis.hotNumbers && detailedAnalysis.hotNumbers.length > 0 && (
+          <div className="bg-orange-500/10 dark:bg-orange-500/20 border-2 border-orange-500/30 rounded-lg p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <Flame className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+              <h3 className="text-lg font-semibold">Números Quentes Disponíveis</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Estes são os números mais frequentes nos últimos concursos. Use-os para melhorar suas chances:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {detailedAnalysis.hotNumbers.map((num: number) => {
+                const isSelected = selectedNumbers.includes(num);
+                return (
+                  <div
+                    key={num}
+                    className={`
+                      relative px-3 py-2 rounded-lg text-sm font-semibold border-2
+                      ${isSelected
+                        ? 'bg-orange-600 text-white border-orange-700 opacity-50'
+                        : 'bg-orange-500 text-white border-orange-600'
+                      }
+                    `}
+                    title={isSelected ? 'Já selecionado' : 'Número quente disponível'}
+                  >
+                    {num.toString().padStart(2, '0')}
+                    {isSelected && (
+                      <span className="absolute -top-1 -right-1 text-xs">✓</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Recomendações Inteligentes */}
         {analysisResult.recommendations && analysisResult.recommendations.length > 0 && (
           <div className="space-y-3">
@@ -312,21 +348,21 @@ export function DetailedAnalysisModal({
                   borderColor: 'border-green-500/30',
                   icon: CheckCircle,
                   iconColor: 'text-green-600 dark:text-green-400',
-                  textColor: 'text-green-900 dark:text-green-100'
+                  textColor: 'text-foreground'
                 },
                 warning: {
                   bgColor: 'bg-yellow-500/10 dark:bg-yellow-500/20',
                   borderColor: 'border-yellow-500/30',
                   icon: AlertCircle,
                   iconColor: 'text-yellow-600 dark:text-yellow-400',
-                  textColor: 'text-yellow-900 dark:text-yellow-100'
+                  textColor: 'text-foreground'
                 },
                 info: {
                   bgColor: 'bg-blue-500/10 dark:bg-blue-500/20',
                   borderColor: 'border-blue-500/30',
                   icon: Info,
                   iconColor: 'text-blue-600 dark:text-blue-400',
-                  textColor: 'text-blue-900 dark:text-blue-100'
+                  textColor: 'text-foreground'
                 }
               };
 
@@ -354,11 +390,11 @@ export function DetailedAnalysisModal({
                       {rec.actionable && rec.numbersToAdd && rec.numbersToRemove && (
                         <div className="flex flex-col gap-2 text-xs">
                           {rec.numbersToRemove.length > 0 && (
-                            <div className="flex items-center gap-2">
-                              <span className="text-red-600 font-medium">❌ Remover:</span>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-red-600 dark:text-red-400 font-medium whitespace-nowrap">❌ Remover:</span>
                               <div className="flex flex-wrap gap-1">
                                 {rec.numbersToRemove.map(n => (
-                                  <span key={n} className="px-2 py-0.5 rounded bg-red-100 text-red-700 font-medium">
+                                  <span key={n} className="px-2 py-0.5 rounded bg-red-500/20 text-red-700 dark:text-red-300 font-medium border border-red-500/30">
                                     {n.toString().padStart(2, '0')}
                                   </span>
                                 ))}
@@ -366,11 +402,11 @@ export function DetailedAnalysisModal({
                             </div>
                           )}
                           {rec.numbersToAdd.length > 0 && (
-                            <div className="flex items-center gap-2">
-                              <span className="text-green-600 font-medium">✅ Adicionar:</span>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-green-600 dark:text-green-400 font-medium whitespace-nowrap">✅ Adicionar:</span>
                               <div className="flex flex-wrap gap-1">
                                 {rec.numbersToAdd.map(n => (
-                                  <span key={n} className="px-2 py-0.5 rounded bg-green-100 text-green-700 font-medium">
+                                  <span key={n} className="px-2 py-0.5 rounded bg-green-500/20 text-green-700 dark:text-green-300 font-medium border border-green-500/30">
                                     {n.toString().padStart(2, '0')}
                                   </span>
                                 ))}
@@ -388,12 +424,12 @@ export function DetailedAnalysisModal({
         )}
 
         {/* Share CTA */}
-        <div className="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 rounded-lg p-4 space-y-3">
+        <div className="bg-gradient-to-br from-emerald-900 to-green-900 dark:from-emerald-950 dark:to-green-950 border border-emerald-700 dark:border-emerald-800 rounded-lg p-4 space-y-3">
           <div className="text-center">
-            <p className="text-sm font-medium text-emerald-900">
+            <p className="text-sm font-medium text-white">
               Gostou da análise detalhada?
             </p>
-            <p className="text-xs text-emerald-700">
+            <p className="text-xs text-emerald-200 dark:text-emerald-300">
               Compartilhe e ganhe créditos extras
             </p>
           </div>
