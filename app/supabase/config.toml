@@ -18,7 +18,5 @@ verify_jwt = true
 [functions.reset-monthly-credits]
 verify_jwt = false
 
-[functions.reset-monthly-credits.cron]
-# Executa às 00:00 (UTC) do dia 1 de cada mês
-# Reseta créditos de todos os usuários para 50
-schedule = "0 0 1 * *"
+# NOTA: O cron job deve ser configurado manualmente no Supabase Dashboard
+# Schedule: 0 0 1 * * (dia 1 de cada mês às 00:00 UTC)
