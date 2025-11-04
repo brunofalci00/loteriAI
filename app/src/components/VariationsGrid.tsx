@@ -132,7 +132,9 @@ export function VariationsGrid({
                     analysisResult={{
                       hotCount: variation.analysisResult.hotCount,
                       coldCount: variation.analysisResult.coldCount,
-                      balancedCount: variation.analysisResult.balancedCount
+                      balancedCount: variation.analysisResult.balancedCount,
+                      score: variation.analysisResult.score,
+                      detailedAnalysis: variation.analysisResult.detailedAnalysis
                     }}
                     source="manual_created"
                     userId={userId}

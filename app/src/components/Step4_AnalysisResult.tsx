@@ -225,7 +225,9 @@ export function Step4_AnalysisResult({
               analysisResult={{
                 hotCount,
                 coldCount,
-                balancedCount: balancedCount
+                balancedCount: balancedCount,
+                score,
+                detailedAnalysis: analysisResult.detailedAnalysis
               }}
               source="manual_created"
               userId={userId}

@@ -35,7 +35,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { MoreVertical, Edit, Share2, Download, Trash2, Sparkles, Pencil } from 'lucide-react';
+import { MoreVertical, Edit, Send, Download, Trash2, Sparkles, Pencil, Flame } from 'lucide-react';
 import { useUnsaveGame, useMarkAsPlayed, useUnmarkAsPlayed } from '@/hooks/useSavedGames';
 import { shareViaWhatsApp, exportAsTxt } from '@/services/exportService';
 import { EditGameNameModal } from './EditGameNameModal';
@@ -83,6 +83,9 @@ export function SavedGameCard({ game }: SavedGameCardProps) {
   const hotCount = analysis?.hotCount || 0;
   const coldCount = analysis?.coldCount || 0;
   const balancedCount = analysis?.balancedCount || 0;
+
+  // Hot numbers (se disponível na análise detalhada)
+  const hotNumbers: number[] = analysis?.detailedAnalysis?.hotNumbers || [];
 
   // Handlers
   const handleDelete = async () => {
@@ -137,12 +140,12 @@ export function SavedGameCard({ game }: SavedGameCardProps) {
               {/* Botão Compartilhar - Destacado */}
               <Button
                 variant="outline"
-                size="sm"
+                size="icon"
                 onClick={handleShare}
-                className="gap-1"
+                className="shrink-0"
+                title="Compartilhar"
               >
-                <Share2 className="h-4 w-4" />
-                <span className="hidden sm:inline">Compartilhar</span>
+                <Send className="h-4 w-4" />
               </Button>
 
               {/* Menu de Ações */}
@@ -176,27 +179,27 @@ export function SavedGameCard({ game }: SavedGameCardProps) {
         </CardHeader>
 
         <CardContent>
-          {/* Números */}
-          <div className="mb-4">
-            <div className="flex flex-wrap gap-2">
-              {numbersFormatted.map((num, index) => (
-                <Badge key={index} variant="outline" className="text-base font-mono px-3 py-1">
-                  {num}
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          {/* Análise */}
-          <div className="flex gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <span>🔥</span>
-              <span>{hotCount} quentes</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span>⚖️</span>
-              <span>{balancedCount} balanceados</span>
-            </div>
+          {/* Números com foguinhos para quentes */}
+          <div className="flex flex-wrap gap-2">
+            {sortedNumbers.map((num, index) => {
+              const isHot = hotNumbers.includes(num);
+              return (
+                <div
+                  key={index}
+                  className={`
+                    relative flex items-center justify-center rounded-lg
+                    text-base font-mono px-3 py-1.5 border
+                    ${isHot
+                      ? 'bg-orange-500/10 border-orange-500/30 text-orange-600 dark:text-orange-400 font-semibold'
+                      : 'bg-background border-border'
+                    }
+                  `}
+                >
+                  {num.toString().padStart(2, '0')}
+                  {isHot && <Flame className="absolute -top-1 -right-1 h-3 w-3 text-orange-500" />}
+                </div>
+              );
+            })}
           </div>
         </CardContent>
 
