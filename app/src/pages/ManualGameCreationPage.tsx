@@ -92,54 +92,6 @@ const ManualGameCreationPage = () => {
     }
   }, [state.currentStep, state.analysisResult, analyzeGame]);
 
-  // Mutation para otimizar jogo com IA
-  const optimizeGame = useMutation({
-    mutationFn: async () => {
-      if (!state.lotteryType || !state.contestNumber) {
-        throw new Error('Dados incompletos');
-      }
-
-      const result = await GameVariationsService.generateVariations({
-        originalNumbers: state.selectedNumbers,
-        lotteryType: state.lotteryType,
-        contestNumber: state.contestNumber
-      });
-
-      if (!result.success || !result.data) {
-        throw new Error(result.error || 'Erro ao gerar variação');
-      }
-
-      // Retornar apenas a primeira variação (balanced)
-      const balancedVariation = result.data.find(v => v.strategy === 'balanced') || result.data[0];
-      return balancedVariation.numbers;
-    },
-    onSuccess: (optimizedNumbers) => {
-      // Limpar seleção atual
-      clearSelection();
-
-      // Adicionar novos números otimizados um por um
-      // Timeout para garantir que clearSelection completou
-      setTimeout(() => {
-        optimizedNumbers.forEach(num => toggleNumber(num));
-
-        // Fechar modal
-        setDetailsModalOpen(false);
-
-        // Voltar para Step 3
-        goToStep(3);
-
-        toast.success('Jogo otimizado pela IA!', {
-          description: 'Números atualizados com base na análise'
-        });
-      }, 100);
-    },
-    onError: (error: Error) => {
-      toast.error('Erro ao otimizar jogo', {
-        description: error.message
-      });
-    }
-  });
-
   const handleStep1Next = () => {
     if (canProceedToStep2) {
       nextStep();
@@ -240,8 +192,6 @@ const ManualGameCreationPage = () => {
                     onEdit={handleEditNumbers}
                     onReset={resetStepper}
                     isGeneratingVariations={generateVariations.isPending}
-                    onOptimize={() => optimizeGame.mutate()}
-                    isOptimizing={optimizeGame.isPending}
                   />
 
                   {/* Variations Grid */}

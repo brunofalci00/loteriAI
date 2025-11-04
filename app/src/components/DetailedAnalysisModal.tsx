@@ -26,7 +26,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ShareButton } from '@/components/ShareButton';
 import { DiagnosticSection } from '@/components/DiagnosticSection';
-import { Star, Flame, Snowflake, Scale, TrendingUp, Sparkles, Loader2, CheckCircle, AlertCircle, Info } from 'lucide-react';
+import { Star, Flame, Snowflake, Scale, TrendingUp, CheckCircle, AlertCircle, Info } from 'lucide-react';
 import type { AnalysisResult, Recommendation } from '@/services/manualGameAnalysisService';
 
 export interface DetailedAnalysisModalProps {
@@ -61,14 +61,9 @@ export interface DetailedAnalysisModalProps {
   userId?: string | null;
 
   /**
-   * Callback para otimizar jogo com IA
+   * Callback para editar o jogo
    */
-  onOptimize?: () => void;
-
-  /**
-   * Estado de loading durante otimização
-   */
-  isOptimizing?: boolean;
+  onEdit?: () => void;
 }
 
 /**
@@ -81,8 +76,7 @@ export function DetailedAnalysisModal({
   selectedNumbers,
   lotteryName,
   userId = null,
-  onOptimize,
-  isOptimizing = false,
+  onEdit,
 }: DetailedAnalysisModalProps) {
   const { score, detailedAnalysis, hotCount, coldCount, balancedCount, evenOddDistribution, comparisonWithAverage } = analysisResult;
 
@@ -314,22 +308,25 @@ export function DetailedAnalysisModal({
             {analysisResult.recommendations.map((rec: Recommendation, index: number) => {
               const severityConfig = {
                 success: {
-                  bgColor: 'bg-green-50',
-                  borderColor: 'border-green-200',
+                  bgColor: 'bg-green-500/10 dark:bg-green-500/20',
+                  borderColor: 'border-green-500/30',
                   icon: CheckCircle,
-                  iconColor: 'text-green-600'
+                  iconColor: 'text-green-600 dark:text-green-400',
+                  textColor: 'text-green-900 dark:text-green-100'
                 },
                 warning: {
-                  bgColor: 'bg-yellow-50',
-                  borderColor: 'border-yellow-200',
+                  bgColor: 'bg-yellow-500/10 dark:bg-yellow-500/20',
+                  borderColor: 'border-yellow-500/30',
                   icon: AlertCircle,
-                  iconColor: 'text-yellow-600'
+                  iconColor: 'text-yellow-600 dark:text-yellow-400',
+                  textColor: 'text-yellow-900 dark:text-yellow-100'
                 },
                 info: {
-                  bgColor: 'bg-blue-50',
-                  borderColor: 'border-blue-200',
+                  bgColor: 'bg-blue-500/10 dark:bg-blue-500/20',
+                  borderColor: 'border-blue-500/30',
                   icon: Info,
-                  iconColor: 'text-blue-600'
+                  iconColor: 'text-blue-600 dark:text-blue-400',
+                  textColor: 'text-blue-900 dark:text-blue-100'
                 }
               };
 
@@ -339,19 +336,19 @@ export function DetailedAnalysisModal({
               return (
                 <div
                   key={index}
-                  className={`${config.bgColor} ${config.borderColor} border rounded-lg p-4 space-y-3`}
+                  className={`${config.bgColor} ${config.borderColor} border-2 rounded-lg p-4 space-y-3`}
                 >
                   <div className="flex items-start gap-3">
                     <Icon className={`h-5 w-5 mt-0.5 flex-shrink-0 ${config.iconColor}`} />
                     <div className="flex-1 space-y-2">
                       <div>
-                        <h4 className="font-semibold text-sm mb-1">{rec.title}</h4>
-                        <p className="text-xs text-muted-foreground">{rec.diagnosis}</p>
+                        <h4 className={`font-semibold text-sm mb-1 ${config.textColor}`}>{rec.title}</h4>
+                        <p className={`text-xs mb-1 ${config.textColor} opacity-70`}>{rec.diagnosis}</p>
                       </div>
 
-                      <div className="bg-white/50 rounded p-2">
-                        <p className="text-xs text-muted-foreground mb-1">💡 Recomendação:</p>
-                        <p className="text-sm font-medium">{rec.recommendation}</p>
+                      <div className={`${config.bgColor} rounded p-2 border ${config.borderColor}`}>
+                        <p className={`text-xs font-medium mb-1 ${config.textColor} opacity-70`}>💡 Recomendação:</p>
+                        <p className={`text-sm font-medium ${config.textColor}`}>{rec.recommendation}</p>
                       </div>
 
                       {rec.actionable && rec.numbersToAdd && rec.numbersToRemove && (
@@ -412,37 +409,19 @@ export function DetailedAnalysisModal({
           />
         </div>
 
-        {/* Botão Otimizar com IA */}
-        {onOptimize && (
-          <div className="bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-lg p-4 space-y-3">
-            <div className="text-center">
-              <p className="text-sm font-medium">
-                Quer melhorar seu jogo?
-              </p>
-              <p className="text-xs text-muted-foreground">
-                A IA pode otimizar seus números aplicando as recomendações acima
-              </p>
-            </div>
-
-            <Button
-              onClick={onOptimize}
-              disabled={isOptimizing}
-              className="w-full"
-              variant="default"
-            >
-              {isOptimizing ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Otimizando...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Otimizar com IA
-                </>
-              )}
-            </Button>
-          </div>
+        {/* Botão Editar Jogo */}
+        {onEdit && (
+          <Button
+            onClick={() => {
+              onEdit();
+              onOpenChange(false);
+            }}
+            className="w-full"
+            variant="outline"
+            size="lg"
+          >
+            Editar Jogo
+          </Button>
         )}
 
         {/* Footer Info */}

@@ -21,8 +21,6 @@ interface Step4_AnalysisResultProps {
   onEdit: () => void;
   onReset: () => void;
   isGeneratingVariations?: boolean;
-  onOptimize?: () => void;
-  isOptimizing?: boolean;
 }
 
 export function Step4_AnalysisResult({
@@ -35,8 +33,6 @@ export function Step4_AnalysisResult({
   onEdit,
   onReset,
   isGeneratingVariations = false,
-  onOptimize,
-  isOptimizing = false
 }: Step4_AnalysisResultProps) {
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -293,11 +289,7 @@ export function Step4_AnalysisResult({
         selectedNumbers={selectedNumbers}
         lotteryName={lotteryNames[lotteryType]}
         userId={userId}
-        onOptimize={onOptimize ? () => {
-          setDetailsModalOpen(false);
-          onOptimize();
-        } : undefined}
-        isOptimizing={isOptimizing}
+        onEdit={onEdit}
       />
 
       {/* Consume Credits Confirmation Modal */}
