@@ -87,8 +87,14 @@ export function SaveToggleButton({
   const handleToggle = async () => {
     if (isMutating) return;
 
-    if (isSaved && gameId) {
-      // Dessalvar
+    if (isSaved) {
+      // Dessalvar - usuário quer remover o jogo salvo
+      // Se não tem gameId ainda, não faz nada (botão ficará desabilitado)
+      if (!gameId) {
+        console.warn('⚠️ Tentando dessalvar mas gameId ainda não disponível');
+        return;
+      }
+
       setIsOptimisticSaved(false); // Optimistic update
 
       const result = await unsaveGameMutation.mutateAsync(gameId);
@@ -99,7 +105,7 @@ export function SaveToggleButton({
         setIsOptimisticSaved(true); // Revert optimistic update
       }
     } else {
-      // Salvar
+      // Salvar - jogo ainda não está salvo
       setIsOptimisticSaved(true); // Optimistic update
 
       const params: SaveGameParams = {
@@ -126,7 +132,7 @@ export function SaveToggleButton({
   return (
     <Button
       onClick={handleToggle}
-      disabled={isCheckingStatus || isMutating}
+      disabled={isCheckingStatus || isMutating || (isSaved && !gameId)}
       variant={variant}
       size={size}
       className={cn('gap-2', className)}
