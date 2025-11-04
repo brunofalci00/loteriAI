@@ -162,24 +162,35 @@ const validateCombination = (
   const odds = numbers.length - pairs;
 
   if (numbers.length >= 6) {
-    if (pairs < 2 || odds < 2) return false;
+    if (pairs < 2 || odds < 2) {
+      console.log(`❌ Validação falhou: pares=${pairs}, ímpares=${odds}`);
+      return false;
+    }
   }
 
   // Validar soma (deve estar próxima da média histórica)
   // EXCEÇÃO: Desativar para Lotomania (50 números) - API retorna dados incompletos
   if (numbers.length === 50) {
     console.log(`✅ Lotomania: Validação de desvio DESATIVADA (50 números)`);
-  } else {
+  } else if (averageSum && averageSum > 0 && !isNaN(averageSum)) {
+    // Só validar se averageSum for válido
     const sum = numbers.reduce((acc, n) => acc + n, 0);
     const deviation = Math.abs(sum - averageSum) / averageSum;
-    if (deviation > 0.3) return false; // Não mais que 30% de desvio
+
+    if (deviation > 0.3) {
+      console.log(`❌ Validação falhou: soma=${sum}, média=${averageSum.toFixed(1)}, desvio=${(deviation * 100).toFixed(1)}%`);
+      return false;
+    }
+  } else {
+    // averageSum inválido - pular validação de soma
+    console.warn(`⚠️ averageSum inválido (${averageSum}), pulando validação de soma`);
   }
 
   // Validar números consecutivos (máximo 3)
   const sorted = [...numbers].sort((a, b) => a - b);
   let consecutiveCount = 1;
   let maxConsecutive = 1;
-  
+
   for (let i = 0; i < sorted.length - 1; i++) {
     if (sorted[i + 1] - sorted[i] === 1) {
       consecutiveCount++;
@@ -188,8 +199,11 @@ const validateCombination = (
       consecutiveCount = 1;
     }
   }
-  
-  if (maxConsecutive > 3) return false;
+
+  if (maxConsecutive > 3) {
+    console.log(`❌ Validação falhou: ${maxConsecutive} números consecutivos (máx 3)`);
+    return false;
+  }
 
   return true;
 };
@@ -204,8 +218,11 @@ export const generateIntelligentCombinations = (
   const strategy = getBalancedStrategy();
   const maxAttempts = numberOfGames * 10; // Limite de tentativas
   let attempts = 0;
+  let validationFailures = 0;
+  let duplicates = 0;
 
   console.log(`🎲 Gerando ${numberOfGames} combinações (${numbersPerGame} números de 1-${maxNumber})`);
+  console.log(`📊 Statistics: averageSum=${statistics.averageSum}, hotNumbers=${statistics.hotNumbers.length}`);
 
   while (combinations.length < numberOfGames && attempts < maxAttempts) {
     attempts++;
@@ -227,13 +244,69 @@ export const generateIntelligentCombinations = (
       if (!isDuplicate) {
         combinations.push(numbers);
         if (combinations.length === 1 || combinations.length === numberOfGames) {
-          console.log(`✅ Jogo ${combinations.length}/${numberOfGames} gerado!`);
+          console.log(`✅ Jogo ${combinations.length}/${numberOfGames} gerado: [${numbers.join(', ')}]`);
         }
+      } else {
+        duplicates++;
       }
+    } else {
+      validationFailures++;
     }
   }
 
-  console.log(`📊 Resultado: ${combinations.length}/${numberOfGames} jogos gerados em ${attempts} tentativas`);
+  console.log(`📊 Resultado: ${combinations.length}/${numberOfGames} jogos gerados`);
+  console.log(`📈 Estatísticas: ${attempts} tentativas, ${validationFailures} falhas de validação, ${duplicates} duplicatas`);
+
+  // ⚠️ FALLBACK: Se não conseguiu gerar NENHUMA combinação, gerar com validação relaxada
+  if (combinations.length === 0) {
+    console.error('❌ ERRO CRÍTICO: Nenhuma combinação válida gerada!');
+    console.error('Parâmetros:', {
+      numbersPerGame,
+      maxNumber,
+      averageSum: statistics.averageSum,
+      hotNumbers: statistics.hotNumbers,
+      attempts,
+      validationFailures
+    });
+
+    console.warn('🔧 Ativando modo fallback: gerando combinações SEM validação de soma');
+
+    // Gerar jogos sem validação de soma como fallback
+    let fallbackAttempts = 0;
+    const fallbackMaxAttempts = numberOfGames * 5;
+
+    while (combinations.length < numberOfGames && fallbackAttempts < fallbackMaxAttempts) {
+      fallbackAttempts++;
+
+      const numbers = selectWeightedNumbers(
+        statistics,
+        strategy,
+        numbersPerGame,
+        maxNumber
+      );
+
+      // Validar APENAS pares/ímpares e consecutivos (sem soma)
+      const pairs = numbers.filter(n => n % 2 === 0).length;
+      const odds = numbers.length - pairs;
+
+      // Validação básica
+      if (numbers.length >= 6 && (pairs < 2 || odds < 2)) {
+        continue; // Pular se não tiver pelo menos 2 pares e 2 ímpares
+      }
+
+      // Verificar duplicata
+      const isDuplicate = combinations.some(
+        combo => JSON.stringify(combo) === JSON.stringify(numbers)
+      );
+
+      if (!isDuplicate) {
+        combinations.push(numbers);
+        console.log(`⚠️ Jogo ${combinations.length}/${numberOfGames} gerado (fallback): [${numbers.join(', ')}]`);
+      }
+    }
+
+    console.log(`📊 Fallback: ${combinations.length} jogos gerados em ${fallbackAttempts} tentativas`);
+  }
 
   // Se não conseguiu gerar todas, completar com as que conseguiu
   // (melhor ter menos jogos validados do que jogos inválidos)
