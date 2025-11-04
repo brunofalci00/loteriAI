@@ -177,26 +177,20 @@ const Dashboard = () => {
         </div>
 
         {/* Manual Game Creation Card */}
-        <Card className="mb-8 p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-bold flex items-center gap-2">
+        <Card className="mb-8 p-6 bg-gradient-to-br from-primary/10 via-primary/5 to-background border-primary/20 hover:border-primary/40 transition-all">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+            <div className="flex-1 space-y-3">
+              <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
                 ✏️ Criar Jogo Manualmente
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Monte seus próprios jogos e receba análise completa da IA com sugestões de melhoria
               </p>
-              <div className="flex flex-wrap gap-2 pt-2">
-                <span className="text-xs px-2 py-1 bg-primary/20 rounded-full">Lotofácil</span>
-                <span className="text-xs px-2 py-1 bg-primary/20 rounded-full">Lotomania</span>
-                <span className="text-xs px-2 py-1 bg-green-500/20 rounded-full">Análise com IA</span>
-                <span className="text-xs px-2 py-1 bg-green-500/20 rounded-full">5 Variações</span>
-              </div>
             </div>
             <Button
               onClick={() => navigate('/criar-jogo')}
               size="lg"
-              className="min-w-[150px]"
+              className="w-full sm:w-auto sm:min-w-[160px] shrink-0"
             >
               <PlusCircle className="h-5 w-5 mr-2" />
               Criar Jogo
