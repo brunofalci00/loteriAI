@@ -74,11 +74,15 @@ export class GameVariationsService {
 
       const hotNumbers = historicalData?.hot_numbers || [];
       const coldNumbers = historicalData?.cold_numbers || [];
-      const allNumbers = params.lotteryType === 'lotofacil'
-        ? Array.from({ length: 25 }, (_, i) => i + 1)
-        : Array.from({ length: 100 }, (_, i) => i + 1);
 
-      const expectedCount = params.lotteryType === 'lotofacil' ? 15 : 50;
+      // Usar getLotteryConfig para pegar configurações corretas
+      const { getLotteryConfig } = await import('@/config/lotteryConfig');
+      const lotteryConfig = getLotteryConfig(params.lotteryType);
+
+      const allNumbers = Array.from({ length: lotteryConfig.maxNumber - lotteryConfig.minNumber + 1 }, (_, i) => i + lotteryConfig.minNumber);
+      const expectedCount = lotteryConfig.numbersToSelect;
+
+      console.log(`📊 Loteria: ${params.lotteryType}, expectedCount: ${expectedCount}, range: ${lotteryConfig.minNumber}-${lotteryConfig.maxNumber}`);
 
       // 5 estratégias de variação
       const strategies = [
