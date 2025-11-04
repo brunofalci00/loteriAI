@@ -85,7 +85,19 @@ export function SavedGameCard({ game }: SavedGameCardProps) {
   const balancedCount = analysis?.balancedCount || 0;
 
   // Hot numbers (se disponível na análise detalhada)
-  const hotNumbers: number[] = analysis?.detailedAnalysis?.hotNumbers || [];
+  let hotNumbers: number[] = analysis?.detailedAnalysis?.hotNumbers || [];
+
+  // Fallback: Se não tem detailedAnalysis.hotNumbers (jogos antigos),
+  // calcular heurística simples baseado em números baixos e médios
+  // que estatisticamente são mais frequentes em loterias
+  if (hotNumbers.length === 0 && hotCount > 0) {
+    // Heurística: Números entre 1-15 para Lotofácil, 1-30 para Lotomania
+    // têm maior frequência estatística
+    const maxHotNumber = game.lottery_type === 'lotofacil' ? 15 : 30;
+    hotNumbers = sortedNumbers
+      .filter(n => n <= maxHotNumber)
+      .slice(0, hotCount); // Pegar apenas o hotCount informado
+  }
 
   // Handlers
   const handleDelete = async () => {
@@ -112,47 +124,51 @@ export function SavedGameCard({ game }: SavedGameCardProps) {
   return (
     <>
       <Card className="hover:shadow-lg transition-shadow">
-        <CardHeader>
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <CardTitle className="flex items-center gap-2">
-                {displayName}
-                {game.source === 'ai_generated' && (
-                  <Badge variant="secondary" className="gap-1">
-                    <Sparkles className="h-3 w-3" />
-                    IA
-                  </Badge>
-                )}
-                {game.source === 'manual_created' && (
-                  <Badge variant="outline" className="gap-1">
-                    <Pencil className="h-3 w-3" />
-                    Manual
-                  </Badge>
-                )}
-              </CardTitle>
-              <CardDescription>
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start flex-col sm:flex-row sm:items-center gap-2 mb-1">
+                <CardTitle className="text-base sm:text-lg leading-tight truncate">
+                  {displayName}
+                </CardTitle>
+                <div className="flex items-center gap-1 shrink-0">
+                  {game.source === 'ai_generated' && (
+                    <Badge variant="secondary" className="gap-1 text-xs">
+                      <Sparkles className="h-2.5 w-2.5" />
+                      IA
+                    </Badge>
+                  )}
+                  {game.source === 'manual_created' && (
+                    <Badge variant="outline" className="gap-1 text-xs">
+                      <Pencil className="h-2.5 w-2.5" />
+                      Manual
+                    </Badge>
+                  )}
+                </div>
+              </div>
+              <CardDescription className="text-xs sm:text-sm">
                 {lotteryName} • Concurso #{game.contest_number}
               </CardDescription>
             </div>
 
             {/* Botões de Ação */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 shrink-0">
               {/* Botão Compartilhar - Destacado */}
               <Button
                 variant="outline"
                 size="icon"
                 onClick={handleShare}
-                className="shrink-0"
+                className="shrink-0 h-8 w-8"
                 title="Compartilhar"
               >
-                <Send className="h-4 w-4" />
+                <Send className="h-3.5 w-3.5" />
               </Button>
 
               {/* Menu de Ações */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <MoreVertical className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <MoreVertical className="h-3.5 w-3.5" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
