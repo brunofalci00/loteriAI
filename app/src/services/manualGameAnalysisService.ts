@@ -37,10 +37,10 @@ export interface AnalysisResult {
   recommendations: Recommendation[];
   comparisonWithAverage: string;
   detailedAnalysis: {
-    hotNumbers: number[]; // NÃºmeros selecionados que sÃ£o quentes
-    coldNumbers: number[]; // NÃºmeros selecionados que sÃ£o frios
-    balancedNumbers: number[]; // NÃºmeros selecionados que sÃ£o balanceados
-    allHotNumbers: number[]; // TODOS os nÃºmeros quentes do histÃ³rico
+    hotNumbers: number[]; // Números selecionados que são quentes
+    coldNumbers: number[]; // Números selecionados que são frios
+    balancedNumbers: number[]; // Números selecionados que são balanceados
+    allHotNumbers: number[]; // TODOS os números quentes do histórico
     consecutiveSequences: number[][];
     multiplesOf5: number[];
     availableHotNumbers?: number[];
@@ -53,7 +53,7 @@ export interface AnalysisResult {
 export class ManualGameAnalysisService {
   /**
    * Analisa jogo criado manualmente
-   * Usa mesmo algoritmo da IA de geraÃ§Ã£o, mas em modo reverso
+   * Usa mesmo algoritmo da IA de geração, mas em modo reverso
    */
   static async analyzeManualGame(params: ManualGameAnalysisParams): Promise<{
     success: boolean;
@@ -63,41 +63,42 @@ export class ManualGameAnalysisService {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        return { success: false, error: 'UsuÃ¡rio nÃ£o autenticado' };
+        return { success: false, error: 'Usuário não autenticado' };
       }
 
-      // ValidaÃ§Ãµes bÃ¡sicas
+      // Validações básicas
       const lotteryConfig = getLotteryConfig(params.lotteryType);
+      const normalizedLotteryType = lotteryConfig.name;
       const expectedCount = lotteryConfig.numbersToSelect;
 
       if (params.selectedNumbers.length !== expectedCount) {
         return {
           success: false,
-          error: `Quantidade invÃ¡lida. Esperado: ${expectedCount} nÃºmeros.`
+          error: `Quantidade inválida. Esperado: ${expectedCount} números.`
         };
       }
 
-      // Validar range dos nÃºmeros
+      // Validar range dos números
       const invalidNumbers = params.selectedNumbers.filter(
         num => num < lotteryConfig.minNumber || num > lotteryConfig.maxNumber
       );
       if (invalidNumbers.length > 0) {
         return {
           success: false,
-          error: `NÃºmeros fora do range vÃ¡lido (${lotteryConfig.minNumber}-${lotteryConfig.maxNumber}): ${invalidNumbers.join(', ')}`
+          error: `Números fora do range válido (${lotteryConfig.minNumber}-${lotteryConfig.maxNumber}): ${invalidNumbers.join(', ')}`
         };
       }
 
-      // Buscar histÃ³rico do concurso para anÃ¡lise contextual
+      // Buscar histórico do concurso para análise contextual
       const { data: historicalData, error: histError } = await supabase
         .from('lottery_analyses')
         .select('hot_numbers, cold_numbers')
-        .eq('lottery_type', params.lotteryType)
+        .eq('lottery_type', normalizedLotteryType)
         .eq('contest_number', params.contestNumber)
         .maybeSingle();
 
       if (histError) {
-        console.error('Erro ao buscar histÃ³rico:', histError);
+        console.error('Erro ao buscar histórico:', histError);
       }
 
       // Classificar numeros como hot/cold/balanced
@@ -110,7 +111,7 @@ export class ManualGameAnalysisService {
 
       if (hotNumbers.length === 0 || coldNumbers.length === 0) {
         try {
-          const { draws } = await fetchHistoricalDraws(params.lotteryType, 120);
+          const { draws } = await fetchHistoricalDraws(normalizedLotteryType, 120);
           if (draws.length > 0) {
             const statistics = analyzeHistoricalData(draws, lotteryConfig.maxNumber);
             hotNumbers = statistics.hotNumbers;
@@ -144,11 +145,11 @@ export class ManualGameAnalysisService {
         }
       });
 
-      // AnÃ¡lise par/Ã­mpar
+      // Análise par/ímpar
       const evenCount = params.selectedNumbers.filter(n => n % 2 === 0).length;
       const oddCount = params.selectedNumbers.length - evenCount;
 
-      // AnÃ¡lise por dezenas
+      // Análise por dezenas
       const dezenaDistribution: Record<string, number> = {};
       params.selectedNumbers.forEach(num => {
         const dezena = Math.floor((num - 1) / 10) + 1;
@@ -156,11 +157,11 @@ export class ManualGameAnalysisService {
         dezenaDistribution[key] = (dezenaDistribution[key] || 0) + 1;
       });
 
-      // Identificar padrÃµes
+      // Identificar padrões
       const patterns: string[] = [];
       const sortedNumbers = [...params.selectedNumbers].sort((a, b) => a - b);
 
-      // SequÃªncias consecutivas
+      // Sequências consecutivas
       const consecutiveSequences: number[][] = [];
       let currentSeq: number[] = [sortedNumbers[0]];
       for (let i = 1; i < sortedNumbers.length; i++) {
@@ -169,26 +170,26 @@ export class ManualGameAnalysisService {
         } else {
           if (currentSeq.length >= 3) {
             consecutiveSequences.push([...currentSeq]);
-            patterns.push(`SequÃªncia consecutiva: ${currentSeq.join(', ')}`);
+            patterns.push(`Sequência consecutiva: ${currentSeq.join(', ')}`);
           }
           currentSeq = [sortedNumbers[i]];
         }
       }
       if (currentSeq.length >= 3) {
         consecutiveSequences.push([...currentSeq]);
-        patterns.push(`SequÃªncia consecutiva: ${currentSeq.join(', ')}`);
+        patterns.push(`Sequência consecutiva: ${currentSeq.join(', ')}`);
       }
 
-      // MÃºltiplos de 5
+      // Múltiplos de 5
       const multiplesOf5 = params.selectedNumbers.filter(n => n % 5 === 0);
       if (multiplesOf5.length > 0) {
-        patterns.push(`${multiplesOf5.length} mÃºltiplos de 5: ${multiplesOf5.join(', ')}`);
+        patterns.push(`${multiplesOf5.length} múltiplos de 5: ${multiplesOf5.join(', ')}`);
       }
 
       // Calcular score (0-10)
       let score = 5.0; // Base
 
-      // +1 se distribuiÃ§Ã£o hot/cold/balanced balanceada (ideal: 33%/33%/33%)
+      // +1 se distribuição hot/cold/balanced balanceada (ideal: 33%/33%/33%)
       const idealRatio = expectedCount / 3;
       const balanceScore = 1 - (
         Math.abs(hotCount - idealRatio) +
@@ -197,17 +198,17 @@ export class ManualGameAnalysisService {
       ) / expectedCount;
       score += balanceScore;
 
-      // +1 se distribuiÃ§Ã£o par/Ã­mpar prÃ³xima de 50/50
+      // +1 se distribuição par/ímpar próxima de 50/50
       const evenOddBalance = 1 - Math.abs(evenCount - oddCount) / expectedCount;
       score += evenOddBalance;
 
-      // +1 se boa distribuiÃ§Ã£o por dezenas
+      // +1 se boa distribuição por dezenas
       const dezenaValues = Object.values(dezenaDistribution);
       const dezenaStdDev = this.calculateStdDev(dezenaValues);
       const dezenaScore = Math.max(0, 1 - dezenaStdDev / 5);
       score += dezenaScore;
 
-      // -0.5 para cada sequÃªncia consecutiva longa (nÃ£o Ã© estatisticamente ideal)
+      // -0.5 para cada sequência consecutiva longa (não é estatisticamente ideal)
       score -= Math.min(2, consecutiveSequences.length * 0.5);
 
       // Limitar score entre 0-10 e depois converter para 0-5
@@ -225,7 +226,7 @@ export class ManualGameAnalysisService {
         score
       });
 
-      // Gerar sugestÃµes de melhoria (deprecated)
+      // Gerar sugestões de melhoria (deprecated)
       const suggestions = this.generateSuggestions({
         hotCount,
         coldCount,
@@ -237,7 +238,7 @@ export class ManualGameAnalysisService {
         expectedCount
       });
 
-      // Gerar recomendaÃ§Ãµes inteligentes estruturadas
+      // Gerar recomendações inteligentes estruturadas
       const recommendations = this.generateRecommendations({
         selectedNumbers: params.selectedNumbers,
         hotNumbers,
@@ -253,7 +254,7 @@ export class ManualGameAnalysisService {
         expectedCount
       });
 
-      // NÃºmeros disponÃ­veis para sugestÃµes
+      // Números disponíveis para sugestões
       const allNumbers = Array.from(
         { length: lotteryConfig.maxNumber - lotteryConfig.minNumber + 1 },
         (_, i) => i + lotteryConfig.minNumber
@@ -262,10 +263,10 @@ export class ManualGameAnalysisService {
       const suggestedEvenNumbers = allNumbers.filter(n => !params.selectedNumbers.includes(n) && n % 2 === 0).slice(0, 10);
       const suggestedOddNumbers = allNumbers.filter(n => !params.selectedNumbers.includes(n) && n % 2 === 1).slice(0, 10);
 
-      // Comparar com mÃ©dia histÃ³rica (simulado) - Score agora Ã© 0-5
-      const comparisonWithAverage = score >= 3.5 ? 'Acima da mÃ©dia'
-        : score >= 2.5 ? 'Na mÃ©dia'
-        : 'Abaixo da mÃ©dia';
+      // Comparar com média histórica (simulado) - Score agora é 0-5
+      const comparisonWithAverage = score >= 3.5 ? 'Acima da média'
+        : score >= 2.5 ? 'Na média'
+        : 'Abaixo da média';
 
       const result: AnalysisResult = {
         score: Math.round(score * 10) / 10,
@@ -280,10 +281,10 @@ export class ManualGameAnalysisService {
         recommendations, // New structured recommendations
         comparisonWithAverage,
         detailedAnalysis: {
-          hotNumbers: classifiedNumbers.hot, // NÃºmeros selecionados que sÃ£o quentes
+          hotNumbers: classifiedNumbers.hot, // Números selecionados que são quentes
           coldNumbers: classifiedNumbers.cold,
           balancedNumbers: classifiedNumbers.balanced,
-          allHotNumbers: hotNumbers, // TODOS os nÃºmeros quentes do histÃ³rico
+          allHotNumbers: hotNumbers, // TODOS os números quentes do histórico
           consecutiveSequences,
           multiplesOf5,
           availableHotNumbers,
@@ -303,7 +304,7 @@ export class ManualGameAnalysisService {
   }
 
   /**
-   * Gera resumo textual da anÃ¡lise
+   * Gera resumo textual da análise
    */
   private static generateSummary(data: {
     hotCount: number;
@@ -316,29 +317,29 @@ export class ManualGameAnalysisService {
   }): string {
     const { hotCount, coldCount, balancedCount, evenCount, oddCount, patterns, score } = data;
 
-    let summary = `Seu jogo tem uma distribuiÃ§Ã£o `;
+    let summary = `Seu jogo tem uma distribuição `;
 
-    // AnÃ¡lise hot/cold/balanced
+    // Análise hot/cold/balanced
     if (Math.abs(hotCount - coldCount) <= 2 && Math.abs(hotCount - balancedCount) <= 2) {
-      summary += `balanceada com ${hotCount} nÃºmeros quentes, ${coldCount} outros e ${balancedCount} balanceados. `;
+      summary += `balanceada com ${hotCount} números quentes, ${coldCount} outros e ${balancedCount} balanceados. `;
     } else if (hotCount > coldCount + 3) {
-      summary += `focada em nÃºmeros quentes (${hotCount} quentes vs ${coldCount} outros). `;
+      summary += `focada em números quentes (${hotCount} quentes vs ${coldCount} outros). `;
     } else if (coldCount > hotCount + 3) {
-      summary += `com mais nÃºmeros de padrÃ£o histÃ³rico variado (${coldCount} outros vs ${hotCount} quentes). `;
+      summary += `com mais números de padrão histórico variado (${coldCount} outros vs ${hotCount} quentes). `;
     } else {
-      summary += `com ${hotCount} nÃºmeros quentes, ${coldCount} outros e ${balancedCount} balanceados. `;
+      summary += `com ${hotCount} números quentes, ${coldCount} outros e ${balancedCount} balanceados. `;
     }
 
-    // AnÃ¡lise par/Ã­mpar
+    // Análise par/ímpar
     if (Math.abs(evenCount - oddCount) <= 2) {
-      summary += `A distribuiÃ§Ã£o par/Ã­mpar estÃ¡ boa (${evenCount} pares / ${oddCount} Ã­mpares). `;
+      summary += `A distribuição par/ímpar está boa (${evenCount} pares / ${oddCount} ímpares). `;
     } else {
-      summary += `A distribuiÃ§Ã£o par/Ã­mpar poderia melhorar (atualmente ${evenCount} pares / ${oddCount} Ã­mpares). `;
+      summary += `A distribuição par/ímpar poderia melhorar (atualmente ${evenCount} pares / ${oddCount} ímpares). `;
     }
 
-    // PadrÃµes identificados
+    // Padrões identificados
     if (patterns.length > 0) {
-      summary += `Identificamos ${patterns.length} padrÃ£o(Ãµes) no seu jogo. `;
+      summary += `Identificamos ${patterns.length} padrão(ões) no seu jogo. `;
     }
 
     // Score geral (agora 0-5)
@@ -347,14 +348,14 @@ export class ManualGameAnalysisService {
     } else if (score >= 3) {
       summary += `Boas chances!`;
     } else {
-      summary += `Considere as sugestÃµes de melhoria.`;
+      summary += `Considere as sugestões de melhoria.`;
     }
 
     return summary;
   }
 
   /**
-   * Gera sugestÃµes de melhoria
+   * Gera sugestões de melhoria
    */
   private static generateSuggestions(data: {
     hotCount: number;
@@ -369,39 +370,39 @@ export class ManualGameAnalysisService {
     const suggestions: string[] = [];
     const { hotCount, coldCount, balancedCount, evenCount, oddCount, consecutiveSequences, multiplesOf5, expectedCount } = data;
 
-    // SugestÃµes hot/cold
+    // Sugestões hot/cold
     const idealRatio = expectedCount / 3;
     if (hotCount < idealRatio - 3) {
-      suggestions.push(`Adicione mais nÃºmeros quentes para melhorar a probabilidade.`);
+      suggestions.push(`Adicione mais números quentes para melhorar a probabilidade.`);
     }
 
-    // Removido sugestÃ£o sobre "nÃºmeros frios" (percepÃ§Ã£o negativa)
+    // Removido sugestão sobre "números frios" (percepção negativa)
 
-    // SugestÃµes par/Ã­mpar
+    // Sugestões par/ímpar
     if (Math.abs(evenCount - oddCount) > 4) {
-      const target = evenCount > oddCount ? 'Ã­mpares' : 'pares';
-      suggestions.push(`Balance melhor a distribuiÃ§Ã£o: adicione mais nÃºmeros ${target}.`);
+      const target = evenCount > oddCount ? 'ímpares' : 'pares';
+      suggestions.push(`Balance melhor a distribuição: adicione mais números ${target}.`);
     }
 
-    // SugestÃµes sobre padrÃµes
+    // Sugestões sobre padrões
     if (consecutiveSequences.length > 0) {
-      suggestions.push(`Evite sequÃªncias consecutivas longas - elas raramente sÃ£o sorteadas juntas.`);
+      suggestions.push(`Evite sequências consecutivas longas - elas raramente são sorteadas juntas.`);
     }
 
     if (multiplesOf5.length > expectedCount / 5) {
-      suggestions.push(`Muitos mÃºltiplos de 5 (${multiplesOf5.length}). Diversifique mais.`);
+      suggestions.push(`Muitos múltiplos de 5 (${multiplesOf5.length}). Diversifique mais.`);
     }
 
-    // SugestÃ£o geral se score baixo
+    // Sugestão geral se score baixo
     if (suggestions.length === 0) {
-      suggestions.push(`Seu jogo estÃ¡ bem equilibrado! Mantenha essa estratÃ©gia.`);
+      suggestions.push(`Seu jogo está bem equilibrado! Mantenha essa estratégia.`);
     }
 
     return suggestions;
   }
 
   /**
-   * Gera recomendaÃ§Ãµes inteligentes estruturadas
+   * Gera recomendações inteligentes estruturadas
    */
   private static generateRecommendations(data: {
     selectedNumbers: number[];
@@ -433,11 +434,11 @@ export class ManualGameAnalysisService {
       expectedCount
     } = data;
 
-    // RecomendaÃ§Ã£o 1: Hot Numbers
+    // Recomendação 1: Hot Numbers
     const hotPercentage = (hotCount / selectedNumbers.length) * 100;
 
     if (hotCount < 3) {
-      // Encontrar hot numbers nÃ£o selecionados
+      // Encontrar hot numbers não selecionados
       const availableHotNumbers = hotNumbers
         .filter(n => !selectedNumbers.includes(n))
         .slice(0, 5);
@@ -449,9 +450,9 @@ export class ManualGameAnalysisService {
       recommendations.push({
         type: 'hot_numbers',
         severity: 'warning',
-        title: 'Poucos nÃºmeros quentes',
-        diagnosis: `Seu jogo tem apenas ${hotCount} nÃºmeros quentes (${hotPercentage.toFixed(0)}%). O ideal Ã© ter entre 3 e 5 nÃºmeros quentes (20-30% do jogo). NÃºmeros quentes sÃ£o aqueles que apareceram com maior frequÃªncia nos Ãºltimos concursos.`,
-        recommendation: `Adicione ${3 - hotCount} nÃºmero(s) quente(s) para melhorar suas chances: ${availableHotNumbers.slice(0, 3 - hotCount).map(n => n.toString().padStart(2, '0')).join(', ')}.`,
+        title: 'Poucos números quentes',
+        diagnosis: `Seu jogo tem apenas ${hotCount} números quentes (${hotPercentage.toFixed(0)}%). O ideal é ter entre 3 e 5 números quentes (20-30% do jogo). Números quentes são aqueles que apareceram com maior frequência nos últimos concursos.`,
+        recommendation: `Adicione ${3 - hotCount} número(s) quente(s) para melhorar suas chances: ${availableHotNumbers.slice(0, 3 - hotCount).map(n => n.toString().padStart(2, '0')).join(', ')}.`,
         actionable: true,
         numbersToAdd: availableHotNumbers.slice(0, 3 - hotCount),
         numbersToRemove: numbersToRemove,
@@ -461,9 +462,9 @@ export class ManualGameAnalysisService {
       recommendations.push({
         type: 'hot_numbers',
         severity: 'success',
-        title: 'Excelente quantidade de nÃºmeros quentes',
-        diagnosis: `Seu jogo tem ${hotCount} nÃºmeros quentes (${hotPercentage.toFixed(0)}%), dentro do intervalo ideal de 20-30%.`,
-        recommendation: 'Mantenha essa distribuiÃ§Ã£o! NÃºmeros quentes tÃªm maior probabilidade estatÃ­stica baseado em padrÃµes histÃ³ricos.',
+        title: 'Excelente quantidade de números quentes',
+        diagnosis: `Seu jogo tem ${hotCount} números quentes (${hotPercentage.toFixed(0)}%), dentro do intervalo ideal de 20-30%.`,
+        recommendation: 'Mantenha essa distribuição! Números quentes têm maior probabilidade estatística baseado em padrões históricos.',
         actionable: false,
         priority: 5
       });
@@ -480,9 +481,9 @@ export class ManualGameAnalysisService {
       recommendations.push({
         type: 'hot_numbers',
         severity: 'warning',
-        title: 'Muitos nÃºmeros quentes',
-        diagnosis: `Seu jogo tem ${hotCount} nÃºmeros quentes (${hotPercentage.toFixed(0)}%). Isso pode reduzir a diversidade do jogo.`,
-        recommendation: `Substitua ${hotCount - 5} nÃºmero(s) quente(s) por nÃºmeros balanceados para melhor distribuiÃ§Ã£o.`,
+        title: 'Muitos números quentes',
+        diagnosis: `Seu jogo tem ${hotCount} números quentes (${hotPercentage.toFixed(0)}%). Isso pode reduzir a diversidade do jogo.`,
+        recommendation: `Substitua ${hotCount - 5} número(s) quente(s) por números balanceados para melhor distribuição.`,
         actionable: true,
         numbersToRemove: numbersToRemove,
         numbersToAdd: numbersToAdd,
@@ -490,7 +491,7 @@ export class ManualGameAnalysisService {
       });
     }
 
-    // RecomendaÃ§Ã£o 2: Par/Ãmpar
+    // Recomendação 2: Par/Ímpar
     const idealEven = Math.floor(expectedCount / 2);
     const idealOdd = expectedCount - idealEven;
 
@@ -498,9 +499,9 @@ export class ManualGameAnalysisService {
       recommendations.push({
         type: 'par_impar',
         severity: 'success',
-        title: 'DistribuiÃ§Ã£o Par/Ãmpar balanceada',
-        diagnosis: `Seu jogo tem ${evenCount} pares e ${oddCount} Ã­mpares, dentro do intervalo ideal de ${idealEven - 1}-${idealEven + 1} / ${idealOdd - 1}-${idealOdd + 1}.`,
-        recommendation: 'Perfeito! Mantenha essa distribuiÃ§Ã£o equilibrada. Jogos com aproximadamente 50/50 tÃªm melhor desempenho estatÃ­stico.',
+        title: 'Distribuição Par/Ímpar balanceada',
+        diagnosis: `Seu jogo tem ${evenCount} pares e ${oddCount} ímpares, dentro do intervalo ideal de ${idealEven - 1}-${idealEven + 1} / ${idealOdd - 1}-${idealOdd + 1}.`,
+        recommendation: 'Perfeito! Mantenha essa distribuição equilibrada. Jogos com aproximadamente 50/50 têm melhor desempenho estatístico.',
         actionable: false,
         priority: 5
       });
@@ -508,7 +509,7 @@ export class ManualGameAnalysisService {
       const needMoreEven = evenCount < idealEven - 1;
       const diff = Math.abs(evenCount - idealEven);
 
-      // Encontrar nÃºmeros sugeridos
+      // Encontrar números sugeridos
       const allNumbers = Array.from(
         { length: lotteryConfig.maxNumber - lotteryConfig.minNumber + 1 },
         (_, i) => i + lotteryConfig.minNumber
@@ -526,9 +527,9 @@ export class ManualGameAnalysisService {
       recommendations.push({
         type: 'par_impar',
         severity: 'warning',
-        title: `DesequilÃ­brio na distribuiÃ§Ã£o Par/Ãmpar`,
-        diagnosis: `Seu jogo tem ${evenCount} pares e ${oddCount} Ã­mpares. O ideal Ã© ter aproximadamente ${idealEven} pares e ${idealOdd} Ã­mpares (50/50).`,
-        recommendation: `Substitua ${diff} nÃºmero(s) ${needMoreEven ? 'Ã­mpar(es)' : 'par(es)'} por ${needMoreEven ? 'par(es)' : 'Ã­mpar(es)'}: ${suggestedNumbers.map(n => n.toString().padStart(2, '0')).join(', ')}.`,
+        title: `Desequilíbrio na distribuição Par/Ímpar`,
+        diagnosis: `Seu jogo tem ${evenCount} pares e ${oddCount} ímpares. O ideal é ter aproximadamente ${idealEven} pares e ${idealOdd} ímpares (50/50).`,
+        recommendation: `Substitua ${diff} número(s) ${needMoreEven ? 'ímpar(es)' : 'par(es)'} por ${needMoreEven ? 'par(es)' : 'ímpar(es)'}: ${suggestedNumbers.map(n => n.toString().padStart(2, '0')).join(', ')}.`,
         actionable: true,
         numbersToAdd: suggestedNumbers,
         numbersToRemove: numbersToRemove,
@@ -536,7 +537,7 @@ export class ManualGameAnalysisService {
       });
     }
 
-    // RecomendaÃ§Ã£o 3: Dezenas
+    // Recomendação 3: Dezenas
     const dezenaEntries = Object.entries(dezenaDistribution);
     if (dezenaEntries.length > 0) {
       const maxDezena = Math.max(...dezenaEntries.map(([_, count]) => count));
@@ -553,9 +554,9 @@ export class ManualGameAnalysisService {
         recommendations.push({
           type: 'dezena',
           severity: 'info',
-          title: 'ConcentraÃ§Ã£o de nÃºmeros em uma dezena',
-          diagnosis: `VocÃª tem ${maxDezena} nÃºmeros na ${overloadedDezena} e apenas ${minDezena} na ${underloadedDezena}.`,
-          recommendation: `Distribua melhor os nÃºmeros entre as dezenas para aumentar cobertura. Substitua alguns nÃºmeros da ${overloadedDezena} por nÃºmeros da ${underloadedDezena}.`,
+          title: 'Concentração de números em uma dezena',
+          diagnosis: `Você tem ${maxDezena} números na ${overloadedDezena} e apenas ${minDezena} na ${underloadedDezena}.`,
+          recommendation: `Distribua melhor os números entre as dezenas para aumentar cobertura. Substitua alguns números da ${overloadedDezena} por números da ${underloadedDezena}.`,
           actionable: true,
           priority: 3
         });
@@ -567,7 +568,7 @@ export class ManualGameAnalysisService {
   }
 
   /**
-   * Calcula desvio padrÃ£o
+   * Calcula desvio padrão
    */
   private static calculateStdDev(values: number[]): number {
     if (values.length === 0) return 0;
@@ -577,7 +578,7 @@ export class ManualGameAnalysisService {
   }
 
   /**
-   * Salva sessÃ£o de criaÃ§Ã£o manual (analytics)
+   * Salva sessão de criação manual (analytics)
    */
   static async saveManualSession(params: {
     lotteryType: string;
@@ -594,14 +595,14 @@ export class ManualGameAnalysisService {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        return { success: false, error: 'UsuÃ¡rio nÃ£o autenticado' };
+        return { success: false, error: 'Usuário não autenticado' };
       }
 
       const { data, error } = await supabase
         .from('manual_creation_sessions')
         .insert({
           user_id: user.id,
-          lottery_type: params.lotteryType,
+          lottery_type: normalizedLotteryType,
           contest_number: params.contestNumber,
           selected_numbers: params.selectedNumbers,
           analysis_result: params.analysisResult as any,
@@ -615,13 +616,13 @@ export class ManualGameAnalysisService {
         .single();
 
       if (error) {
-        console.error('Erro ao salvar sessÃ£o manual:', error);
+        console.error('Erro ao salvar sessão manual:', error);
         return { success: false, error: error.message };
       }
 
       return { success: true, sessionId: data.id };
     } catch (error) {
-      console.error('Erro inesperado ao salvar sessÃ£o:', error);
+      console.error('Erro inesperado ao salvar sessão:', error);
       return { success: false, error: 'Erro inesperado' };
     }
   }
