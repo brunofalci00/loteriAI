@@ -1,74 +1,102 @@
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, AlertCircle, Info } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { AlertCircle, CheckCircle, Info } from "lucide-react";
 
 interface DiagnosticSectionProps {
   title: string;
-  status: 'success' | 'warning' | 'info';
+  status: "success" | "warning" | "info";
   diagnosis: string;
   recommendation: string;
   idealRange?: string;
+  highlightNumbers?: number[];
+  highlightLabel?: string;
 }
+
+const statusStyles = {
+  success: {
+    icon: CheckCircle,
+    container: "bg-emerald-900/45 border border-emerald-500/40",
+    iconColor: "text-emerald-300",
+    badgeClass: "bg-emerald-500/20 text-emerald-100 border border-emerald-400/40",
+    chipClass: "bg-emerald-500/25 text-emerald-50 border border-emerald-400/40",
+  },
+  warning: {
+    icon: AlertCircle,
+    container: "bg-amber-900/45 border border-amber-500/35",
+    iconColor: "text-amber-300",
+    badgeClass: "bg-amber-500/20 text-amber-100 border border-amber-400/40",
+    chipClass: "bg-amber-500/25 text-amber-50 border border-amber-400/35",
+  },
+  info: {
+    icon: Info,
+    container: "bg-sky-900/45 border border-sky-500/35",
+    iconColor: "text-sky-300",
+    badgeClass: "bg-sky-500/20 text-sky-100 border border-sky-400/40",
+    chipClass: "bg-sky-500/25 text-sky-50 border border-sky-400/35",
+  },
+} as const;
 
 export function DiagnosticSection({
   title,
   status,
   diagnosis,
   recommendation,
-  idealRange
+  idealRange,
+  highlightNumbers,
+  highlightLabel,
 }: DiagnosticSectionProps) {
-  const statusConfig = {
-    success: {
-      icon: CheckCircle,
-      bgColor: 'bg-green-500/10 dark:bg-green-500/20',
-      borderColor: 'border-green-500/30',
-      iconColor: 'text-green-600 dark:text-green-400',
-      textColor: 'text-green-900 dark:text-green-100',
-      badgeVariant: 'default' as const
-    },
-    warning: {
-      icon: AlertCircle,
-      bgColor: 'bg-yellow-500/10 dark:bg-yellow-500/20',
-      borderColor: 'border-yellow-500/30',
-      iconColor: 'text-yellow-600 dark:text-yellow-400',
-      textColor: 'text-yellow-900 dark:text-yellow-100',
-      badgeVariant: 'secondary' as const
-    },
-    info: {
-      icon: Info,
-      bgColor: 'bg-blue-500/10 dark:bg-blue-500/20',
-      borderColor: 'border-blue-500/30',
-      iconColor: 'text-blue-600 dark:text-blue-400',
-      textColor: 'text-blue-900 dark:text-blue-100',
-      badgeVariant: 'outline' as const
-    }
-  };
-
-  const config = statusConfig[status];
+  const config = statusStyles[status];
   const Icon = config.icon;
 
   return (
-    <div className={`${config.bgColor} ${config.borderColor} border-2 rounded-lg p-4 space-y-3`}>
-      <div className="flex items-center gap-2 flex-wrap">
-        <Icon className={`h-5 w-5 ${config.iconColor}`} />
-        <h4 className={`font-semibold text-sm ${config.textColor}`}>{title}</h4>
+    <section className={cn("rounded-2xl p-5 space-y-3 shadow-inner", config.container)}>
+      <header className="flex items-center gap-3 flex-wrap">
+        <Icon className={cn("h-5 w-5", config.iconColor)} />
+        <h4 className="font-semibold text-sm text-white tracking-wide">{title}</h4>
+
         {idealRange && (
-          <Badge variant={config.badgeVariant} className="text-xs">
+          <Badge className={cn("text-[10px] uppercase tracking-wide", config.badgeClass)}>
             Ideal: {idealRange}
           </Badge>
         )}
-      </div>
+      </header>
 
-      <div className="space-y-2">
+      <div className="space-y-3 text-sm text-white/85 leading-relaxed">
         <div>
-          <p className={`text-xs font-medium mb-1 ${config.textColor} opacity-70`}>Diagnóstico:</p>
-          <p className={`text-sm ${config.textColor}`}>{diagnosis}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-white/60 mb-1">
+            Diagnóstico
+          </p>
+          <p>{diagnosis}</p>
         </div>
 
         <div>
-          <p className={`text-xs font-medium mb-1 ${config.textColor} opacity-70`}>💡 Recomendação:</p>
-          <p className={`text-sm font-medium ${config.textColor}`}>{recommendation}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-white/60 mb-1">
+            Recomendações
+          </p>
+          <p className="font-semibold text-white">{recommendation}</p>
         </div>
+
+        {highlightNumbers && highlightNumbers.length > 0 && (
+          <div className="pt-2 border-t border-white/10">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-white/60 mb-2">
+              {highlightLabel ?? "Sugestão de números"}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {highlightNumbers.map((num) => (
+                <span
+                  key={num}
+                  className={cn(
+                    "px-3 py-1 rounded-md text-xs font-semibold shadow-sm tracking-wide",
+                    config.chipClass
+                  )}
+                >
+                  {num.toString().padStart(2, "0")}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 }

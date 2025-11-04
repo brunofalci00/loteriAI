@@ -252,12 +252,12 @@ export default function SavedGamesPage() {
             <TabsTrigger value="all">Todos</TabsTrigger>
             <TabsTrigger value="lotofacil">Lotofácil</TabsTrigger>
             <TabsTrigger value="lotomania">Lotomania</TabsTrigger>
-            <TabsTrigger value="megasena">Mega-Sena</TabsTrigger>
+            <TabsTrigger value="mega-sena">Mega-Sena</TabsTrigger>
             <TabsTrigger value="quina">Quina</TabsTrigger>
-            <TabsTrigger value="dupla_sena">Dupla Sena</TabsTrigger>
+            <TabsTrigger value="dupla-sena">Dupla Sena</TabsTrigger>
             <TabsTrigger value="timemania">Timemania</TabsTrigger>
-            <TabsTrigger value="dia_de_sorte">Dia de Sorte</TabsTrigger>
-            <TabsTrigger value="mais_milionaria">+Milionária</TabsTrigger>
+            <TabsTrigger value="dia-de-sorte">Dia de Sorte</TabsTrigger>
+            <TabsTrigger value="mais-milionaria">+Milionária</TabsTrigger>
           </TabsList>
 
           <TabsContent value={activeTab} className="mt-0">

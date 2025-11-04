@@ -109,7 +109,7 @@ export function DetailedAnalysisModal({
         <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Pontuação Geral</p>
+              <p className="text-sm text-white/70 mb-1">Pontuação Geral</p>
               <div className="flex items-center gap-3">
                 <span className="text-4xl font-bold">{score.toFixed(1)}/5</span>
                 <div className="flex gap-1">
@@ -134,7 +134,7 @@ export function DetailedAnalysisModal({
             </Badge>
           </div>
 
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm text-white/75 leading-relaxed">
             {analysisResult.summary}
           </p>
         </div>
@@ -151,10 +151,10 @@ export function DetailedAnalysisModal({
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Flame className="h-4 w-4 text-orange-500" />
-                <p className="text-sm font-medium">
+                <p className="text-sm font-semibold text-white/90">
                   Números Quentes ({hotCount})
                 </p>
-                <Badge variant="outline" className="text-xs border-orange-500/30 bg-orange-500/10 text-orange-600">
+                <Badge variant="outline" className="text-xs border-orange-400/40 bg-orange-500/10 text-orange-100">
                   Mais frequentes
                 </Badge>
               </div>
@@ -162,7 +162,7 @@ export function DetailedAnalysisModal({
                 {hotNumbers.map((num) => (
                   <div
                     key={num}
-                    className="relative px-3 py-2 rounded-lg text-sm font-semibold bg-orange-500 text-white ring-2 ring-orange-500/50"
+                    className="relative px-3 py-2 rounded-lg text-sm font-semibold bg-orange-500/20 border border-orange-400/40 text-orange-100 shadow-sm"
                   >
                     {num.toString().padStart(2, '0')}
                     <Flame className="absolute -top-1 -right-1 h-3 w-3 text-orange-300" />
@@ -181,10 +181,12 @@ export function DetailedAnalysisModal({
               hotCount >= 3 && hotCount <= 5
                 ? 'Excelente! Você está usando a quantidade ideal de números quentes. Isso aumenta suas chances baseado em padrões históricos.'
                 : hotCount < 3
-                ? `Considere adicionar mais ${3 - hotCount} número(s) quente(s). Números quentes têm maior probabilidade estatística de aparecer.`
+                ? `Considere adicionar mais ${Math.max(3 - hotCount, 1)} número(s) quente(s). Números quentes têm maior probabilidade estatística de aparecer.`
                 : `Você tem muitos números quentes. Considere substituir ${hotCount - 5} por números balanceados para melhor diversificação.`
             }
             idealRange="3-5 números (20-30%)"
+            highlightNumbers={detailedAnalysis.allHotNumbers ?? []}
+            highlightLabel="Números quentes do histórico recente"
           />
 
           {/* Números Balanceados */}
@@ -192,10 +194,10 @@ export function DetailedAnalysisModal({
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Scale className="h-4 w-4 text-green-500" />
-                <p className="text-sm font-medium">
+                <p className="text-sm font-semibold text-white/90">
                   Números Balanceados ({balancedCount})
                 </p>
-                <Badge variant="outline" className="text-xs border-green-500/30 bg-green-500/10 text-green-600">
+                <Badge variant="outline" className="text-xs border-emerald-400/40 bg-emerald-500/10 text-emerald-100">
                   Frequência média
                 </Badge>
               </div>
@@ -203,7 +205,7 @@ export function DetailedAnalysisModal({
                 {balancedNumbers.map((num) => (
                   <span
                     key={num}
-                    className="px-3 py-2 rounded-lg text-sm font-semibold bg-green-500 text-white"
+                    className="px-3 py-2 rounded-lg text-sm font-semibold bg-emerald-500/15 border border-emerald-400/30 text-emerald-100 shadow-sm"
                   >
                     {num.toString().padStart(2, '0')}
                   </span>
@@ -217,10 +219,10 @@ export function DetailedAnalysisModal({
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Snowflake className="h-4 w-4 text-blue-500" />
-                <p className="text-sm font-medium">
-                  Outros Números ({coldCount})
+                <p className="text-sm font-semibold text-white/90">
+                  Números Frios ({coldCount})
                 </p>
-                <Badge variant="outline" className="text-xs border-blue-500/30 bg-blue-500/10 text-blue-600">
+                <Badge variant="outline" className="text-xs border-sky-400/40 bg-sky-500/10 text-sky-100">
                   Menos frequentes
                 </Badge>
               </div>
@@ -228,7 +230,7 @@ export function DetailedAnalysisModal({
                 {coldNumbers.map((num) => (
                   <span
                     key={num}
-                    className="px-3 py-2 rounded-lg text-sm font-semibold bg-blue-500 text-white"
+                    className="px-3 py-2 rounded-lg text-sm font-semibold bg-sky-500/15 border border-sky-400/30 text-sky-100 shadow-sm"
                   >
                     {num.toString().padStart(2, '0')}
                   </span>
@@ -239,20 +241,20 @@ export function DetailedAnalysisModal({
         </div>
 
         {/* Distribuição Par/Ímpar */}
-        <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+        <div className="rounded-2xl p-4 space-y-3 bg-slate-900/60 border border-slate-800">
           <h4 className="font-semibold text-sm">Distribuição Par / Ímpar</h4>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">Pares</p>
-                <Badge variant="outline">{evenOddDistribution.even}</Badge>
+                <p className="text-sm text-white/60">Pares</p>
+                <Badge variant="outline" className="bg-white/10 text-white border-white/20">{evenOddDistribution.even}</Badge>
               </div>
               <div className="flex flex-wrap gap-1">
                 {evenNumbers.map((num) => (
                   <span
                     key={num}
-                    className="px-2 py-1 rounded text-xs font-medium bg-primary/30 text-white border border-primary/50"
+                    className="px-2 py-1 rounded text-xs font-semibold bg-emerald-500/15 border border-emerald-400/40 text-emerald-100"
                   >
                     {num.toString().padStart(2, '0')}
                   </span>
@@ -262,14 +264,14 @@ export function DetailedAnalysisModal({
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">Ímpares</p>
-                <Badge variant="outline">{evenOddDistribution.odd}</Badge>
+                <p className="text-sm text-white/60">Ímpares</p>
+                <Badge variant="outline" className="bg-white/10 text-white border-white/20">{evenOddDistribution.odd}</Badge>
               </div>
               <div className="flex flex-wrap gap-1">
                 {oddNumbers.map((num) => (
                   <span
                     key={num}
-                    className="px-2 py-1 rounded text-xs font-medium bg-primary/30 text-white border border-primary/50"
+                    className="px-2 py-1 rounded text-xs font-semibold bg-emerald-500/15 border border-emerald-400/40 text-emerald-100"
                   >
                     {num.toString().padStart(2, '0')}
                   </span>
@@ -302,7 +304,7 @@ export function DetailedAnalysisModal({
 
         {/* Números Quentes Disponíveis */}
         {detailedAnalysis.allHotNumbers && detailedAnalysis.allHotNumbers.length > 0 && (
-          <div className="bg-orange-500/10 dark:bg-orange-500/20 border-2 border-orange-500/30 rounded-lg p-4 space-y-3">
+          <div className="bg-orange-900/45 border border-orange-500/40 rounded-2xl p-4 space-y-3 shadow-inner">
             <div className="flex items-center gap-2">
               <Flame className="h-5 w-5 text-orange-600 dark:text-orange-400" />
               <h3 className="text-lg font-semibold text-foreground">Números Quentes Disponíveis</h3>
@@ -344,25 +346,28 @@ export function DetailedAnalysisModal({
             {analysisResult.recommendations.map((rec: Recommendation, index: number) => {
               const severityConfig = {
                 success: {
-                  bgColor: 'bg-green-500/10 dark:bg-green-500/20',
-                  borderColor: 'border-green-500/30',
+                  bgColor: 'bg-emerald-900/45',
+                  borderColor: 'border border-emerald-500/40',
                   icon: CheckCircle,
-                  iconColor: 'text-green-600 dark:text-green-400',
-                  textColor: 'text-foreground'
+                  iconColor: 'text-emerald-300',
+                  textColor: 'text-white',
+                  accent: 'bg-emerald-500/20 border border-emerald-400/40'
                 },
                 warning: {
-                  bgColor: 'bg-yellow-500/10 dark:bg-yellow-500/20',
-                  borderColor: 'border-yellow-500/30',
+                  bgColor: 'bg-amber-900/45',
+                  borderColor: 'border border-amber-500/35',
                   icon: AlertCircle,
-                  iconColor: 'text-yellow-600 dark:text-yellow-400',
-                  textColor: 'text-foreground'
+                  iconColor: 'text-amber-300',
+                  textColor: 'text-white',
+                  accent: 'bg-amber-500/20 border border-amber-400/40'
                 },
                 info: {
-                  bgColor: 'bg-blue-500/10 dark:bg-blue-500/20',
-                  borderColor: 'border-blue-500/30',
+                  bgColor: 'bg-sky-900/45',
+                  borderColor: 'border border-sky-500/40',
                   icon: Info,
-                  iconColor: 'text-blue-600 dark:text-blue-400',
-                  textColor: 'text-foreground'
+                  iconColor: 'text-sky-300',
+                  textColor: 'text-white',
+                  accent: 'bg-sky-500/20 border border-sky-400/40'
                 }
               };
 
@@ -372,19 +377,19 @@ export function DetailedAnalysisModal({
               return (
                 <div
                   key={index}
-                  className={`${config.bgColor} ${config.borderColor} border-2 rounded-lg p-4 space-y-3`}
+                  className={`${config.bgColor} ${config.borderColor} rounded-2xl p-4 space-y-3 shadow-inner`}
                 >
                   <div className="flex items-start gap-3">
                     <Icon className={`h-5 w-5 mt-0.5 flex-shrink-0 ${config.iconColor}`} />
-                    <div className="flex-1 space-y-2">
+                    <div className="flex-1 space-y-3">
                       <div>
                         <h4 className={`font-semibold text-sm mb-1 ${config.textColor}`}>{rec.title}</h4>
-                        <p className={`text-xs mb-1 ${config.textColor} opacity-70`}>{rec.diagnosis}</p>
+                        <p className={`text-xs mb-1 ${config.textColor} opacity-80`}>{rec.diagnosis}</p>
                       </div>
 
-                      <div className={`${config.bgColor} rounded p-2 border ${config.borderColor}`}>
-                        <p className={`text-xs font-medium mb-1 ${config.textColor} opacity-70`}>💡 Recomendação:</p>
-                        <p className={`text-sm font-medium ${config.textColor}`}>{rec.recommendation}</p>
+                      <div className={`${config.accent} rounded-lg p-3`}>
+                        <p className={`text-xs font-semibold uppercase tracking-wide mb-1 ${config.textColor} opacity-80`}>💡 Recomendação:</p>
+                        <p className={`text-sm font-semibold ${config.textColor}`}>{rec.recommendation}</p>
                       </div>
 
                       {rec.actionable && rec.numbersToAdd && rec.numbersToRemove && (
@@ -394,7 +399,7 @@ export function DetailedAnalysisModal({
                               <span className="text-red-600 dark:text-red-400 font-medium whitespace-nowrap">❌ Remover:</span>
                               <div className="flex flex-wrap gap-1">
                                 {rec.numbersToRemove.map(n => (
-                                  <span key={n} className="px-2 py-0.5 rounded bg-red-500/20 text-red-700 dark:text-red-300 font-medium border border-red-500/30">
+                                  <span key={n} className="px-2 py-0.5 rounded bg-red-500/20 text-red-100 font-semibold border border-red-400/40">
                                     {n.toString().padStart(2, '0')}
                                   </span>
                                 ))}
@@ -403,10 +408,10 @@ export function DetailedAnalysisModal({
                           )}
                           {rec.numbersToAdd.length > 0 && (
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-green-600 dark:text-green-400 font-medium whitespace-nowrap">✅ Adicionar:</span>
+                              <span className="text-emerald-200 font-semibold whitespace-nowrap uppercase tracking-wide">✅ Adicionar:</span>
                               <div className="flex flex-wrap gap-1">
                                 {rec.numbersToAdd.map(n => (
-                                  <span key={n} className="px-2 py-0.5 rounded bg-green-500/20 text-green-700 dark:text-green-300 font-medium border border-green-500/30">
+                                  <span key={n} className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-100 font-semibold border border-emerald-400/40">
                                     {n.toString().padStart(2, '0')}
                                   </span>
                                 ))}
@@ -424,12 +429,12 @@ export function DetailedAnalysisModal({
         )}
 
         {/* Share CTA */}
-        <div className="bg-gradient-to-br from-emerald-900 to-green-900 dark:from-emerald-950 dark:to-green-950 border border-emerald-700 dark:border-emerald-800 rounded-lg p-4 space-y-3">
-          <div className="text-center">
-            <p className="text-sm font-medium text-white">
+        <div className="rounded-2xl p-5 bg-slate-900/70 border border-slate-800 shadow-inner text-center space-y-3">
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-white">
               Gostou da análise detalhada?
             </p>
-            <p className="text-xs text-emerald-200 dark:text-emerald-300">
+            <p className="text-xs text-white/70">
               Compartilhe e ganhe créditos extras
             </p>
           </div>
@@ -461,7 +466,7 @@ export function DetailedAnalysisModal({
         )}
 
         {/* Footer Info */}
-        <div className="text-xs text-center text-muted-foreground pt-2 border-t">
+        <div className="text-xs text-center text-white/60 pt-2 border-t border-white/10">
           <p>
             Análise baseada em padrões históricos de {lotteryName}
           </p>

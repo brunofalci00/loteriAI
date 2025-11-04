@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { Star, Heart, RefreshCw, Edit, PlusCircle, Eye, Loader2, AlertCircle, Flame } from "lucide-react";
 import type { AnalysisResult } from "@/services/manualGameAnalysisService";
 import { SaveToggleButton } from "@/components/SaveToggleButton";
@@ -109,14 +110,12 @@ export function Step4_AnalysisResult({
               return (
                 <div
                   key={num}
-                  className={`
-                    relative flex h-10 w-10 items-center justify-center rounded-lg
-                    text-base font-semibold shadow-glow
-                    ${isHot
-                      ? 'bg-orange-500 text-white ring-2 ring-orange-500/50'
-                      : 'bg-primary text-primary-foreground'
-                    }
-                  `}
+                  className={cn(
+                    "relative flex h-10 w-10 items-center justify-center rounded-lg text-base font-semibold shadow-glow transition-colors",
+                    isHot
+                      ? "bg-orange-500 text-white ring-2 ring-orange-500/50"
+                      : "gradient-primary text-emerald-950 dark:text-emerald-50"
+                  )}
                 >
                   {num.toString().padStart(2, '0')}
                   {isHot && <Flame className="absolute -top-1 -right-1 h-3 w-3 text-orange-300" />}
@@ -192,14 +191,10 @@ export function Step4_AnalysisResult({
         </div>
 
         {/* Statistics Grid */}
-        <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t">
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground">Números Quentes</p>
             <p className="text-2xl font-bold text-orange-500">{hotCount}</p>
-          </div>
-          <div className="space-y-1">
-            <p className="text-xs text-muted-foreground">Outros Números</p>
-            <p className="text-2xl font-bold text-blue-500">{coldCount}</p>
           </div>
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground">Balanceados</p>

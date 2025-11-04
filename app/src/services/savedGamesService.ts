@@ -452,7 +452,8 @@ export async function isGameSaved(
       .eq('user_id', user.id)
       .eq('lottery_type', lotteryType)
       .eq('contest_number', contestNumber)
-      .eq('numbers', numbers)
+      .contains('numbers', numbers)
+      .containedBy('numbers', numbers)
       .maybeSingle();
 
     if (error) {

@@ -60,7 +60,13 @@ export function SaveToggleButton({
   onUnsaveSuccess,
   className
 }: SaveToggleButtonProps) {
-  const [isOptimisticSaved, setIsOptimisticSaved] = useState(false);
+  const [localStatus, setLocalStatus] = useState<{
+    isSaved: boolean;
+    gameId: string | null;
+  }>({
+    isSaved: false,
+    gameId: null,
+  });
 
   // Verificar se jogo está salvo
   const { data: saveStatus, isLoading: isCheckingStatus } = useIsGameSaved(
@@ -73,14 +79,17 @@ export function SaveToggleButton({
   const saveGameMutation = useSaveGame();
   const unsaveGameMutation = useUnsaveGame();
 
-  const isSaved = saveStatus?.isSaved || isOptimisticSaved;
-  const gameId = saveStatus?.gameId;
+  const isSaved = saveStatus?.isSaved ?? localStatus.isSaved;
+  const gameId = saveStatus?.gameId ?? localStatus.gameId ?? undefined;
   const isMutating = saveGameMutation.isPending || unsaveGameMutation.isPending;
 
-  // Sync optimistic state with server state
+  // Sincronizar estado local com retorno do servidor
   useEffect(() => {
     if (saveStatus?.isSaved !== undefined) {
-      setIsOptimisticSaved(saveStatus.isSaved);
+      setLocalStatus({
+        isSaved: saveStatus.isSaved,
+        gameId: saveStatus.gameId ?? null,
+      });
     }
   }, [saveStatus]);
 
@@ -95,18 +104,30 @@ export function SaveToggleButton({
         return;
       }
 
-      setIsOptimisticSaved(false); // Optimistic update
+      const previousStatus = { ...localStatus };
+      setLocalStatus({
+        isSaved: false,
+        gameId,
+      });
 
       const result = await unsaveGameMutation.mutateAsync(gameId);
 
       if (result.success) {
+        setLocalStatus({
+          isSaved: false,
+          gameId: null,
+        });
         if (onUnsaveSuccess) onUnsaveSuccess();
       } else {
-        setIsOptimisticSaved(true); // Revert optimistic update
+        setLocalStatus(previousStatus);
       }
     } else {
       // Salvar - jogo ainda não está salvo
-      setIsOptimisticSaved(true); // Optimistic update
+      const previousStatus = { ...localStatus };
+      setLocalStatus({
+        isSaved: true,
+        gameId: previousStatus.gameId,
+      });
 
       const params: SaveGameParams = {
         generationId,
@@ -122,9 +143,13 @@ export function SaveToggleButton({
       const result = await saveGameMutation.mutateAsync(params);
 
       if (result.success) {
+        setLocalStatus({
+          isSaved: true,
+          gameId: result.data?.id ?? null,
+        });
         if (onSaveSuccess) onSaveSuccess();
       } else {
-        setIsOptimisticSaved(false); // Revert optimistic update
+        setLocalStatus(previousStatus);
       }
     }
   };
