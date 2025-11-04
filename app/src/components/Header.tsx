@@ -1,11 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import { User, LogOut, Heart, PlusCircle } from "lucide-react";
+import { User, LogOut, Heart, PlusCircle, MessageSquare } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { CreditsDisplay } from "./CreditsDisplay";
 import { MobileMenu } from "./MobileMenu";
+import { FeedbackModal } from "./FeedbackModal";
 import { useSavedGamesStats } from "@/hooks/useSavedGames";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import logo from "@/assets/logo-loterai.png";
 import {
   DropdownMenu,
@@ -19,6 +21,7 @@ import {
 export const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { open, context, defaultTab, handleOpen, handleClose } = useFeedbackModal();
 
   // Buscar estatísticas de jogos salvos
   const { data: savedGamesStats } = useSavedGamesStats();
@@ -119,6 +122,11 @@ export const Header = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => handleOpen('header')} className="cursor-pointer">
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Enviar Feedback
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={logout} className="cursor-pointer text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />
                     Sair
@@ -137,6 +145,16 @@ export const Header = () => {
           )}
         </div>
       </div>
+
+      {/* Feedback Modal */}
+      {user?.isAuthenticated && (
+        <FeedbackModal
+          open={open}
+          onOpenChange={handleClose}
+          context={context}
+          defaultTab={defaultTab}
+        />
+      )}
     </header>
   );
 };

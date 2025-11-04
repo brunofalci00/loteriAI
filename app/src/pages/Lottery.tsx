@@ -7,6 +7,7 @@ import { NextDrawInfo } from "@/components/NextDrawInfo";
 import { RegenerateButton } from "@/components/RegenerateButton";
 import { GenerationSelector } from "@/components/GenerationSelector";
 import { GenerationHistoryModal } from "@/components/GenerationHistoryModal";
+import { FirstGenerationModal, isFirstGeneration } from "@/components/FirstGenerationModal";
 import { CreditsDisplay } from "@/components/CreditsDisplay";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -35,6 +36,7 @@ const Lottery = () => {
   const [showLoading, setShowLoading] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [firstGenModalOpen, setFirstGenModalOpen] = useState(false);
   const { user } = useAuth();
 
   const lottery = type ? lotteryData[type] : null;
@@ -87,6 +89,14 @@ const Lottery = () => {
   const handleLoadingComplete = () => {
     setShowLoading(false);
     setShowResults(true);
+
+    // Verificar se é a primeira geração (Tier A moment)
+    if (isFirstGeneration()) {
+      // Delay de 1s para usuário ver os resultados antes do modal
+      setTimeout(() => {
+        setFirstGenModalOpen(true);
+      }, 1000);
+    }
   };
 
   const handleExport = () => {
@@ -222,16 +232,25 @@ const Lottery = () => {
               )}
 
               {/* Results Display */}
-              <ResultsDisplay
-                lotteryName={lottery.name}
-                lotteryType={type || ""}
-                combinations={displayedCombinations}
-                stats={{
-                  accuracy: analysisResult.calculatedAccuracy,
-                  gamesGenerated: displayedCombinations.length,
-                  hotNumbers: displayedHotNumbers,
-                  coldNumbers: analysisResult.statistics.coldNumbers,
-                  lastUpdate: analysisResult.statistics.lastUpdate,
+              <div className="relative">
+                {/* Badge "GRATUITO" aparece apenas na primeira análise (antes de qualquer regeneração) */}
+                {!activeGeneration && (
+                  <Badge
+                    className="absolute -top-3 right-4 z-10 bg-green-500 hover:bg-green-600 text-white shadow-lg animate-in fade-in slide-in-from-top-2 duration-500"
+                  >
+                    ✨ ANÁLISE GRATUITA
+                  </Badge>
+                )}
+                <ResultsDisplay
+                  lotteryName={lottery.name}
+                  lotteryType={type || ""}
+                  combinations={displayedCombinations}
+                  stats={{
+                    accuracy: analysisResult.calculatedAccuracy,
+                    gamesGenerated: displayedCombinations.length,
+                    hotNumbers: displayedHotNumbers,
+                    coldNumbers: analysisResult.statistics.coldNumbers,
+                    lastUpdate: analysisResult.statistics.lastUpdate,
                   dataSource: analysisResult.dataSource,
                 }}
                 strategy={analysisResult.strategy}
@@ -240,6 +259,7 @@ const Lottery = () => {
                 generationId={activeGeneration?.id || null}
                 userId={user?.id || null}
               />
+              </div>
             </div>
 
             {/* Sidebar */}
@@ -265,6 +285,19 @@ const Lottery = () => {
             contestNumber={parsedContestNumber}
             open={historyModalOpen}
             onOpenChange={setHistoryModalOpen}
+          />
+        )}
+
+        {/* First Generation Modal - Tier A */}
+        {analysisResult && (
+          <FirstGenerationModal
+            open={firstGenModalOpen}
+            onOpenChange={setFirstGenModalOpen}
+            stats={{
+              gamesGenerated: displayedCombinations.length,
+              accuracy: analysisResult.calculatedAccuracy,
+              lotteryName: lottery.name,
+            }}
           />
         )}
       </div>

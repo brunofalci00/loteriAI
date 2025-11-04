@@ -366,6 +366,67 @@ export async function markAsPlayed(params: MarkAsPlayedParams): Promise<{
 }
 
 /**
+ * Desmarca um jogo como jogado
+ * Decrementa play_count (mínimo 0) e limpa last_played_at se chegar a 0
+ */
+export async function unmarkAsPlayed(params: MarkAsPlayedParams): Promise<{
+  success: boolean;
+  data?: SavedGame;
+  error?: string;
+}> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return { success: false, error: 'Usuário não autenticado' };
+    }
+
+    // Buscar jogo atual para decrementar play_count
+    const { data: currentGame, error: fetchError } = await supabase
+      .from('saved_games')
+      .select('play_count')
+      .eq('id', params.gameId)
+      .eq('user_id', user.id)
+      .single();
+
+    if (fetchError) {
+      console.error('❌ Erro ao buscar jogo:', fetchError);
+      return { success: false, error: fetchError.message };
+    }
+
+    // Decrementar play_count (mínimo 0)
+    const newPlayCount = Math.max((currentGame.play_count || 0) - 1, 0);
+
+    const updateData: SavedGameUpdate = {
+      play_count: newPlayCount,
+      // Se chegou a 0, limpar last_played_at
+      last_played_at: newPlayCount === 0 ? null : new Date().toISOString(),
+    };
+
+    const { data, error } = await supabase
+      .from('saved_games')
+      .update(updateData)
+      .eq('id', params.gameId)
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('❌ Erro ao desmarcar como jogado:', error);
+      return { success: false, error: error.message };
+    }
+
+    console.log(`✅ Jogo desmarcado como jogado (${newPlayCount}x):`, params.gameId);
+    return { success: true, data };
+  } catch (error) {
+    console.error('❌ Erro inesperado ao desmarcar como jogado:', error);
+    return {
+      success: false,
+      error: 'Erro inesperado ao desmarcar como jogado'
+    };
+  }
+}
+
+/**
  * Verifica se um jogo específico já está salvo
  * Útil para exibir estado correto do toggle
  */
@@ -391,7 +452,7 @@ export async function isGameSaved(
       .eq('user_id', user.id)
       .eq('lottery_type', lotteryType)
       .eq('contest_number', contestNumber)
-      .eq('numbers', JSON.stringify(numbers))
+      .eq('numbers', numbers)
       .maybeSingle();
 
     if (error) {

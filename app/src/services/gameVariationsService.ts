@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { ManualGameAnalysisService, type AnalysisResult } from './manualGameAnalysisService';
+import { consumeCredit } from './creditsService';
 import { LotteryType } from '@/config/lotteryConfig';
 
 export interface GenerateVariationsParams {
@@ -30,12 +31,28 @@ export class GameVariationsService {
     success: boolean;
     data?: Variation[];
     error?: string;
+    creditsRemaining?: number;
   }> {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         return { success: false, error: 'Usuário não autenticado' };
       }
+
+      // **CONSUMIR 1 CRÉDITO ANTES DE GERAR**
+      console.log('🎯 Consumindo 1 crédito para gerar variações...');
+      const creditResult = await consumeCredit(user.id);
+
+      if (!creditResult.success) {
+        console.error('❌ Erro ao consumir crédito:', creditResult.message);
+        return {
+          success: false,
+          error: creditResult.message,
+          creditsRemaining: creditResult.credits_remaining
+        };
+      }
+
+      console.log(`✅ Crédito consumido! Restam ${creditResult.credits_remaining} créditos`);
 
       // Buscar hot/cold numbers do concurso
       const { data: historicalData, error: histError } = await supabase
@@ -123,7 +140,12 @@ export class GameVariationsService {
         // Não retornar erro, variações ainda são geradas
       }
 
-      return { success: true, data: variations };
+      console.log(`✅ ${variations.length} variações geradas com sucesso!`);
+      return {
+        success: true,
+        data: variations,
+        creditsRemaining: creditResult.credits_remaining
+      };
     } catch (error) {
       console.error('Erro ao gerar variações:', error);
       return {

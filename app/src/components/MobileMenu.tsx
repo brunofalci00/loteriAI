@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Home, PlusCircle, Heart, HelpCircle, User, LogOut } from "lucide-react";
+import { Menu, X, Home, PlusCircle, Heart, HelpCircle, User, LogOut, MessageCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Separator } from "./ui/separator";
@@ -8,9 +8,11 @@ import { Badge } from "./ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSavedGamesStats } from "@/hooks/useSavedGames";
 import { CreditsDisplay } from "./CreditsDisplay";
+import { FeedbackModal } from "./FeedbackModal";
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { data: savedGamesStats } = useSavedGamesStats();
@@ -125,6 +127,21 @@ export function MobileMenu() {
             <span>Meu Perfil</span>
           </Button>
 
+          <Button
+            variant="ghost"
+            className="justify-start gap-3 h-11 w-full"
+            onClick={() => {
+              setFeedbackModalOpen(true);
+              setOpen(false);
+            }}
+          >
+            <MessageCircle className="h-4 w-4" />
+            <span>Feedback e Sugestões</span>
+            <Badge variant="secondary" className="ml-auto text-[10px]">
+              Novo
+            </Badge>
+          </Button>
+
           <Separator className="my-3" />
 
           <Button
@@ -145,6 +162,13 @@ export function MobileMenu() {
           </div>
         </div>
       </SheetContent>
+
+      {/* Feedback Modal */}
+      <FeedbackModal
+        open={feedbackModalOpen}
+        onOpenChange={setFeedbackModalOpen}
+        context="mobile-menu"
+      />
     </Sheet>
   );
 }

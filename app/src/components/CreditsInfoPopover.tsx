@@ -100,24 +100,14 @@ export function CreditsInfoPopover({
             </div>
 
             <div className="space-y-2">
-              <p className="text-xs font-medium">Como usar seus créditos:</p>
-
-              <div className="flex items-start gap-2">
-                <Sparkles className="h-3.5 w-3.5 text-green-500 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-xs font-medium">Gerar Análise (1 crédito)</p>
-                  <p className="text-xs text-muted-foreground">
-                    Analise qualquer loteria e receba 10 jogos otimizados
-                  </p>
-                </div>
-              </div>
+              <p className="text-xs font-medium">O que consome créditos:</p>
 
               <div className="flex items-start gap-2">
                 <RefreshCw className="h-3.5 w-3.5 text-blue-500 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-xs font-medium">Regenerar Jogos (1 crédito)</p>
                   <p className="text-xs text-muted-foreground">
-                    Gere novas combinações baseadas na mesma análise
+                    Gere novas combinações de um concurso já analisado
                   </p>
                 </div>
               </div>
@@ -134,16 +124,32 @@ export function CreditsInfoPopover({
             </div>
 
             <div className="pt-2 border-t">
-              <div className="flex items-start gap-2">
-                <div className="p-1.5 rounded-full bg-green-100 dark:bg-green-900/30">
-                  <span className="text-lg">✨</span>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-green-600 dark:text-green-400">
-                    Gratuito: Salvar, exportar e criar jogos manualmente
-                  </p>
+              <p className="text-xs font-medium text-green-600 dark:text-green-400 mb-2">
+                ✨ Funcionalidades Gratuitas
+              </p>
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
                   <p className="text-xs text-muted-foreground">
-                    Algumas funções não consomem créditos!
+                    Análise inicial de qualquer concurso
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                  <p className="text-xs text-muted-foreground">
+                    Criar e analisar jogos manualmente
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                  <p className="text-xs text-muted-foreground">
+                    Salvar até 50 jogos
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                  <p className="text-xs text-muted-foreground">
+                    Exportar jogos em TXT
                   </p>
                 </div>
               </div>

@@ -23,6 +23,7 @@ import {
   getSavedGame,
   updateGameName,
   markAsPlayed,
+  unmarkAsPlayed,
   isGameSaved,
   getStats,
   type SaveGameParams,
@@ -228,6 +229,42 @@ export function useMarkAsPlayed() {
       toast({
         variant: 'destructive',
         title: 'Erro ao marcar como jogado',
+        description: error.message,
+      });
+    },
+  });
+}
+
+/**
+ * Hook para desmarcar jogo como jogado
+ */
+export function useUnmarkAsPlayed() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: (params: MarkAsPlayedParams) => unmarkAsPlayed(params),
+    onSuccess: (result) => {
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ['saved-games'] });
+        queryClient.invalidateQueries({ queryKey: ['saved-game', result.data?.id] });
+        queryClient.invalidateQueries({ queryKey: ['saved-games-stats'] });
+
+        toast({
+          title: '✅ Desmarcado como jogado!',
+        });
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Erro ao desmarcar como jogado',
+          description: result.error || 'Erro desconhecido',
+        });
+      }
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao desmarcar como jogado',
         description: error.message,
       });
     },

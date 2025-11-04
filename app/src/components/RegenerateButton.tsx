@@ -12,8 +12,9 @@
  */
 
 import { useState } from 'react';
-import { RefreshCw, Zap } from 'lucide-react';
+import { RefreshCw, Zap, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -70,6 +71,7 @@ export function RegenerateButton({
     canRegenerate,
     cannotRegenerateReason,
     creditsRemaining,
+    cooldownSeconds,
     isLoading: isLoadingCredits
   } = useCreditsStatus(userId, true);
 
@@ -165,6 +167,20 @@ export function RegenerateButton({
           </>
         )}
       </Button>
+
+      {/* Cooldown countdown visual */}
+      {cooldownSeconds && cooldownSeconds > 0 && (
+        <div className="flex items-center gap-2 mt-2 p-2 bg-muted/50 rounded-md">
+          <Progress
+            value={((10 - cooldownSeconds) / 10) * 100}
+            className="flex-1 h-2"
+          />
+          <span className="text-xs text-muted-foreground flex items-center gap-1 whitespace-nowrap">
+            <Clock className="h-3 w-3" />
+            Aguarde {cooldownSeconds}s
+          </span>
+        </div>
+      )}
 
       <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <AlertDialogContent>

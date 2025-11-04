@@ -36,7 +36,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { MoreVertical, Edit, Share2, Download, Trash2, Sparkles, Pencil } from 'lucide-react';
-import { useUnsaveGame, useMarkAsPlayed } from '@/hooks/useSavedGames';
+import { useUnsaveGame, useMarkAsPlayed, useUnmarkAsPlayed } from '@/hooks/useSavedGames';
 import { shareViaWhatsApp, exportAsTxt } from '@/services/exportService';
 import { EditGameNameModal } from './EditGameNameModal';
 import type { SavedGame } from '@/services/savedGamesService';
@@ -53,6 +53,7 @@ export function SavedGameCard({ game }: SavedGameCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const unsaveGame = useUnsaveGame();
   const markAsPlayed = useMarkAsPlayed();
+  const unmarkAsPlayed = useUnmarkAsPlayed();
 
   // Mapear tipo de loteria para nome amigável
   const lotteryNames: Record<string, string> = {
@@ -92,6 +93,8 @@ export function SavedGameCard({ game }: SavedGameCardProps) {
   const handleMarkAsPlayed = async (checked: boolean) => {
     if (checked) {
       await markAsPlayed.mutateAsync({ gameId: game.id });
+    } else {
+      await unmarkAsPlayed.mutateAsync({ gameId: game.id });
     }
   };
 
@@ -129,36 +132,46 @@ export function SavedGameCard({ game }: SavedGameCardProps) {
               </CardDescription>
             </div>
 
-            {/* Menu de Ações */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setShowEditModal(true)}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Editar Nome
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleShare}>
-                  <Share2 className="mr-2 h-4 w-4" />
-                  Compartilhar WhatsApp
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleExport}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Exportar TXT
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => setShowDeleteDialog(true)}
-                  className="text-destructive focus:text-destructive"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Excluir
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Botões de Ação */}
+            <div className="flex items-center gap-1">
+              {/* Botão Compartilhar - Destacado */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleShare}
+                className="gap-1"
+              >
+                <Share2 className="h-4 w-4" />
+                <span className="hidden sm:inline">Compartilhar</span>
+              </Button>
+
+              {/* Menu de Ações */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setShowEditModal(true)}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    Editar Nome
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleExport}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Exportar TXT
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => setShowDeleteDialog(true)}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Excluir
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </CardHeader>
 
@@ -181,10 +194,6 @@ export function SavedGameCard({ game }: SavedGameCardProps) {
               <span>{hotCount} quentes</span>
             </div>
             <div className="flex items-center gap-1">
-              <span>📊</span>
-              <span>{coldCount} outros</span>
-            </div>
-            <div className="flex items-center gap-1">
               <span>⚖️</span>
               <span>{balancedCount} balanceados</span>
             </div>
@@ -198,7 +207,7 @@ export function SavedGameCard({ game }: SavedGameCardProps) {
               id={`played-${game.id}`}
               checked={game.play_count > 0}
               onCheckedChange={handleMarkAsPlayed}
-              disabled={markAsPlayed.isPending}
+              disabled={markAsPlayed.isPending || unmarkAsPlayed.isPending}
             />
             <label
               htmlFor={`played-${game.id}`}

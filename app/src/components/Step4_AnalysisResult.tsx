@@ -2,9 +2,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, Heart, RefreshCw, Edit, PlusCircle, Eye } from "lucide-react";
+import { Star, Heart, RefreshCw, Edit, PlusCircle, Eye, Loader2, AlertCircle } from "lucide-react";
 import type { AnalysisResult } from "@/services/manualGameAnalysisService";
 import { SaveToggleButton } from "@/components/SaveToggleButton";
+import { ShareButton } from "@/components/ShareButton";
+import { DetailedAnalysisModal } from "@/components/DetailedAnalysisModal";
+import { ConsumeCreditsConfirmation } from "@/components/ConsumeCreditsConfirmation";
+import { useCreditsStatus } from "@/hooks/useUserCredits";
+import { useToast } from "@/hooks/use-toast";
 
 interface Step4_AnalysisResultProps {
   lotteryType: 'lotofacil' | 'lotomania';
@@ -31,7 +36,54 @@ export function Step4_AnalysisResult({
   onReset,
   isGeneratingVariations = false
 }: Step4_AnalysisResultProps) {
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const { toast } = useToast();
+
+  // Hook de créditos (apenas se usuário autenticado)
+  const {
+    creditsRemaining,
+    canRegenerate,
+    cannotRegenerateReason,
+    isLoading: isLoadingCredits,
+  } = useCreditsStatus(userId || '', !!userId);
+
   const { score, summary, hotCount, coldCount, balancedCount, evenOddDistribution, comparisonWithAverage } = analysisResult;
+
+  // Handler para abrir modal de confirmação
+  const handleVariationsClick = () => {
+    if (!userId) {
+      toast({
+        variant: 'destructive',
+        title: 'Autenticação necessária',
+        description: 'Faça login para gerar variações.',
+      });
+      return;
+    }
+
+    if (!canRegenerate) {
+      toast({
+        variant: 'destructive',
+        title: 'Não é possível gerar variações',
+        description: cannotRegenerateReason || 'Créditos insuficientes',
+      });
+      return;
+    }
+
+    setConfirmModalOpen(true);
+  };
+
+  // Handler para confirmar geração
+  const handleConfirmVariations = () => {
+    setConfirmModalOpen(false);
+    onGenerateVariations();
+  };
+
+  // Mapear tipo de loteria para nome
+  const lotteryNames: Record<string, string> = {
+    'lotofacil': 'Lotofácil',
+    'lotomania': 'Lotomania',
+  };
 
   // Score agora já está em escala 0-5
   const stars = Math.floor(score);
@@ -108,13 +160,32 @@ export function Step4_AnalysisResult({
           </div>
 
           <Button
-            onClick={onViewDetails}
+            onClick={() => setDetailsModalOpen(true)}
             variant="outline"
             className="w-full"
           >
             <Eye className="h-4 w-4 mr-2" />
             Ver Detalhes da Análise
           </Button>
+
+          {/* Share Button - Tier S moment (score >= 4.0) */}
+          {score >= 4.0 && (
+            <div className="mt-4 pt-4 border-t">
+              <p className="text-sm text-muted-foreground mb-3 text-center">
+                Gostou do resultado? Compartilhe e ganhe créditos!
+              </p>
+              <ShareButton
+                context="score"
+                data={{ score }}
+                variant="primary"
+                size="lg"
+                celebratory={score >= 4.5}
+                label="Compartilhar Resultado"
+                showCredits={true}
+                className="w-full"
+              />
+            </div>
+          )}
         </div>
 
         {/* Statistics Grid */}
@@ -162,13 +233,27 @@ export function Step4_AnalysisResult({
           )}
 
           <Button
-            onClick={onGenerateVariations}
-            disabled={isGeneratingVariations}
+            onClick={handleVariationsClick}
+            disabled={isGeneratingVariations || isLoadingCredits || !canRegenerate}
             variant="default"
             className="w-full"
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${isGeneratingVariations ? 'animate-spin' : ''}`} />
-            Gerar 5 Variações
+            {isGeneratingVariations ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Gerando...
+              </>
+            ) : !canRegenerate && userId ? (
+              <>
+                <AlertCircle className="h-4 w-4 mr-2" />
+                Sem créditos
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Gerar 5 Variações
+              </>
+            )}
           </Button>
         </div>
 
@@ -192,6 +277,30 @@ export function Step4_AnalysisResult({
           </Button>
         </div>
       </div>
+
+      {/* Detailed Analysis Modal - Tier B */}
+      <DetailedAnalysisModal
+        open={detailsModalOpen}
+        onOpenChange={setDetailsModalOpen}
+        analysisResult={analysisResult}
+        selectedNumbers={selectedNumbers}
+        lotteryName={lotteryNames[lotteryType]}
+      />
+
+      {/* Consume Credits Confirmation Modal */}
+      {userId && (
+        <ConsumeCreditsConfirmation
+          open={confirmModalOpen}
+          onOpenChange={setConfirmModalOpen}
+          title="Gerar 5 Variações?"
+          description="Esta ação gerará 5 variações otimizadas mantendo 60-70% dos números originais."
+          creditsRequired={1}
+          creditsRemaining={creditsRemaining}
+          onConfirm={handleConfirmVariations}
+          confirmLabel="Gerar Variações"
+          isLoading={isGeneratingVariations}
+        />
+      )}
     </div>
   );
 }

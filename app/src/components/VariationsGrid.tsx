@@ -5,6 +5,7 @@ import { Heart, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Variation } from "@/services/gameVariationsService";
 import { SaveToggleButton } from "@/components/SaveToggleButton";
+import { ShareButton } from "@/components/ShareButton";
 
 interface VariationsGridProps {
   variations: Variation[];
@@ -145,6 +146,27 @@ export function VariationsGrid({
           );
         })}
       </div>
+
+      {/* Share Button - Tier S moment (5 variations generated) */}
+      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200">
+        <div className="text-center space-y-3">
+          <p className="text-sm font-medium text-emerald-900">
+            A IA criou 5 variações personalizadas para você!
+          </p>
+          <p className="text-xs text-emerald-700">
+            Compartilhe e ganhe créditos extras
+          </p>
+          <ShareButton
+            context="variations"
+            variant="primary"
+            size="lg"
+            celebratory={true}
+            label="Compartilhar Variações"
+            showCredits={true}
+            className="w-full max-w-md mx-auto"
+          />
+        </div>
+      </Card>
 
       {/* Legend */}
       <Card className="p-4 bg-muted/50">

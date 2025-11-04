@@ -5,6 +5,7 @@ import { Download, TrendingUp, Hash, Database, Flame, Calendar, Award } from "lu
 import { formatShortDate } from "@/utils/formatters";
 import { StrategyOptimizerDialog } from "@/components/StrategyOptimizerDialog";
 import { SaveToggleButton } from "@/components/SaveToggleButton";
+import { HighScoreBanner } from "@/components/HighScoreBanner";
 
 interface ResultsDisplayProps {
   lotteryName: string;
@@ -82,6 +83,9 @@ export const ResultsDisplay = ({
           </CardContent>
         </Card>
       </div>
+
+      {/* High Score Banner - Tier S moment (75%+ accuracy) */}
+      <HighScoreBanner accuracyRate={stats.accuracy} animate={true} />
 
       {/* Como chegamos nestes números */}
       {(stats.hotNumbers || strategy) && (

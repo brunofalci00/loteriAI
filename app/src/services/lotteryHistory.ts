@@ -1,6 +1,7 @@
 import { HistoricalDraw } from "@/types/analysis";
 import { supabase } from "@/integrations/supabase/client";
 import { getMockDraws, getMockDataAge } from "./lotteryMockData";
+import { callEdgeFunctionWithRetry } from "@/utils/edgeFunctionRetry";
 
 const API_BASE_URL = "https://servicebus2.caixa.gov.br/portaldeloterias/api";
 
@@ -135,17 +136,22 @@ const fetchFromProxy = async (
   lotteryType: string,
   maxDraws: number
 ): Promise<HistoricalDraw[]> => {
-  const { data, error } = await supabase.functions.invoke("lottery-proxy", {
-    body: {
+  const response = await callEdgeFunctionWithRetry(
+    supabase,
+    "lottery-proxy",
+    {
       lotteryType,
       action: "history",
       maxDraws,
     },
-  });
+    { maxAttempts: 2 }
+  );
 
-  if (error) {
-    throw new Error(error.message);
+  if (response.error) {
+    throw new Error(response.error.message || "Erro ao chamar lottery-proxy");
   }
+
+  const data = response.data;
 
   if (!data?.success) {
     throw new Error(data?.error || "Erro desconhecido ao buscar dados");
@@ -207,21 +213,24 @@ export const fetchDrawByNumber = async (
   contestNumber: number
 ): Promise<HistoricalDraw | null> => {
   try {
-    const { data, error } = await supabase.functions.invoke("lottery-proxy", {
-      body: {
+    const response = await callEdgeFunctionWithRetry(
+      supabase,
+      "lottery-proxy",
+      {
         lotteryType,
         action: "byNumber",
         contestNumber,
       },
-    });
+      { maxAttempts: 2 }
+    );
 
-    if (error || !data?.success) {
+    if (response.error || !response.data?.success) {
       return null;
     }
 
     return {
-      ...data.data,
-      drawDate: new Date(data.data.drawDate),
+      ...response.data.data,
+      drawDate: new Date(response.data.data.drawDate),
     };
   } catch (error) {
     console.error(`Erro ao buscar concurso ${contestNumber}:`, error);
