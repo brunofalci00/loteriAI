@@ -13,7 +13,7 @@ const corsHeaders = {
  * - Primeiro share ever: +2 créditos
  * - Score 4.5+: +3 créditos
  * - Share normal: +1 crédito
- * - Limite: 3 shares/dia
+ * - Limite: 5 shares/dia
  *
  * @author Claude Code
  * @date 2025-01-03

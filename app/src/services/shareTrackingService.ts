@@ -3,7 +3,7 @@
  *
  * Gerencia tracking de compartilhamentos:
  * - Analytics (GA4/Mixpanel)
- * - Limite diário (3 shares/dia)
+ * - Limite diário (5 shares/dia)
  * - Histórico de shares
  * - Validações
  *
@@ -12,7 +12,7 @@
  */
 
 const STORAGE_KEY = 'loter_ia_shares';
-const MAX_DAILY_SHARES = 3;
+const MAX_DAILY_SHARES = 5;
 
 export interface ShareEvent {
   context: 'score' | 'variations' | 'high-rate' | 'first-gen' | 'milestone' | 'detailed';
@@ -85,7 +85,7 @@ export function getTodayShareCount(): number {
 }
 
 /**
- * Verifica se usuário pode compartilhar (limite 3/dia)
+ * Verifica se usuário pode compartilhar (limite 5/dia)
  */
 export function canShareToday(): boolean {
   const count = getTodayShareCount();
