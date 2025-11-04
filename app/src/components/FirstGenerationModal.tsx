@@ -26,7 +26,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ShareButton } from '@/components/ShareButton';
-import { Sparkles, TrendingUp, Zap, CheckCircle } from 'lucide-react';
+import { Sparkles, TrendingUp, Zap, CheckCircle, MessageSquare } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { dispatchFeedbackEvent } from '@/hooks/useFeedbackModal';
 
@@ -143,14 +143,14 @@ export function FirstGenerationModal({
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 gap-3 my-6">
-          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-center">
+          <div className="border-2 border-emerald-500 rounded-lg p-4 text-center bg-emerald-500/5">
             <p className="text-xs text-emerald-600 font-medium mb-1">Jogos Gerados</p>
-            <p className="text-2xl font-bold text-emerald-700">{stats.gamesGenerated}</p>
+            <p className="text-2xl font-bold text-emerald-600">{stats.gamesGenerated}</p>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+          <div className="border-2 border-blue-500 rounded-lg p-4 text-center bg-blue-500/5">
             <p className="text-xs text-blue-600 font-medium mb-1">Taxa de Acerto</p>
-            <p className="text-2xl font-bold text-blue-700">{stats.accuracy}%</p>
+            <p className="text-2xl font-bold text-blue-600">{stats.accuracy}%</p>
           </div>
         </div>
 
@@ -189,7 +189,7 @@ export function FirstGenerationModal({
 
         {/* CTA Section */}
         {!hasShared ? (
-          <div className="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 rounded-lg p-4 space-y-3">
+          <div className="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 rounded-lg p-4 space-y-3 mb-4">
             <div className="text-center">
               <Badge variant="secondary" className="bg-emerald-600 text-white mb-2">
                 <Sparkles className="h-3 w-3 mr-1" />
@@ -223,28 +223,33 @@ export function FirstGenerationModal({
             </Button>
           </div>
         ) : (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-center">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-center mb-4">
             <CheckCircle className="h-12 w-12 text-emerald-600 mx-auto mb-2" />
             <p className="font-medium text-emerald-900">Obrigado por compartilhar!</p>
             <p className="text-sm text-emerald-700">Fechando...</p>
           </div>
         )}
 
-        {/* Footer Note */}
-        <p className="text-xs text-center text-muted-foreground">
-          Você pode gerar novos jogos a qualquer momento usando seus créditos.{' '}
-          <button
-            className="underline hover:text-foreground transition-colors"
+        {/* Footer Actions */}
+        <div className="space-y-2">
+          <p className="text-xs text-center text-muted-foreground">
+            Você pode gerar novos jogos a qualquer momento usando seus créditos.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => {
               onOpenChange(false);
               setTimeout(() => {
                 dispatchFeedbackEvent('post-generation', 'suggestion');
               }, 300);
             }}
+            className="w-full"
           >
-            Envie sugestões aqui
-          </button>
-        </p>
+            <MessageSquare className="h-4 w-4 mr-2" />
+            Enviar Sugestões
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

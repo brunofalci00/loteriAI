@@ -16,7 +16,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Share2, Sparkles, MessageCircle, Zap } from 'lucide-react';
+import { Send, Sparkles, MessageCircle, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import confetti from 'canvas-confetti';
 import {
@@ -139,32 +139,58 @@ export function ShareButton({
         : getMessageForContext(context, data);
 
       // Compartilhar via WhatsApp
-      // Usando API Web Share ou fallback para WhatsApp Web
-      const shareData = {
-        text: message,
-      };
-
+      // Força abertura direta no WhatsApp (mobile e desktop)
+      const encodedMessage = encodeURIComponent(message);
       let shareSuccessful = false;
 
-      // Tentar Web Share API primeiro (mobile)
-      if (navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
-        try {
-          await navigator.share(shareData);
+      try {
+        // Detectar se é mobile
+        const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+
+        if (isMobile) {
+          // Mobile: Tentar deep link do WhatsApp primeiro
+          const whatsappDeepLink = `whatsapp://send?text=${encodedMessage}`;
+
+          // Tentar abrir WhatsApp via deep link
+          window.location.href = whatsappDeepLink;
+
+          // Fallback: Se não abrir em 1s, tentar WhatsApp Web
+          setTimeout(() => {
+            const whatsappWeb = `https://api.whatsapp.com/send?text=${encodedMessage}`;
+            window.open(whatsappWeb, '_blank');
+          }, 1000);
+
           shareSuccessful = true;
-        } catch (error: any) {
-          // Usuário cancelou ou erro
-          if (error.name !== 'AbortError') {
-            console.error('Erro no Web Share:', error);
+        } else {
+          // Desktop: abrir WhatsApp Web
+          const whatsappUrl = `https://web.whatsapp.com/send?text=${encodedMessage}`;
+          window.open(whatsappUrl, '_blank');
+          shareSuccessful = true;
+        }
+      } catch (error: any) {
+        console.error('Erro ao abrir WhatsApp:', error);
+
+        // Fallback final: usar Web Share API se disponível
+        if (navigator.share) {
+          try {
+            await navigator.share({ text: message });
+            shareSuccessful = true;
+          } catch (shareError: any) {
+            if (shareError.name !== 'AbortError') {
+              console.error('Erro no Web Share:', shareError);
+            }
+            setIsSharing(false);
+            return;
           }
+        } else {
           setIsSharing(false);
+          toast({
+            variant: 'destructive',
+            title: 'Erro ao compartilhar',
+            description: 'Não foi possível abrir o WhatsApp. Tente novamente.',
+          });
           return;
         }
-      } else {
-        // Desktop: abrir WhatsApp Web
-        const encodedMessage = encodeURIComponent(message);
-        const whatsappUrl = `https://web.whatsapp.com/send?text=${encodedMessage}`;
-        window.open(whatsappUrl, '_blank');
-        shareSuccessful = true;
       }
 
       if (!shareSuccessful) {
@@ -358,7 +384,7 @@ export function ShareButton({
         variant === 'secondary' ? variantClasses.secondary : ''
       } ${variant === 'ghost' ? variantClasses.ghost : ''} ${className}`}
     >
-      <Share2 className="h-4 w-4" />
+      <Send className="h-4 w-4" />
       <span>{isSharing ? 'Compartilhando...' : label}</span>
       {showCredits && !isSharing && canShare && (
         <span className="flex items-center gap-1 text-xs opacity-90">
