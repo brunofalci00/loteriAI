@@ -182,6 +182,7 @@ export function Step4_AnalysisResult({
                 celebratory={score >= 4.5}
                 label="Compartilhar Resultado"
                 showCredits={true}
+                userId={userId}
                 className="w-full"
               />
             </div>
@@ -285,6 +286,7 @@ export function Step4_AnalysisResult({
         analysisResult={analysisResult}
         selectedNumbers={selectedNumbers}
         lotteryName={lotteryNames[lotteryType]}
+        userId={userId}
       />
 
       {/* Consume Credits Confirmation Modal */}

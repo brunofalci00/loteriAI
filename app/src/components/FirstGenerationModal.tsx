@@ -53,6 +53,11 @@ export interface FirstGenerationModalProps {
   };
 
   /**
+   * ID do usuário (para mostrar saldo atualizado no toast)
+   */
+  userId?: string | null;
+
+  /**
    * Callback após compartilhamento bem-sucedido
    */
   onShareSuccess?: () => void;
@@ -88,6 +93,7 @@ export function FirstGenerationModal({
   open,
   onOpenChange,
   stats,
+  userId = null,
   onShareSuccess,
 }: FirstGenerationModalProps) {
   const [hasShared, setHasShared] = useState(false);
@@ -210,6 +216,7 @@ export function FirstGenerationModal({
               celebratory={true}
               label="Compartilhar Primeira Geração"
               showCredits={true}
+              userId={userId}
               onShareSuccess={handleShareSuccess}
               className="w-full"
             />

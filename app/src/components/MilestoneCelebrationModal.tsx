@@ -56,6 +56,11 @@ export interface MilestoneCelebrationModalProps {
   currentTotal: number;
 
   /**
+   * ID do usuário (para mostrar saldo atualizado no toast)
+   */
+  userId?: string | null;
+
+  /**
    * Callback após compartilhamento bem-sucedido
    */
   onShareSuccess?: () => void;
@@ -69,6 +74,7 @@ export function MilestoneCelebrationModal({
   onOpenChange,
   milestone,
   currentTotal,
+  userId = null,
   onShareSuccess,
 }: MilestoneCelebrationModalProps) {
   const [hasShared, setHasShared] = useState(false);
@@ -237,6 +243,7 @@ export function MilestoneCelebrationModal({
               celebratory={milestone.level === 50}
               label="Compartilhar Conquista"
               showCredits={true}
+              userId={userId}
               onShareSuccess={handleShareSuccess}
               className="w-full"
             />

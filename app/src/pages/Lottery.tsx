@@ -298,6 +298,7 @@ const Lottery = () => {
               accuracy: analysisResult.calculatedAccuracy,
               lotteryName: lottery.name,
             }}
+            userId={user?.id || null}
           />
         )}
       </div>

@@ -85,7 +85,7 @@ export const ResultsDisplay = ({
       </div>
 
       {/* High Score Banner - Tier S moment (75%+ accuracy) */}
-      <HighScoreBanner accuracyRate={stats.accuracy} animate={true} />
+      <HighScoreBanner accuracyRate={stats.accuracy} animate={true} userId={userId} />
 
       {/* Como chegamos nestes números */}
       {(stats.hotNumbers || strategy) && (

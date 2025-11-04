@@ -164,8 +164,15 @@ export function ShareButton({
         } else {
           // Desktop: abrir WhatsApp Web
           const whatsappUrl = `https://web.whatsapp.com/send?text=${encodedMessage}`;
-          window.open(whatsappUrl, '_blank');
-          shareSuccessful = true;
+          const windowRef = window.open(whatsappUrl, '_blank');
+
+          // Verificar se window.open foi bloqueado
+          if (windowRef === null) {
+            console.warn('⚠️ WhatsApp Web foi bloqueado pelo navegador');
+            shareSuccessful = false;
+          } else {
+            shareSuccessful = true;
+          }
         }
       } catch (error: any) {
         console.error('Erro ao abrir WhatsApp:', error);
@@ -195,8 +202,20 @@ export function ShareButton({
 
       if (!shareSuccessful) {
         setIsSharing(false);
+        toast({
+          variant: 'destructive',
+          title: 'Não foi possível abrir o WhatsApp',
+          description: 'Por favor, permita popups neste site ou use o botão de compartilhar do navegador.',
+        });
         return;
       }
+
+      // Toast temporário para orientar usuário
+      toast({
+        title: 'Abrindo WhatsApp...',
+        description: 'Se não abriu automaticamente, verifique se uma nova aba foi aberta.',
+        duration: 3000,
+      });
 
       // Registrar share e calcular créditos
       const credits = recordShare(context, data);

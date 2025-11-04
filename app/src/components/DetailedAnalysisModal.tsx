@@ -52,6 +52,11 @@ export interface DetailedAnalysisModalProps {
    * Nome da loteria
    */
   lotteryName: string;
+
+  /**
+   * ID do usuário (para mostrar saldo atualizado no toast)
+   */
+  userId?: string | null;
 }
 
 /**
@@ -63,6 +68,7 @@ export function DetailedAnalysisModal({
   analysisResult,
   selectedNumbers,
   lotteryName,
+  userId = null,
 }: DetailedAnalysisModalProps) {
   const { score, detailedAnalysis, hotCount, coldCount, balancedCount, evenOddDistribution, comparisonWithAverage } = analysisResult;
 
@@ -266,6 +272,7 @@ export function DetailedAnalysisModal({
             size="default"
             label="Compartilhar Análise"
             showCredits={true}
+            userId={userId}
             className="w-full"
           />
         </div>

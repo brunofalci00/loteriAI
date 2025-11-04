@@ -30,12 +30,14 @@ import { SavedGameCard } from '@/components/SavedGameCard';
 import { MilestoneCelebrationModal } from '@/components/MilestoneCelebrationModal';
 import { checkNewMilestone, type MilestoneData } from '@/services/milestoneService';
 import { useSavedGames, useSavedGamesStats } from '@/hooks/useSavedGames';
+import { useAuth } from '@/contexts/AuthContext';
 
 /**
  * Página de Jogos Salvos
  */
 export default function SavedGamesPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('all');
   const [sourceFilter, setSourceFilter] = useState<string>('all'); // 'all' | 'ai_generated' | 'manual_created'
   const [playedFilter, setPlayedFilter] = useState<string>('all'); // 'all' | 'played' | 'not_played'
@@ -309,6 +311,7 @@ export default function SavedGamesPage() {
           onOpenChange={setMilestoneModalOpen}
           milestone={currentMilestone}
           currentTotal={stats?.totalSaved || 0}
+          userId={user?.id || null}
         />
       </div>
     </div>

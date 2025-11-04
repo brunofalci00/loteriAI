@@ -29,12 +29,17 @@ export interface HighScoreBannerProps {
    * Mostrar animação de entrada
    */
   animate?: boolean;
+
+  /**
+   * ID do usuário (para mostrar saldo atualizado no toast)
+   */
+  userId?: string | null;
 }
 
 /**
  * Banner para taxas de acerto altas (75%+)
  */
-export function HighScoreBanner({ accuracyRate, animate = true }: HighScoreBannerProps) {
+export function HighScoreBanner({ accuracyRate, animate = true, userId = null }: HighScoreBannerProps) {
   // Só renderizar se accuracy >= 75%
   if (accuracyRate < 75) {
     return null;
@@ -104,6 +109,7 @@ export function HighScoreBanner({ accuracyRate, animate = true }: HighScoreBanne
             celebratory={isExceptional}
             label="Compartilhar Taxa de Acerto"
             showCredits={true}
+            userId={userId}
             className="w-full bg-white hover:bg-gray-100 text-emerald-600"
           />
         </div>

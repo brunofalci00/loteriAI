@@ -163,6 +163,7 @@ export function VariationsGrid({
             celebratory={true}
             label="Compartilhar Variações"
             showCredits={true}
+            userId={userId}
             className="w-full max-w-md mx-auto"
           />
         </div>
