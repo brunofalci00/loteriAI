@@ -7,6 +7,18 @@ export interface ManualGameAnalysisParams {
   selectedNumbers: number[];
 }
 
+export interface Recommendation {
+  type: 'hot_numbers' | 'par_impar' | 'dezena' | 'general';
+  severity: 'success' | 'warning' | 'info';
+  title: string;
+  diagnosis: string;
+  recommendation: string;
+  actionable: boolean;
+  numbersToAdd?: number[];
+  numbersToRemove?: number[];
+  priority: number; // 1-5 (1 = mais importante)
+}
+
 export interface AnalysisResult {
   score: number; // 0-5
   summary: string;
@@ -19,7 +31,8 @@ export interface AnalysisResult {
   };
   dezenaDistribution: Record<string, number>;
   patterns: string[];
-  suggestions: string[];
+  suggestions: string[]; // Deprecated: use recommendations instead
+  recommendations: Recommendation[];
   comparisonWithAverage: string;
   detailedAnalysis: {
     hotNumbers: number[];
@@ -27,6 +40,9 @@ export interface AnalysisResult {
     balancedNumbers: number[];
     consecutiveSequences: number[][];
     multiplesOf5: number[];
+    availableHotNumbers?: number[];
+    suggestedEvenNumbers?: number[];
+    suggestedOddNumbers?: number[];
     [key: string]: any;
   };
 }
@@ -189,7 +205,7 @@ export class ManualGameAnalysisService {
         score
       });
 
-      // Gerar sugestões de melhoria
+      // Gerar sugestões de melhoria (deprecated)
       const suggestions = this.generateSuggestions({
         hotCount,
         coldCount,
@@ -200,6 +216,31 @@ export class ManualGameAnalysisService {
         multiplesOf5,
         expectedCount
       });
+
+      // Gerar recomendações inteligentes estruturadas
+      const recommendations = this.generateRecommendations({
+        selectedNumbers: params.selectedNumbers,
+        hotNumbers,
+        coldNumbers,
+        balancedNumbers: classifiedNumbers.balanced,
+        hotCount,
+        coldCount,
+        balancedCount,
+        evenCount,
+        oddCount,
+        dezenaDistribution,
+        lotteryConfig,
+        expectedCount
+      });
+
+      // Números disponíveis para sugestões
+      const allNumbers = Array.from(
+        { length: lotteryConfig.maxNumber - lotteryConfig.minNumber + 1 },
+        (_, i) => i + lotteryConfig.minNumber
+      );
+      const availableHotNumbers = hotNumbers.filter(n => !params.selectedNumbers.includes(n));
+      const suggestedEvenNumbers = allNumbers.filter(n => !params.selectedNumbers.includes(n) && n % 2 === 0).slice(0, 10);
+      const suggestedOddNumbers = allNumbers.filter(n => !params.selectedNumbers.includes(n) && n % 2 === 1).slice(0, 10);
 
       // Comparar com média histórica (simulado) - Score agora é 0-5
       const comparisonWithAverage = score >= 3.5 ? 'Acima da média'
@@ -215,14 +256,18 @@ export class ManualGameAnalysisService {
         evenOddDistribution: { even: evenCount, odd: oddCount },
         dezenaDistribution,
         patterns,
-        suggestions,
+        suggestions, // Deprecated
+        recommendations, // New structured recommendations
         comparisonWithAverage,
         detailedAnalysis: {
           hotNumbers: classifiedNumbers.hot,
           coldNumbers: classifiedNumbers.cold,
           balancedNumbers: classifiedNumbers.balanced,
           consecutiveSequences,
-          multiplesOf5
+          multiplesOf5,
+          availableHotNumbers,
+          suggestedEvenNumbers,
+          suggestedOddNumbers
         }
       };
 
@@ -332,6 +377,172 @@ export class ManualGameAnalysisService {
     }
 
     return suggestions;
+  }
+
+  /**
+   * Gera recomendações inteligentes estruturadas
+   */
+  private static generateRecommendations(data: {
+    selectedNumbers: number[];
+    hotNumbers: number[];
+    coldNumbers: number[];
+    balancedNumbers: number[];
+    hotCount: number;
+    coldCount: number;
+    balancedCount: number;
+    evenCount: number;
+    oddCount: number;
+    dezenaDistribution: Record<string, number>;
+    lotteryConfig: any;
+    expectedCount: number;
+  }): Recommendation[] {
+    const recommendations: Recommendation[] = [];
+    const {
+      selectedNumbers,
+      hotNumbers,
+      coldNumbers,
+      balancedNumbers,
+      hotCount,
+      coldCount,
+      balancedCount,
+      evenCount,
+      oddCount,
+      dezenaDistribution,
+      lotteryConfig,
+      expectedCount
+    } = data;
+
+    // Recomendação 1: Hot Numbers
+    const hotPercentage = (hotCount / selectedNumbers.length) * 100;
+
+    if (hotCount < 3) {
+      // Encontrar hot numbers não selecionados
+      const availableHotNumbers = hotNumbers
+        .filter(n => !selectedNumbers.includes(n))
+        .slice(0, 5);
+
+      const numbersToRemove = selectedNumbers
+        .filter(n => coldNumbers.includes(n))
+        .slice(0, 3 - hotCount);
+
+      recommendations.push({
+        type: 'hot_numbers',
+        severity: 'warning',
+        title: 'Poucos números quentes',
+        diagnosis: `Seu jogo tem apenas ${hotCount} números quentes (${hotPercentage.toFixed(0)}%). O ideal é ter entre 3 e 5 números quentes (20-30% do jogo). Números quentes são aqueles que apareceram com maior frequência nos últimos concursos.`,
+        recommendation: `Adicione ${3 - hotCount} número(s) quente(s) para melhorar suas chances: ${availableHotNumbers.slice(0, 3 - hotCount).map(n => n.toString().padStart(2, '0')).join(', ')}.`,
+        actionable: true,
+        numbersToAdd: availableHotNumbers.slice(0, 3 - hotCount),
+        numbersToRemove: numbersToRemove,
+        priority: 1
+      });
+    } else if (hotCount >= 3 && hotCount <= 5) {
+      recommendations.push({
+        type: 'hot_numbers',
+        severity: 'success',
+        title: 'Excelente quantidade de números quentes',
+        diagnosis: `Seu jogo tem ${hotCount} números quentes (${hotPercentage.toFixed(0)}%), dentro do intervalo ideal de 20-30%.`,
+        recommendation: 'Mantenha essa distribuição! Números quentes têm maior probabilidade estatística baseado em padrões históricos.',
+        actionable: false,
+        priority: 5
+      });
+    } else {
+      // Muitos hot numbers
+      const numbersToRemove = selectedNumbers
+        .filter(n => hotNumbers.includes(n))
+        .slice(0, hotCount - 5);
+
+      const numbersToAdd = balancedNumbers
+        .filter(n => !selectedNumbers.includes(n))
+        .slice(0, hotCount - 5);
+
+      recommendations.push({
+        type: 'hot_numbers',
+        severity: 'warning',
+        title: 'Muitos números quentes',
+        diagnosis: `Seu jogo tem ${hotCount} números quentes (${hotPercentage.toFixed(0)}%). Isso pode reduzir a diversidade do jogo.`,
+        recommendation: `Substitua ${hotCount - 5} número(s) quente(s) por números balanceados para melhor distribuição.`,
+        actionable: true,
+        numbersToRemove: numbersToRemove,
+        numbersToAdd: numbersToAdd,
+        priority: 2
+      });
+    }
+
+    // Recomendação 2: Par/Ímpar
+    const idealEven = Math.floor(expectedCount / 2);
+    const idealOdd = expectedCount - idealEven;
+
+    if (evenCount >= idealEven - 1 && evenCount <= idealEven + 1) {
+      recommendations.push({
+        type: 'par_impar',
+        severity: 'success',
+        title: 'Distribuição Par/Ímpar balanceada',
+        diagnosis: `Seu jogo tem ${evenCount} pares e ${oddCount} ímpares, dentro do intervalo ideal de ${idealEven - 1}-${idealEven + 1} / ${idealOdd - 1}-${idealOdd + 1}.`,
+        recommendation: 'Perfeito! Mantenha essa distribuição equilibrada. Jogos com aproximadamente 50/50 têm melhor desempenho estatístico.',
+        actionable: false,
+        priority: 5
+      });
+    } else {
+      const needMoreEven = evenCount < idealEven - 1;
+      const diff = Math.abs(evenCount - idealEven);
+
+      // Encontrar números sugeridos
+      const allNumbers = Array.from(
+        { length: lotteryConfig.maxNumber - lotteryConfig.minNumber + 1 },
+        (_, i) => i + lotteryConfig.minNumber
+      );
+
+      const suggestedNumbers = allNumbers
+        .filter(n => !selectedNumbers.includes(n))
+        .filter(n => needMoreEven ? n % 2 === 0 : n % 2 === 1)
+        .slice(0, diff);
+
+      const numbersToRemove = selectedNumbers
+        .filter(n => needMoreEven ? n % 2 === 1 : n % 2 === 0)
+        .slice(0, diff);
+
+      recommendations.push({
+        type: 'par_impar',
+        severity: 'warning',
+        title: `Desequilíbrio na distribuição Par/Ímpar`,
+        diagnosis: `Seu jogo tem ${evenCount} pares e ${oddCount} ímpares. O ideal é ter aproximadamente ${idealEven} pares e ${idealOdd} ímpares (50/50).`,
+        recommendation: `Substitua ${diff} número(s) ${needMoreEven ? 'ímpar(es)' : 'par(es)'} por ${needMoreEven ? 'par(es)' : 'ímpar(es)'}: ${suggestedNumbers.map(n => n.toString().padStart(2, '0')).join(', ')}.`,
+        actionable: true,
+        numbersToAdd: suggestedNumbers,
+        numbersToRemove: numbersToRemove,
+        priority: 2
+      });
+    }
+
+    // Recomendação 3: Dezenas
+    const dezenaEntries = Object.entries(dezenaDistribution);
+    if (dezenaEntries.length > 0) {
+      const maxDezena = Math.max(...dezenaEntries.map(([_, count]) => count));
+      const minDezena = Math.min(...dezenaEntries.map(([_, count]) => count));
+
+      if (maxDezena - minDezena >= 4) {
+        // Muito desbalanceado
+        const overloadedDezenaEntry = dezenaEntries.find(([_, count]) => count === maxDezena);
+        const underloadedDezenaEntry = dezenaEntries.find(([_, count]) => count === minDezena);
+
+        const overloadedDezena = overloadedDezenaEntry?.[0] || '';
+        const underloadedDezena = underloadedDezenaEntry?.[0] || '';
+
+        recommendations.push({
+          type: 'dezena',
+          severity: 'info',
+          title: 'Concentração de números em uma dezena',
+          diagnosis: `Você tem ${maxDezena} números na ${overloadedDezena} e apenas ${minDezena} na ${underloadedDezena}.`,
+          recommendation: `Distribua melhor os números entre as dezenas para aumentar cobertura. Substitua alguns números da ${overloadedDezena} por números da ${underloadedDezena}.`,
+          actionable: true,
+          priority: 3
+        });
+      }
+    }
+
+    // Ordenar por prioridade
+    return recommendations.sort((a, b) => a.priority - b.priority);
   }
 
   /**

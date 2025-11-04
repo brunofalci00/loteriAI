@@ -9,7 +9,6 @@ import { Step1_LotterySelector } from "@/components/Step1_LotterySelector";
 import { Step2_ContestSelector } from "@/components/Step2_ContestSelector";
 import { Step3_NumberGrid } from "@/components/Step3_NumberGrid";
 import { Step4_AnalysisResult } from "@/components/Step4_AnalysisResult";
-import { AnalysisDetailsModal } from "@/components/AnalysisDetailsModal";
 import { VariationsGrid } from "@/components/VariationsGrid";
 import { WelcomeGuideModal, GuideStep } from "@/components/WelcomeGuideModal";
 import { Header } from "@/components/Header";
@@ -83,8 +82,6 @@ const ManualGameCreationPage = () => {
     canProceedToStep3,
     canProceedToStep4,
   } = useManualGameCreation();
-
-  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
 
   const guide = useWelcomeGuide();
 
@@ -239,11 +236,12 @@ const ManualGameCreationPage = () => {
                     selectedNumbers={state.selectedNumbers}
                     analysisResult={state.analysisResult}
                     userId={user?.id || null}
-                    onViewDetails={() => setDetailsModalOpen(true)}
                     onGenerateVariations={handleGenerateVariations}
                     onEdit={handleEditNumbers}
                     onReset={resetStepper}
                     isGeneratingVariations={generateVariations.isPending}
+                    onOptimize={() => optimizeGame.mutate()}
+                    isOptimizing={optimizeGame.isPending}
                   />
 
                   {/* Variations Grid */}
@@ -268,17 +266,6 @@ const ManualGameCreationPage = () => {
           )}
         </div>
       </div>
-
-      {/* Analysis Details Modal */}
-      {state.analysisResult && (
-        <AnalysisDetailsModal
-          open={detailsModalOpen}
-          onOpenChange={setDetailsModalOpen}
-          analysisResult={state.analysisResult}
-          onOptimize={() => optimizeGame.mutate()}
-          isOptimizing={optimizeGame.isPending}
-        />
-      )}
 
       {/* Welcome Guide Modal */}
       <WelcomeGuideModal

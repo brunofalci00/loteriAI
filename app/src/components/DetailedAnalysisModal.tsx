@@ -23,9 +23,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { ShareButton } from '@/components/ShareButton';
-import { Star, Flame, Snowflake, Scale, TrendingUp } from 'lucide-react';
-import type { AnalysisResult } from '@/services/manualGameAnalysisService';
+import { DiagnosticSection } from '@/components/DiagnosticSection';
+import { Star, Flame, Snowflake, Scale, TrendingUp, Sparkles, Loader2, CheckCircle, AlertCircle, Info } from 'lucide-react';
+import type { AnalysisResult, Recommendation } from '@/services/manualGameAnalysisService';
 
 export interface DetailedAnalysisModalProps {
   /**
@@ -57,6 +59,16 @@ export interface DetailedAnalysisModalProps {
    * ID do usuário (para mostrar saldo atualizado no toast)
    */
   userId?: string | null;
+
+  /**
+   * Callback para otimizar jogo com IA
+   */
+  onOptimize?: () => void;
+
+  /**
+   * Estado de loading durante otimização
+   */
+  isOptimizing?: boolean;
 }
 
 /**
@@ -69,6 +81,8 @@ export function DetailedAnalysisModal({
   selectedNumbers,
   lotteryName,
   userId = null,
+  onOptimize,
+  isOptimizing = false,
 }: DetailedAnalysisModalProps) {
   const { score, detailedAnalysis, hotCount, coldCount, balancedCount, evenOddDistribution, comparisonWithAverage } = analysisResult;
 
@@ -152,16 +166,32 @@ export function DetailedAnalysisModal({
               </div>
               <div className="flex flex-wrap gap-2">
                 {hotNumbers.map((num) => (
-                  <span
+                  <div
                     key={num}
-                    className="px-3 py-2 rounded-lg text-sm font-semibold bg-orange-500 text-white"
+                    className="relative px-3 py-2 rounded-lg text-sm font-semibold bg-orange-500 text-white ring-2 ring-orange-500/50"
                   >
                     {num.toString().padStart(2, '0')}
-                  </span>
+                    <Flame className="absolute -top-1 -right-1 h-3 w-3 text-orange-300" />
+                  </div>
                 ))}
               </div>
             </div>
           )}
+
+          {/* Diagnóstico de Números Quentes */}
+          <DiagnosticSection
+            title="Análise de Números Quentes"
+            status={hotCount >= 3 && hotCount <= 5 ? 'success' : 'warning'}
+            diagnosis={`Seu jogo tem ${hotCount} números quentes (${((hotCount / selectedNumbers.length) * 100).toFixed(0)}%). Números quentes são aqueles que aparecem com maior frequência nos últimos concursos analisados.`}
+            recommendation={
+              hotCount >= 3 && hotCount <= 5
+                ? 'Excelente! Você está usando a quantidade ideal de números quentes. Isso aumenta suas chances baseado em padrões históricos.'
+                : hotCount < 3
+                ? `Considere adicionar mais ${3 - hotCount} número(s) quente(s). Números quentes têm maior probabilidade estatística de aparecer.`
+                : `Você tem muitos números quentes. Considere substituir ${hotCount - 5} por números balanceados para melhor diversificação.`
+            }
+            idealRange="3-5 números (20-30%)"
+          />
 
           {/* Números Balanceados */}
           {balancedNumbers.length > 0 && (
@@ -253,7 +283,112 @@ export function DetailedAnalysisModal({
               </div>
             </div>
           </div>
+
+          {/* Diagnóstico Par/Ímpar */}
+          <DiagnosticSection
+            title="Diagnóstico de Distribuição Par/Ímpar"
+            status={
+              evenOddDistribution.even >= Math.floor(selectedNumbers.length / 2) - 1 &&
+              evenOddDistribution.even <= Math.ceil(selectedNumbers.length / 2) + 1
+                ? 'success'
+                : 'warning'
+            }
+            diagnosis={`Seu jogo tem ${evenOddDistribution.even} pares e ${evenOddDistribution.odd} ímpares (${((evenOddDistribution.even / selectedNumbers.length) * 100).toFixed(0)}% / ${((evenOddDistribution.odd / selectedNumbers.length) * 100).toFixed(0)}%).`}
+            recommendation={
+              evenOddDistribution.even >= Math.floor(selectedNumbers.length / 2) - 1 &&
+              evenOddDistribution.even <= Math.ceil(selectedNumbers.length / 2) + 1
+                ? 'Perfeito! Sua distribuição está no intervalo ideal. Jogos balanceados entre pares e ímpares têm melhor desempenho estatístico.'
+                : evenOddDistribution.even < Math.floor(selectedNumbers.length / 2) - 1
+                ? `Adicione mais número(s) par(es) para equilibrar a distribuição. O ideal é ter aproximadamente 50% de cada tipo.`
+                : `Adicione mais número(s) ímpar(es) para equilibrar a distribuição. O ideal é ter aproximadamente 50% de cada tipo.`
+            }
+            idealRange={`${Math.floor(selectedNumbers.length / 2) - 1}-${Math.ceil(selectedNumbers.length / 2) + 1} pares / ${Math.floor(selectedNumbers.length / 2) - 1}-${Math.ceil(selectedNumbers.length / 2) + 1} ímpares`}
+          />
         </div>
+
+        {/* Recomendações Inteligentes */}
+        {analysisResult.recommendations && analysisResult.recommendations.length > 0 && (
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">Recomendações Personalizadas</h3>
+
+            {analysisResult.recommendations.map((rec: Recommendation, index: number) => {
+              const severityConfig = {
+                success: {
+                  bgColor: 'bg-green-50',
+                  borderColor: 'border-green-200',
+                  icon: CheckCircle,
+                  iconColor: 'text-green-600'
+                },
+                warning: {
+                  bgColor: 'bg-yellow-50',
+                  borderColor: 'border-yellow-200',
+                  icon: AlertCircle,
+                  iconColor: 'text-yellow-600'
+                },
+                info: {
+                  bgColor: 'bg-blue-50',
+                  borderColor: 'border-blue-200',
+                  icon: Info,
+                  iconColor: 'text-blue-600'
+                }
+              };
+
+              const config = severityConfig[rec.severity];
+              const Icon = config.icon;
+
+              return (
+                <div
+                  key={index}
+                  className={`${config.bgColor} ${config.borderColor} border rounded-lg p-4 space-y-3`}
+                >
+                  <div className="flex items-start gap-3">
+                    <Icon className={`h-5 w-5 mt-0.5 flex-shrink-0 ${config.iconColor}`} />
+                    <div className="flex-1 space-y-2">
+                      <div>
+                        <h4 className="font-semibold text-sm mb-1">{rec.title}</h4>
+                        <p className="text-xs text-muted-foreground">{rec.diagnosis}</p>
+                      </div>
+
+                      <div className="bg-white/50 rounded p-2">
+                        <p className="text-xs text-muted-foreground mb-1">💡 Recomendação:</p>
+                        <p className="text-sm font-medium">{rec.recommendation}</p>
+                      </div>
+
+                      {rec.actionable && rec.numbersToAdd && rec.numbersToRemove && (
+                        <div className="flex flex-col gap-2 text-xs">
+                          {rec.numbersToRemove.length > 0 && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-red-600 font-medium">❌ Remover:</span>
+                              <div className="flex flex-wrap gap-1">
+                                {rec.numbersToRemove.map(n => (
+                                  <span key={n} className="px-2 py-0.5 rounded bg-red-100 text-red-700 font-medium">
+                                    {n.toString().padStart(2, '0')}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {rec.numbersToAdd.length > 0 && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-green-600 font-medium">✅ Adicionar:</span>
+                              <div className="flex flex-wrap gap-1">
+                                {rec.numbersToAdd.map(n => (
+                                  <span key={n} className="px-2 py-0.5 rounded bg-green-100 text-green-700 font-medium">
+                                    {n.toString().padStart(2, '0')}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* Share CTA */}
         <div className="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 rounded-lg p-4 space-y-3">
@@ -276,6 +411,39 @@ export function DetailedAnalysisModal({
             className="w-full"
           />
         </div>
+
+        {/* Botão Otimizar com IA */}
+        {onOptimize && (
+          <div className="bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-lg p-4 space-y-3">
+            <div className="text-center">
+              <p className="text-sm font-medium">
+                Quer melhorar seu jogo?
+              </p>
+              <p className="text-xs text-muted-foreground">
+                A IA pode otimizar seus números aplicando as recomendações acima
+              </p>
+            </div>
+
+            <Button
+              onClick={onOptimize}
+              disabled={isOptimizing}
+              className="w-full"
+              variant="default"
+            >
+              {isOptimizing ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Otimizando...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Otimizar com IA
+                </>
+              )}
+            </Button>
+          </div>
+        )}
 
         {/* Footer Info */}
         <div className="text-xs text-center text-muted-foreground pt-2 border-t">

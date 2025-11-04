@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, Heart, RefreshCw, Edit, PlusCircle, Eye, Loader2, AlertCircle } from "lucide-react";
+import { Star, Heart, RefreshCw, Edit, PlusCircle, Eye, Loader2, AlertCircle, Flame } from "lucide-react";
 import type { AnalysisResult } from "@/services/manualGameAnalysisService";
 import { SaveToggleButton } from "@/components/SaveToggleButton";
 import { ShareButton } from "@/components/ShareButton";
@@ -17,11 +17,12 @@ interface Step4_AnalysisResultProps {
   selectedNumbers: number[];
   analysisResult: AnalysisResult;
   userId: string | null;
-  onViewDetails: () => void;
   onGenerateVariations: () => void;
   onEdit: () => void;
   onReset: () => void;
   isGeneratingVariations?: boolean;
+  onOptimize?: () => void;
+  isOptimizing?: boolean;
 }
 
 export function Step4_AnalysisResult({
@@ -30,11 +31,12 @@ export function Step4_AnalysisResult({
   selectedNumbers,
   analysisResult,
   userId,
-  onViewDetails,
   onGenerateVariations,
   onEdit,
   onReset,
-  isGeneratingVariations = false
+  isGeneratingVariations = false,
+  onOptimize,
+  isOptimizing = false
 }: Step4_AnalysisResultProps) {
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -109,16 +111,20 @@ export function Step4_AnalysisResult({
             {selectedNumbers.map((num) => {
               const isHot = analysisResult.detailedAnalysis.hotNumbers.includes(num);
               return (
-                <span
+                <div
                   key={num}
-                  className={`px-4 py-2 rounded-lg text-base font-semibold ${
-                    isHot
-                      ? 'bg-orange-500 text-white'
+                  className={`
+                    relative flex h-10 w-10 items-center justify-center rounded-lg
+                    text-base font-semibold shadow-glow
+                    ${isHot
+                      ? 'bg-orange-500 text-white ring-2 ring-orange-500/50'
                       : 'bg-primary text-primary-foreground'
-                  }`}
+                    }
+                  `}
                 >
                   {num.toString().padStart(2, '0')}
-                </span>
+                  {isHot && <Flame className="absolute -top-1 -right-1 h-3 w-3 text-orange-300" />}
+                </div>
               );
             })}
           </div>
@@ -287,6 +293,11 @@ export function Step4_AnalysisResult({
         selectedNumbers={selectedNumbers}
         lotteryName={lotteryNames[lotteryType]}
         userId={userId}
+        onOptimize={onOptimize ? () => {
+          setDetailsModalOpen(false);
+          onOptimize();
+        } : undefined}
+        isOptimizing={isOptimizing}
       />
 
       {/* Consume Credits Confirmation Modal */}
