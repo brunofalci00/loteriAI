@@ -35,9 +35,10 @@ export interface AnalysisResult {
   recommendations: Recommendation[];
   comparisonWithAverage: string;
   detailedAnalysis: {
-    hotNumbers: number[];
-    coldNumbers: number[];
-    balancedNumbers: number[];
+    hotNumbers: number[]; // Números selecionados que são quentes
+    coldNumbers: number[]; // Números selecionados que são frios
+    balancedNumbers: number[]; // Números selecionados que são balanceados
+    allHotNumbers: number[]; // TODOS os números quentes do histórico
     consecutiveSequences: number[][];
     multiplesOf5: number[];
     availableHotNumbers?: number[];
@@ -260,9 +261,10 @@ export class ManualGameAnalysisService {
         recommendations, // New structured recommendations
         comparisonWithAverage,
         detailedAnalysis: {
-          hotNumbers: classifiedNumbers.hot,
+          hotNumbers: classifiedNumbers.hot, // Números selecionados que são quentes
           coldNumbers: classifiedNumbers.cold,
           balancedNumbers: classifiedNumbers.balanced,
+          allHotNumbers: hotNumbers, // TODOS os números quentes do histórico
           consecutiveSequences,
           multiplesOf5,
           availableHotNumbers,

@@ -252,7 +252,7 @@ export function DetailedAnalysisModal({
                 {evenNumbers.map((num) => (
                   <span
                     key={num}
-                    className="px-2 py-1 rounded text-xs font-medium bg-primary/20 text-primary"
+                    className="px-2 py-1 rounded text-xs font-medium bg-primary/30 text-white border border-primary/50"
                   >
                     {num.toString().padStart(2, '0')}
                   </span>
@@ -269,7 +269,7 @@ export function DetailedAnalysisModal({
                 {oddNumbers.map((num) => (
                   <span
                     key={num}
-                    className="px-2 py-1 rounded text-xs font-medium bg-primary/20 text-primary"
+                    className="px-2 py-1 rounded text-xs font-medium bg-primary/30 text-white border border-primary/50"
                   >
                     {num.toString().padStart(2, '0')}
                   </span>
@@ -301,17 +301,17 @@ export function DetailedAnalysisModal({
         </div>
 
         {/* Números Quentes Disponíveis */}
-        {detailedAnalysis.hotNumbers && detailedAnalysis.hotNumbers.length > 0 && (
+        {detailedAnalysis.allHotNumbers && detailedAnalysis.allHotNumbers.length > 0 && (
           <div className="bg-orange-500/10 dark:bg-orange-500/20 border-2 border-orange-500/30 rounded-lg p-4 space-y-3">
             <div className="flex items-center gap-2">
               <Flame className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-              <h3 className="text-lg font-semibold">Números Quentes Disponíveis</h3>
+              <h3 className="text-lg font-semibold text-foreground">Números Quentes Disponíveis</h3>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground opacity-80">
               Estes são os números mais frequentes nos últimos concursos. Use-os para melhorar suas chances:
             </p>
             <div className="flex flex-wrap gap-2">
-              {detailedAnalysis.hotNumbers.map((num: number) => {
+              {detailedAnalysis.allHotNumbers.map((num: number) => {
                 const isSelected = selectedNumbers.includes(num);
                 return (
                   <div
