@@ -25,6 +25,7 @@ interface UserData {
   client_user_agent?: string;
   fbc?: string;       // Facebook click ID cookie
   fbp?: string;       // Facebook browser ID cookie
+  fbi?: string;       // Facebook IP cookie (stored client IP)
 }
 
 interface CustomData {
@@ -130,6 +131,11 @@ function normalizeUserData(userData: Partial<UserData>): UserData {
     normalized.fbp = userData.fbp;
   }
 
+  // _fbi (Facebook IP cookie) should NOT be hashed
+  if (userData.fbi) {
+    normalized.fbi = userData.fbi;
+  }
+
   return normalized;
 }
 
@@ -191,8 +197,14 @@ serve(async (req) => {
     }
 
     // Get client info from headers
-    const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip');
+    const headerIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip');
     const clientUserAgent = req.headers.get('user-agent');
+
+    // Priorizar IP do cookie _fbi (já capturado no cliente) sobre header IP
+    // Seguindo recomendação Meta: usar melhor IP disponível
+    const clientIp = user_data.fbi || headerIp;
+
+    console.log('[facebook-capi] 📍 IP Source:', user_data.fbi ? '_fbi cookie' : 'headers', '| IP:', clientIp);
 
     // Normalize and hash user data
     const normalizedUserData = normalizeUserData({
