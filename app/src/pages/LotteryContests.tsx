@@ -95,10 +95,20 @@ const LotteryContests = () => {
         </div>
 
         {error && (
-          <div className="rounded-lg border border-destructive bg-destructive/10 p-6 text-center">
-            <p className="text-destructive">
-              Erro ao carregar concursos. Por favor, tente novamente.
+          <div className="rounded-lg border border-destructive bg-destructive/10 p-6 text-center space-y-3">
+            <p className="text-destructive font-semibold">
+              Erro ao carregar concursos
             </p>
+            <p className="text-sm text-muted-foreground">
+              {error.message || 'A API da Caixa pode estar temporariamente indisponível. Por favor, tente novamente em alguns minutos.'}
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => window.location.reload()}
+              className="mt-3"
+            >
+              Tentar Novamente
+            </Button>
           </div>
         )}
 

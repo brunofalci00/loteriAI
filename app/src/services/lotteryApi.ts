@@ -44,7 +44,7 @@ export const fetchLotteryDrawInfo = async (
   lotteryType: string
 ): Promise<LotteryDrawInfo> => {
   const endpoint = lotteryEndpoints[lotteryType];
-  
+
   if (!endpoint) {
     throw new Error(`Tipo de loteria não suportado: ${lotteryType}`);
   }
@@ -60,6 +60,13 @@ export const fetchLotteryDrawInfo = async (
     if (!response.ok) {
       console.warn(`API retornou status ${response.status} para ${lotteryType}`);
       throw new Error(`Erro ao buscar dados: ${response.status}`);
+    }
+
+    // Verificar se é JSON válido
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      console.error(`API retornou tipo inválido: ${contentType}`);
+      throw new Error('API da Caixa temporariamente indisponível');
     }
 
     const data: LotteryApiResponse = await response.json();
