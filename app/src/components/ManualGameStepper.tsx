@@ -17,7 +17,7 @@ const steps = [
 export function ManualGameStepper({ currentStep, onStepClick }: ManualGameStepperProps) {
   return (
     <div className="w-full py-8">
-      <div className="flex items-center justify-between max-w-4xl mx-auto">
+      <div className="flex items-center justify-between max-w-4xl mx-auto px-4 sm:px-0">
         {steps.map((step, index) => {
           const isCompleted = step.number < currentStep;
           const isCurrent = step.number === currentStep;
