@@ -1,6 +1,7 @@
 import { LotteryDrawInfo, LotteryApiResponse } from "@/types/lottery";
 
 const API_BASE_URL = "https://servicebus2.caixa.gov.br/portaldeloterias/api";
+const FALLBACK_API_URL = "https://api.guidi.dev.br/loteria";
 
 const lotteryEndpoints: Record<string, string> = {
   "mega-sena": "megasena",
@@ -40,6 +41,50 @@ export const formatBrazilianDate = (dateString: string): Date => {
   return date;
 };
 
+/**
+ * Busca dados da API de fallback (Guidi)
+ */
+const fetchFromFallbackAPI = async (
+  lotteryType: string
+): Promise<LotteryDrawInfo> => {
+  const endpoint = lotteryEndpoints[lotteryType];
+
+  console.log(`🔄 Tentando API de fallback para ${lotteryType}...`);
+
+  const response = await fetch(`${FALLBACK_API_URL}/${endpoint}/ultimo`, {
+    method: "GET",
+    headers: {
+      "Accept": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Fallback API retornou status ${response.status}`);
+  }
+
+  const data: LotteryApiResponse = await response.json();
+
+  // Validar dados críticos
+  if (!data || typeof data.numero === 'undefined') {
+    throw new Error('Dados da fallback API inválidos');
+  }
+
+  // Loteria Federal tem prêmio fixo (R$ 500 mil para 1º prêmio), não acumula
+  const estimatedPrize = lotteryType === "federal"
+    ? 500000
+    : (data.valorEstimadoProximoConcurso || 0);
+
+  console.log(`✅ Dados obtidos da API de fallback para ${lotteryType}`);
+
+  return {
+    nextDrawNumber: data.numero + 1,
+    nextDrawDate: formatBrazilianDate(data.dataProximoConcurso),
+    estimatedPrize,
+    lastDrawDate: formatBrazilianDate(data.dataApuracao),
+    lastDrawNumbers: data.listaDezenas?.map(n => parseInt(n)),
+  };
+};
+
 export const fetchLotteryDrawInfo = async (
   lotteryType: string
 ): Promise<LotteryDrawInfo> => {
@@ -49,6 +94,7 @@ export const fetchLotteryDrawInfo = async (
     throw new Error(`Tipo de loteria não suportado: ${lotteryType}`);
   }
 
+  // Tentar API principal da Caixa primeiro
   try {
     const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
       method: "GET",
@@ -58,29 +104,31 @@ export const fetchLotteryDrawInfo = async (
     });
 
     if (!response.ok) {
-      console.warn(`API retornou status ${response.status} para ${lotteryType}`);
+      console.warn(`API Caixa retornou status ${response.status} para ${lotteryType}`);
       throw new Error(`Erro ao buscar dados: ${response.status}`);
     }
 
     // Verificar se é JSON válido
     const contentType = response.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
-      console.error(`API retornou tipo inválido: ${contentType}`);
-      throw new Error('API da Caixa temporariamente indisponível');
+      console.warn(`API Caixa retornou tipo inválido: ${contentType}`);
+      throw new Error('API da Caixa retornou formato inválido');
     }
 
     const data: LotteryApiResponse = await response.json();
 
     // Validar dados críticos
     if (!data || typeof data.numero === 'undefined') {
-      console.warn(`Dados inválidos recebidos para ${lotteryType}:`, data);
+      console.warn(`Dados inválidos da API Caixa para ${lotteryType}`);
       throw new Error('Dados da API inválidos');
     }
 
     // Loteria Federal tem prêmio fixo (R$ 500 mil para 1º prêmio), não acumula
-    const estimatedPrize = lotteryType === "federal" 
-      ? 500000 
+    const estimatedPrize = lotteryType === "federal"
+      ? 500000
       : (data.valorEstimadoProximoConcurso || 0);
+
+    console.log(`✅ Dados obtidos da API oficial Caixa para ${lotteryType}`);
 
     return {
       nextDrawNumber: data.numero + 1,
@@ -90,7 +138,14 @@ export const fetchLotteryDrawInfo = async (
       lastDrawNumbers: data.listaDezenas?.map(n => parseInt(n)),
     };
   } catch (error) {
-    console.error(`Erro ao buscar informações da ${lotteryType}:`, error);
-    throw error;
+    console.warn(`❌ API Caixa falhou para ${lotteryType}, tentando fallback...`, error);
+
+    // Se API principal falhou, tentar fallback
+    try {
+      return await fetchFromFallbackAPI(lotteryType);
+    } catch (fallbackError) {
+      console.error(`❌ Fallback API também falhou para ${lotteryType}:`, fallbackError);
+      throw new Error('Todas as APIs de loteria estão temporariamente indisponíveis');
+    }
   }
 };
