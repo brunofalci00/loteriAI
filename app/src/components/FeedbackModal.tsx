@@ -123,9 +123,9 @@ export function FeedbackModal({
               onOpenChange(false);
               navigate('/criar-jogo');
             }}
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-green-600 hover:bg-green-700 text-xs sm:text-sm whitespace-nowrap"
           >
-            <Zap className="h-4 w-4 mr-1" />
+            <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5" />
             Usar créditos
           </Button>
         ) : undefined;
