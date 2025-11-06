@@ -1,0 +1,7 @@
+project_id = "aaqthgqsuhyagsrlnyqk"
+
+[functions.lottery-proxy]
+verify_jwt = false
+
+[functions.hubla-webhook]
+verify_jwt = false

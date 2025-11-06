@@ -1,0 +1,309 @@
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+
+import { LoadingAnalysis } from "@/components/LoadingAnalysis";
+import { ResultsDisplay } from "@/components/ResultsDisplay";
+import { NextDrawInfo } from "@/components/NextDrawInfo";
+import { RegenerateButton } from "@/components/RegenerateButton";
+import { GenerationSelector } from "@/components/GenerationSelector";
+import { GenerationHistoryModal } from "@/components/GenerationHistoryModal";
+import { FirstGenerationModal, isFirstGeneration } from "@/components/FirstGenerationModal";
+import { CreditsDisplay } from "@/components/CreditsDisplay";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, WifiOff, Archive } from "lucide-react";
+import { toast } from "sonner";
+import { useLotteryAnalysis } from "@/hooks/useLotteryAnalysis";
+import { useAuth } from "@/contexts/AuthContext";
+import { formatShortDate } from "@/utils/formatters";
+import { useActiveGeneration } from "@/hooks/useGenerationHistory";
+
+const lotteryData: Record<string, { name: string; maxNumber: number; numbersPerGame: number }> = {
+  "mega-sena": { name: "Mega-Sena", maxNumber: 60, numbersPerGame: 6 },
+  "quina": { name: "Quina", maxNumber: 80, numbersPerGame: 5 },
+  "lotofacil": { name: "Lotofácil", maxNumber: 25, numbersPerGame: 15 },
+  "lotomania": { name: "Lotomania", maxNumber: 100, numbersPerGame: 50 },
+  "dupla-sena": { name: "Dupla Sena", maxNumber: 50, numbersPerGame: 6 },
+  "timemania": { name: "Timemania", maxNumber: 80, numbersPerGame: 10 },
+  "dia-de-sorte": { name: "Dia de Sorte", maxNumber: 31, numbersPerGame: 7 },
+  "mais-milionaria": { name: "+Milionária", maxNumber: 50, numbersPerGame: 6 },
+};
+
+const Lottery = () => {
+  const { type, contestNumber } = useParams<{ type: string; contestNumber: string }>();
+  const navigate = useNavigate();
+  const [showLoading, setShowLoading] = useState(true);
+  const [showResults, setShowResults] = useState(false);
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [firstGenModalOpen, setFirstGenModalOpen] = useState(false);
+  const { user } = useAuth();
+
+  const lottery = type ? lotteryData[type] : null;
+  const parsedContestNumber = parseInt(contestNumber || "0");
+
+  // Iniciar análise real
+  const {
+    data: analysisResult,
+    isLoading: isAnalyzing,
+    error: analysisError
+  } = useLotteryAnalysis(
+    type || "",
+    lottery?.maxNumber || 60,
+    lottery?.numbersPerGame || 6,
+    parsedContestNumber,
+    user?.id || null,
+    !!lottery // só habilita se loteria existe
+  );
+
+  // Buscar geração ativa (se existir)
+  const { data: activeGeneration } = useActiveGeneration(
+    user?.id,
+    type || "",
+    parsedContestNumber,
+    showResults && !!user?.id
+  );
+
+  // Usar combinações da geração ativa se disponível, senão usar da análise original
+  const displayedCombinations = activeGeneration?.generated_numbers || analysisResult?.combinations || [];
+  const displayedHotNumbers = activeGeneration?.hot_numbers || analysisResult?.statistics.hotNumbers || [];
+
+  if (!lottery) {
+    return (
+      <div className="min-h-screen">
+        <div className="container mx-auto px-4 pt-8">
+          <p className="text-center text-muted-foreground">Loteria não encontrada</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Tratamento de erro
+  useEffect(() => {
+    if (analysisError) {
+      toast.error("Erro ao analisar dados. Tente novamente.");
+      console.error("Erro na análise:", analysisError);
+    }
+  }, [analysisError]);
+
+  const handleLoadingComplete = () => {
+    setShowLoading(false);
+    setShowResults(true);
+
+    // Verificar se é a primeira geração (Tier A moment)
+    if (isFirstGeneration()) {
+      // Delay de 1s para usuário ver os resultados antes do modal
+      setTimeout(() => {
+        setFirstGenModalOpen(true);
+      }, 1000);
+    }
+  };
+
+  const handleExport = () => {
+    if (!analysisResult) return;
+
+    const { combinations, statistics, strategy, confidence, calculatedAccuracy } = analysisResult;
+
+    let content = `=== LotterAI - ${lottery.name} ===\n\n`;
+    content += `📋 INFORMAÇÕES DA ANÁLISE\n`;
+    content += `Gerado em: ${new Date().toLocaleString('pt-BR')}\n`;
+    content += `Concursos analisados: ${statistics.totalDrawsAnalyzed}\n`;
+    content += `Período: ${formatShortDate(statistics.periodStart)} - ${formatShortDate(statistics.periodEnd)}\n`;
+    content += `Taxa de acerto estimada: ${calculatedAccuracy}%\n`;
+    content += `Confiabilidade: ${confidence.toUpperCase()}\n`;
+    content += `Estratégia: ${strategy.description}\n\n`;
+
+    content += `📊 ESTATÍSTICAS\n`;
+    content += `Números quentes: ${statistics.hotNumbers.map(n => n.toString().padStart(2, '0')).join(', ')}\n`;
+    const totalNumbers = statistics.pairOddRatio.pairs + statistics.pairOddRatio.odds;
+    const pairPercent = ((statistics.pairOddRatio.pairs / totalNumbers) * 100).toFixed(1);
+    const oddPercent = ((statistics.pairOddRatio.odds / totalNumbers) * 100).toFixed(1);
+    content += `Proporção pares/ímpares: ${pairPercent}% / ${oddPercent}%\n\n`;
+
+    content += `🎲 JOGOS SUGERIDOS (${combinations.length})\n`;
+    combinations.forEach((combo, index) => {
+      const numbersFormatted = combo.map(n => {
+        const numStr = n.toString().padStart(2, '0');
+        if (statistics.hotNumbers.includes(n)) return `${numStr}♨`;
+        return numStr;
+      }).join(' - ');
+      content += `Jogo ${index + 1}: ${numbersFormatted}\n`;
+    });
+
+    content += `\nLegenda: ♨ = Número quente (alta frequência histórica)\n`;
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `lotterai-${type}-${Date.now()}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+
+    toast.success("Arquivo exportado com sucesso!");
+  };
+
+  return (
+    <div className="min-h-screen">
+      <div className="container mx-auto px-4 pt-8 pb-12">
+        <Button
+          variant="ghost"
+          onClick={() => navigate(`/lottery/${type}/contests`)}
+          className="mb-6"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar
+        </Button>
+
+        <div className="mb-8">
+          <h1 className="mb-2 text-2xl font-bold">
+            {lottery.name} - Concurso {contestNumber || "N/A"}
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            {showLoading ? "Análise inteligente em andamento..." : "Análise concluída"}
+          </p>
+        </div>
+
+        <div className="mb-8">
+          <NextDrawInfo lotteryType={type} lotteryName={lottery.name} />
+        </div>
+
+        <div className="mb-6 space-y-4">
+          {analysisResult?.fromCache && (
+            <Alert className="border-primary/50 bg-primary/10">
+              <Archive className="h-4 w-4 text-primary" />
+              <AlertDescription className="flex items-center gap-2">
+                <span>Análise carregada do histórico</span>
+                <Badge variant="outline" className="ml-2">
+                  Instantâneo
+                </Badge>
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          {analysisResult?.warning && (
+            <Alert className="border-yellow-500/50 bg-yellow-500/10">
+              <WifiOff className="h-4 w-4 text-yellow-500" />
+              <AlertTitle className="text-yellow-500">Modo Offline</AlertTitle>
+              <AlertDescription className="text-yellow-600">
+                {analysisResult.warning}
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
+
+        {showLoading ? (
+          <LoadingAnalysis
+            onComplete={handleLoadingComplete}
+            isAnalyzing={isAnalyzing}
+          />
+        ) : showResults && analysisResult ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Generation Selector */}
+              {user?.id && (
+                <GenerationSelector
+                  userId={user.id}
+                  lotteryType={type || ""}
+                  contestNumber={parsedContestNumber}
+                  onOpenHistory={() => setHistoryModalOpen(true)}
+                />
+              )}
+
+              {/* Regenerate Button */}
+              {user?.id && analysisResult.statistics && (
+                <div className="flex gap-3">
+                  <RegenerateButton
+                    userId={user.id}
+                    lotteryType={type || ""}
+                    contestNumber={parsedContestNumber}
+                    statistics={analysisResult.statistics}
+                    numbersPerGame={lottery.numbersPerGame}
+                    maxNumber={lottery.maxNumber}
+                    numberOfGames={10}
+                    variant="hero"
+                    showCreditsCount
+                  />
+                  <Button variant="outline" onClick={handleExport}>
+                    Exportar Jogos
+                  </Button>
+                </div>
+              )}
+
+              {/* Results Display */}
+              <div className="relative">
+                {/* Badge "GRATUITO" aparece apenas na primeira análise (antes de qualquer regeneração) */}
+                {!activeGeneration && (
+                  <Badge
+                    className="absolute -top-3 right-4 z-10 bg-green-500 hover:bg-green-600 text-white shadow-lg animate-in fade-in slide-in-from-top-2 duration-500"
+                  >
+                    ✨ ANÁLISE GRATUITA
+                  </Badge>
+                )}
+                <ResultsDisplay
+                  lotteryName={lottery.name}
+                  lotteryType={type || ""}
+                  combinations={displayedCombinations}
+                  stats={{
+                    accuracy: analysisResult.calculatedAccuracy,
+                    gamesGenerated: displayedCombinations.length,
+                    hotNumbers: displayedHotNumbers,
+                    coldNumbers: analysisResult.statistics.coldNumbers,
+                    lastUpdate: analysisResult.statistics.lastUpdate,
+                  dataSource: analysisResult.dataSource,
+                }}
+                strategy={analysisResult.strategy}
+                onExport={handleExport}
+                contestNumber={parsedContestNumber}
+                generationId={activeGeneration?.id || null}
+                userId={user?.id || null}
+              />
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:col-span-1">
+              {user?.id && (
+                <CreditsDisplay
+                  userId={user.id}
+                  variant="default"
+                  showProgress
+                  showResetInfo
+                  className="sticky top-4"
+                />
+              )}
+            </div>
+          </div>
+        ) : null}
+
+        {/* Generation History Modal */}
+        {user?.id && (
+          <GenerationHistoryModal
+            userId={user.id}
+            lotteryType={type || ""}
+            contestNumber={parsedContestNumber}
+            open={historyModalOpen}
+            onOpenChange={setHistoryModalOpen}
+          />
+        )}
+
+        {/* First Generation Modal - Tier A */}
+        {analysisResult && (
+          <FirstGenerationModal
+            open={firstGenModalOpen}
+            onOpenChange={setFirstGenModalOpen}
+            stats={{
+              gamesGenerated: displayedCombinations.length,
+              accuracy: analysisResult.calculatedAccuracy,
+              lotteryName: lottery.name,
+            }}
+            userId={user?.id || null}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Lottery;

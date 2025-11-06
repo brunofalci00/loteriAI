@@ -1,0 +1,475 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+    <base href="/campanha-mega/">
+<title>Loter.IA | Simulador Interativo</title>
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '369969430611939');
+    fbq('track', 'PageView');
+    fbq('track', 'ViewContent', { value: 37.0, currency: 'BRL' });
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=369969430611939&ev=PageView&noscript=1"/></noscript>
+  <!-- End Meta Pixel Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz.css">
+</head>
+<body class="quiz-body">
+  <header class="quiz-header">
+    <div class="quiz-brand">
+      <img class="brand-logo" src="https://i.ibb.co/r2FFdKRw/Logo-Lumen-1.png" alt="Logo Loter.IA">
+      <strong class="quiz-brand__name">Loter.IA</strong>
+    </div>
+    <p class="quiz-header__subtitle">Teste gratuito da IA da Mega da Virada &mdash; acesso limitado</p>
+  </header>
+
+  <main class="quiz-wrapper">
+    <!-- Slide 1 -->
+    <section class="quiz-slide is-active" data-step="intro">
+      <div class="slide-card slide-card--intro">
+        <div class="intro-pulse" aria-hidden="true">
+          <span class="intro-pulse__ring"></span>
+          <span class="intro-pulse__icon">&#x1F9E0;</span>
+        </div>
+        <h1 class="slide-title">&#x1F6A8; Acesso liberado &agrave; IA da Mega da Virada &mdash; antes do poss&iacute;vel bloqueio</h1>
+        <p class="slide-lead">A Loter.IA t&aacute; virando o jogo com combina&ccedil;&otilde;es inteligentes. Agora &eacute; sua vez de testar &mdash; gr&aacute;tis e direto no seu celular.</p>
+        <p class="slide-lead">Antes da IA calcular seu jogo, responde 3 perguntas r&aacute;pidas. Isso ativa o painel com seu acesso exclusivo.</p>
+
+        <div class="info-box info-box--list">
+          <h2>Como funciona</h2>
+          <ul>
+            <li>Etapa 1: voc&ecirc; monta um jogo no chute</li>
+            <li>Etapa 2: a IA entra com dados de 20 anos e monta seu jogo anti-choque</li>
+            <li>No fim, voc&ecirc; compara e v&ecirc; a diferen&ccedil;a com seus pr&oacute;prios olhos</li>
+          </ul>
+        </div>
+
+        <button type="button" class="quiz-btn quiz-btn--primary" data-next="warmup-1">COME&Ccedil;AR MEU TESTE</button>
+      </div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section class="quiz-slide" data-step="warmup-1">
+      <div class="slide-card question-card">
+        <span class="question-eyebrow">Aquecimento 1 de 3</span>
+        <h2 class="slide-title">Voc&ecirc; sabia que a Mega da Virada pode pagar mais de R$850 milh&otilde;es?</h2>
+        <p class="slide-lead">Com um pr&ecirc;mio desse tamanho, muita gente vai apostar igual &mdash; e dividir o pr&ecirc;mio sem saber.</p>
+        <div class="question-options">
+          <button type="button" class="question-option" data-next="warmup-2">
+            Sim, t&ocirc; por dentro
+          </button>
+          <button type="button" class="question-option" data-next="warmup-2">
+            Sabia que era alto, mas n&atilde;o tanto
+          </button>
+          <button type="button" class="question-option" data-next="warmup-2">
+            Nem fazia ideia! Quero entender melhor
+          </button>
+        </div>
+        <p class="question-note">&Eacute; aqui que a IA faz a diferen&ccedil;a: ela evita combina&ccedil;&otilde;es populares e foca em sequ&ecirc;ncias anti-divis&atilde;o.</p>
+      </div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section class="quiz-slide" data-step="warmup-2">
+      <div class="slide-card question-card">
+        <span class="question-eyebrow">Aquecimento 2 de 3</span>
+        <h2 class="slide-title">Voc&ecirc; j&aacute; jogou e sentiu que s&oacute; perde &mdash; mesmo seguindo a sua intui&ccedil;&atilde;o?</h2>
+        <p class="slide-lead">A maioria aposta nos mesmos n&uacute;meros. A IA usa estat&iacute;stica pra sair do padr&atilde;o e aumentar suas chances reais.</p>
+        <div class="question-options">
+          <button type="button" class="question-option" data-next="warmup-3">
+            Sim, sempre aposto e nunca ganho
+          </button>
+          <button type="button" class="question-option" data-next="warmup-3">
+            Jogo &agrave;s vezes, mas j&aacute; desanimei
+          </button>
+          <button type="button" class="question-option" data-next="warmup-3">
+            Ainda n&atilde;o jogo, mas quero come&ccedil;ar com estrat&eacute;gia
+          </button>
+        </div>
+        <p class="question-note">Quando o pr&ecirc;mio passa dos R$500 milh&otilde;es, certos padr&otilde;es se repetem. A IA foi treinada exatamente pra analisar isso.</p>
+      </div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section class="quiz-slide" data-step="warmup-3">
+      <div class="slide-card question-card">
+        <span class="question-eyebrow">Aquecimento 3 de 3</span>
+        <h2 class="slide-title">Quer ver a IA que analisou 20 anos de concursos montar um jogo s&oacute; pra voc&ecirc;?</h2>
+        <p class="slide-lead">Mais de 40 mil jogos j&aacute; foram simulados. Agora &eacute; sua vez de ver a diferen&ccedil;a que dados + estrat&eacute;gia fazem.</p>
+        <div class="question-options">
+          <button type="button" class="question-option question-option--highlight" data-next="preloading">
+            Quero ver agora
+          </button>
+          <button type="button" class="question-option" data-next="preloading">
+            Quero entender como funciona
+          </button>
+          <button type="button" class="question-option" data-next="preloading">
+            T&ocirc; curioso, pode liberar
+          </button>
+        </div>
+        <p class="question-note">Na pr&oacute;xima tela voc&ecirc; monta um jogo &ldquo;no chute&rdquo;. Depois, a IA recalcula tudo com base nos dados hist&oacute;ricos.</p>
+      </div>
+    </section>
+
+    <!-- Slide 5 -->
+    <section class="quiz-slide" data-step="preloading">
+      <div class="slide-card slide-card--center preloading-card">
+        <div class="preloading-visual" aria-hidden="true">
+          <span class="preloading-icon">&#x1F48E;</span>
+          <span class="preloading-glow"></span>
+        </div>
+        <h2 class="slide-title">Preparando seu acesso &agrave; IA da Mega da Virada</h2>
+        <p class="slide-lead">Estamos ativando seu teste com base nas respostas. Primeiro a rodada manual. Depois, a IA entra.</p>
+        <div class="preloading-steps" data-preloading>
+          <div class="preloading-step" data-preloading-step="0">
+            <span class="preloading-step__label">Reservando sua vaga entre os testadores</span>
+            <div class="preloading-step__bar"><span></span></div>
+          </div>
+          <div class="preloading-step" data-preloading-step="1">
+            <span class="preloading-step__label">Sincronizando dados de 20 anos de concursos</span>
+            <div class="preloading-step__bar"><span></span></div>
+          </div>
+          <div class="preloading-step" data-preloading-step="2">
+            <span class="preloading-step__label">Mapeando padr&otilde;es de pr&ecirc;mios acima de R$500 milh&otilde;es</span>
+            <div class="preloading-step__bar"><span></span></div>
+          </div>
+          <div class="preloading-step" data-preloading-step="3">
+            <span class="preloading-step__label">Liberando rodada manual</span>
+            <div class="preloading-step__bar"><span></span></div>
+          </div>
+          <div class="preloading-step" data-preloading-step="4">
+            <span class="preloading-step__label">Preparando IA especialista personalizada</span>
+            <div class="preloading-step__bar"><span></span></div>
+          </div>
+        </div>
+        <p class="preloading-hint">Isso leva s&oacute; alguns segundos. N&atilde;o feche a p&aacute;gina.</p>
+      </div>
+    </section>
+
+    <!-- Slide 6 -->
+    <section class="quiz-slide" data-step="manual-select-1">
+      <div class="slide-card slide-card--wide manual-card">
+        <aside class="manual-card__poster" aria-hidden="true">
+          <span class="manual-card__brand">MEGA DA VIRADA</span>
+          <span class="manual-card__tagline">Simulador Mega da Virada</span>
+        </aside>
+        <div class="manual-card__content">
+          <header class="slide-head">
+            <div>
+              <h2>Etapa 1 &mdash; monte seu jogo no feeling</h2>
+              <p class="slide-instruction">Escolha 6 dezenas como faria numa lot&eacute;rica. Essa etapa depende s&oacute; de voc&ecirc;.</p>
+            </div>
+            <div class="chip chip--alert">IA desligada</div>
+          </header>
+          <div class="manual-status" data-manual-status="1">Etapa 1 de 2 &middot; 0/6 escolhidas</div>
+          <div class="number-grid" data-mode="manual" data-round="1"></div>
+          <div class="manual-feedback" data-manual-feedback="1">Clique nos n&uacute;meros at&eacute; completar seu jogo.</div>
+          <button class="quiz-btn quiz-btn--primary" data-action="verify-manual" data-round="1">VERIFICAR MEU JOGO</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Slide 7 -->
+    <section class="quiz-slide" data-step="ia-activate">
+      <div class="slide-card slide-card--center ia-activation-card">
+        <span class="chip chip--success ia-activation__badge" data-ia-badge hidden>IA ativada</span>
+        <h2 class="slide-title" data-ia-title>Rodando a IA &mdash; recalculando com dados reais</h2>
+        <p class="slide-lead" data-ia-subtitle>Agora a Loter.IA vai processar os padr&otilde;es e montar sua sequ&ecirc;ncia inteligente personalizada.</p>
+        <div class="ia-steps" data-ia-steps>
+          <div class="ia-step" data-ia-step="0" data-ia-status="Carregando concursos da Mega da Virada...">
+            <span class="ia-step__label">Carregando concursos da Mega da Virada.</span>
+            <div class="ia-step__bar"><span></span></div>
+          </div>
+          <div class="ia-step" data-ia-step="1" data-ia-status="Identificando padr&otilde;es ocultos...">
+            <span class="ia-step__label">Identificando padr&otilde;es ocultos.</span>
+            <div class="ia-step__bar"><span></span></div>
+          </div>
+          <div class="ia-step" data-ia-step="2" data-ia-status="Gerando combina&ccedil;&atilde;o baseada em dados de 2.500 concursos...">
+            <span class="ia-step__label">Gerando combina&ccedil;&atilde;o baseada em dados de 2.500 concursos.</span>
+            <div class="ia-step__bar"><span></span></div>
+          </div>
+        </div>
+        <p class="ia-activation__status" data-ia-status>IA trabalhando&hellip;</p>
+      </div>
+    </section>
+
+    <!-- Slide 8 -->
+    <section class="quiz-slide" data-step="guided-select-1">
+      <div class="slide-card slide-card--wide manual-card manual-card--ia">
+        <aside class="manual-card__poster manual-card__poster--alt" aria-hidden="true">
+          <span class="manual-card__brand">MEGA DA VIRADA</span>
+          <span class="manual-card__tagline">Simulador especial Mega da Virada</span>
+        </aside>
+        <div class="manual-card__content">
+          <header class="slide-head">
+            <div>
+              <h2>Rodada 2 &mdash; siga a IA anti-choque</h2>
+              <p class="slide-instruction">Clique nos n&uacute;meros destacados pela IA na ordem exibida.</p>
+            </div>
+            <div class="guided-stats">
+              <span class="chip chip--success">Sele&ccedil;&atilde;o guiada</span>
+              <span class="guided-balance">Ganho simulado: <strong data-guided-balance="1">R$ 0,00</strong></span>
+            </div>
+          </header>
+          <div class="guided-feedback" data-guided-feedback="1" aria-live="polite">Siga o destaque dourado: ele mostra a ordem que a IA recomenda.</div>
+          <div class="number-grid" data-mode="guided" data-sequence="1"></div>
+          <footer class="slide-foot">
+            <span class="foot-label">Etapa 2 de 2</span>
+            <div class="progress progress--thin">
+              <div class="progress__bar" data-progress="guided-1"></div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 9 -->
+    <section class="quiz-slide" data-step="ia-summary">
+      <div class="slide-card slide-card--center summary-card">
+        <h2 class="slide-title">A diferen&ccedil;a t&aacute; aqui: intui&ccedil;&atilde;o vs IA</h2>
+        <p class="slide-lead">Veja quantos pontos voc&ecirc; faria s&oacute; na intui&ccedil;&atilde;o&hellip; e quantos a IA te daria.</p>
+        <div class="summary-metrics">
+          <div class="summary-metric">
+            <span class="summary-metric__label">Rodada manual</span>
+            <strong class="summary-metric__value" data-counter="manual-total" data-target="1">0</strong>
+            <span class="summary-metric__detail">acertos &mdash; tentativa no escuro</span>
+          </div>
+          <div class="summary-metric summary-metric--highlight">
+            <span class="summary-metric__label">Rodada IA</span>
+            <strong class="summary-metric__value" data-counter="ia-total" data-target="18500000" data-format="currency">R$ 0,00</strong>
+            <span class="summary-metric__detail">jogo inteligente, com base em dados</span>
+          </div>
+        </div>
+        <div class="summary-callout">
+          <p>Com esse pr&ecirc;mio bilion&aacute;rio, errar por pouco n&atilde;o &eacute; op&ccedil;&atilde;o.</p>
+          <button class="quiz-btn quiz-btn--primary" data-next="video-post-ia">VER A IA FUNCIONANDO AO VIVO</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 10 -->
+    <section class="quiz-slide" data-step="video-post-ia" data-video-gate>
+      <div class="slide-card slide-card--video">
+        <h2 class="slide-title">Veja a IA trabalhando ao vivo</h2>
+        <p class="slide-lead">Assista como a Loter.IA monta combina&ccedil;&otilde;es em segundos, usando tudo que aprendeu em 20 anos de concursos.</p>
+        <div class="video-shell video-shell--vertical">
+          <button type="button" class="video-play is-hidden" data-role="video-play" aria-label="Reproduzir demonstra&ccedil;&atilde;o">Assistir demonstra&ccedil;&atilde;o</button>
+          <video playsinline preload="auto" tabindex="-1">
+            <source src="IMG_4783.mp4" type="video/mp4">
+            Seu navegador n&atilde;o suporta reprodu&ccedil;&atilde;o de v&iacute;deo.
+          </video>
+          <div class="video-progress" aria-hidden="true">
+            <span class="video-progress__bar" data-role="video-progress-bar"></span>
+          </div>
+        </div>
+        <p class="watch-hint" data-role="video-hint">Assista at&eacute; o fim pra liberar a oferta da Mega da Virada.</p>
+        <button class="quiz-btn quiz-btn--primary video-continue" data-role="video-continue" data-next="offer" disabled>LIBERAR MEU ACESSO</button>
+      </div>
+    </section>
+
+    <!-- Slide 11 -->
+    <section class="quiz-slide" data-step="offer">
+      <div class="slide-card slide-card--offer">
+        <h2>&#x1F513; Acesso liberado: vers&atilde;o completa da IA da Mega da Virada</h2>
+        <h2>&#x1F525; Quem testa, n&atilde;o volta mais pra sorte</h2>
+        <p class="offer-lead">Se voc&ecirc; chegou at&eacute; aqui, &eacute; porque viu o poder da IA na pr&aacute;tica. A vers&atilde;o treinada para a Mega da Virada est&aacute; liberada s&oacute; pra quem fez o teste.</p>
+
+        <div class="scarcity-stats">
+          <p class="offer-note">O acesso pode ser bloqueado a qualquer momento por press&atilde;o externa. <strong>Garanta antes que tirem do ar.</strong></p>
+        </div>
+        <div class="offer-video">
+          <video controls playsinline preload="metadata" poster="" controlsList="nodownload">
+            <source src="IMG_4762.mp4" type="video/mp4">
+            Seu navegador não suporta reprodução de vÁ­deo.
+          </video>
+        </div>
+
+        <div class="testimonial-list">
+          <article class="testimonial-card">
+            <img src="https://i.ibb.co/rGsjRfhC/roberto-santos.jpg" alt="Foto de Roberto Santos">
+            <div class="testimonial-card__body">
+              <h3>Roberto Santos <span>S&atilde;o Paulo, SP</span></h3>
+              <div class="testimonial-card__rating" aria-label="5 de 5 estrelas">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+              <p>&ldquo;Eu s&oacute; errava jogando na sorte. Com a IA, bati 14 pontos na Lotof&aacute;cil na segunda tentativa. Agora s&oacute; confio nela pra Mega.&rdquo;</p>
+            </div>
+          </article>
+          <article class="testimonial-card">
+            <img src="https://i.ibb.co/NdfXRyt7/ana-clara.jpg" alt="Foto de Ana Clara">
+            <div class="testimonial-card__body">
+              <h3>Ana Clara <span>Rio de Janeiro, RJ</span></h3>
+              <div class="testimonial-card__rating" aria-label="5 de 5 estrelas">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+              <p>&ldquo;Recuperei R$ 4.000 usando as combina&ccedil;&otilde;es da IA. Ela evita que eu repita jogo igual a todo mundo.&rdquo;</p>
+            </div>
+          </article>
+          <article class="testimonial-card">
+            <img src="https://i.pravatar.cc/120?img=52" alt="Foto de Carlos Eduardo">
+            <div class="testimonial-card__body">
+              <h3>Carlos Eduardo <span>Belo Horizonte, MG</span></h3>
+              <div class="testimonial-card__rating" aria-label="5 de 5 estrelas">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+              <p>&ldquo;Comecei com desconfian&ccedil;a, mas a IA realmente entende os padr&otilde;es. Acertei 14 pontos no concurso 3476.&rdquo;</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="offer-extra-cta">
+          <a class="quiz-btn quiz-btn--primary quiz-btn--large" data-hubla-link data-checkout-source="testimonial-cta" href="https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689">QUERO ACESSAR AGORA</a>
+        </div>
+
+        <div class="offer-pricing">
+          <div class="price-card">
+            <h3>Acesso completo &agrave; Loter.IA | Mega da Virada</h3>
+            <ul>
+              <li>Jogos otimizados com base em 20 anos de dados</li>
+              <li>Combina&ccedil;&otilde;es anti-choque atualizadas antes de cada sorteio</li>
+              <li>IA focada em fugir do &oacute;bvio e evitar divis&atilde;o de pr&ecirc;mio</li>
+              <li>Painel inteligente com recomenda&ccedil;&otilde;es em tempo real</li>
+            </ul>
+            <div class="price-card__value">
+              <span class="price-card__from">De R$ 297,00</span>
+              <span class="price-card__price">Por apenas R$ 37,00</span>
+            </div>
+            <ul class="price-card__highlights">
+              <li>Pagamento &uacute;nico</li>
+              <li>Acesso anual garantido</li>
+              <li>Vagas limitadas</li>
+            </ul>
+            <a class="quiz-btn quiz-btn--primary quiz-btn--large" data-hubla-link data-checkout-source="price-card" href="https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689">ACESSAR A PLATAFORMA AGORA</a>
+          </div>
+          <div class="assurance-card">
+            <div class="assurance-card__badge">Garantia incondicional de 7 dias</div>
+            <p>Confiamos tanto na nossa IA que, se voc&ecirc; n&atilde;o se impressionar em 7 dias, devolvemos 100% do investimento.</p>
+            <ul>
+              <li>Teste sem risco</li>
+              <li>Suporte r&aacute;pido</li>
+              <li>Rendimento ou reembolso</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="offer-prints">
+          <article class="offer-print">
+            <img src="https://i.ibb.co/TD85XLkM/Whats-App-Image-2025-10-27-at-16-36-22.jpg" alt="Comprovante real de resultado conquistado com a Loter.IA">
+          </article>
+          <article class="offer-print">
+            <img src="https://i.ibb.co/dJX303yc/Whats-App-Image-2025-10-27-at-16-29-26.jpg" alt="Bilhete vencedor ap&oacute;s seguir os jogos recomendados">
+          </article>
+          <article class="offer-print">
+            <img src="https://i.ibb.co/vxwch5Z3/Whats-App-Image-2025-10-27-at-16-32-16.jpg" alt="Relato comprovando ganhos com apoio da IA">
+          </article>
+        </div>
+
+        <div class="offer-faq">
+          <h3>Perguntas frequentes</h3>
+          <details open>
+            <summary>Como recebo meus jogos especiais da Mega da Virada?</summary>
+            <p>Assim que a assinatura &eacute; confirmada, voc&ecirc; recebe acesso imediato ao app com jogos especiais e atualiza&ccedil;&otilde;es di&aacute;rias antes de cada sorteio.</p>
+          </details>
+          <details>
+            <summary>Esses jogos garantem pr&ecirc;mio?</summary>
+            <p>Loteria &eacute; probabilidade, mas nossas sequ&ecirc;ncias combinam dados reais e IA para aumentar significativamente as chances.</p>
+          </details>
+          <details>
+            <summary>Quando os jogos s&atilde;o atualizados?</summary>
+            <p>Todos os dias &uacute;teis, sempre antes dos resultados oficiais.</p>
+          </details>
+          <details>
+            <summary>Como funciona a garantia de 7 dias?</summary>
+            <p>Teste a plataforma por 7 dias. Se n&atilde;o gostar, devolvemos 100% do valor pago sem perguntas.</p>
+          </details>
+          <details>
+            <summary>Como jogo com os n&uacute;meros da Loter.IA?</summary>
+            <p>Copie as combina&ccedil;&otilde;es sugeridas e registre sua aposta em qualquer lot&eacute;rica ou no app da Caixa.</p>
+          </details>
+      </div>
+    </section>
+  </main>
+
+  <div class="quiz-modal" data-modal hidden>
+    <div class="quiz-modal__backdrop" data-modal-backdrop></div>
+    <div class="quiz-modal__dialog" role="alertdialog" aria-live="assertive" aria-modal="true">
+      <div class="quiz-modal__content" data-modal-content></div>
+    </div>
+  </div>
+
+  <div class="emoji-rain" data-emoji-rain hidden aria-hidden="true"></div>
+
+  <div class="offer-modal" data-offer-modal hidden>
+    <div class="offer-modal__backdrop" data-offer-close></div>
+    <div class="offer-modal__dialog" role="dialog" aria-live="assertive" aria-modal="true">
+      <span class="offer-modal__badge">&#9888;&#xFE0F; Aten&ccedil;&atilde;o</span>
+      <h3 class="offer-modal__title">A oferta sai do ar em <span data-offer-timer>05:00</span></h3>
+      <p class="offer-modal__text">Seu acesso especial est&aacute; garantido s&oacute; enquanto o contador estiver ativo. Depois disso, a vers&atilde;o Mega da Virada pode ser bloqueada.</p>
+      <a class="quiz-btn quiz-btn--primary quiz-btn--large" data-hubla-link data-checkout-source="offer-modal" href="https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689">GARANTIR MEU ACESSO</a>
+      <button class="quiz-btn quiz-btn--ghost" type="button" data-offer-close>Continuar explorando</button>
+    </div>
+  </div>
+
+  <!-- Sticky CTA (Offer Section) -->
+  <div class="sticky-cta is-hidden" data-sticky-cta>
+    <div class="sticky-cta__content">
+      <div class="sticky-cta__text">
+        <span class="sticky-cta__title">Mega da Virada: teste a Loter.IA enquanto ainda d&aacute; tempo</span>
+        <span class="sticky-cta__subtitle">Acesso liberado s&oacute; at&eacute; <span class="access-deadline access-deadline--short"></span> ou at&eacute; o limite de testadores</span>
+      </div>
+      <a href="https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689" class="sticky-cta__btn" data-sticky-cta-btn data-hubla-link data-checkout-source="sticky-cta">
+        QUERO ACESSAR AGORA
+      </a>
+    </div>
+  </div>
+  <script src="quiz.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

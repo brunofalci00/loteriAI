@@ -1,0 +1,361 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LOTER.IA | Simulador Interativo</title>
+  <!-- Meta Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s);
+    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '369969430611939');
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=369969430611939&ev=PageView&noscript=1" />
+  </noscript>
+  <!-- End Meta Pixel Code -->
+  <!-- Meta Parameter Builder (Lite) -->
+  <script src="fb-parameter-builder-lite.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz.css">
+  <!-- Facebook CAPI Helper -->
+  <script src="fb-capi.js"></script>
+  <script>
+    // Disparar ViewContent via CAPI para incluir value/currency e deduplicar com Pixel
+    if (typeof window.fbCAPI_trackViewContent === 'function') {
+      window.fbCAPI_trackViewContent({
+        contentName: 'Quiz Loter.IA - Landing',
+        value: 37.00,
+        currency: 'BRL'
+      });
+    } else {
+      // Fallback assíncrono se o helper ainda não carregou
+      window.addEventListener('load', function() {
+        if (typeof window.fbCAPI_trackViewContent === 'function') {
+          window.fbCAPI_trackViewContent({ contentName: 'Quiz Loter.IA - Landing', value: 37.00, currency: 'BRL' });
+        }
+      });
+    }
+  </script>
+  <script
+    src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+    data-utmify-prevent-xcod-sck
+    data-utmify-prevent-subids
+    async
+    defer
+  ></script>
+</head>
+<body class="quiz-body">
+  <header class="quiz-header">
+    <div class="quiz-brand">
+      <img class="brand-logo" src="https://i.ibb.co/r2FFdKRw/Logo-Lumen-1.png" alt="Logo LOTER.IA">
+    </div>
+  </header>
+
+  <main class="quiz-wrapper">
+    <section class="quiz-slide is-active" data-step="intro">
+      <div class="card hero-card">
+        <span class="card-icon" aria-hidden="true">&#129302;</span>
+        <h1 class="card-title">
+          Voc&#234; n&#227;o aguenta mais <span class="highlight">perder dinheiro</span> na Lotof&#225;cil?
+        </h1>
+        <p class="card-text">
+          <span class="danger">99% dos apostadores nunca ganham mais que R$100 na Loteria.</span> Veja a IA que est&#225;
+          mudando isso.
+        </p>
+        <a class="btn btn-primary" data-next="manual-select-1" href="#manual">
+          <span class="btn-icon">&#128640;</span>
+          QUERO GANHAR NA LOTO
+        </a>
+      </div>
+    </section>
+
+    <section class="quiz-slide" data-step="manual-select-1" id="manual">
+      <div class="card selection-card">
+        <span class="card-icon" aria-hidden="true">&#127919;</span>
+        <h2 class="card-title">
+          Escolha <span class="highlight">15 n&#250;meros</span>
+        </h2>
+        <p class="card-text">
+          Teste sua intui&#231;&#227;o e veja por que ela <span class="danger">nunca &#233; suficiente.</span>
+        </p>
+        <div class="selection-status">
+          <span>Selecionados:</span>
+          <strong><span data-manual-count>0</span>/15</strong>
+        </div>
+        <div class="number-grid" data-grid-manual></div>
+        <p class="feedback" data-manual-feedback>Escolha 15 n&#250;meros para continuar.</p>
+        <button class="btn btn-primary" data-action="verify-manual" type="button">
+          <span class="btn-icon">&#10003;</span>
+          Confirmar escolha
+        </button>
+      </div>
+    </section>
+
+    <section class="quiz-slide" data-step="preloading">
+      <div class="card progress-card">
+        <span class="card-icon" aria-hidden="true">&#127922;</span>
+        <h2 class="card-title">O sorteio come&#231;ou!</h2>
+        <p class="card-text">Sua sorte contra a <span class="danger">realidade cruel</span> da Lotof&#225;cil.</p>
+        <div class="progress-track">
+          <span class="progress-fill" data-progress-fill></span>
+        </div>
+        <div class="draw-status">
+          <p class="draw-status__text" data-draw-status>Preparando sorteio...</p>
+          <div class="draw-numbers" data-draw-list></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quiz-slide" data-step="manual-result">
+      <div class="card result-card">
+        <span class="card-icon" aria-hidden="true">&#127922;</span>
+        <h2 class="card-title">O sorteio terminou!</h2>
+        <div class="result-summary">
+          <h3>Sorteio finalizado.</h3>
+          <p class="result-highlight">
+            Voc&#234; s&#243; acertou <strong data-manual-hits>8 n&#250;meros!</strong>
+          </p>
+          <p class="card-text">
+            Como 99% dos apostadores, voc&#234; n&#227;o levaria nada hoje mais uma vez.
+          </p>
+        </div>
+        <button class="btn btn-secondary" data-next="guided-select-1" type="button">
+          <span class="btn-icon">&#9889;</span>
+          QUERO MUDAR ISSO
+        </button>
+      </div>
+    </section>
+
+    <section class="quiz-slide" data-step="guided-select-1">
+      <div class="card ia-card">
+        <span class="card-icon" aria-hidden="true">&#127942;</span>
+        <h2 class="card-title">Jogo da LOTER.IA</h2>
+        <p class="card-text">
+          Clique nos n&#250;meros destacados para seguir a intelig&#234;ncia artificial.
+        </p>
+        <div class="number-grid number-grid--ia" data-grid-guided></div>
+        <p class="feedback" data-guided-feedback>
+          Vamos come&#231;ar! Clique no n&#250;mero em verde.
+        </p>
+      </div>
+    </section>
+
+    <section class="quiz-slide" data-step="proofs">
+      <div class="card proofs-card">
+        <span class="card-icon" aria-hidden="true">&#127909;</span>
+        <h2 class="card-title">Conhe&#231;a alguns dos nossos clientes que j&#225; lucraram MUITO usando a LOTER.IA.</h2>
+        <div class="proofs-media">
+          <div class="proofs-media__video">
+            <video
+              controls
+              preload="metadata"
+              playsinline
+              data-lazy-video
+              data-video-src="IMG_4762.mp4">
+              <source data-src="IMG_4762.mp4" type="video/mp4">
+              <p>Seu navegador não suporta reprodução de vídeo.
+                <a href="IMG_4762.mp4" download>Baixar vídeo</a>
+              </p>
+            </video>
+          </div>
+          <div class="proofs-media__details">
+            <p class="proofs-media__headline">
+              Assista depoimentos de quem parou de contar com a sorte e transformou <span class="highlight">estat&iacute;stica em pr&ecirc;mios</span>.
+            </p>
+            <ul class="proofs-list">
+              <li class="proofs-list__item">
+                <span class="proofs-list__icon" aria-hidden="true">&#127942;</span>
+                <div>
+                  <strong>Resultados reais</strong>
+                  <span>Comprovantes enviados por clientes todas as semanas.</span>
+                </div>
+              </li>
+              <li class="proofs-list__item">
+                <span class="proofs-list__icon" aria-hidden="true">&#128200;</span>
+                <div>
+                  <strong>IA revisada diariamente</strong>
+                  <span>Jogos sugeridos com base nos &uacute;ltimos concursos.</span>
+                </div>
+              </li>
+              <li class="proofs-list__item">
+                <span class="proofs-list__icon" aria-hidden="true">&#128241;</span>
+                <div>
+                  <strong>Acesso em minutos</strong>
+                  <span>Receba login e suporte no celular ou computador.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <button class="btn btn-primary" data-next="platform-video" type="button">
+          <span class="btn-icon">&#128640;</span>
+          VOU GANHAR NA LOTO
+        </button>
+      </div>
+    </section>
+
+    <section class="quiz-slide" data-step="platform-video">
+      <div class="card video-card">
+        <span class="card-icon" aria-hidden="true">&#128249;</span>
+        <h2 class="card-title">
+          Conhe&#231;a a plataforma
+        </h2>
+        <p class="card-text">
+          Veja como &eacute; simples usar a plataforma LOTER.IA no dia a dia para gerar jogos vencedores.
+        </p>
+        <div class="media-shell">
+          <div class="media-shell__video media-shell__video--vertical">
+            <video
+              controls
+              preload="metadata"
+              playsinline
+              data-lazy-video
+              data-video-src="IMG_4783.mp4">
+              <source data-src="IMG_4783.mp4" type="video/mp4">
+              <p>Seu navegador não suporta reprodução de vídeo.
+                <a href="IMG_4783.mp4" download>Baixar vídeo</a>
+              </p>
+            </video>
+          </div>
+        </div>
+        <button class="btn btn-primary" data-next="offer" type="button">
+          <span class="btn-icon">&#128176;</span>
+          QUERO GANHAR COM A IA
+        </button>
+      </div>
+    </section>
+
+    <section class="quiz-slide" data-step="offer">
+      <div class="card offer-card">
+        <span class="card-icon" aria-hidden="true">&#128640;</span>
+        <h2 class="card-title">
+          Comece a ganhar essa semana com a <span class="highlight">IA das Loterias</span>
+        </h2>
+        <p class="card-text">
+          Promo&#231;&#227;o exclusiva para hoje. N&#227;o perca a chance de come&#231;ar a ganhar MUITO com a Lotof&#225;cil!
+        </p>
+        <p class="offer-timer">
+          &#9201; Oferta expira em <span data-offer-timer>10:00</span>
+        </p>
+
+        <div class="plan-card">
+          <h3>Plano Anual</h3>
+          <p class="plan-price"><span>R$</span>37,00</p>
+          <p class="plan-caption">Pagamento &#250;nico &mdash; acesso por 12 meses</p>
+          <p class="plan-alert">&#128293; Restam apenas 2 vagas</p>
+          <ul class="plan-features">
+            <li>Painel inteligente com an&aacute;lises atualizadas</li>
+            <li>Acesso pelo celular ou computador</li>
+            <li>Acesso anual (12 meses)</li>
+            <li>Atualiza&ccedil;&otilde;es di&aacute;rias da LOTER.IA</li>
+          </ul>
+          <a class="btn btn-primary" data-hubla-link
+            href="https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689" target="_blank" rel="noopener">
+            Quero lucrar na Loto
+          </a>
+        </div>
+        <div class="guarantee-card">
+          <h3>&#9989; Garantia de satisfa&ccedil;&atilde;o de 7 dias</h3>
+          <p class="card-text">
+            Teste a LOTER.IA por uma semana inteira. Se n&atilde;o ficar <span class="highlight">100% satisfeito</span>,
+            devolvemos o valor pago sem perguntas.
+          </p>
+        </div>
+        <div class="testimonials">
+          <h3>Depoimentos reais</h3>
+          <div class="testimonial-showcase">
+            <article class="testimonial-quote">
+              <header class="testimonial-quote__head">
+                <img class="testimonial-quote__avatar" src="https://i.ibb.co/5WF0gx3N/download-74.jpg" alt="Cliente Camila, de Goi&acirc;nia">
+                <div>
+                  <strong>Camila F.</strong>
+                  <span>Goi&acirc;nia &bull; Diarista</span>
+                </div>
+              </header>
+              <p class="testimonial-quote__text">
+                "Mesmo como diarista, seguir os jogos sugeridos me deu tranquilidade. Em 3 concursos eu ganhei mais de R$2.500 reais"
+              </p>
+            </article>
+            <article class="testimonial-quote">
+              <header class="testimonial-quote__head">
+                <img class="testimonial-quote__avatar" src="https://i.ibb.co/gLQGYRm6/download-73.jpg" alt="Cliente Daniel, de Recife">
+                <div>
+                  <strong>Daniel M.</strong>
+                  <span>Recife &bull; Aposentado</span>
+                </div>
+              </header>
+              <p class="testimonial-quote__text">
+                "Como aposentado, eu prefiro estabilidade. A IA me ajudou a acertar 14 pontos duas vezes."
+              </p>
+            </article>
+          </div>
+          <div class="authority-gallery">
+            <figure class="authority-gallery__item">
+              <img src="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg" alt="Print de conversa com comprovante de premia&ccedil;&atilde;o 1">
+            </figure>
+            <figure class="authority-gallery__item">
+              <img src="https://i.ibb.co/rfQNMBX2/Whats-App-Image-2025-10-27-at-16-32-16.jpg" alt="Print de conversa com comprovante de premia&ccedil;&atilde;o 2">
+            </figure>
+            <figure class="authority-gallery__item">
+              <img src="https://i.ibb.co/TD85XLkM/Whats-App-Image-2025-10-27-at-16-36-22.jpg" alt="Print de conversa com comprovante de premia&ccedil;&atilde;o 3">
+            </figure>
+          </div>
+          <a class="btn btn-primary testimonials-cta" data-hubla-link
+            href="https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689" target="_blank" rel="noopener">
+            Quero lucrar com a IA
+          </a>
+        </div>
+
+        <div class="faq">
+          <h3>Perguntas frequentes</h3>
+          <details class="faq-item">
+            <summary>Como recebo o acesso?</summary>
+            <p>O login chega diretamente no seu e-mail segundos ap&#243;s a confirma&#231;&#227;o do pagamento.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Quantos jogos posso gerar?</summary>
+            <p>Palpites ilimitados, sempre otimizados com base em concursos reais.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Preciso instalar algum app?</summary>
+            <p>N&#227;o. A LOTER.IA roda direto no navegador do celular ou computador.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="emoji-rain" data-emoji-rain hidden></div>
+
+  <div class="modal" data-modal hidden>
+    <div class="modal__backdrop" data-modal-backdrop></div>
+    <div class="modal__dialog">
+      <button class="modal__close" data-modal-close type="button" aria-label="Fechar">&times;</button>
+      <div class="modal__content" data-modal-content></div>
+    </div>
+  </div>
+
+  <script src="quiz.js" defer></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

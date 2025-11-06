@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(findstr:*)",
+      "Bash(curl:*)",
+      "Bash(git log:*)",
+      "Bash(npx vite build)",
+      "Bash(ffprobe:*)",
+      "Bash(nul)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Adicionar Edge Function para Facebook Conversions API\n\n- Criada função facebook-capi para proxy server-side\n- Hashing automático de dados sensíveis (SHA256)\n- Captura de IP e User-Agent do cliente\n- Suporte a deduplicação via event_id\n- Registrada no config.toml\n\nEsta função é chamada pela Landing Page via fb-capi.js\npara enviar eventos de conversão ao Facebook de forma segura.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(supabase functions deploy:*)",
+      "Bash(supabase link:*)",
+      "Bash(supabase secrets:*)",
+      "Bash(git commit:*)",
+      "Bash(python:*)",
+      "Bash(git remote add:*)",
+      "Bash(rm:*)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "shadcn"
+  ]
+}
