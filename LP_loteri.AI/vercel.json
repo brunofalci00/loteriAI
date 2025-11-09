@@ -1,16 +1,7 @@
 {
-  "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm run install:all",
-  "cleanUrls": false,
-  "trailingSlash": false,
-  "routes": [
-    {
-      "src": "/quiz.html",
-      "dest": "/quiz.html"
-    }
-  ],
   "rewrites": [
     {
       "source": "/app/:path((?!.*\\.).*)",
