@@ -5,10 +5,11 @@
   "scripts": {
     "install:quiz": "cd quiz-app && npm install",
     "install:app": "cd app && npm install",
+    "install:all": "npm run install:quiz && npm run install:app",
     "build:quiz": "cd quiz-app && npm run build",
     "build:app": "cd app && npm run build",
     "build:organize": "node scripts/organize-dist.js",
-    "build": "npm run install:quiz && npm run build:quiz && npm run build:app && npm run build:organize"
+    "build": "npm run build:quiz && npm run build:app && npm run build:organize"
   },
   "engines": {
     "node": ">=18.0.0"

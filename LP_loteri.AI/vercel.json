@@ -1,7 +1,8 @@
 {
-  "buildCommand": "cd quiz-app && npm run build && cd ../app && npm run build && cd .. && node scripts/organize-dist.js",
+  "framework": null,
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "installCommand": "cd quiz-app && npm install && cd ../app && npm install",
+  "installCommand": "npm run install:all",
   "rewrites": [
     {
       "source": "/app/:path((?!.*\\.).*)",
