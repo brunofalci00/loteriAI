@@ -14,7 +14,9 @@
       "Bash(node scripts/organize-dist.js:*)",
       "WebFetch(domain:www.fqdigital.com.br)",
       "Bash(python -m json.tool:*)",
-      "Bash(npm run install:all:*)"
+      "Bash(npm run install:all:*)",
+      "Bash(npm run build:quiz:*)",
+      "Bash(npm run build:organize:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
