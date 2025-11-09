@@ -9,7 +9,13 @@ const corsHeaders = {
 // Facebook CAPI Configuration
 const FACEBOOK_API_VERSION = 'v18.0';
 const FACEBOOK_PIXEL_ID = '369969430611939';
-const FACEBOOK_ACCESS_TOKEN = Deno.env.get('FACEBOOK_ACCESS_TOKEN') || '';
+const DEFAULT_FACEBOOK_ACCESS_TOKEN =
+  'EAAUGxPD9l0ABP0vTmpD9iKSzFtuM2JZABZAJBGRmDVnZBdXkEF2ZCiB10Br8i8i9g9IifmNzX2HVe1FRRQZA6OdYRPleeUs9dqBQkYSEgOfEa0CqJKJHrTB8FRFZBhaelCnbWrqa4HmEZCUQSP01SLohNvfCOVTKQyMaF5WrubWV1Cd8PzsbvTtJsJ0TJnHIgZDZD';
+const FACEBOOK_ACCESS_TOKEN = Deno.env.get('FACEBOOK_ACCESS_TOKEN') || DEFAULT_FACEBOOK_ACCESS_TOKEN;
+
+if (!Deno.env.get('FACEBOOK_ACCESS_TOKEN')) {
+  console.warn('[facebook-capi] FACEBOOK_ACCESS_TOKEN não definido. Utilizando token padrão do repositório.');
+}
 
 interface UserData {
   em?: string[];      // email
