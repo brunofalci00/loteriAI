@@ -8,7 +8,13 @@
       "Bash(git config:*)",
       "Bash(git remote add:*)",
       "Bash(git push:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(cat:*)",
+      "Bash(npm run build:*)",
+      "Bash(node scripts/organize-dist.js:*)",
+      "WebFetch(domain:www.fqdigital.com.br)",
+      "Bash(python -m json.tool:*)",
+      "Bash(npm run install:all:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

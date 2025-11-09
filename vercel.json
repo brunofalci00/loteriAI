@@ -3,5 +3,19 @@
   "outputDirectory": "LP_loteri.AI/dist",
   "installCommand": "cd LP_loteri.AI && npm run install:all",
   "cleanUrls": false,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/quiz",
+      "destination": "/quiz.html"
+    },
+    {
+      "source": "/app/:path((?!.*\\.).*)",
+      "destination": "/app/index.html"
+    },
+    {
+      "source": "/app",
+      "destination": "/app/index.html"
+    }
+  ]
 }
