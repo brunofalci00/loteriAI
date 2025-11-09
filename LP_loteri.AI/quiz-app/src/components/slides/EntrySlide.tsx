@@ -85,7 +85,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
           <img
             src="https://i.ibb.co/r2FFdKRw/Logo-Lumen-1.png"
             alt="LOTER.IA"
-            className="mx-auto w-32 sm:w-40 drop-shadow-[0_0_20px_rgba(16,185,129,0.45)]"
+            className="mx-auto w-32 sm:w-40 drop-shadow-[0_0_20px_rgba(16,185,129,0.45)] pulse-glow"
           />
           <h1 className="text-[clamp(2rem,7vw,4rem)] font-bold text-foreground leading-tight text-glow">
             Tem gente ganhando na Lotofácil sem depender da sorte.
@@ -143,7 +143,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
                 size="lg"
                 disabled={!ctaReady}
                 className={`relative overflow-hidden w-full text-xl sm:text-2xl py-6 sm:py-10 font-bold shadow-2xl transition-all rounded-2xl ${
-                  ctaReady ? "bg-primary hover:bg-primary-glow text-primary-foreground" : "bg-muted text-muted-foreground"
+                  ctaReady ? "bg-primary hover:bg-primary-glow text-primary-foreground glow-primary-strong pulse-glow transform hover:scale-105" : "bg-muted text-muted-foreground"
                 }`}
               >
                 <span className={`transition-opacity flex items-center gap-2 ${ctaReady ? "opacity-100" : "opacity-0"}`}>

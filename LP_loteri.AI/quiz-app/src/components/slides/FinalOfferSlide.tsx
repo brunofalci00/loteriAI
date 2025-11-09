@@ -48,10 +48,10 @@ export const FinalOfferSlide = () => {
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
   const benefits = [
-    "IA treinada com +500 sorteios reais",
-    "Mapa dos números mais quentes incluso",
-    "Acesso imediato via e-mail",
-    "Garantia total de 7 dias — testou, não gostou, cancela",
+    { icon: "🎯", text: "Recomendações personalizadas com IA em tempo real" },
+    { icon: "🔒", text: "Painel de combinações calibradas diárias" },
+    { icon: "📲", text: "Suporte direto no WhatsApp" },
+    { icon: "🎁", text: "Acesso antecipado ao Bolão da Mega da Virada" },
   ];
 
   return (
@@ -61,22 +61,25 @@ export const FinalOfferSlide = () => {
           <img
             src="https://i.ibb.co/r2FFdKRw/Logo-Lumen-1.png"
             alt="LOTER.IA"
-            className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(16,185,129,0.45)]"
+            className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(16,185,129,0.45)] pulse-glow"
           />
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-            Resgate Agora: Acesso Completo à LOTER.IA por R$37
+          <h1 className="text-4xl md:text-6xl font-bold text-foreground text-glow">
+            🥳 Parabéns! Desconto Máximo Ativado
           </h1>
-          <p className="text-xl text-muted-foreground">
-            ⏳ Enquanto você lê isso, outros já ativaram. O seu acesso especial fecha em breve...
+          <p className="text-xl md:text-2xl text-foreground font-semibold">
+            Você acabou de desbloquear o prêmio máximo:
+          </p>
+          <p className="text-2xl md:text-3xl text-primary font-bold glow-primary-strong">
+            Acesso completo à Loter.IA por apenas R$37 — de R$500!
           </p>
         </div>
 
-        <Card className={`p-6 border-2 ${timeLeft <= 60 ? "border-destructive animate-pulse" : "border-primary"}`}>
+        <Card className={`p-6 border-2 ${timeLeft <= 60 ? "border-destructive animate-pulse pulse-glow" : "border-primary glow-primary"}`}>
           <div className="flex items-center justify-center gap-4">
             <Clock className={`w-10 h-10 ${timeLeft <= 60 ? "text-destructive animate-bounce" : "text-primary"}`} />
             <div className="text-center">
-              <p className="text-sm text-muted-foreground uppercase tracking-[0.5em]">Oferta expira em</p>
-              <p className={`text-5xl font-bold ${timeLeft <= 60 ? "text-destructive" : "text-primary"}`}>
+              <p className="text-sm text-muted-foreground uppercase tracking-[0.5em]">⏳ Oferta válida pelos próximos</p>
+              <p className={`text-5xl font-bold ${timeLeft <= 60 ? "text-destructive text-glow" : "text-primary"}`}>
                 {minutes}:{seconds}
               </p>
               {timeLeft <= 60 && (
@@ -94,31 +97,49 @@ export const FinalOfferSlide = () => {
           </div>
         </Card>
 
+        <Card className="p-6 bg-destructive/10 border-2 border-destructive/50 glow-primary">
+          <p className="text-lg font-bold text-center mb-4 text-foreground">
+            ⚠️ Mas atenção: esse valor é exclusivo e só aparece uma vez.
+          </p>
+          <p className="text-center text-muted-foreground">
+            Se sair dessa página, o sistema entende que você desistiu da sua vaga.
+          </p>
+        </Card>
+
+        <div className="text-center space-y-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+            ✅ O que você vai acessar agora:
+          </h2>
+        </div>
+
         <Card className="p-6 bg-primary/5 border-2 border-primary/30">
-          <div className="space-y-3 text-left">
+          <div className="space-y-4 text-left">
             {benefits.map((benefit) => (
-              <div key={benefit} className="flex items-start gap-3 text-foreground">
-                <Check className="w-5 h-5 text-primary flex-shrink-0" />
-                <p>{benefit}</p>
+              <div key={benefit.text} className="flex items-start gap-3 text-foreground text-lg">
+                <span className="text-2xl flex-shrink-0">{benefit.icon}</span>
+                <p className="font-semibold">{benefit.text}</p>
               </div>
             ))}
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border-2 border-primary text-center">
-          <p className="text-sm text-muted-foreground line-through">Valor original: R$500</p>
-          <p className="text-5xl font-bold text-primary">Agora: R$37</p>
-          <p className="text-lg text-muted-foreground">Desconto destravado. Se sair agora, ele some pra sempre.</p>
+        <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border-2 border-primary text-center glow-primary-strong pulse-glow">
+          <p className="text-2xl font-bold text-foreground mb-2">💰 Desconto desbloqueado:</p>
+          <p className="text-lg text-muted-foreground line-through">De R$500</p>
+          <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">R$37</p>
+          <p className="text-lg text-foreground font-semibold">
+            Garantia total de 7 dias — testou, não gostou, cancela sem risco.
+          </p>
         </Card>
 
         <Button
           asChild
           size="lg"
           onClick={handleCheckoutClick}
-          className="w-full text-2xl py-10 bg-primary hover:bg-primary-glow text-primary-foreground font-bold"
+          className="w-full text-2xl md:text-3xl py-12 bg-primary hover:bg-primary-glow text-primary-foreground font-bold glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
         >
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            Ativar Loter.IA Agora – R$37
+            👉 Quero Meu Acesso Agora – R$37 com Garantia
           </a>
         </Button>
 
@@ -143,10 +164,10 @@ export const FinalOfferSlide = () => {
           asChild
           size="lg"
           onClick={handleCheckoutClick}
-          className="w-full text-xl py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold"
+          className="w-full text-xl py-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold glow-primary-strong pulse-glow shadow-2xl"
         >
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            Ativar agora com segurança
+            👉 Quero Meu Acesso – R$37
           </a>
         </Button>
       </div>
