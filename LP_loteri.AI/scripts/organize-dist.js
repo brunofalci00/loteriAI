@@ -88,6 +88,22 @@ if (fs.existsSync(lpIndexPath)) {
   process.exit(1);
 }
 
+// Verifica se quiz.html foi criado
+const quizHtmlPath = path.join(distDir, 'quiz.html');
+if (fs.existsSync(quizHtmlPath)) {
+  console.log('✓ quiz.html criado com sucesso');
+  const quizContent = fs.readFileSync(quizHtmlPath, 'utf8');
+  if (quizContent.includes('id="root"') && quizContent.includes('quiz-assets')) {
+    console.log('✓ quiz.html contém React app (root div + quiz-assets)');
+  } else {
+    console.error('❌ quiz.html não parece ser o React app!');
+    process.exit(1);
+  }
+} else {
+  console.error('❌ quiz.html não foi criado!');
+  process.exit(1);
+}
+
 console.log('');
 console.log('✅ Build organizado com sucesso!');
 console.log('📁 Estrutura:');
