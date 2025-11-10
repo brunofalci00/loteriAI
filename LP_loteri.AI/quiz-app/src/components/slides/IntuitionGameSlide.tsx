@@ -70,18 +70,15 @@ export const IntuitionGameSlide = ({ onNext, onComplete }: IntuitionGameSlidePro
       <div className="casino-grid" />
       <div className="slide-frame space-y-6 relative z-10">
         <div className="text-center space-y-3">
-          <p className="meta-label text-primary flex items-center justify-center gap-2">
-            🎲 Desafio liberado
-          </p>
-          <h1 className="heading-1">Você vs Inteligência Artificial</h1>
+          <p className="meta-label text-primary flex items-center justify-center gap-2">🎲 Desafio liberado</p>
+          <h1 className="heading-1">Monte seu jogo com calma</h1>
           <p className="body-lead max-w-2xl mx-auto">
-            Escolha 15 números só com a sua cabeça. Se superar os 11 pontos, a IA libera 3 giros na roleta. Tudo otimizado para jogar no
-            celular.
+            Escolha 15 números do jeito que você costuma apostar. Depois mostramos o jogo da feito pela IA
           </p>
           <div className={`text-lg sm:text-2xl font-bold slot-highlight inline-flex items-center justify-center px-6 py-2 ${shake ? "shake" : ""}`}>
-            {selectedNumbers.length}/15 selecionados — {remaining > 0 ? `faltam ${remaining}` : "pronto para comparar"}
+            {selectedNumbers.length}/15 escolhidos {remaining > 0 ? `— selecione mais ${remaining}` : "— pronto para comparar"}
           </div>
-          <p className="text-sm text-muted-foreground">Muita gente subestima a intuição... até ela passar de 11 pontos sem IA.</p>
+          <p className="text-sm text-muted-foreground">Tela grande, sem pressa e com toque único. Dá tempo de revisar antes de enviar.</p>
         </div>
 
         <Card className="p-5 sm:p-6 space-y-6 border border-border">

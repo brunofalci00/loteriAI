@@ -49,7 +49,7 @@ export const FinalOfferSlide = () => {
   const benefits = [
     { icon: "🤖", text: "Recomendações personalizadas com IA em tempo real" },
     { icon: "📊", text: "Painel de combinações calibradas diárias" },
-    { icon: "🛟", text: "Atendimento 24/7 com 97% de satisfação" },
+    { icon: "🛟", text: "Atendimento 24/7" },
     { icon: "💬", text: "Suporte direto no WhatsApp" },
     { icon: "🎯", text: "Acesso antecipado ao Bolão da Mega da Virada" },
   ];
@@ -64,11 +64,9 @@ export const FinalOfferSlide = () => {
             alt="LOTER.IA"
             className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(16,185,129,0.45)] pulse-glow"
           />
-          <h1 className="heading-1 text-glow">
-            🎁 Parabéns! Desconto máximo ativado
-          </h1>
+          <h1 className="heading-1 text-glow">🎁 Parabéns! Desconto máximo ativado</h1>
           <p className="heading-3 text-primary">
-            Acesso completo à LOTER.IA por apenas R$37 — de R$500!
+            Acesso completo à LOTER.IA por apenas de R$547,00 por apenas R$37,00 por ano!
           </p>
         </div>
 
@@ -153,12 +151,13 @@ export const FinalOfferSlide = () => {
             onClick={handleWhatsAppClick}
           >
             <MessageCircle className="w-5 h-5 flex-shrink-0" />
-            <span>Falar com especialista no WhatsApp (24/7)</span>
+            <span>Falar com especialista no WhatsApp</span>
           </a>
         </Button>
 
         <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
           <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Compra segura" className="w-40 sm:w-52 mx-auto" />
+          <p>Compra segura</p>
           <p>+84 pessoas ativaram só hoje • 97% de satisfação no suporte 24/7</p>
         </div>
 
@@ -177,7 +176,7 @@ export const FinalOfferSlide = () => {
           className="w-full text-lg py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl"
         >
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            Garantir meu acesso - R$37
+            Garantir meu acesso
           </a>
         </Button>
       </div>

@@ -8,9 +8,15 @@ interface BonusUnlockLoadingSlideProps {
 }
 
 const steps = [
-  "IA conferindo suas respostas",
-  "Transferindo fichas para o cofre seguro",
-  "Liberando visualização do mapa quente",
+  { icon: "📝", text: "Conferindo suas respostas" },
+  { icon: "🪙", text: "Usando as moedas para abrir o mapa" },
+  { icon: "🔐", text: "Liberando a visualização segura" },
+];
+
+const visualBadges = [
+  { icon: "📶", label: "Painel estável" },
+  { icon: "🛡️", label: "Dados protegidos" },
+  { icon: "⚡", label: "Liberado em segundos" },
 ];
 
 export const BonusUnlockLoadingSlide = ({ onNext }: BonusUnlockLoadingSlideProps) => {
@@ -32,24 +38,39 @@ export const BonusUnlockLoadingSlide = ({ onNext }: BonusUnlockLoadingSlideProps
         </p>
         <Card className="loading-panel space-y-6">
           <div className="space-y-2 text-center">
-            <h2 className="heading-2 text-foreground">Segura firme: o mapa secreto está sendo desbloqueado</h2>
-            <p className="body-lead">
-              O sistema precisa validar cada uma das suas respostas antes de liberar a visualização completa. Isso impede vazamentos.
-            </p>
+            <h2 className="heading-2 text-foreground">Estamos trocando suas moedas pelo mapa</h2>
+            <p className="body-lead">Essa tela existe só para garantir que todo mundo veja o mesmo relatório sem travar o celular.</p>
           </div>
 
           <div className="space-y-3">
             {steps.map((step, index) => (
-              <div key={step} className="loading-row border-b border-border/40 last:border-b-0">
+              <div key={step.text} className="loading-row border-b border-border/40 last:border-b-0">
                 <span className="text-xs text-primary font-semibold">{index + 1}</span>
-                <p className="text-sm text-foreground">{step}</p>
+                <p className="text-sm text-foreground">
+                  <span className="mr-2" role="img" aria-hidden="true">
+                    {step.icon}
+                  </span>
+                  {step.text}
+                </p>
               </div>
             ))}
           </div>
 
-          <div className="text-xs text-muted-foreground text-center">
-            Mantemos essa pausa para validar tudo no servidor e garantir que o painel não trave no seu celular.
+          <div className="loading-visual">
+            <img src="/placeholder.svg" alt="Cofre digital segurando suas moedas" loading="lazy" />
+            <div className="loading-visual__badges">
+              {visualBadges.map((badge) => (
+                <span key={badge.label} className="loading-visual__badge">
+                  <span role="img" aria-hidden="true">
+                    {badge.icon}
+                  </span>
+                  {badge.label}
+                </span>
+              ))}
+            </div>
           </div>
+
+          <div className="text-xs text-muted-foreground text-center">É um respiro rápido para salvar seus dados no servidor.</div>
         </Card>
       </div>
     </div>

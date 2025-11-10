@@ -26,32 +26,26 @@ export const MaxWinCelebrationSlide = ({ onNext }: MaxWinCelebrationSlideProps) 
         <div className="space-y-3">
           <p className="meta-label text-gold">Prêmio máximo</p>
           <h1 className="heading-1 text-shadow flex items-center justify-center gap-2 text-gold">
-            <span role="img" aria-hidden="true">
-              🏆
-            </span>
-            Você recebeu R$500!
+            <span role="img" aria-hidden="true">🏆</span>
+            Você recebeu R$500 de desconto!
           </h1>
           <p className="body-lead">
-            Essa sensação é de quem acabou de economizar alto: a oferta completa da LOTER.IA de R$500 saiu por apenas R$37.
+            Essa sensação é de quem acabou de economizar alto: a oferta completa da LOTER.IA de R$547 saiu por apenas R$37.
           </p>
         </div>
 
         <Card className="p-6 sm:p-8 border border-gold bg-gradient-to-br from-black/80 via-background/80 to-amber-900/30 backdrop-blur-lg space-y-6 shadow-[0_0_50px_rgba(250,204,21,0.3)]">
           <div className="space-y-4">
             <p className="text-sm text-gold uppercase flex items-center gap-2 justify-center">
-              <span role="img" aria-hidden="true">
-                💎
-              </span>
-              Economia desbloqueada
+              <span role="img" aria-hidden="true">💎</span>
+              Desconto Desbloqueado
             </p>
             <div className="flex items-center justify-center gap-4 text-[clamp(2rem,6vw,3.5rem)] font-black text-primary">
               <span className="line-through text-muted-foreground text-2xl sm:text-3xl">R$ 500</span>
               <span className="text-foreground text-2xl">→</span>
               <span className="text-gold">R$ 37</span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Você travou o desconto máximo da IA. Prepare o checkout e finalize enquanto o painel ainda está aberto.
-            </p>
+            <p className="text-sm text-muted-foreground">Você ganhou o desconto máximo da IA.</p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4 text-left">
@@ -77,10 +71,8 @@ export const MaxWinCelebrationSlide = ({ onNext }: MaxWinCelebrationSlideProps) 
             size="lg"
             className="w-full text-xl py-6 bg-gradient-to-r from-gold to-amber-400 text-background font-bold pulse-glow flex items-center justify-center gap-2"
           >
-            <span role="img" aria-hidden="true">
-              🎯
-            </span>
-            Quero liberar meu acesso final
+            <span role="img" aria-hidden="true">🎯</span>
+            Quero liberar meu acesso
           </Button>
         </Card>
       </div>

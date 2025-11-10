@@ -39,14 +39,10 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
       <div className="casino-grid" />
       <div className="slide-frame space-y-6 text-center relative z-10">
         <div className="space-y-2">
-          <p className="meta-label flex items-center justify-center gap-2 text-primary">
-            🧮 IA auditando seu jogo
-          </p>
-          <h1 className="heading-1">{showResult ? "Seu resultado saiu!" : "Estamos conferindo sua intuição"}</h1>
+          <p className="meta-label flex items-center justify-center gap-2 text-primary">🧮 IA analisando seu jogo</p>
+          <h1 className="heading-1">{showResult ? "Seu resultado saiu" : "Estamos conferindo sua aposta"}</h1>
           <p className="body-lead">
-            {showResult
-              ? "Este seria o placar se você jogasse sozinho. Agora veja o que a IA faz com a mesma aposta."
-              : "Aguarde alguns segundos. A IA compara seus 15 números com 2.500 sorteios para evitar erros."}
+            {showResult ? "Veja quantos pontos faria sozinho antes de ligar a IA." : "Segure alguns segundos. Conferimos tudo antes de mostrar."}
           </p>
         </div>
 
@@ -54,16 +50,14 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
           {!showResult ? (
             <div className="flex flex-col items-center gap-3 py-6">
               <Loader2 className="w-10 h-10 text-primary animate-spin" />
-              <p className="text-sm text-muted-foreground">
-                Validando cada número, auditando sequências e calculando quantos pontos você faria sem IA.
-              </p>
+              <p className="text-sm text-muted-foreground text-center">Comparando seus 15 números com 2.500 resultados anteriores.</p>
             </div>
           ) : (
             <>
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground uppercase">Resultado da sua intuição</p>
+                <p className="text-sm text-muted-foreground uppercase">Placar sem IA</p>
                 <p className="text-[clamp(2.5rem,8vw,4rem)] font-black text-primary">{userScore} pontos</p>
-                <p className="text-sm text-muted-foreground">Sem ajuda da IA, você travaria aqui novamente.</p>
+                <p className="text-sm text-muted-foreground">É aqui que você ficaria se entrasse com este jogo agora.</p>
               </div>
 
               <div className="bg-secondary rounded-2xl p-4 text-left">
@@ -81,7 +75,9 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
                 )}
               </div>
 
-              <p className="text-sm text-muted-foreground">Agora ligue a IA e veja como ela transforma os mesmos 15 números em 14 pontos.</p>
+              <p className="text-sm text-muted-foreground text-center">
+                Toque no botão abaixo para ver a mesma aposta com a IA trabalhando a seu favor.
+              </p>
 
               <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 sm:py-6">
                 Ver a IA jogando agora

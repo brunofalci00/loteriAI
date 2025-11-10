@@ -59,7 +59,7 @@ const TOTAL_COINS = questions.length * COINS_PER_ANSWER;
 export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
-  const [toastValue, setToastValue] = useState<number | null>(null);
+  const [recentGain, setRecentGain] = useState<number | null>(null);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const startSoundRef = useRef<HTMLAudioElement | null>(null);
   const answerSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -67,7 +67,6 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
 
   const answeredCount = useMemo(() => answers.filter((answer) => answer !== undefined).length, [answers]);
   const coinsCollected = answeredCount * COINS_PER_ANSWER;
-  const remainingCoins = Math.max(TOTAL_COINS - coinsCollected, 0);
   const progressPercentage = (answeredCount / questions.length) * 100;
   const medalUnlocked = coinsCollected >= TOTAL_COINS;
 
@@ -85,10 +84,10 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
   }, []);
 
   useEffect(() => {
-    if (toastValue === null) return;
-    const timer = setTimeout(() => setToastValue(null), 1700);
+    if (recentGain === null) return;
+    const timer = setTimeout(() => setRecentGain(null), 1200);
     return () => clearTimeout(timer);
-  }, [toastValue]);
+  }, [recentGain]);
 
   const handleAnswer = (answerIndex: number) => {
     if (answers[currentQuestion] !== undefined) return;
@@ -97,7 +96,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
     newAnswers[currentQuestion] = answerIndex;
     setAnswers(newAnswers);
     onCoinsEarned(COINS_PER_ANSWER);
-    setToastValue((answeredCount + 1) * COINS_PER_ANSWER);
+    setRecentGain(COINS_PER_ANSWER);
     if (answerSoundRef.current) {
       answerSoundRef.current.currentTime = 0;
       answerSoundRef.current.play().catch(() => undefined);
@@ -127,42 +126,43 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
   return (
     <div className="slide-shell relative">
       <div className="slide-frame space-y-6 relative">
-        {toastValue !== null && (
-          <div className="coin-toast animate-fade-in-up z-50 bg-gradient-to-r from-primary/80 to-gold/70 text-background">
-            💰 Moedas coletadas! Agora você tem {toastValue}/50.
-            <span className="text-xs text-background/80 block">
-              ⚡ Faltam {Math.max(TOTAL_COINS - coinsCollected, 0)} moedas para liberar o Mapa dos Números Quentes
-            </span>
-          </div>
-        )}
-
         <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
           <div className="space-y-1">
             <p className="meta-label flex items-center gap-2 justify-center sm:justify-start">
-              🎯 Passo {currentQuestion + 1} de {questions.length} - para desbloquear o bônus
+              🎯 Pergunta {currentQuestion + 1} de {questions.length}
             </p>
             <h2 className="heading-2 flex items-center gap-2 justify-center sm:justify-start">
-              🧠 Teste em andamento
+              Responda com calma
             </h2>
           </div>
           <div className="text-center sm:text-right">
-            <p className="text-sm text-muted-foreground">Bônus 1: Mapa dos Números Quentes</p>
+            <p className="text-sm text-muted-foreground">Moedas liberadas</p>
             <div className={`medal-badge ${medalUnlocked ? "medal-badge--active" : ""}`}>
-              {medalUnlocked ? "🏅 Liberado" : `🏅 Faltam ${remainingCoins} moedas`}
+              {medalUnlocked ? "🏅 Mapa liberado" : `${coinsCollected}/${TOTAL_COINS}`}
             </div>
           </div>
+        </div>
+
+        <div className="coin-status-card">
+          <div>
+            <p className="coin-status-card__label">Total acumulado</p>
+            <div className="coin-status-card__value">
+              <span>{coinsCollected}</span>
+              <span className="text-muted-foreground">/ {TOTAL_COINS}</span>
+            </div>
+          </div>
+          {recentGain && <span className="coin-status-card__delta">+{recentGain} agora</span>}
+          <p className="coin-status-card__hint">Usamos essas moedas automaticamente para abrir o Mapa dos Números Quentes.</p>
         </div>
 
         <div className="bg-secondary rounded-full h-3 overflow-hidden progress-sheen">
           <div className="bg-primary h-3 progress-fill" style={{ width: `${progressPercentage}%` }} />
         </div>
 
-        <Card className="p-5 md:p-7 space-y-8 border border-border glow-primary quiz-card">
+        <Card className="p-4 sm:p-6 md:p-7 space-y-6 border border-border glow-primary quiz-card">
           <div className="space-y-2 text-center">
             <h3 className="heading-2 text-foreground">{current.question}</h3>
-            <p className="text-xs text-primary font-semibold uppercase tracking-[0.4em]">
-              Quanto mais real, mais afiada fica a IA
-            </p>
+            <p className="text-sm text-muted-foreground">Responda como você fala no dia a dia.</p>
           </div>
 
           <div className="space-y-3">
@@ -171,7 +171,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
                 key={option}
                 onClick={() => handleAnswer(index)}
                 variant="outline"
-                className="w-full min-h-[56px] py-4 text-left text-base md:text-lg chips-button"
+                className="w-full min-h-[52px] sm:min-h-[56px] py-3 sm:py-4 text-left text-sm sm:text-base md:text-lg chips-button"
               >
                 {option}
               </Button>

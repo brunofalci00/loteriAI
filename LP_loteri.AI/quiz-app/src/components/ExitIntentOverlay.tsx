@@ -33,9 +33,7 @@ export const ExitIntentOverlay = ({ open, coinsEarned, onStay }: ExitIntentOverl
             </div>
 
             <div>
-              <p className="meta-label text-primary flex items-center justify-center gap-2">
-                🔐 Momento decisivo
-              </p>
+              <p className="meta-label text-primary flex items-center justify-center gap-2">🔐 Momento decisivo</p>
               <h2 className="heading-2">Você chegou longe demais para sair agora.</h2>
             </div>
 
@@ -53,7 +51,7 @@ export const ExitIntentOverlay = ({ open, coinsEarned, onStay }: ExitIntentOverl
               </div>
 
               <p className="text-sm text-muted-foreground">
-                Se fechar agora, o sistema zera suas moedas e fecha o acesso ao mapa secreto da IA.
+                Se fechar agora, o sistema zera suas moedas e fecha o acesso a IA secreta.
               </p>
 
               <div className="space-y-2">

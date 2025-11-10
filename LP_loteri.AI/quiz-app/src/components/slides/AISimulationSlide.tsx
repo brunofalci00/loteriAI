@@ -15,7 +15,6 @@ interface AISimulationSlideProps {
 type Phase = "scan" | "selection" | "verdict";
 
 const AI_NUMBERS = [3, 5, 7, 9, 11, 13, 15, 17, 18, 19, 20, 21, 23, 24, 25];
-
 export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpins }: AISimulationSlideProps) => {
   const [phase, setPhase] = useState<Phase>("scan");
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
@@ -100,18 +99,16 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
         <Card className="p-5 border border-primary/30">
           <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
             <div>
-              <p className="meta-label text-primary">Modo IA ativo</p>
+              <p className="meta-label text-primary">IA em ação</p>
               <p className="text-muted-foreground">
                 {phase === "scan"
-                  ? "A IA está auditando o seu jogo agora."
+                  ? "Conferindo seu jogo"
                   : phase === "selection"
-                  ? "Selecionando combinações com maior chance."
-                  : "Comparando resultados para liberar seu giro."}
+                  ? "Escolhendo os 15 números dela"
+                  : "Mostrando o placar final"}
               </p>
             </div>
-            <div className="text-right text-xs text-muted-foreground">
-              Painel protegido em tempo real
-            </div>
+            <div className="text-right text-xs text-muted-foreground">Painel protegido em tempo real</div>
           </div>
         </Card>
 
@@ -126,9 +123,7 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
 
         {phase === "selection" && (
           <Card className="p-6 space-y-4 border border-border">
-            <p className="text-center text-sm text-muted-foreground">
-              IA escolhendo 15 números com maior probabilidade neste momento
-            </p>
+            <p className="text-center text-sm text-muted-foreground">IA escolhendo 15 números com maior chance agora.</p>
             <div className="grid grid-cols-5 gap-2 sm:gap-3">
               {allNumbers.map((num) => (
                 <div key={num} className={`number-cell ${selectedNumbers.includes(num) ? "number-cell--active" : ""}`}>
@@ -159,22 +154,21 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
                   </div>
                 </div>
                 <div className="space-y-2 text-center text-sm text-muted-foreground">
-                  <p>A IA cravou {aiScore} pontos enquanto você travou nos {userScore}. Diferença clara.</p>
-                  <p>Você não ganhou os 3 giros, mas ela separou um bônus exclusivo de até R$500.</p>
-                  <p>Enquanto você jogava com intuição, ela rodava estatística real. Agora é sua vez de usar esse giro.</p>
+                  <p>A IA fez {aiScore} pontos com os mesmos números. Você ficou nos {userScore}.</p>
+                  <p>Com isso ela liberou um giro para você resgatar o desconto.</p>
                 </div>
                 {showSpinReveal && (
                   <div className="bg-secondary rounded-2xl p-4 border border-primary/20 text-sm text-left sm:text-center space-y-1">
-                    <p className="font-semibold text-primary">Surpresa do painel</p>
-                    <p>Ela usou {aiSpins} giros agora e deixou 1 giro bônus reservado só pra você.</p>
-                    <p className="text-muted-foreground">Esse giro pode liberar até R$500 em bônus dentro da roleta.</p>
+                    <p className="font-semibold text-primary">Bônus reservado</p>
+                    <p>Ela usou {aiSpins} giros e guardou 1 pra você.</p>
+                    <p className="text-muted-foreground">Esse giro libera até R$500 em desconto.</p>
                   </div>
                 )}
                 <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 flex items-center justify-center gap-2">
                   <span role="img" aria-hidden="true">
                     🎰
                   </span>
-                  Resgatar bônus
+                  Seguir para o giro
                 </Button>
               </>
             ) : (

@@ -12,12 +12,21 @@ interface BonusMapSlideProps {
 export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showNextStepModal, setShowNextStepModal] = useState(false);
+  const [coinStage, setCoinStage] = useState<"stack" | "travel" | "spent">("stack");
   const fanfareRef = useSoundEffect("/sounds/winning-unlock.mp3", { autoplay: false, volume: 0.3 });
 
   useEffect(() => {
     setShowConfetti(true);
     fanfareRef.current?.play().catch(() => undefined);
   }, [fanfareRef]);
+
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setCoinStage("travel"), 600),
+      setTimeout(() => setCoinStage("spent"), 2200),
+    ];
+    return () => timers.forEach((timer) => clearTimeout(timer));
+  }, []);
 
   const handleOpenModal = () => setShowNextStepModal(true);
   const handleProceed = () => {
@@ -34,10 +43,32 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
           <p className="meta-label text-primary flex items-center justify-center gap-2">
             🎉 Bônus 1 liberado
           </p>
-          <h1 className="heading-1 text-glow">Mapa Oficial dos Números Quentes da LOTER.IA</h1>
-          <p className="body-lead">
-            Use o relatório antes da próxima aposta e saia do ciclo dos 11 pontos. Cada clique foi otimizado para o mobile.
-          </p>
+          <h1 className="heading-1 text-glow">Mapa dos números quentes na sua tela</h1>
+          <p className="body-lead">Ele já vem pronto, sem termos difíceis e com letras grandes para você consultar antes de apostar.</p>
+        </div>
+
+        <div className="coin-flow-panel">
+          <p className="text-sm text-muted-foreground text-center">Veja suas moedas pagando o bônus:</p>
+          <div className={`coin-flow ${coinStage !== "stack" ? "coin-flow--active" : ""}`}>
+            <div className={`coin-stack ${coinStage !== "stack" ? "coin-stack--light" : ""}`}>
+              <span className="coin-stack__label">Moedas</span>
+              <span className="coin-stack__value">50</span>
+            </div>
+            <div className="coin-path">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <span
+                  key={index}
+                  className={`coin-path__coin ${coinStage === "travel" ? `coin-path__coin--move coin-path__coin--delay-${index}` : ""} ${
+                    coinStage === "spent" ? "coin-path__coin--hidden" : ""
+                  }`}
+                />
+              ))}
+            </div>
+            <div className={`coin-target ${coinStage === "spent" ? "coin-target--active" : ""}`}>
+              Bônus liberado
+            </div>
+          </div>
+          <p className="coin-flow-panel__hint">As moedas não somem: elas viram acesso ao mapa sempre que você completar o quiz.</p>
         </div>
 
         <Card className="p-5 sm:p-6 space-y-6 border border-primary glow-primary-strong animate-scale-in">
@@ -57,7 +88,7 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
             <div className="bg-primary/10 border border-primary/30 rounded-lg p-4 text-sm sm:text-base">
               Acesso exclusivo enquanto o painel estiver aberto. Se fechar ou atualizar a página, a IA bloqueia o mapa.
             </div>
-            <p className="text-sm text-muted-foreground">Falta apenas 1 giro para liberar o Bônus 2: Roleta de Prêmios.</p>
+            <p className="text-sm text-muted-foreground">Depois desta etapa você vai direto para o duelo simples contra a IA.</p>
           </div>
 
           <Button
