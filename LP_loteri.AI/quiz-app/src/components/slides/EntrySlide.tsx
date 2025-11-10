@@ -104,7 +104,6 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
               alt="LOTER.IA"
               className="mx-auto w-24 sm:w-28 drop-shadow-[0_0_20px_rgba(16,185,129,0.45)]"
             />
-            <p className="meta-label text-primary">Passo a passo guiado</p>
             <h1 className="heading-hero text-glow">Chega de perder na Lotofácil</h1>
             <p className="body-lead max-w-2xl">
               Faça o teste e desbloqueie a IA que já gerou mais de R$250.000 com jogos da Lotofácil.
