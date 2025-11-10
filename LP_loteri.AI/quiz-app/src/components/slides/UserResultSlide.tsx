@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
@@ -16,12 +16,13 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
   const manualResultSoundRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowResult(true), 1800);
+    const timer = setTimeout(() => setShowResult(true), 3200);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     manualResultSoundRef.current = new Audio("/sounds/manual-result.mp3");
+    manualResultSoundRef.current.volume = 0.18;
     return () => {
       manualResultSoundRef.current = null;
     };
@@ -34,23 +35,27 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
   }, [showResult, userScore]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-3xl space-y-8 text-center">
+    <div className="slide-shell relative">
+      <div className="casino-grid" />
+      <div className="slide-frame space-y-6 text-center relative z-10">
         <div className="space-y-2">
-          <h1 className="text-[clamp(2rem,6vw,3.2rem)] font-bold text-foreground">
-            {showResult ? "Seu resultado saiu!" : "A IA está auditando seu jogo"}
-          </h1>
-          <p className="text-muted-foreground">
-            {showResult ? "Este foi o placar da sua intuição antes da IA entrar em campo." : "Veja o veredito antes de liberar a jogada da máquina."}
+          <p className="meta-label flex items-center justify-center gap-2 text-primary">
+            🧮 IA auditando seu jogo
+          </p>
+          <h1 className="heading-1">{showResult ? "Seu resultado saiu!" : "Estamos conferindo sua intuição"}</h1>
+          <p className="body-lead">
+            {showResult
+              ? "Este seria o placar se você jogasse sozinho. Agora veja o que a IA faz com a mesma aposta."
+              : "Aguarde alguns segundos. A IA compara seus 15 números com 2.500 sorteios para evitar erros."}
           </p>
         </div>
 
-        <Card className="p-6 sm:p-8 space-y-6 border-2 border-border">
+        <Card className="p-5 sm:p-6 space-y-6 border border-border">
           {!showResult ? (
             <div className="flex flex-col items-center gap-3 py-6">
               <Loader2 className="w-10 h-10 text-primary animate-spin" />
               <p className="text-sm text-muted-foreground">
-                A IA está conferindo seus números e calculando quantos pontos você fez…
+                Validando cada número, auditando sequências e calculando quantos pontos você faria sem IA.
               </p>
             </div>
           ) : (
@@ -58,7 +63,7 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground uppercase">Resultado da sua intuição</p>
                 <p className="text-[clamp(2.5rem,8vw,4rem)] font-black text-primary">{userScore} pontos</p>
-                <p className="text-sm text-muted-foreground">Sem ajuda da IA, esse seria o cenário de hoje.</p>
+                <p className="text-sm text-muted-foreground">Sem ajuda da IA, você travaria aqui novamente.</p>
               </div>
 
               <div className="bg-secondary rounded-2xl p-4 text-left">
@@ -72,15 +77,11 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground text-center">
-                    Seus números serão exibidos aqui assim que a rodada for concluída.
-                  </p>
+                  <p className="text-sm text-muted-foreground text-center">Seus números aparecerão aqui ao fim da rodada.</p>
                 )}
               </div>
 
-              <p className="text-sm text-muted-foreground">
-                Agora ligue a IA para ver como ela transforma o mesmo jogo em 14 pontos.
-              </p>
+              <p className="text-sm text-muted-foreground">Agora ligue a IA e veja como ela transforma os mesmos 15 números em 14 pontos.</p>
 
               <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 sm:py-6">
                 Ver a IA jogando agora
@@ -92,5 +93,3 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
     </div>
   );
 };
-
-

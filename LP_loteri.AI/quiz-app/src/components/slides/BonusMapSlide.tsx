@@ -1,7 +1,9 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ConfettiEffect } from "@/components/ConfettiEffect";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 interface BonusMapSlideProps {
   onNext: () => void;
@@ -9,22 +11,36 @@ interface BonusMapSlideProps {
 
 export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showNextStepModal, setShowNextStepModal] = useState(false);
+  const fanfareRef = useSoundEffect("/sounds/winning-unlock.mp3", { autoplay: false, volume: 0.3 });
 
   useEffect(() => {
     setShowConfetti(true);
-  }, []);
+    fanfareRef.current?.play().catch(() => undefined);
+  }, [fanfareRef]);
+
+  const handleOpenModal = () => setShowNextStepModal(true);
+  const handleProceed = () => {
+    setShowNextStepModal(false);
+    onNext();
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
+    <div className="slide-shell relative">
       <ConfettiEffect trigger={showConfetti} />
-      <div className="w-full max-w-4xl space-y-8">
-        <div className="text-center space-y-4">
-          <h1 className="text-[clamp(2rem,6vw,3.5rem)] font-bold text-foreground text-glow">
-            Parabéns! Você desbloqueou o Bônus 1: Mapa de Números Quentes da LOTER.IA
-          </h1>
+      <div className="casino-grid" />
+      <div className="slide-frame space-y-6 relative z-10">
+        <div className="text-center space-y-3">
+          <p className="meta-label text-primary flex items-center justify-center gap-2">
+            🎉 Bônus 1 liberado
+          </p>
+          <h1 className="heading-1 text-glow">Mapa Oficial dos Números Quentes da LOTER.IA</h1>
+          <p className="body-lead">
+            Use o relatório antes da próxima aposta e saia do ciclo dos 11 pontos. Cada clique foi otimizado para o mobile.
+          </p>
         </div>
 
-        <Card className="p-5 sm:p-8 space-y-6 border-2 border-primary glow-primary-strong animate-scale-in">
+        <Card className="p-5 sm:p-6 space-y-6 border border-primary glow-primary-strong animate-scale-in">
           <div className="relative rounded-xl overflow-hidden border border-primary/30 bg-background">
             <img
               src="https://i.ibb.co/NnGNzdvj/Chat-GPT-Image-29-de-out-de-2025-18-15-44.png"
@@ -35,28 +51,43 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
           </div>
 
           <div className="space-y-4 text-center">
-            <p className="text-base sm:text-lg text-foreground">
-              Agora você tem nas mãos o que muitos tentam adivinhar na sorte.
-              <br className="hidden sm:block" />
-              Use antes do próximo sorteio pra aumentar suas chances de verdade.
+            <p className="text-sm sm:text-base text-foreground">
+              Este mapa usa 500 sorteios auditados com IA. Não existe chute aqui: são probabilidades reais pensadas para quem trava nos 11.
             </p>
             <div className="bg-primary/10 border border-primary/30 rounded-lg p-4 text-sm sm:text-base">
-              Acesso exclusivo enquanto o sistema estiver aberto. Se sair agora, o mapa some junto.
+              Acesso exclusivo enquanto o painel estiver aberto. Se fechar ou atualizar a página, a IA bloqueia o mapa.
             </div>
-            <p className="text-sm text-muted-foreground">
-              Você está a 1 giro de liberar o Bônus 2: Roleta de Prêmios da IA.
-            </p>
+            <p className="text-sm text-muted-foreground">Falta apenas 1 giro para liberar o Bônus 2: Roleta de Prêmios.</p>
           </div>
 
           <Button
-            onClick={onNext}
+            onClick={handleOpenModal}
             size="lg"
-            className="w-full text-lg sm:text-xl py-5 sm:py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold pulse-glow"
+            className="w-full text-lg sm:text-xl py-5 bg-primary hover:bg-primary-glow text-primary-foreground font-bold pulse-glow"
           >
-            Ir para o Desafio: Você vs IA
+            Ir para o desafio: Você vs IA
           </Button>
         </Card>
       </div>
+
+      <Dialog open={showNextStepModal} onOpenChange={setShowNextStepModal}>
+        <DialogContent className="max-w-md text-center space-y-4">
+          <DialogHeader>
+            <DialogTitle>Agora é você contra a IA</DialogTitle>
+            <DialogDescription>
+              Ela abre um duelo valendo até R$500 em bônus. Seu papel é mostrar sua intuição antes de ver como a máquina joga.
+            </DialogDescription>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Responda como jogador, compare com a inteligência artificial e libere o giro que pode pagar seu acesso à LOTER.IA.
+          </p>
+          <DialogFooter className="sm:justify-center">
+            <Button onClick={handleProceed} className="w-full sm:w-auto">
+              Partiu enfrentar a IA
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

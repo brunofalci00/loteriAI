@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trackPixelEvent } from "@/lib/analytics";
@@ -20,14 +20,14 @@ export const IntuitionGameSlide = ({ onNext, onComplete }: IntuitionGameSlidePro
   useEffect(() => {
     selectSoundRef.current = new Audio("/sounds/select-number.mp3");
     return () => {
-    selectSoundRef.current = null;
+      selectSoundRef.current = null;
     };
   }, []);
 
   useEffect(() => {
     if (selectedNumbers.length === 15) {
       setAnalysisState("analyzing");
-      const timer = setTimeout(() => setAnalysisState("ready"), 1000);
+      const timer = setTimeout(() => setAnalysisState("ready"), 2400);
       return () => clearTimeout(timer);
     }
     setAnalysisState("idle");
@@ -62,71 +62,64 @@ export const IntuitionGameSlide = ({ onNext, onComplete }: IntuitionGameSlidePro
     setTimeout(() => {
       setSubmitting(false);
       onNext();
-    }, 1500);
+    }, 3200);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-4xl space-y-8">
+    <div className="slide-shell relative">
+      <div className="casino-grid" />
+      <div className="slide-frame space-y-6 relative z-10">
         <div className="text-center space-y-3">
-          <p className="text-xs tracking-[0.4em] text-muted-foreground uppercase">Desafio liberado</p>
-          <h1 className="text-[clamp(2rem,6vw,3.5rem)] font-bold text-foreground">
-            Você vs Inteligência Artificial
-          </h1>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Quem entende mais do jogo: sua intuição ou os algoritmos?
+          <p className="meta-label text-primary flex items-center justify-center gap-2">
+            🎲 Desafio liberado
           </p>
-          <p className="text-sm text-primary">
-            Escolha 15 números com a sua cabeça. Se fizer mais pontos que a IA, você ganha 3 giros na Roleta de Prêmios — com bônus de até R$500.
+          <h1 className="heading-1">Você vs Inteligência Artificial</h1>
+          <p className="body-lead max-w-2xl mx-auto">
+            Escolha 15 números só com a sua cabeça. Se superar os 11 pontos, a IA libera 3 giros na roleta. Tudo otimizado para jogar no
+            celular.
           </p>
           <div className={`text-lg sm:text-2xl font-bold slot-highlight inline-flex items-center justify-center px-6 py-2 ${shake ? "shake" : ""}`}>
             {selectedNumbers.length}/15 selecionados — {remaining > 0 ? `faltam ${remaining}` : "pronto para comparar"}
           </div>
-          <p className="text-sm text-muted-foreground">
-            Muita gente subestima a intuição... até ela acertar mais que a IA. Vamos ver de que lado você está?
-          </p>
+          <p className="text-sm text-muted-foreground">Muita gente subestima a intuição... até ela passar de 11 pontos sem IA.</p>
         </div>
 
-        <Card className="p-5 sm:p-8 space-y-6 border-2 border-border">
+        <Card className="p-5 sm:p-6 space-y-6 border border-border">
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
             {numbers.map((num) => {
               const isSelected = selectedNumbers.includes(num);
               return (
-                <button
-                  key={num}
-                  onClick={() => handleNumberClick(num)}
-                  className={`number-chip ${isSelected ? "number-chip--active" : ""}`}
-                >
+                <button key={num} onClick={() => handleNumberClick(num)} className={`number-chip ${isSelected ? "number-chip--active" : ""}`}>
                   {num}
                 </button>
               );
             })}
           </div>
 
-        <Button
-          onClick={handleSubmit}
-          disabled={selectedNumbers.length !== 15 || submitting}
-          size="lg"
-          className="w-full text-base sm:text-xl py-5 sm:py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold disabled:opacity-50"
-        >
-          {selectedNumbers.length === 15
-            ? submitting
-              ? "Analisando seu jogo..."
-              : "Ver meu resultado"
-            : `Selecione mais ${remaining} números`}
-        </Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={selectedNumbers.length !== 15 || submitting || analysisState !== "ready"}
+            size="lg"
+            className="w-full text-base sm:text-xl py-5 bg-primary hover:bg-primary-glow text-primary-foreground font-bold disabled:opacity-50"
+          >
+            {selectedNumbers.length === 15
+              ? submitting
+                ? "IA conferindo seu jogo..."
+                : analysisState === "ready"
+                ? "Ver meu resultado"
+                : "Calibrando comparação..."
+              : `Selecione mais ${remaining} números`}
+          </Button>
 
-        {analysisState !== "idle" && (
-          <p className="text-center text-sm text-muted-foreground animate-fade-in">
-            {analysisState === "analyzing"
-              ? "Seu palpite foi registrado. Preparando comparação..."
-              : "Seu jogo foi salvo. Agora é hora de ver quem joga melhor: você ou a Inteligência Artificial."}
-          </p>
-        )}
+          {analysisState !== "idle" && (
+            <p className="text-center text-sm text-muted-foreground animate-fade-in">
+              {analysisState === "analyzing"
+                ? "Seu palpite foi registrado. Preparando comparação..."
+                : "Tudo pronto. A IA já está posicionada para analisar o seu jogo."}
+            </p>
+          )}
         </Card>
       </div>
     </div>
   );
 };
-
-

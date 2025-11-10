@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trackPixelEvent } from "@/lib/analytics";
@@ -17,7 +17,9 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
   const [isSpinning, setIsSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [hasSpun, setHasSpun] = useState(false);
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const spinLoopRef = useRef<HTMLAudioElement | null>(null);
+  type TimerHandle = ReturnType<typeof setTimeout>;
+  const timersRef = useRef<TimerHandle[]>([]);
 
   const spinsLeft = useMemo(() => Math.max(userSpins - (hasSpun ? 1 : 0), 0), [userSpins, hasSpun]);
 
@@ -27,7 +29,7 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
     rain.volume = 0.2;
     rain.play().catch(() => undefined);
     trackPixelEvent("SlotMaxWin");
-    const timer = setTimeout(() => onNext(), 2000);
+    const timer = setTimeout(() => onNext(), 2200);
     return () => clearTimeout(timer);
   }, [result, onNext]);
 
@@ -37,7 +39,19 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
     sound.play().catch(() => undefined);
   };
 
-  const registerTimer = (timer: NodeJS.Timeout) => {
+  const startSpinLoop = () => {
+    spinLoopRef.current = new Audio("/sounds/slot-loop.mp3");
+    spinLoopRef.current.loop = true;
+    spinLoopRef.current.volume = 0.08;
+    spinLoopRef.current.play().catch(() => undefined);
+  };
+
+  const stopSpinLoop = () => {
+    spinLoopRef.current?.pause();
+    spinLoopRef.current = null;
+  };
+
+  const registerTimer = (timer: TimerHandle) => {
     timersRef.current.push(timer);
     return timer;
   };
@@ -50,6 +64,7 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
   useEffect(
     () => () => {
       clearRegisteredTimers();
+      stopSpinLoop();
     },
     [],
   );
@@ -61,6 +76,7 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
     setHasSpun(true);
 
     playSound("/sounds/roulette-spin.mp3", 0.25);
+    startSpinLoop();
     trackPixelEvent("SlotSpinStart");
 
     const fastInterval = registerTimer(
@@ -81,6 +97,7 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
         registerTimer(
           setTimeout(() => {
             clearInterval(slowInterval);
+            stopSpinLoop();
             playSound("/sounds/roulette-stop.mp3", 0.2);
             const finalResult = Array(3).fill(TARGET_PRIZE);
             setReels(finalResult);
@@ -96,13 +113,14 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-5xl space-y-10">
-        <div className="space-y-4 text-center">
-          <p className="text-sm text-muted-foreground uppercase tracking-[0.3em]">Bônus 2</p>
-          <h2 className="text-[clamp(2rem,6vw,3.5rem)] font-bold text-foreground">Seu giro de bônus virou máquina de slots</h2>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto">
-            A IA acertou 14 pontos, usou os três giros dela e liberou um slot especial para você. Quando os três rolos param no MAX WIN, você garante R$500,00 de desconto instantâneo.
+    <div className="slide-shell relative">
+      <div className="casino-grid" />
+      <div className="slide-frame space-y-8 relative z-10">
+        <div className="space-y-3 text-center">
+          <p className="meta-label text-primary">Bônus 2 • Roleta da IA</p>
+          <h2 className="heading-1">Seu giro bônus virou máquina de slots</h2>
+          <p className="body-lead">
+            A IA acertou 14 pontos, usou os três giros dela e liberou um slot especial para você. Quando os três rolos param no MAX WIN, você garante R$500 de desconto instantâneo.
           </p>
           <div className="bg-primary/10 border border-primary/30 rounded-lg p-3 text-sm text-primary font-semibold inline-flex flex-col sm:flex-row gap-2 justify-center">
             <span>A IA deixou 1 chance ativa exclusivamente pra você.</span>
@@ -111,8 +129,8 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
         </div>
 
         <div className="flex flex-col lg:flex-row items-center gap-8">
-          <Card className="p-6 border-2 border-primary/40 glow-primary-strong w-full lg:w-1/2 space-y-4">
-            <div className="bg-background/80 rounded-2xl border-2 border-primary/30 shadow-inner p-6">
+          <Card className="p-6 border border-primary/40 glow-primary-strong w-full lg:w-1/2 space-y-4">
+            <div className="bg-background/80 rounded-2xl border border-primary/30 shadow-inner p-6">
               <div className={`grid grid-cols-3 gap-3 ${isSpinning ? "animate-pulse" : ""}`}>
                 {reels.map((value, index) => (
                   <div
@@ -134,12 +152,12 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
           <div className="flex-1 space-y-4 text-center lg:text-left">
             <p className="text-sm text-muted-foreground font-semibold">Prêmios possíveis:</p>
             <ul className="text-sm text-muted-foreground space-y-1">
-              <li>• R$10 OFF</li>
-              <li>• R$20 OFF</li>
-              <li>• R$50 OFF</li>
-              <li>• R$100 OFF</li>
-              <li>• R$200 OFF</li>
-              <li>• MAX WIN: R$500 OFF (desconto máximo)</li>
+              <li>🔹 R$10 OFF</li>
+              <li>🔹 R$20 OFF</li>
+              <li>🔹 R$50 OFF</li>
+              <li>🔹 R$100 OFF</li>
+              <li>🔹 R$200 OFF</li>
+              <li>🔹 MAX WIN: R$500 OFF (desconto máximo)</li>
             </ul>
             <Button
               onClick={handleSpin}
@@ -152,14 +170,12 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
 
             {result && (
               <Card className="p-4 border border-primary/40 space-y-2">
-                <p className="text-xs text-muted-foreground uppercase tracking-[0.3em]">Resultado</p>
-                <h3 className="text-2xl sm:text-3xl font-bold text-primary">MAX WIN desbloqueado!</h3>
+                <p className="meta-label text-primary">Resultado</p>
+                <h3 className="heading-3 text-primary">MAX WIN desbloqueado!</h3>
                 <p className="text-sm sm:text-base text-foreground font-semibold">
-                  Você ganhou R$500,00 de desconto para ativar a LOTER.IA agora.
+                  Você ganhou R$500 de desconto para ativar a LOTER.IA agora.
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  Aproveite enquanto o painel ainda está aberto. Vamos abrir a comemoração automaticamente.
-                </p>
+                <p className="text-sm text-muted-foreground">Aproveite enquanto o painel ainda está aberto. Vamos abrir a comemoração automaticamente.</p>
               </Card>
             )}
           </div>

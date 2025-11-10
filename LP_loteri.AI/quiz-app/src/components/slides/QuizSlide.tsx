@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -14,17 +14,17 @@ const questions = [
   {
     question: "Quando você joga na Lotofácil, o que mais te incomoda?",
     options: [
-      "Jogar sem saber se tô no caminho certo",
-      "Apostar várias vezes e nunca passar dos mesmos 8 pontos",
-      "Ver outros falando que usam sistema… e eu aqui tentando na raça",
+      "Jogar sem saber se estou no caminho certo",
+      "Apostar várias vezes e nunca passar dos mesmos 11 pontos",
+      "Ver os outros falando que usam sistema e eu aqui tentando na raça",
     ],
   },
   {
-    question: "Quantas vezes você achou que “faltou pouco”?",
+    question: 'Quantas vezes você achou que "faltou pouco"?',
     options: [
       "Sempre. 1 ou 2 números me perseguem",
       "Em quase todo jogo fico por um triz",
-      "Nunca vi mais que 9. Já tô desacreditado",
+      "Nunca passei dos 11. Já tô desacreditado",
     ],
   },
   {
@@ -32,15 +32,15 @@ const questions = [
     options: [
       "Sigo minha intuição. Sinto quando vai dar certo",
       "Vou por datas, palpites, sensação",
-      "Eu nem penso muito… só jogo e espero",
+      "Eu nem penso muito. Só jogo e espero",
     ],
   },
   {
     question: "E se pudesse testar seu palpite contra uma IA treinada?",
     options: [
-      "Toparia agora. Queria ver no que dá",
-      "Seria bom ver se tô tão errado assim",
-      "Talvez… mas acho que ela ganharia fácil",
+      "Toparia agora. Quero ver no que dá",
+      "Seria bom ver se tá tão errado assim",
+      "Talvez... mas acho que ela ganharia fácil",
     ],
   },
   {
@@ -48,7 +48,7 @@ const questions = [
     options: [
       "Parar de jogar no escuro",
       "Descobrir se meu jeito funciona ou não",
-      "Usar alguma coisa que me dê vantagem real",
+      "Usar algo que dê vantagem real",
     ],
   },
 ];
@@ -65,10 +65,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
   const answerSoundRef = useRef<HTMLAudioElement | null>(null);
   const bonusSoundRef = useRef<HTMLAudioElement | null>(null);
 
-  const answeredCount = useMemo(
-    () => answers.filter((answer) => answer !== undefined).length,
-    [answers]
-  );
+  const answeredCount = useMemo(() => answers.filter((answer) => answer !== undefined).length, [answers]);
   const coinsCollected = answeredCount * COINS_PER_ANSWER;
   const remainingCoins = Math.max(TOTAL_COINS - coinsCollected, 0);
   const progressPercentage = (answeredCount / questions.length) * 100;
@@ -89,7 +86,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
 
   useEffect(() => {
     if (toastValue === null) return;
-    const timer = setTimeout(() => setToastValue(null), 1600);
+    const timer = setTimeout(() => setToastValue(null), 1700);
     return () => clearTimeout(timer);
   }, [toastValue]);
 
@@ -108,9 +105,9 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
     trackPixelEvent("QuizAnswer", { question: currentQuestion + 1 });
 
     if (answeredCount + 1 === questions.length) {
-      setTimeout(() => setShowCompletionModal(true), 400);
+      setTimeout(() => setShowCompletionModal(true), 600);
     } else {
-      setTimeout(() => setCurrentQuestion((prev) => prev + 1), 800);
+      setTimeout(() => setCurrentQuestion((prev) => prev + 1), 900);
     }
   };
 
@@ -121,31 +118,31 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
     const timer = setTimeout(() => {
       setShowCompletionModal(false);
       onNext();
-    }, 1600);
+    }, 2100);
     return () => clearTimeout(timer);
   }, [showCompletionModal, onNext]);
 
   const current = questions[currentQuestion];
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-3xl space-y-6 relative">
+    <div className="slide-shell relative">
+      <div className="slide-frame space-y-6 relative">
         {toastValue !== null && (
           <div className="coin-toast animate-fade-in-up z-50 bg-gradient-to-r from-primary/80 to-gold/70 text-background">
             💰 Moedas coletadas! Agora você tem {toastValue}/50.
             <span className="text-xs text-background/80 block">
-              🏅 Faltam {Math.max(TOTAL_COINS - coinsCollected, 0)} moedas para liberar o Mapa dos Números Quentes
+              ⚡ Faltam {Math.max(TOTAL_COINS - coinsCollected, 0)} moedas para liberar o Mapa dos Números Quentes
             </span>
           </div>
         )}
 
         <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-2 justify-center sm:justify-start">
+            <p className="meta-label flex items-center gap-2 justify-center sm:justify-start">
               🎯 Passo {currentQuestion + 1} de {questions.length} - para desbloquear o bônus
             </p>
-            <h2 className="text-2xl font-bold text-foreground flex items-center gap-2 justify-center sm:justify-start">
-              🎮 Teste em andamento
+            <h2 className="heading-2 flex items-center gap-2 justify-center sm:justify-start">
+              🧠 Teste em andamento
             </h2>
           </div>
           <div className="text-center sm:text-right">
@@ -157,17 +154,14 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
         </div>
 
         <div className="bg-secondary rounded-full h-3 overflow-hidden progress-sheen">
-          <div
-            className="bg-primary h-3 progress-fill"
-            style={{ width: `${progressPercentage}%` }}
-          />
+          <div className="bg-primary h-3 progress-fill" style={{ width: `${progressPercentage}%` }} />
         </div>
 
-        <Card className="p-6 md:p-8 space-y-8 border-2 border-border glow-primary quiz-card">
+        <Card className="p-5 md:p-7 space-y-8 border border-border glow-primary quiz-card">
           <div className="space-y-2 text-center">
-            <h3 className="text-[clamp(1.5rem,4vw,2.5rem)] font-bold text-foreground">{current.question}</h3>
-            <p className="text-sm text-primary font-semibold">
-              Quanto mais real você responder, mais certeira fica a rota da IA.
+            <h3 className="heading-2 text-foreground">{current.question}</h3>
+            <p className="text-xs text-primary font-semibold uppercase tracking-[0.4em]">
+              Quanto mais real, mais afiada fica a IA
             </p>
           </div>
 
@@ -177,7 +171,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
                 key={option}
                 onClick={() => handleAnswer(index)}
                 variant="outline"
-                className="w-full min-h-[56px] py-5 text-left text-base md:text-lg chips-button"
+                className="w-full min-h-[56px] py-4 text-left text-base md:text-lg chips-button"
               >
                 {option}
               </Button>
@@ -190,18 +184,14 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
         <DialogContent className="max-w-sm text-center space-y-4">
           <DialogHeader>
             <DialogTitle>Destravando o Bônus 1</DialogTitle>
-            <DialogDescription>
-              Aguarde um instante enquanto carregamos o Mapa Secreto.
-            </DialogDescription>
+            <DialogDescription>Segure um pouco: estamos preparando os dados para liberar o mapa secreto.</DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col items-center gap-3 py-4">
+          <div className="flex flex-col items-center gap-3 py-5">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-sm text-muted-foreground">Transferindo fichas para liberar seu prêmio...</p>
+            <p className="text-sm text-muted-foreground">Transferindo fichas e liberando o Mapa Secreto...</p>
           </div>
         </DialogContent>
       </Dialog>
     </div>
   );
 };
-
-

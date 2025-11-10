@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { trackPixelEvent } from "@/lib/analytics";
@@ -8,10 +8,10 @@ interface EntrySlideProps {
 }
 
 const journeySteps = [
-  "Responda as 5 perguntas para garantir seu bônus inicial.",
-  "Receba o “Mapa dos Números Quentes” com os números com maior chance de sorteio.",
-  "Teste sua Intuição contra a Inteligência Artificial.",
-  "Gire a roleta e concorra a R$500,00 em prêmios.",
+  "Responda 5 perguntas rápidas para garantir seu bônus inicial.",
+  'Receba o "Mapa dos Números Quentes" com as maiores probabilidades.',
+  "Teste sua intuição contra a Inteligência Artificial.",
+  "Gire a roleta e concorra a R$500 em prêmios.",
 ];
 
 export const EntrySlide = ({ onNext }: EntrySlideProps) => {
@@ -27,7 +27,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
     introSoundRef.current.volume = 0.08;
     slotSoundRef.current = new Audio("/sounds/slot-loop.mp3");
     slotSoundRef.current.loop = true;
-    slotSoundRef.current.volume = 0.04;
+    slotSoundRef.current.volume = 0.05;
     clickSoundRef.current = new Audio("/sounds/game-start.mp3");
 
     return () => {
@@ -42,7 +42,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
     const timer = setTimeout(() => {
       setLoading(false);
       setTimeout(() => setCtaReady(true), 600);
-    }, 3200);
+    }, 3600);
     return () => clearTimeout(timer);
   }, []);
 
@@ -52,7 +52,6 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
     }, 450);
     return () => clearInterval(dotsInterval);
   }, []);
-
 
   const handleHover = (isHovering: boolean) => {
     if (!slotSoundRef.current) return;
@@ -73,56 +72,45 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
+    <div className="slide-shell relative">
+      <div className="casino-grid" />
+      <div className="absolute inset-0 opacity-25 pointer-events-none">
         <div className="casino-orb orb-one" />
         <div className="casino-orb orb-two" />
         <div className="casino-orb orb-three" />
       </div>
 
-      <div className="w-full max-w-4xl text-center space-y-8 relative z-10">
-        <div className="space-y-6 animate-fade-in px-2">
+      <div className="slide-frame text-center space-y-8 relative z-10">
+        <div className="space-y-5 animate-fade-in">
           <img
             src="https://i.ibb.co/r2FFdKRw/Logo-Lumen-1.png"
             alt="LOTER.IA"
-            className="mx-auto w-32 sm:w-40 drop-shadow-[0_0_20px_rgba(16,185,129,0.45)] pulse-glow"
+            className="mx-auto w-28 drop-shadow-[0_0_20px_rgba(16,185,129,0.45)] pulse-glow"
           />
-          <h1 className="text-[clamp(2rem,7vw,4rem)] font-bold text-foreground leading-tight text-glow">
-            Tem gente ganhando na Lotofácil sem depender da sorte.
+          <h1 className="heading-hero text-glow">
+            Lotofácil com +11 pontos não é sorte. É método.
           </h1>
-          <p className="text-[clamp(1.1rem,4vw,1.8rem)] text-muted-foreground">
-            E o segredo deles acabou de ser liberado pra você.
+          <p className="body-lead">
+            Você está prestes a ver como insiders deixam os 11 pontos para trás com IA, sem depender de sorte.
           </p>
-          <div className="space-y-2">
-            <p className="text-lg text-foreground flex justify-center gap-2">
-              <span role="img" aria-hidden="true">
-                🎯
-              </span>
-              Eles acertam porque jogam com inteligência e estatística.
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Hoje você vai descobrir o mesmo sistema e ainda testar de graça.
-            </p>
-          </div>
         </div>
 
-        <div className="bg-card border-2 border-primary/50 rounded-2xl p-4 sm:p-8 glow-primary-strong relative overflow-hidden">
+        <div className="bg-card border border-primary/40 rounded-2xl p-4 sm:p-6 glow-primary relative overflow-hidden">
           <div className="space-y-6">
             {loading ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-center gap-3">
-                  <Loader2 className="w-8 h-8 text-primary animate-spin" />
-                  <span className="text-lg sm:text-xl font-bold text-foreground">
-                    Carregando sistema de prêmios{dots}
-                  </span>
+                  <Loader2 className="w-7 h-7 text-primary animate-spin" />
+                  <span className="heading-3">Carregando sistema de prêmios{dots}</span>
                 </div>
-                <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                  Carregando painel da IA... aguarde alguns segundos e jogue como os insiders.
-                </p>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                O painel da IA está calibrando probabilidades em tempo real. Segure um pouco — cada dado precisa encaixar.
+              </p>
               </div>
             ) : (
-              <div className="space-y-6">
-                <div className="journey-list text-left space-y-2 px-2">
+              <div className="space-y-5">
+                <p className="text-sm text-muted-foreground uppercase tracking-[0.3em]">Jornada do insider</p>
+                <div className="journey-list text-left space-y-2 px-1">
                   {journeySteps.map((item, idx) => (
                     <div key={idx} className="text-sm text-foreground flex items-start gap-2">
                       <span role="img" aria-hidden="true">
@@ -142,7 +130,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
                 onClick={handleStart}
                 size="lg"
                 disabled={!ctaReady}
-                className={`relative overflow-hidden w-full text-xl sm:text-2xl py-6 sm:py-10 font-bold shadow-2xl transition-all rounded-2xl ${
+                className={`relative overflow-hidden w-full text-lg sm:text-xl py-5 sm:py-6 font-bold shadow-2xl transition-all rounded-2xl ${
                   ctaReady ? "bg-primary hover:bg-primary-glow text-primary-foreground glow-primary-strong pulse-glow transform hover:scale-105" : "bg-muted text-muted-foreground"
                 }`}
               >
@@ -159,6 +147,9 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
                   </span>
                 )}
               </Button>
+              <p className="text-xs text-muted-foreground">
+                Experiência guiada: responda rápido e o sistema libera os bônus na sequência certa.
+              </p>
             </div>
           </div>
         </div>

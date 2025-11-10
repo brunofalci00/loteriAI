@@ -1,5 +1,6 @@
-﻿import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 interface TestimonialsSlideProps {
   onNext: () => void;
@@ -24,23 +25,22 @@ const testimonials = [
 ];
 
 export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
+  useSoundEffect("/sounds/slot-loop.mp3", { loop: true, volume: 0.03 });
+
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-5xl space-y-10 text-center">
+    <div className="slide-shell relative">
+      <div className="casino-grid" />
+      <div className="slide-frame space-y-8 text-center relative z-10">
         <div className="space-y-3">
-          <img
-            src="https://i.ibb.co/r2FFdKRw/Logo-Lumen-1.png"
-            alt="LOTER.IA"
-            className="mx-auto w-28 sm:w-36 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]"
-          />
-          <h1 className="text-[clamp(2rem,6vw,3.5rem)] font-bold text-foreground flex items-center justify-center gap-2 text-glow">
+          <img src="https://i.ibb.co/r2FFdKRw/Logo-Lumen-1.png" alt="LOTER.IA" className="mx-auto w-24 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]" />
+          <h1 className="heading-1 flex items-center justify-center gap-2 text-glow text-center">
             <span role="img" aria-hidden="true">
-              🗣️
+              🎥
             </span>
-            Depoimentos reais rodando agora
+            Antes de girar a roleta, veja o que os nossos usuários estão achando da LOTER.IA
           </h1>
-          <p className="text-base sm:text-lg text-muted-foreground">
-            São centenas jogando com a LOTER.IA neste momento — sinta a energia dentro do painel.
+          <p className="body-lead">
+            São centenas jogando com a LOTER.IA neste momento — sinta a energia antes de liberar seu giro.
           </p>
         </div>
 

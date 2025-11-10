@@ -38,6 +38,10 @@ export const trackPixelEvent = (event: string, payload?: Record<string, unknown>
       handler: "fbCAPI_trackAddToCart",
       defaults: { contentName: "Oferta MAX WIN", value: 37, currency: "BRL" },
     },
+    WhatsAppSupportClick: {
+      handler: "fbCAPI_trackLead",
+      defaults: { contentName: "Suporte WhatsApp" },
+    },
     MaxWinCTA: {
       handler: "fbCAPI_trackInitiateCheckout",
       defaults: { contentName: "CTA Pré-Checkout", value: 37, currency: "BRL" },

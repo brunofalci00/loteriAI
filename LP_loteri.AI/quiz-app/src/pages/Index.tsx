@@ -1,26 +1,31 @@
-﻿import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CoinCounter } from "@/components/CoinCounter";
+import { ExitIntentOverlay } from "@/components/ExitIntentOverlay";
 import { EntrySlide } from "@/components/slides/EntrySlide";
 import { QuizSlide } from "@/components/slides/QuizSlide";
-import { BlockSlide } from "@/components/slides/BlockSlide";
+import { BonusUnlockLoadingSlide } from "@/components/slides/BonusUnlockLoadingSlide";
 import { BonusMapSlide } from "@/components/slides/BonusMapSlide";
 import { IntuitionGameSlide } from "@/components/slides/IntuitionGameSlide";
 import { UserResultSlide } from "@/components/slides/UserResultSlide";
+import { AISyncLoadingSlide } from "@/components/slides/AISyncLoadingSlide";
 import { AISimulationSlide } from "@/components/slides/AISimulationSlide";
 import { TestimonialsSlide } from "@/components/slides/TestimonialsSlide";
 import { RouletteBonusSlide } from "@/components/slides/RouletteBonusSlide";
 import { MaxWinCelebrationSlide } from "@/components/slides/MaxWinCelebrationSlide";
 import { FinalOfferSlide } from "@/components/slides/FinalOfferSlide";
+import { useExitIntent } from "@/hooks/useExitIntent";
 
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [coins, setCoins] = useState(0);
   const [coinDelta, setCoinDelta] = useState(0);
-  const [userScore, setUserScore] = useState(7);
+  const [userScore, setUserScore] = useState(11);
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const aiScore = 14;
   const [userSpins, setUserSpins] = useState(1);
   const aiSpins = 3;
+  const [showExitOverlay, setShowExitOverlay] = useState(false);
+  const { exitIntentTriggered, acknowledge } = useExitIntent(currentSlide > 0);
 
   const handleCoinsEarned = (amount: number) => {
     setCoins((prev) => prev + amount);
@@ -33,16 +38,32 @@ const Index = () => {
 
   const handleIntuitionComplete = (selection: number[]) => {
     setSelectedNumbers(selection);
-    setUserScore(7);
+    setUserScore(11);
+  };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentSlide]);
+
+  useEffect(() => {
+    if (exitIntentTriggered) {
+      setShowExitOverlay(true);
+    }
+  }, [exitIntentTriggered]);
+
+  const handleExitOverlayClose = () => {
+    setShowExitOverlay(false);
+    acknowledge();
   };
 
   const slides = [
     <EntrySlide key="entry" onNext={handleNext} />,
     <QuizSlide key="quiz" onNext={handleNext} onCoinsEarned={handleCoinsEarned} />,
-    <BlockSlide key="block" onNext={handleNext} coinsEarned={coins} />,
+    <BonusUnlockLoadingSlide key="bonus-loading" onNext={handleNext} />,
     <BonusMapSlide key="bonus-map" onNext={handleNext} />,
     <IntuitionGameSlide key="intuition" onNext={handleNext} onComplete={handleIntuitionComplete} />,
     <UserResultSlide key="user-result" onNext={handleNext} userScore={userScore} selectedNumbers={selectedNumbers} />,
+    <AISyncLoadingSlide key="ai-sync" onNext={handleNext} userScore={userScore} />,
     <AISimulationSlide
       key="ai-simulation"
       onNext={handleNext}
@@ -52,20 +73,16 @@ const Index = () => {
       aiSpins={aiSpins}
     />,
     <TestimonialsSlide key="testimonials" onNext={handleNext} />,
-    <RouletteBonusSlide
-      key="roulette"
-      onNext={handleNext}
-      userSpins={userSpins}
-      onSpinComplete={() => setUserSpins(0)}
-    />,
+    <RouletteBonusSlide key="roulette" onNext={handleNext} userSpins={userSpins} onSpinComplete={() => setUserSpins(0)} />,
     <MaxWinCelebrationSlide key="max-win" onNext={handleNext} />,
     <FinalOfferSlide key="final-offer" />,
   ];
 
   return (
-    <div className="relative">
+    <div className="relative overflow-x-hidden">
       {currentSlide > 0 && currentSlide < slides.length - 1 && <CoinCounter coins={coins} delta={coinDelta} />}
       {slides[currentSlide]}
+      <ExitIntentOverlay open={showExitOverlay} coinsEarned={coins} onStay={handleExitOverlayClose} />
     </div>
   );
 };

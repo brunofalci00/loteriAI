@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -20,6 +20,7 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
   const [phase, setPhase] = useState<Phase>("scan");
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [verdictReady, setVerdictReady] = useState(false);
+  const [showSpinReveal, setShowSpinReveal] = useState(false);
   const processingRef = useRef<HTMLAudioElement | null>(null);
   const aiSelectSoundRef = useRef<HTMLAudioElement | null>(null);
   const aiResultSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -46,9 +47,11 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
   }, []);
 
   useEffect(() => {
+    const selectionDelay = 3200;
+    const verdictDelay = selectionDelay + AI_NUMBERS.length * 320 + 2400;
     const timers = [
-      setTimeout(() => setPhase("selection"), 2600),
-      setTimeout(() => setPhase("verdict"), 2600 + AI_NUMBERS.length * 260 + 1600),
+      setTimeout(() => setPhase("selection"), selectionDelay),
+      setTimeout(() => setPhase("verdict"), verdictDelay),
     ];
     return () => timers.forEach(clearTimeout);
   }, []);
@@ -67,7 +70,7 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
       if (index >= AI_NUMBERS.length) {
         clearInterval(timer);
       }
-    }, 260);
+    }, 320);
     return () => clearInterval(timer);
   }, [phase]);
 
@@ -76,7 +79,7 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
     processingRef.current?.pause();
     processingRef.current = null;
     setVerdictReady(false);
-    const timer = setTimeout(() => setVerdictReady(true), 1800);
+    const timer = setTimeout(() => setVerdictReady(true), 2200);
     return () => clearTimeout(timer);
   }, [phase]);
 
@@ -84,33 +87,36 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
     if (!verdictReady) return;
     aiResultSoundRef.current?.play().catch(() => undefined);
     trackPixelEvent("AISimulationVerdict", { userScore, aiScore });
+    const timer = setTimeout(() => setShowSpinReveal(true), 600);
+    return () => clearTimeout(timer);
   }, [verdictReady, userScore, aiScore]);
 
   const allNumbers = Array.from({ length: 25 }, (_, i) => i + 1);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-4xl space-y-6">
-        <Card className="p-6 border-2 border-primary/30">
+    <div className="slide-shell relative">
+      <div className="casino-grid" />
+      <div className="slide-frame space-y-6 relative z-10">
+        <Card className="p-5 border border-primary/30">
           <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
             <div>
-              <p className="text-primary font-bold uppercase tracking-[0.3em]">Modo IA ativo</p>
+              <p className="meta-label text-primary">Modo IA ativo</p>
               <p className="text-muted-foreground">
                 {phase === "scan"
-                  ? "A IA está auditando seu jogo agora..."
+                  ? "A IA está auditando o seu jogo agora."
                   : phase === "selection"
-                  ? "Selecionando combinações com maior chance..."
-                  : "Comparando resultados para liberar seu giro"}
+                  ? "Selecionando combinações com maior chance."
+                  : "Comparando resultados para liberar seu giro."}
               </p>
             </div>
             <div className="text-right text-xs text-muted-foreground">
-              IA usou {aiSpins} giros hoje • Seu giro bônus: {userSpins}
+              Painel protegido em tempo real
             </div>
           </div>
         </Card>
 
         {phase === "scan" && (
-          <Card className="p-8 flex flex-col items-center gap-4 border-2 border-border">
+          <Card className="p-8 flex flex-col items-center gap-4 border border-border">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
             <p className="text-center text-sm text-muted-foreground">
               IA conectando na sua aposta, auditando 2.500 sorteios anteriores e calculando probabilidades...
@@ -119,16 +125,13 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
         )}
 
         {phase === "selection" && (
-          <Card className="p-6 space-y-4 border-2 border-border">
+          <Card className="p-6 space-y-4 border border-border">
             <p className="text-center text-sm text-muted-foreground">
               IA escolhendo 15 números com maior probabilidade neste momento
             </p>
             <div className="grid grid-cols-5 gap-2 sm:gap-3">
               {allNumbers.map((num) => (
-                <div
-                  key={num}
-                  className={`number-cell ${selectedNumbers.includes(num) ? "number-cell--active" : ""}`}
-                >
+                <div key={num} className={`number-cell ${selectedNumbers.includes(num) ? "number-cell--active" : ""}`}>
                   {num}
                 </div>
               ))}
@@ -137,10 +140,10 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
         )}
 
         {phase === "verdict" && (
-          <Card className="p-6 space-y-6 border-2 border-border">
+          <Card className="p-6 space-y-6 border border-border">
             <div className="space-y-2 text-center">
-              <p className="text-sm text-muted-foreground uppercase">Comparativo final</p>
-              <p className="text-xl font-bold text-foreground">A IA está jogando por você agora.</p>
+              <p className="meta-label">Comparativo final</p>
+              <p className="heading-3">A IA está jogando por você agora.</p>
             </div>
             {verdictReady ? (
               <>
@@ -156,11 +159,18 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
                   </div>
                 </div>
                 <div className="space-y-2 text-center text-sm text-muted-foreground">
-                  <p>A IA cravou {aiScore} pontos. Comparando seu jogo com o dela… a diferença ficou clara.</p>
-                  <p>Você não ganhou os 3 giros, mas ela separou um giro de bônus exclusivo pra você concorrer a até R$500,00.</p>
-                  <p>Enquanto você jogava com intuição, ela já rodava estatística real. Agora é sua vez de usar esse giro.</p>
+                  <p>A IA cravou {aiScore} pontos enquanto você travou nos {userScore}. Diferença clara.</p>
+                  <p>Você não ganhou os 3 giros, mas ela separou um bônus exclusivo de até R$500.</p>
+                  <p>Enquanto você jogava com intuição, ela rodava estatística real. Agora é sua vez de usar esse giro.</p>
                 </div>
-                <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 sm:py-6 flex items-center justify-center gap-2">
+                {showSpinReveal && (
+                  <div className="bg-secondary rounded-2xl p-4 border border-primary/20 text-sm text-left sm:text-center space-y-1">
+                    <p className="font-semibold text-primary">Surpresa do painel</p>
+                    <p>Ela usou {aiSpins} giros agora e deixou 1 giro bônus reservado só pra você.</p>
+                    <p className="text-muted-foreground">Esse giro pode liberar até R$500 em bônus dentro da roleta.</p>
+                  </div>
+                )}
+                <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 flex items-center justify-center gap-2">
                   <span role="img" aria-hidden="true">
                     🎰
                   </span>
