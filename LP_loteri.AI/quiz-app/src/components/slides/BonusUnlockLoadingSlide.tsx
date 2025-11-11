@@ -57,7 +57,11 @@ export const BonusUnlockLoadingSlide = ({ onNext }: BonusUnlockLoadingSlideProps
           </div>
 
           <div className="loading-visual">
-            <img src="/placeholder.svg" alt="Cofre digital segurando suas moedas" loading="lazy" />
+            <img
+              src="https://i.ibb.co/wrYL4fMd/como-funciona-o-jogo-lotofacil.webp"
+              alt="Imagem explicativa do funcionamento do jogo Lotofacil"
+              loading="lazy"
+            />
             <div className="loading-visual__badges">
               {visualBadges.map((badge) => (
                 <span key={badge.label} className="loading-visual__badge">

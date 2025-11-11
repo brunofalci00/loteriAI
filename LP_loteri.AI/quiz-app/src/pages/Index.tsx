@@ -56,6 +56,8 @@ const Index = () => {
     acknowledge();
   };
 
+  const FIRST_BONUS_UNLOCK_SLIDE_INDEX = 3;
+
   const slides = [
     <EntrySlide key="entry" onNext={handleNext} />,
     <QuizSlide key="quiz" onNext={handleNext} onCoinsEarned={handleCoinsEarned} />,
@@ -78,9 +80,11 @@ const Index = () => {
     <FinalOfferSlide key="final-offer" />,
   ];
 
+  const shouldShowCoinCounter = currentSlide > 0 && currentSlide <= FIRST_BONUS_UNLOCK_SLIDE_INDEX;
+
   return (
     <div className="relative overflow-x-hidden">
-      {currentSlide > 0 && currentSlide < slides.length - 1 && <CoinCounter coins={coins} delta={coinDelta} />}
+      {shouldShowCoinCounter && <CoinCounter coins={coins} delta={coinDelta} />}
       {slides[currentSlide]}
       <ExitIntentOverlay open={showExitOverlay} coinsEarned={coins} onStay={handleExitOverlayClose} />
     </div>

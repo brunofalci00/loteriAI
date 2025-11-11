@@ -36,7 +36,7 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
 
   return (
     <div className="slide-shell relative">
-      <ConfettiEffect trigger={showConfetti} />
+      <ConfettiEffect trigger={showConfetti} variant="emoji-rain" />
       <div className="casino-grid" />
       <div className="slide-frame space-y-6 relative z-10">
         <div className="text-center space-y-3">

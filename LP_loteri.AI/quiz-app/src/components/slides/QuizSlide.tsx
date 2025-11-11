@@ -89,11 +89,55 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
     return () => clearTimeout(timer);
   }, [recentGain]);
 
-  const handleAnswer = (answerIndex: number) => {
+  const animateCoinJourney = (sourceButton: HTMLButtonElement) => {
+    if (typeof document === "undefined") return;
+    const target = document.querySelector(".coin-status-card") as HTMLElement | null;
+    if (!target) return;
+
+    const sourceRect = sourceButton.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const coin = document.createElement("span");
+    coin.className = "flying-coin";
+
+    const coinSize = 32;
+    const startX = sourceRect.left + sourceRect.width / 2 - coinSize / 2;
+    const startY = sourceRect.top + sourceRect.height / 2 - coinSize / 2;
+    coin.style.left = `${startX}px`;
+    coin.style.top = `${startY}px`;
+    coin.style.width = `${coinSize}px`;
+    coin.style.height = `${coinSize}px`;
+
+    document.body.appendChild(coin);
+
+    const deltaX = targetRect.left + targetRect.width / 2 - (sourceRect.left + sourceRect.width / 2);
+    const deltaY = targetRect.top + targetRect.height / 2 - (sourceRect.top + sourceRect.height / 2);
+    const arcX = deltaX * 0.25;
+    const liftY = Math.min(deltaY - 80, -80);
+
+    const animation = coin.animate(
+      [
+        { transform: "translate3d(0, 0, 0) scale(0.9) rotate(-8deg)", opacity: 0.9 },
+        { offset: 0.4, transform: `translate3d(${arcX}px, ${liftY}px, 0) scale(1.08) rotate(220deg)`, opacity: 1 },
+        { offset: 1, transform: `translate3d(${deltaX}px, ${deltaY}px, 0) scale(0.8) rotate(520deg)`, opacity: 0 },
+      ],
+      {
+        duration: 1700,
+        easing: "cubic-bezier(0.22, 0.7, 0.25, 1)",
+        fill: "forwards",
+      },
+    );
+
+    animation.onfinish = () => coin.remove();
+    animation.oncancel = () => coin.remove();
+  };
+
+  const handleAnswer = (answerIndex: number, buttonElement: HTMLButtonElement) => {
     if (answers[currentQuestion] !== undefined) return;
 
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = answerIndex;
+
+    animateCoinJourney(buttonElement);
     setAnswers(newAnswers);
     onCoinsEarned(COINS_PER_ANSWER);
     setRecentGain(COINS_PER_ANSWER);
@@ -169,7 +213,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
             {current.options.map((option, index) => (
               <Button
                 key={option}
-                onClick={() => handleAnswer(index)}
+                onClick={(event) => handleAnswer(index, event.currentTarget)}
                 variant="outline"
                 className="w-full min-h-[52px] sm:min-h-[56px] py-3 sm:py-4 text-left text-sm sm:text-base md:text-lg chips-button"
               >

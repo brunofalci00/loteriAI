@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 interface TestimonialsSlideProps {
   onNext: () => void;
@@ -25,8 +24,6 @@ const testimonials = [
 ];
 
 export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
-  useSoundEffect("/sounds/slot-loop.mp3", { loop: true, volume: 0.03 });
-
   return (
     <div className="slide-shell relative">
       <div className="casino-grid" />

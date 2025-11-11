@@ -478,6 +478,24 @@ All colors MUST be HSL.
     );
   }
 
+  .flying-coin {
+    position: fixed;
+    z-index: 60;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, hsl(var(--gold) / 0.95), hsl(var(--primary) / 0.85) 60%, hsl(35 90% 55%));
+    border: 2px solid hsl(var(--gold) / 0.75);
+    box-shadow: 0 15px 30px hsl(var(--gold) / 0.35);
+    pointer-events: none;
+    display: grid;
+    place-items: center;
+  }
+
+  .flying-coin::after {
+    content: "🪙";
+    font-size: 0.9rem;
+    filter: drop-shadow(0 2px 4px hsl(var(--background) / 0.3));
+  }
+
   .coin-counter {
     position: fixed;
     top: 1.5rem;
