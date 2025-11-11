@@ -28,6 +28,15 @@ interface ResultsDisplayProps {
   contestNumber?: number;
   generationId?: string | null;
   userId?: string | null;
+  featuredCombination?: {
+    numbers: number[];
+    hotCount: number;
+    coldCount: number;
+    balancedCount: number;
+    lotteryType: string;
+    lotteryName: string;
+    contestNumber?: number;
+  } | null;
 }
 
 export const ResultsDisplay = ({
@@ -40,6 +49,7 @@ export const ResultsDisplay = ({
   contestNumber,
   generationId = null,
   userId = null,
+  featuredCombination = null,
 }: ResultsDisplayProps) => {
   const confidenceColors = {
     baixa: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
@@ -48,6 +58,24 @@ export const ResultsDisplay = ({
   };
 
   const isHotNumber = (num: number) => stats.hotNumbers?.includes(num);
+
+  const deriveFeaturedCombination = (): ResultsDisplayProps['featuredCombination'] => {
+    if (!combinations.length) return null;
+    const combo = combinations[0];
+    const hotCount = combo.filter((n) => stats.hotNumbers?.includes(n)).length;
+    const coldCount = combo.filter((n) => stats.coldNumbers?.includes(n)).length;
+    return {
+      numbers: combo,
+      hotCount,
+      coldCount,
+      balancedCount: combo.length - hotCount - coldCount,
+      lotteryName,
+      lotteryType,
+      contestNumber,
+    };
+  };
+
+  const bannerCombination = featuredCombination ?? deriveFeaturedCombination();
 
   return (
     <div className="space-y-6">
@@ -85,7 +113,12 @@ export const ResultsDisplay = ({
       </div>
 
       {/* High Score Banner - Tier S moment (75%+ accuracy) */}
-      <HighScoreBanner accuracyRate={stats.accuracy} animate={true} userId={userId} />
+      <HighScoreBanner
+        accuracyRate={stats.accuracy}
+        animate={true}
+        userId={userId}
+        featuredCombination={bannerCombination || undefined}
+      />
 
       {/* Como chegamos nestes números */}
       {(stats.hotNumbers || strategy) && (

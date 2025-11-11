@@ -22,15 +22,15 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ShareButton } from '@/components/ShareButton';
-import { Sparkles, TrendingUp, Zap, CheckCircle, MessageSquare } from 'lucide-react';
+import { Sparkles, TrendingUp, Zap, CheckCircle, MessageSquare, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { dispatchFeedbackEvent } from '@/hooks/useFeedbackModal';
-
-const STORAGE_KEY = 'loter_ia_first_generation';
+import { isFirstGeneration, markFirstGenerationComplete } from '@/utils/firstGenerationStorage';
 
 export interface FirstGenerationModalProps {
   /**
@@ -50,6 +50,8 @@ export interface FirstGenerationModalProps {
     gamesGenerated: number;
     accuracy: number;
     lotteryName: string;
+    lotteryType?: string;
+    contestNumber?: number;
   };
 
   /**
@@ -61,29 +63,16 @@ export interface FirstGenerationModalProps {
    * Callback após compartilhamento bem-sucedido
    */
   onShareSuccess?: () => void;
-}
 
-/**
- * Verifica se é a primeira geração do usuário
- */
-export function isFirstGeneration(): boolean {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return !stored || stored !== 'true';
-  } catch {
-    return true;
-  }
-}
-
-/**
- * Marca primeira geração como concluída
- */
-export function markFirstGenerationComplete(): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, 'true');
-  } catch (error) {
-    console.error('Erro ao marcar primeira geração:', error);
-  }
+  /**
+   * Combinação destacada para compartilhar
+   */
+  featuredCombination?: {
+    numbers: number[];
+    hotCount: number;
+    coldCount: number;
+    balancedCount: number;
+  } | null;
 }
 
 /**
@@ -95,6 +84,7 @@ export function FirstGenerationModal({
   stats,
   userId = null,
   onShareSuccess,
+  featuredCombination = null,
 }: FirstGenerationModalProps) {
   const [hasShared, setHasShared] = useState(false);
 
@@ -130,10 +120,16 @@ export function FirstGenerationModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="relative sm:max-w-lg max-h-[85vh] overflow-y-auto p-5 sm:p-6 space-y-4">
+        <DialogClose
+          className="absolute right-3 top-3 rounded-full p-2 text-muted-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+          aria-label="Fechar"
+        >
+          <X className="h-4 w-4" />
+        </DialogClose>
         <DialogHeader>
           <div className="flex items-center justify-center mb-4">
-            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
+            <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
               <Sparkles className="h-8 w-8 text-white" />
             </div>
           </div>
@@ -207,10 +203,29 @@ export function FirstGenerationModal({
               <p className="text-xs text-emerald-700">
                 Seu primeiro compartilhamento tem recompensa em dobro!
               </p>
+              {featuredCombination && (
+                <p className="text-xs text-emerald-700 mt-1">
+                  Esse jogo mistura {featuredCombination.hotCount} quentes e {featuredCombination.coldCount} frios para buscar padrões que estão voltando.
+                </p>
+              )}
             </div>
 
             <ShareButton
               context="first-gen"
+              payload={
+                featuredCombination
+                  ? {
+                      lotteryName: stats.lotteryName,
+                      lotteryType: stats.lotteryType,
+                      contestNumber: stats.contestNumber,
+                      numbers: featuredCombination.numbers,
+                      hotCount: featuredCombination.hotCount,
+                      coldCount: featuredCombination.coldCount,
+                      balancedCount: featuredCombination.balancedCount,
+                      source: 'ai',
+                    }
+                  : undefined
+              }
               variant="primary"
               size="lg"
               celebratory={true}

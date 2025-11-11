@@ -10,7 +10,9 @@
  * @date 2025-01-03
  */
 
-import type { SavedGame } from './savedGamesService';
+import type { SavedGame, SavedGameAnalysisResult } from './savedGamesService';
+import type { ShareNumbersPayload } from '@/types/share';
+import { formatCompactSharePayload } from '@/utils/sharePayloadFormatter';
 
 /**
  * Mapeia tipo de loteria para nome amigável
@@ -24,48 +26,58 @@ const lotteryNames: Record<string, string> = {
   'timemania': 'Timemania',
 };
 
+function buildSharePayloadFromGame(game: SavedGame): ShareNumbersPayload {
+  const numbers = Array.isArray(game.numbers) ? game.numbers : [];
+  const sortedNumbers = [...numbers].sort((a, b) => a - b);
+  const analysis = game.analysis_result as SavedGameAnalysisResult | null;
+
+  return {
+    lotteryType: game.lottery_type,
+    lotteryName: lotteryNames[game.lottery_type] || game.lottery_type,
+    contestNumber: game.contest_number,
+    numbers: sortedNumbers,
+    hotCount: analysis?.hotCount ?? undefined,
+    coldCount: analysis?.coldCount ?? undefined,
+    balancedCount: analysis?.balancedCount ?? undefined,
+    strategyLabel: game.strategy_type ?? undefined,
+    source: game.source === 'ai_generated' ? 'ai' : 'manual',
+  };
+}
+
 /**
  * Formata jogo para compartilhamento (WhatsApp e TXT)
  */
 export function formatGameForSharing(game: SavedGame): string {
-  const lotteryName = lotteryNames[game.lottery_type] || game.lottery_type;
-
-  // Formatação de números
-  const numbers = Array.isArray(game.numbers) ? game.numbers : [];
-  const sortedNumbers = [...numbers].sort((a, b) => a - b);
-  const numbersFormatted = sortedNumbers.map(n => n.toString().padStart(2, '0')).join(', ');
-
-  // Análise do jogo
-  const analysis = game.analysis_result as any;
-  const hotCount = analysis?.hotCount || 0;
-  const coldCount = analysis?.coldCount || 0;
-  const balancedCount = analysis?.balancedCount || 0;
+  const payload = buildSharePayloadFromGame(game);
+  const compact = formatCompactSharePayload(payload);
 
   // Formatação de data
   const date = new Date(game.saved_at);
   const dateFormatted = date.toLocaleDateString('pt-BR');
   const timeFormatted = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-  let text = `🎰 *Jogo ${lotteryName} - Concurso #${game.contest_number}*\n\n`;
+  let text = compact ? `${compact}\n\n` : '';
 
   if (game.name) {
     text += `📝 *Nome:* ${game.name}\n\n`;
   }
 
-  text += `📊 *Números ${game.source === 'ai_generated' ? 'gerados pela LOTER.IA' : 'selecionados'}:*\n`;
-  text += `${numbersFormatted}\n\n`;
-
-  text += `🔥 *Números quentes:* ${hotCount}\n`;
-  text += `❄️ *Números frios:* ${coldCount}\n`;
-  text += `⚖️ *Balanceados:* ${balancedCount}\n\n`;
+  const strategyNames: Record<string, string> = {
+    'balanced': 'Balanceada',
+    'hot_focused': 'Focada em Quentes',
+    'cold_focused': 'Focada em Frios',
+  };
 
   if (game.strategy_type) {
-    const strategyNames: Record<string, string> = {
-      'balanced': 'Balanceada',
-      'hot_focused': 'Focada em Quentes',
-      'cold_focused': 'Focada em Frios',
-    };
-    text += `🎯 *Estratégia:* ${strategyNames[game.strategy_type] || game.strategy_type}\n\n`;
+    text += `🎯 *Estratégia:* ${strategyNames[game.strategy_type] || game.strategy_type}\n`;
+  }
+
+  if (typeof payload.hotCount === 'number' || typeof payload.coldCount === 'number') {
+    text += `🔥 Quentes: ${payload.hotCount ?? 0} • ❄️ Frios: ${payload.coldCount ?? 0}\n`;
+  }
+
+  if (typeof payload.balancedCount === 'number') {
+    text += `⚖️ Balanceados: ${payload.balancedCount}\n`;
   }
 
   text += `✅ *Salvo em:* ${dateFormatted} às ${timeFormatted}\n`;

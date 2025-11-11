@@ -26,11 +26,12 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ShareButton } from '@/components/ShareButton';
-import { Trophy, CheckCircle, Sparkles } from 'lucide-react';
+import { Trophy, CheckCircle, Sparkles, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { markMilestoneCelebrated, type MilestoneData } from '@/services/milestoneService';
 
@@ -169,10 +170,16 @@ export function MilestoneCelebrationModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="relative sm:max-w-lg max-h-[85vh] overflow-y-auto p-5 sm:p-6 space-y-4">
+        <DialogClose
+          className="absolute right-3 top-3 rounded-full p-2 text-muted-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+          aria-label="Fechar"
+        >
+          <X className="h-4 w-4" />
+        </DialogClose>
         <DialogHeader>
           <div className="flex items-center justify-center mb-4">
-            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
+            <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
               <span className="text-4xl">{milestone.emoji}</span>
             </div>
           </div>
@@ -232,6 +239,9 @@ export function MilestoneCelebrationModal({
               </p>
               <p className="text-xs text-emerald-700">
                 Mostre para seus amigos quantos jogos você já criou!
+              </p>
+              <p className="text-xs text-emerald-700">
+                Lembre-se: manter jogos com números frios ajuda a capturar padrões que podem voltar. Continue salvando suas melhores misturas!
               </p>
             </div>
 

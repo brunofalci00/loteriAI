@@ -30,6 +30,8 @@ import { shouldShowFeedbackToast, markFeedbackToastShown } from '@/utils/feedbac
 import { dispatchFeedbackEvent } from '@/hooks/useFeedbackModal';
 import { useCreditsStatus } from '@/hooks/useUserCredits';
 import type { ShareEvent } from '@/services/shareTrackingService';
+import type { ShareNumbersPayload, ShareEventData } from '@/types/share';
+import { invokeSupabaseFunction } from '@/utils/shareTrackingClient';
 
 export interface ShareButtonProps {
   /**
@@ -40,11 +42,12 @@ export interface ShareButtonProps {
   /**
    * Dados opcionais para personalização da mensagem
    */
-  data?: {
-    score?: number;
-    accuracyRate?: number;
-    milestone?: number;
-  };
+  data?: ShareEventData;
+
+  /**
+   * Payload com números/formatações para mensagem
+   */
+  payload?: ShareNumbersPayload;
 
   /**
    * Variante visual do botão
@@ -68,6 +71,11 @@ export interface ShareButtonProps {
    * Texto customizado do botão (default: "Compartilhar")
    */
   label?: string;
+
+  /**
+   * Mensagem customizada (sobrepõe geração automática)
+   */
+  messageOverride?: string;
 
   /**
    * Mostrar contador de créditos no botão
@@ -110,6 +118,8 @@ export function ShareButton({
   userId,
   onShareSuccess,
   className = '',
+  payload,
+  messageOverride,
 }: ShareButtonProps) {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -134,9 +144,17 @@ export function ShareButton({
       }
 
       // Gerar mensagem
-      const message = useABTest
-        ? getABTestMessage(context as any, data)
-        : getMessageForContext(context, data);
+      const combinedData: ShareEventData | undefined =
+        data || payload ? { ...(data || {}), ...(payload || {}) } : undefined;
+      const payloadForMessage: ShareNumbersPayload | undefined =
+        payload || (combinedData?.numbers?.length ? combinedData : undefined);
+
+      const supportsABTest = context === 'score' || context === 'variations' || context === 'high-rate';
+      const message =
+        messageOverride ??
+        (useABTest && supportsABTest
+          ? getABTestMessage(context, combinedData, payloadForMessage)
+          : getMessageForContext(context, combinedData, payloadForMessage));
 
       // Compartilhar via WhatsApp
       // Força abertura direta no WhatsApp (mobile e desktop)
@@ -174,7 +192,7 @@ export function ShareButton({
             shareSuccessful = true;
           }
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Erro ao abrir WhatsApp:', error);
 
         // Fallback final: usar Web Share API se disponível
@@ -182,8 +200,8 @@ export function ShareButton({
           try {
             await navigator.share({ text: message });
             shareSuccessful = true;
-          } catch (shareError: any) {
-            if (shareError.name !== 'AbortError') {
+          } catch (shareError: unknown) {
+            if ((shareError as { name?: string })?.name !== 'AbortError') {
               console.error('Erro no Web Share:', shareError);
             }
             setIsSharing(false);
@@ -218,7 +236,23 @@ export function ShareButton({
       });
 
       // Registrar share e calcular créditos
-      const credits = recordShare(context, data);
+      const shareData: ShareEvent['data'] | undefined = combinedData
+        ? { ...combinedData, messageLength: message.length }
+        : { messageLength: message.length };
+
+      const credits = recordShare(context, shareData);
+
+      // Registrar share no backend para analytics persistentes
+      invokeSupabaseFunction('share-track', {
+        context,
+        lotteryType: payloadForMessage?.lotteryType,
+        contestNumber: payloadForMessage?.contestNumber,
+        numbersShared: payloadForMessage?.numbers?.length,
+        payload: payloadForMessage,
+        messageLength: message.length,
+      }).catch((error) => {
+        console.warn('⚠️ share-track falhou (não bloqueante):', error);
+      });
 
       // Chamar backend para conceder créditos
       await awardShareCredits(credits);
@@ -241,9 +275,6 @@ export function ShareButton({
       } else {
         description += ' Limite diário atingido.';
       }
-
-      // Não mostrar botões no toast - usuário achou desnecessário
-      let toastAction = undefined;
 
       toast({
         title: `🎉 Compartilhado com sucesso!`,

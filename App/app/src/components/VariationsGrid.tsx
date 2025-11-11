@@ -15,6 +15,15 @@ interface VariationsGridProps {
   userId: string | null;
 }
 
+const lotteryNames: Record<string, string> = {
+  'lotofacil': 'Lotofácil',
+  'lotomania': 'Lotomania',
+  'mega-sena': 'Mega-Sena',
+  'quina': 'Quina',
+  'dupla-sena': 'Dupla Sena',
+  'timemania': 'Timemania',
+};
+
 export function VariationsGrid({
   variations,
   originalNumbers,
@@ -25,6 +34,24 @@ export function VariationsGrid({
   if (variations.length === 0) {
     return null;
   }
+
+  const featuredVariation = [...variations].sort(
+    (a, b) => b.analysisResult.score - a.analysisResult.score
+  )[0];
+
+  const featuredPayload = featuredVariation
+    ? {
+        lotteryType,
+        lotteryName: lotteryNames[lotteryType] || lotteryType,
+        contestNumber,
+        numbers: featuredVariation.numbers,
+        hotCount: featuredVariation.analysisResult.hotCount,
+        coldCount: featuredVariation.analysisResult.coldCount,
+        balancedCount: featuredVariation.analysisResult.balancedCount,
+        strategyLabel: featuredVariation.strategyLabel,
+        source: 'ai' as const,
+      }
+    : undefined;
 
   return (
     <div className="space-y-6">
@@ -150,25 +177,30 @@ export function VariationsGrid({
       </div>
 
       {/* Share Button - Tier S moment (5 variations generated) */}
-      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200">
-        <div className="text-center space-y-3">
-          <p className="text-sm font-medium text-emerald-900">
-            A IA criou 5 variações personalizadas para você!
-          </p>
+      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200 space-y-3 text-center">
+        <p className="text-sm font-medium text-emerald-900">
+          A IA criou 5 variações personalizadas para você!
+        </p>
+        {featuredPayload && (
           <p className="text-xs text-emerald-700">
-            Compartilhe e ganhe créditos extras
+            Variação destaque: {featuredVariation?.strategyLabel} equilibra {featuredPayload.hotCount}{' '}
+            quentes e {featuredPayload.coldCount} frios para tentar padrões que estão voltando.
           </p>
-          <ShareButton
-            context="variations"
-            variant="primary"
-            size="lg"
-            celebratory={true}
-            label="Compartilhar Variações"
-            showCredits={true}
-            userId={userId}
-            className="w-full max-w-md mx-auto"
-          />
-        </div>
+        )}
+        <p className="text-xs text-emerald-700">
+          Compartilhe e ganhe créditos extras
+        </p>
+        <ShareButton
+          context="variations"
+          payload={featuredPayload}
+          variant="primary"
+          size="lg"
+          celebratory={true}
+          label="Compartilhar Variação em Destaque"
+          showCredits={true}
+          userId={userId}
+          className="w-full max-w-md mx-auto"
+        />
       </Card>
 
       {/* Legend */}

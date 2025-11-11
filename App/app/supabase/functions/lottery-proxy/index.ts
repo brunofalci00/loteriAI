@@ -23,6 +23,12 @@ interface RequestBody {
   maxDraws?: number;
 }
 
+interface DrawRecord {
+  contestNumber: number;
+  drawDate: string;
+  numbers: number[];
+}
+
 const formatBrazilianDate = (dateStr: string): string => {
   const [day, month, year] = dateStr.split("/");
   return `${year}-${month}-${day}T00:00:00.000Z`;
@@ -123,7 +129,7 @@ serve(async (req) => {
 
       console.log(`[lottery-proxy] Fetching history from ${latestContestNumber - maxDraws + 1} to ${latestContestNumber}`);
 
-      const draws = [];
+      const draws: DrawRecord[] = [];
       const startContest = Math.max(1, latestContestNumber - maxDraws + 1);
       
       // Fetch in batches to avoid overwhelming the API
@@ -153,7 +159,8 @@ serve(async (req) => {
         }
 
         const batchResults = await Promise.all(batchPromises);
-        draws.push(...batchResults.filter((d: any) => d !== null));
+        const validResults = batchResults.filter((d): d is DrawRecord => d !== null);
+        draws.push(...validResults);
         
         // Small delay between batches
         if (i + batchSize <= latestContestNumber) {
@@ -166,7 +173,7 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: true,
-          data: draws.sort((a: any, b: any) => b.contestNumber - a.contestNumber),
+          data: draws.sort((a, b) => b.contestNumber - a.contestNumber),
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );

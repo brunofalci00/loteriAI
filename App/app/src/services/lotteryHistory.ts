@@ -158,7 +158,13 @@ const fetchFromProxy = async (
   }
 
   // Convert string dates to Date objects
-  return data.data.map((draw: any) => ({
+  type ProxyDraw = {
+    contestNumber: number;
+    drawDate: string;
+    numbers: number[];
+  };
+
+  return (data.data as ProxyDraw[]).map((draw) => ({
     ...draw,
     drawDate: new Date(draw.drawDate),
   }));

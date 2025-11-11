@@ -49,7 +49,7 @@ const HowItWorks = () => {
       icon: Coins,
       title: "Sistema de Créditos",
       description:
-        "Receba 50 créditos gratuitos todo mês para usar em análises, regenerações e variações. Salvar jogos é sempre gratuito!",
+        "Receba 20 créditos gratuitos todo mês para usar em análises, regenerações e variações. Salvar jogos é sempre gratuito!",
       color: "text-yellow-500",
       badge: "Gratuito",
       link: null,
@@ -238,7 +238,7 @@ const HowItWorks = () => {
               <div>
                 <h2 className="text-2xl font-bold">Sistema de Créditos</h2>
                 <p className="text-sm text-muted-foreground">
-                  50 créditos gratuitos todo mês
+                  20 créditos gratuitos todo mês
                 </p>
               </div>
             </div>

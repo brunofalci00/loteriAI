@@ -16,20 +16,13 @@ import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useSaveGame, useUnsaveGame, useIsGameSaved } from '@/hooks/useSavedGames';
-import type { SaveGameParams } from '@/services/savedGamesService';
+import type { SaveGameParams, SavedGameAnalysisResult } from '@/services/savedGamesService';
 
 export interface SaveToggleButtonProps {
   lotteryType: string;
   contestNumber: number;
   numbers: number[];
-  analysisResult: {
-    hotCount: number;
-    coldCount: number;
-    balancedCount: number;
-    score?: number;
-    accuracy?: number;
-    [key: string]: any;
-  };
+  analysisResult: SavedGameAnalysisResult;
   generationId?: string | null;
   source: 'ai_generated' | 'manual_created';
   strategyType?: string | null;

@@ -1,5 +1,5 @@
-/**
- * Script para adicionar 50 créditos para todos os usuários
+﻿/**
+ * Script para adicionar 20 créditos para todos os usuários
  *
  * Como usar:
  * 1. cd C:\Users\bruno\Documents\Black\Loter.IA\Prod\app\app
@@ -13,6 +13,8 @@ const SUPABASE_URL = 'https://aaqthgqsuhyagsrlnyqk.supabase.co';
 const SUPABASE_SERVICE_KEY = 'SEU_SERVICE_ROLE_KEY_AQUI'; // ⚠️ IMPORTANTE: Usar SERVICE ROLE KEY, não ANON KEY
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+const DEFAULT_MONTHLY_CREDITS = 20;
 
 async function addCreditsToAllUsers() {
   console.log('🚀 Iniciando processo de adição de créditos...\n');
@@ -44,8 +46,8 @@ async function addCreditsToAllUsers() {
         .upsert(
           {
             user_id: user.id,
-            credits_remaining: 50,
-            credits_total: 50,
+            credits_remaining: DEFAULT_MONTHLY_CREDITS,
+            credits_total: DEFAULT_MONTHLY_CREDITS,
             last_reset_at: new Date().toISOString(),
           },
           {
@@ -58,7 +60,7 @@ async function addCreditsToAllUsers() {
         console.error(`  ❌ Erro: ${upsertError.message}`);
         errors++;
       } else {
-        console.log(`  ✅ 50 créditos adicionados`);
+        console.log(`  ✅ ${DEFAULT_MONTHLY_CREDITS} créditos adicionados`);
         updated++;
       }
     }

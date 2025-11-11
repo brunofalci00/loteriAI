@@ -94,7 +94,7 @@ export function CreditsInfoPopover({
               <div>
                 <p className="text-sm font-medium mb-1">O que são créditos?</p>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Cada crédito permite usar uma função da plataforma. Você recebe <strong>50 créditos gratuitos</strong> todo mês.
+                  Cada crédito permite usar uma função da plataforma. Você recebe <strong>20 créditos gratuitos</strong> todo mês.
                 </p>
               </div>
             </div>

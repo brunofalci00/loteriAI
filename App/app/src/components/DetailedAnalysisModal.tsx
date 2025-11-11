@@ -21,12 +21,13 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ShareButton } from '@/components/ShareButton';
 import { DiagnosticSection } from '@/components/DiagnosticSection';
-import { Star, Flame, Snowflake, Scale, TrendingUp, CheckCircle, AlertCircle, Info } from 'lucide-react';
+import { Star, Flame, Snowflake, Scale, TrendingUp, CheckCircle, AlertCircle, Info, X } from 'lucide-react';
 import type { AnalysisResult, Recommendation } from '@/services/manualGameAnalysisService';
 
 export interface DetailedAnalysisModalProps {
@@ -95,10 +96,30 @@ export function DetailedAnalysisModal({
   const evenNumbers = selectedNumbers.filter(n => n % 2 === 0);
   const oddNumbers = selectedNumbers.filter(n => n % 2 !== 0);
 
+  const sharePayload = {
+    lotteryName,
+    numbers: selectedNumbers,
+    hotCount,
+    coldCount,
+    balancedCount,
+    source: 'manual' as const,
+  };
+
+  const coldShareMessage =
+    coldCount > 0
+      ? `Incluímos ${coldCount} número${coldCount > 1 ? 's' : ''} frio${coldCount > 1 ? 's' : ''} para caçar padrões que estão voltando.`
+      : 'Mesmo quando não há números frios ideais, a IA monitora padrões para adicionar esses números quando fizer sentido.';
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="relative sm:max-w-2xl max-h-[85vh] overflow-y-auto p-4 sm:p-6 space-y-6">
+        <DialogClose
+          className="absolute right-3 top-3 rounded-full p-2 text-muted-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+          aria-label="Fechar"
+        >
+          <X className="h-4 w-4" />
+        </DialogClose>
+        <DialogHeader className="space-y-1 pr-8">
           <DialogTitle className="text-2xl">Análise Detalhada</DialogTitle>
           <DialogDescription>
             Análise completa do seu jogo de {lotteryName}
@@ -438,9 +459,14 @@ export function DetailedAnalysisModal({
               Compartilhe e ganhe créditos extras
             </p>
           </div>
+          <p className="text-xs text-white/60">
+            {coldShareMessage}
+          </p>
 
           <ShareButton
             context="detailed"
+            data={{ score }}
+            payload={sharePayload}
             variant="secondary"
             size="default"
             label="Compartilhar Análise"

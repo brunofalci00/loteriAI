@@ -123,9 +123,9 @@ export const useLotteryAnalysis = (
             draws_analyzed: statistics.totalDrawsAnalyzed,
             data_source: source === "api" ? "Dados em tempo real" : "Dados históricos (offline)",
           });
-        } catch (error: any) {
+        } catch (error: unknown) {
           // Ignora erro de duplicação (unique constraint)
-          if (error?.code !== '23505') {
+          if ((error as { code?: string })?.code !== '23505') {
             console.error('Error saving analysis:', error);
           }
         }

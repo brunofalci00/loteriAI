@@ -34,12 +34,30 @@ export interface HighScoreBannerProps {
    * ID do usuário (para mostrar saldo atualizado no toast)
    */
   userId?: string | null;
+
+  /**
+   * Combinação representativa exibida na tela
+   */
+  featuredCombination?: {
+    numbers: number[];
+    lotteryType: string;
+    lotteryName?: string;
+    contestNumber?: number;
+    hotCount?: number;
+    coldCount?: number;
+    balancedCount?: number;
+  };
 }
 
 /**
  * Banner para taxas de acerto altas (75%+)
  */
-export function HighScoreBanner({ accuracyRate, animate = true, userId = null }: HighScoreBannerProps) {
+export function HighScoreBanner({
+  accuracyRate,
+  animate = true,
+  userId = null,
+  featuredCombination,
+}: HighScoreBannerProps) {
   // Só renderizar se accuracy >= 75%
   if (accuracyRate < 75) {
     return null;
@@ -48,6 +66,19 @@ export function HighScoreBanner({ accuracyRate, animate = true, userId = null }:
   // Determinar nível de celebração
   const isExceptional = accuracyRate >= 85; // 85%+ = excepcional
   const isExcellent = accuracyRate >= 80; // 80%+ = excelente
+
+  const coldCopy =
+    featuredCombination && typeof featuredCombination.coldCount === 'number'
+      ? `Misturamos ${featuredCombination.hotCount ?? 0} números quentes com ${featuredCombination.coldCount} frios para não perder padrões que podem voltar.`
+      : 'Estamos sempre monitorando números frios para ajustar os jogos quando fizer sentido.';
+
+  const sharePayload = featuredCombination
+    ? {
+        ...featuredCombination,
+        lotteryName: featuredCombination.lotteryName,
+        source: 'ai' as const,
+      }
+    : undefined;
 
   return (
     <Card
@@ -101,9 +132,13 @@ export function HighScoreBanner({ accuracyRate, animate = true, userId = null }:
           <p className="text-sm text-center text-emerald-50">
             Compartilhe este resultado e ganhe créditos extras
           </p>
+          <p className="text-xs text-center text-emerald-50/80">
+            {coldCopy}
+          </p>
           <ShareButton
             context="high-rate"
             data={{ accuracyRate }}
+            payload={sharePayload}
             variant="secondary"
             size="lg"
             celebratory={isExceptional}

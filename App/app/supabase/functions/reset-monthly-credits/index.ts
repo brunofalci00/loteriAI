@@ -12,8 +12,8 @@ const corsHeaders = {
  * Executa no dia 1º de cada mês via Supabase Cron
  *
  * Funcionalidade:
- * - Reseta credits_remaining de todos os usuários para 50
- * - Reseta credits_total para 50
+ * - Reseta credits_remaining de todos os usuários para 20
+ * - Reseta credits_total para 20
  * - Atualiza last_reset_at para data atual
  *
  * Cron Schedule: 0 0 1 * * (00:00 do dia 1 de cada mês)
@@ -83,7 +83,7 @@ serve(async (req) => {
         reset_date: new Date().toISOString(),
       }),
       {
-        status: 500,
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );

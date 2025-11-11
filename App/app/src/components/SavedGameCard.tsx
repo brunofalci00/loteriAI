@@ -39,7 +39,7 @@ import { MoreVertical, Edit, Send, Download, Trash2, Sparkles, Pencil, Flame } f
 import { useUnsaveGame, useMarkAsPlayed, useUnmarkAsPlayed } from '@/hooks/useSavedGames';
 import { shareViaWhatsApp, exportAsTxt } from '@/services/exportService';
 import { EditGameNameModal } from './EditGameNameModal';
-import type { SavedGame } from '@/services/savedGamesService';
+import type { SavedGame, SaveGameParams } from '@/services/savedGamesService';
 
 export interface SavedGameCardProps {
   game: SavedGame;
@@ -79,7 +79,7 @@ export function SavedGameCard({ game }: SavedGameCardProps) {
   const savedDateFormatted = savedDate.toLocaleDateString('pt-BR');
 
   // Análise
-  const analysis = game.analysis_result as any;
+  const analysis = game.analysis_result as SaveGameParams['analysisResult'] | null;
   const hotCount = analysis?.hotCount || 0;
   const coldCount = analysis?.coldCount || 0;
   const balancedCount = analysis?.balancedCount || 0;

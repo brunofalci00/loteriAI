@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -227,7 +228,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) throw error;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Resend email error:', error);
       throw error;
     }
@@ -267,9 +268,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setTimeout(() => {
         navigate('/dashboard');
       }, 1000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Update password error:', error);
-      toast.error(error.message || 'Erro ao definir senha');
+      const message = error instanceof Error ? error.message : 'Erro ao definir senha';
+      toast.error(message);
       throw error;
     } finally {
       setIsLoading(false);
@@ -291,7 +293,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (error) throw error;
 
       toast.success('Link de recuperação enviado! Verifique seu email.');
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
       } else {

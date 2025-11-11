@@ -11,19 +11,24 @@
  * @date 2025-01-03
  */
 
+import type { ShareContext, ShareEventData } from '@/types/share';
+
+type AnalyticsWindow = Window & {
+  gtag?: (...args: unknown[]) => void;
+  mixpanel?: {
+    track: (event: string, data?: Record<string, unknown>) => void;
+  };
+};
+
 const STORAGE_KEY = 'loter_ia_shares';
 const MAX_DAILY_SHARES = 5;
 
 export interface ShareEvent {
-  context: 'score' | 'variations' | 'high-rate' | 'first-gen' | 'milestone' | 'detailed';
+  context: ShareContext;
   timestamp: string;
   method: 'whatsapp';
   creditAwarded: number;
-  data?: {
-    score?: number;
-    accuracyRate?: number;
-    milestone?: number;
-  };
+  data?: ShareEventData;
 }
 
 interface ShareHistory {
@@ -176,25 +181,29 @@ export function recordShare(
  */
 function trackShareEvent(event: ShareEvent): void {
   try {
-    // Google Analytics 4
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'share', {
-        method: event.method,
-        content_type: 'lottery_game',
-        item_id: event.context,
-        credits_awarded: event.creditAwarded,
-        ...event.data,
-      });
-    }
+    if (typeof window !== 'undefined') {
+      const analyticsWindow = window as AnalyticsWindow;
 
-    // Mixpanel (se disponível)
-    if (typeof window !== 'undefined' && (window as any).mixpanel) {
-      (window as any).mixpanel.track('Share', {
-        context: event.context,
-        method: event.method,
-        credits_awarded: event.creditAwarded,
-        ...event.data,
-      });
+      // Google Analytics 4
+      if (typeof analyticsWindow.gtag === 'function') {
+        analyticsWindow.gtag('event', 'share', {
+          method: event.method,
+          content_type: 'lottery_game',
+          item_id: event.context,
+          credits_awarded: event.creditAwarded,
+          ...event.data,
+        });
+      }
+
+      // Mixpanel (se disponível)
+      if (analyticsWindow.mixpanel) {
+        analyticsWindow.mixpanel.track('Share', {
+          context: event.context,
+          method: event.method,
+          credits_awarded: event.creditAwarded,
+          ...event.data,
+        });
+      }
     }
 
     console.log('📊 Analytics: Share event tracked', event.context);

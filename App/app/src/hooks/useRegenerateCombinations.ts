@@ -124,9 +124,9 @@ export function useRegenerateCombinations() {
           message: `${newCombinations.length} novas combinações geradas!`
         };
 
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('❌ Erro na regeneração:', error);
-        throw error;
+        throw error instanceof Error ? error : new Error('Erro desconhecido na regeneração');
       } finally {
         setIsGenerating(false);
       }

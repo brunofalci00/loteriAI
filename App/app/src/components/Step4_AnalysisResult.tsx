@@ -171,13 +171,26 @@ export function Step4_AnalysisResult({
 
           {/* Share Button - Tier S moment (score >= 4.0) */}
           {score >= 4.0 && (
-            <div className="mt-4 pt-4 border-t">
-              <p className="text-sm text-muted-foreground mb-3 text-center">
-                Gostou do resultado? Compartilhe e ganhe créditos!
+            <div className="mt-4 pt-4 border-t space-y-3 text-center">
+              <p className="text-sm text-muted-foreground">
+                A IA equilibrando {hotCount} números quentes e {coldCount} frios deixou esse jogo em destaque.
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Compartilhe seus números para ganhar créditos extras e mostrar como você montou o jogo.
               </p>
               <ShareButton
                 context="score"
                 data={{ score }}
+                payload={{
+                  lotteryType,
+                  lotteryName: lotteryNames[lotteryType],
+                  contestNumber,
+                  numbers: selectedNumbers,
+                  hotCount,
+                  coldCount,
+                  balancedCount,
+                  source: 'manual',
+                }}
                 variant="primary"
                 size="lg"
                 celebratory={score >= 4.5}

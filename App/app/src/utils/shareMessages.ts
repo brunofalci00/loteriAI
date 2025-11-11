@@ -10,6 +10,9 @@
  * @date 2025-01-03
  */
 
+import type { ShareContext, ShareEventData, ShareNumbersPayload } from '@/types/share';
+import { formatCompactSharePayload } from '@/utils/sharePayloadFormatter';
+
 const BASE_MESSAGE = "Testei esse app de loteria com IA e curti\n\n";
 const LINK = "\n\nhttps://www.fqdigital.com.br/";
 
@@ -132,26 +135,53 @@ export function formatHighRateMessageAlt(accuracyRate: number): string {
  * Determina qual mensagem usar baseado no contexto
  * Útil para decisões dinâmicas
  */
-export function getMessageForContext(
-  context: 'score' | 'variations' | 'high-rate' | 'first-gen' | 'milestone' | 'detailed',
-  data?: { score?: number; accuracyRate?: number; milestone?: number }
+function appendPayloadDetails(
+  message: string,
+  payload?: ShareNumbersPayload
 ): string {
+  if (!payload) return message;
+
+  const payloadText = formatCompactSharePayload(payload);
+  if (!payloadText) return message;
+
+  if (message.includes(LINK)) {
+    return message.replace(LINK, `\n\n${payloadText}${LINK}`);
+  }
+
+  return `${message}\n\n${payloadText}`;
+}
+
+export function getMessageForContext(
+  context: ShareContext,
+  data?: ShareEventData,
+  payload?: ShareNumbersPayload
+): string {
+  let message: string;
+
   switch (context) {
     case 'score':
-      return data?.score ? formatScoreHighMessage(data.score) : BASE_MESSAGE + LINK;
+      message = data?.score ? formatScoreHighMessage(data.score) : BASE_MESSAGE + LINK;
+      break;
     case 'variations':
-      return formatVariationsMessage();
+      message = formatVariationsMessage();
+      break;
     case 'high-rate':
-      return data?.accuracyRate ? formatHighRateMessage(data.accuracyRate) : BASE_MESSAGE + LINK;
+      message = data?.accuracyRate ? formatHighRateMessage(data.accuracyRate) : BASE_MESSAGE + LINK;
+      break;
     case 'first-gen':
-      return formatFirstGenerationMessage();
+      message = formatFirstGenerationMessage();
+      break;
     case 'milestone':
-      return data?.milestone ? formatMilestoneMessage(data.milestone) : BASE_MESSAGE + LINK;
+      message = data?.milestone ? formatMilestoneMessage(data.milestone) : BASE_MESSAGE + LINK;
+      break;
     case 'detailed':
-      return formatDetailedAnalysisMessage();
+      message = formatDetailedAnalysisMessage();
+      break;
     default:
-      return BASE_MESSAGE + LINK;
+      message = BASE_MESSAGE + LINK;
   }
+
+  return appendPayloadDetails(message, payload);
 }
 
 /**
@@ -160,24 +190,32 @@ export function getMessageForContext(
  */
 export function getABTestMessage(
   context: 'score' | 'variations' | 'high-rate',
-  data?: { score?: number; accuracyRate?: number }
+  data?: ShareEventData,
+  payload?: ShareNumbersPayload
 ): string {
   const useVariantB = Math.random() > 0.5;
 
   if (!useVariantB) {
     // Versão original
-    return getMessageForContext(context, data);
+    return getMessageForContext(context, data, payload);
   }
 
   // Versão alternativa
+  let message: string;
+
   switch (context) {
     case 'score':
-      return data?.score ? formatScoreHighMessageAlt(data.score) : BASE_MESSAGE + LINK;
+      message = data?.score ? formatScoreHighMessageAlt(data.score) : BASE_MESSAGE + LINK;
+      break;
     case 'variations':
-      return formatVariationsMessageAlt();
+      message = formatVariationsMessageAlt();
+      break;
     case 'high-rate':
-      return data?.accuracyRate ? formatHighRateMessageAlt(data.accuracyRate) : BASE_MESSAGE + LINK;
+      message = data?.accuracyRate ? formatHighRateMessageAlt(data.accuracyRate) : BASE_MESSAGE + LINK;
+      break;
     default:
-      return BASE_MESSAGE + LINK;
+      message = BASE_MESSAGE + LINK;
   }
+
+  return appendPayloadDetails(message, payload);
 }

@@ -59,12 +59,13 @@ interface FacebookCAPIPayload {
  * - Converter para lowercase
  */
 function normalizeEmail(email: string): string {
-  let normalized = email.toLowerCase().trim();
+  const normalized = email.toLowerCase().trim();
 
   const parts = normalized.split('@');
   if (parts.length !== 2) return normalized; // Email inválido
 
-  let [localPart, domain] = parts;
+  const [initialLocalPart, domain] = parts;
+  let localPart = initialLocalPart;
 
   // Remover plus addressing
   if (localPart.includes('+')) {

@@ -1,11 +1,11 @@
-/**
+﻿/**
  * Credits Service
  *
- * Serviço para gerenciar créditos de regeneração
- * FASE 1: Sistema de Regeneração
+ * ServiÃ§o para gerenciar crÃ©ditos de regeneraÃ§Ã£o
+ * FASE 1: Sistema de RegeneraÃ§Ã£o
  *
  * Sistema duplo de limites:
- * - 50 créditos/mês (limite principal)
+ * - 20 crÃ©ditos/mÃªs (limite principal)
  * - Cooldown de 10s (anti-spam)
  *
  * @author Claude Code
@@ -13,6 +13,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
+import { DEFAULT_MONTHLY_CREDITS, CREDIT_COOLDOWN_SECONDS } from '@/config/credits';
 
 export interface UserCredits {
   credits_remaining: number;
@@ -28,11 +29,11 @@ export interface ConsumeResult {
 }
 
 /**
- * Buscar créditos do usuário
- * Se não existir registro, cria automaticamente com 50 créditos
+ * Buscar crÃ©ditos do usuÃ¡rio
+ * Se nÃ£o existir registro, cria automaticamente com os crÃ©ditos padrÃ£o
  *
- * @param userId - ID do usuário
- * @returns Créditos do usuário
+ * @param userId - ID do usuÃ¡rio
+ * @returns CrÃ©ditos do usuÃ¡rio
  */
 export async function getUserCredits(userId: string): Promise<UserCredits> {
   const { data, error } = await supabase
@@ -42,18 +43,18 @@ export async function getUserCredits(userId: string): Promise<UserCredits> {
     .maybeSingle();
 
   if (error) {
-    console.error('❌ Erro ao buscar créditos:', error);
+    console.error('âŒ Erro ao buscar crÃ©ditos:', error);
     throw error;
   }
 
-  // Se não existe, criar
+  // Se nÃ£o existe, criar
   if (!data) {
     const { data: newCredits, error: insertError } = await supabase
       .from('user_credits')
       .insert({
         user_id: userId,
-        credits_remaining: 50,
-        credits_total: 50,
+        credits_remaining: DEFAULT_MONTHLY_CREDITS,
+        credits_total: DEFAULT_MONTHLY_CREDITS,
         last_reset_at: new Date().toISOString(),
         last_generation_at: null
       })
@@ -61,7 +62,7 @@ export async function getUserCredits(userId: string): Promise<UserCredits> {
       .single();
 
     if (insertError) {
-      console.error('❌ Erro ao criar créditos:', insertError);
+      console.error('âŒ Erro ao criar crÃ©ditos:', insertError);
       throw insertError;
     }
 
@@ -82,10 +83,10 @@ export async function getUserCredits(userId: string): Promise<UserCredits> {
 }
 
 /**
- * Consumir crédito (valida cooldown + limite)
- * Usa função SQL consume_credit que garante atomicidade
+ * Consumir crÃ©dito (valida cooldown + limite)
+ * Usa funÃ§Ã£o SQL consume_credit que garante atomicidade
  *
- * @param userId - ID do usuário
+ * @param userId - ID do usuÃ¡rio
  * @returns Resultado do consumo (success, credits_remaining, message)
  */
 export async function consumeCredit(userId: string): Promise<ConsumeResult> {
@@ -94,21 +95,21 @@ export async function consumeCredit(userId: string): Promise<ConsumeResult> {
   });
 
   if (error) {
-    console.error('❌ Erro ao consumir crédito:', error);
+    console.error('âŒ Erro ao consumir crÃ©dito:', error);
     throw error;
   }
 
-  // A função SQL retorna um array com 1 elemento
+  // A funÃ§Ã£o SQL retorna um array com 1 elemento
   const result = Array.isArray(data) ? data[0] : data;
 
   if (!result) {
-    throw new Error('Resposta inválida da função consume_credit');
+    throw new Error('Resposta invÃ¡lida da funÃ§Ã£o consume_credit');
   }
 
   if (!result.success) {
-    console.warn('⚠️ Crédito não consumido:', result.message);
+    console.warn('âš ï¸ CrÃ©dito nÃ£o consumido:', result.message);
   } else {
-    console.log('✅ Crédito consumido. Restantes:', result.credits_remaining);
+    console.log('âœ… CrÃ©dito consumido. Restantes:', result.credits_remaining);
   }
 
   return {
@@ -119,11 +120,11 @@ export async function consumeCredit(userId: string): Promise<ConsumeResult> {
 }
 
 /**
- * Verificar se pode regenerar (sem consumir crédito)
- * Validação client-side antes de abrir modal
+ * Verificar se pode regenerar (sem consumir crÃ©dito)
+ * ValidaÃ§Ã£o client-side antes de abrir modal
  *
- * @param userId - ID do usuário
- * @returns Status de permissão para regenerar
+ * @param userId - ID do usuÃ¡rio
+ * @returns Status de permissÃ£o para regenerar
  */
 export async function canRegenerate(userId: string): Promise<{
   canRegenerate: boolean;
@@ -133,11 +134,11 @@ export async function canRegenerate(userId: string): Promise<{
 }> {
   const credits = await getUserCredits(userId);
 
-  // Verificar créditos
+  // Verificar crÃ©ditos
   if (credits.credits_remaining <= 0) {
     return {
       canRegenerate: false,
-      reason: 'Você atingiu o limite de 50 gerações mensais. Seus créditos serão renovados no próximo ciclo.',
+      reason: `Você atingiu o limite de ${DEFAULT_MONTHLY_CREDITS} gerações mensais. Seus créditos serão renovados no próximo ciclo.`,
       creditsRemaining: 0
     };
   }
@@ -147,8 +148,8 @@ export async function canRegenerate(userId: string): Promise<{
     const lastGen = new Date(credits.last_generation_at);
     const secondsSince = (Date.now() - lastGen.getTime()) / 1000;
 
-    if (secondsSince < 10) {
-      const remainingCooldown = 10 - secondsSince;
+    if (secondsSince < CREDIT_COOLDOWN_SECONDS) {
+      const remainingCooldown = CREDIT_COOLDOWN_SECONDS - secondsSince;
       return {
         canRegenerate: false,
         reason: `Aguarde ${Math.ceil(remainingCooldown)} segundos para gerar novamente.`,
@@ -165,8 +166,7 @@ export async function canRegenerate(userId: string): Promise<{
 }
 
 /**
- * Calcular dias até o próximo reset
- * Reset acontece todo dia 1º do mês
+ * Calcula quantos dias faltam para o próximo reset (sempre no dia 1 de cada mês).
  *
  * @param lastResetAt - Data do último reset
  * @returns Dias até o próximo reset
@@ -175,7 +175,7 @@ export function getDaysUntilReset(lastResetAt: string): number {
   const lastReset = new Date(lastResetAt);
   const now = new Date();
 
-  // Próximo dia 1º
+  // Próximo dia 1
   const nextReset = new Date(
     now.getFullYear(),
     now.getMonth() + 1,
@@ -186,9 +186,9 @@ export function getDaysUntilReset(lastResetAt: string): number {
     0
   );
 
-  // Se já passou do dia 1º deste mês
+  // Se já passou do dia 1 deste mês
   if (now.getDate() === 1 && now.getHours() === 0) {
-    // É exatamente dia 1º à meia-noite, reset acontece agora
+    // É exatamente dia 1 à meia-noite, reset acontece agora
     return 0;
   }
 
@@ -199,7 +199,7 @@ export function getDaysUntilReset(lastResetAt: string): number {
 }
 
 /**
- * Formatar mensagem de erro de forma user-friendly
+ * Formata mensagens de erro para o usuário
  *
  * @param message - Mensagem técnica
  * @param creditsRemaining - Créditos restantes
@@ -207,11 +207,11 @@ export function getDaysUntilReset(lastResetAt: string): number {
  */
 export function formatCreditError(message: string, creditsRemaining: number): string {
   if (creditsRemaining <= 0) {
-    return 'Você atingiu o limite de 50 gerações mensais. Seus créditos serão renovados no próximo mês.';
+    return `Você atingiu o limite de ${DEFAULT_MONTHLY_CREDITS} gerações mensais. Seus créditos serão renovados no próximo mês.`;
   }
 
   if (message.includes('Aguarde')) {
-    return message; // Já está formatado
+    return message; // JÃ¡ estÃ¡ formatado
   }
 
   return 'Não foi possível gerar novas combinações. Tente novamente.';

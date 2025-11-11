@@ -20,19 +20,28 @@ type SavedGame = Database['public']['Tables']['saved_games']['Row'];
 type SavedGameInsert = Database['public']['Tables']['saved_games']['Insert'];
 type SavedGameUpdate = Database['public']['Tables']['saved_games']['Update'];
 
+export type SavedGameAnalysisJson = SavedGameInsert['analysis_result'];
+
+export interface SavedGameAnalysisResult {
+  hotCount: number;
+  coldCount: number;
+  balancedCount: number;
+  score?: number;
+  accuracy?: number;
+  detailedAnalysis?: {
+    hotNumbers?: number[];
+    coldNumbers?: number[];
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
+
 export interface SaveGameParams {
   generationId?: string | null; // NULL para jogos manuais (Fase 3)
   lotteryType: string;
   contestNumber: number;
   numbers: number[];
-  analysisResult: {
-    hotCount: number;
-    coldCount: number;
-    balancedCount: number;
-    score?: number;
-    accuracy?: number;
-    [key: string]: any;
-  };
+  analysisResult: SavedGameAnalysisResult;
   source: 'ai_generated' | 'manual_created';
   strategyType?: string | null;
   name?: string | null;
@@ -95,7 +104,7 @@ export async function saveGame(params: SaveGameParams): Promise<{
       lottery_type: params.lotteryType,
       contest_number: params.contestNumber,
       numbers: params.numbers,
-      analysis_result: params.analysisResult as any,
+      analysis_result: params.analysisResult as SavedGameAnalysisJson,
       source: params.source,
       strategy_type: params.strategyType || null,
       name: params.name || null,
@@ -529,7 +538,7 @@ export async function getStats(): Promise<{
         aiGeneratedCount: data.ai_generated_count || 0,
         manualCreatedCount: data.manual_created_count || 0,
         totalPlays: data.total_plays || 0,
-        gamesByLottery: (data.games_by_lottery as any) || {},
+        gamesByLottery: (data.games_by_lottery as Record<string, number> | null) || {},
       }
     };
   } catch (error) {

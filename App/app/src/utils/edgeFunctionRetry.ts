@@ -35,18 +35,18 @@ export interface RetryOptions {
   /**
    * Se deve fazer retry em erros específicos (padrão: apenas network errors)
    */
-  shouldRetry?: (error: any) => boolean;
+  shouldRetry?: (error: unknown) => boolean;
 }
 
-export interface EdgeFunctionResponse<T = any> {
+export interface EdgeFunctionResponse<T = unknown> {
   data: T | null;
-  error: any;
+  error: unknown;
 }
 
 /**
  * Verifica se o erro é de rede (deve fazer retry)
  */
-function isNetworkError(error: any): boolean {
+function isNetworkError(error: unknown): boolean {
   if (!error) return false;
 
   // Erros de rede comuns
@@ -100,10 +100,10 @@ function sleep(ms: number): Promise<void> {
  * }
  * ```
  */
-export async function callEdgeFunctionWithRetry<T = any>(
+export async function callEdgeFunctionWithRetry<T = unknown>(
   supabase: SupabaseClient,
   functionName: string,
-  body?: any,
+  body?: Record<string, unknown>,
   options: RetryOptions = {}
 ): Promise<EdgeFunctionResponse<T>> {
   const {
@@ -113,7 +113,7 @@ export async function callEdgeFunctionWithRetry<T = any>(
     shouldRetry = isNetworkError
   } = options;
 
-  let lastError: any = null;
+  let lastError: unknown = null;
   let delay = initialDelay;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -162,7 +162,7 @@ export async function callEdgeFunctionWithRetry<T = any>(
 
       return response;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       lastError = error;
 
       // Erro na chamada em si (network error, etc)
@@ -185,7 +185,7 @@ export async function callEdgeFunctionWithRetry<T = any>(
 
       return {
         data: null,
-        error: error
+        error
       };
     }
   }
@@ -203,10 +203,10 @@ export async function callEdgeFunctionWithRetry<T = any>(
  *
  * @throws {Error} Se todas as tentativas falharem
  */
-export async function callEdgeFunctionWithRetryOrThrow<T = any>(
+export async function callEdgeFunctionWithRetryOrThrow<T = unknown>(
   supabase: SupabaseClient,
   functionName: string,
-  body?: any,
+  body?: Record<string, unknown>,
   options: RetryOptions = {}
 ): Promise<T> {
   const response = await callEdgeFunctionWithRetry<T>(

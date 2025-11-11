@@ -68,7 +68,7 @@ export default function SavedGamesPage() {
         setMilestoneModalOpen(true);
       }, 500);
     }
-  }, [stats?.totalSaved, isLoadingStats]);
+  }, [stats, isLoadingStats]);
 
   // Aplicar filtros adicionais e ordenação
   const filteredAndSortedGames = useMemo(() => {

@@ -2,6 +2,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ManualGameAnalysisService, type AnalysisResult } from './manualGameAnalysisService';
 import { consumeCredit } from './creditsService';
 import { LotteryType } from '@/config/lotteryConfig';
+import type { SavedGameAnalysisJson } from './savedGamesService';
 
 export interface GenerateVariationsParams {
   originalNumbers: number[];
@@ -151,7 +152,7 @@ export class GameVariationsService {
         variation_numbers: v.numbers,
         variation_strategy: v.strategy,
         variation_score: v.score,
-        analysis_result: v.analysisResult as any
+        analysis_result: v.analysisResult as SavedGameAnalysisJson
       }));
 
       const { error: insertError } = await supabase
@@ -210,7 +211,7 @@ export class GameVariationsService {
     let numbersToAdd: number[] = [];
 
     switch (strategy) {
-      case 'balanced':
+      case 'balanced': {
         // Mix balanceado de hot/cold/balanced
         const hotToAdd = Math.floor(changeCount / 3);
         const coldToAdd = Math.floor(changeCount / 3);
@@ -222,8 +223,9 @@ export class GameVariationsService {
           ...this.selectRandom(availableNumbers.filter(n => !hotNumbers.includes(n) && !coldNumbers.includes(n)), balancedToAdd)
         ];
         break;
+      }
 
-      case 'hot_focused':
+      case 'hot_focused': {
         // Priorizar números quentes
         const hotAvailable = availableNumbers.filter(n => hotNumbers.includes(n));
         numbersToAdd = this.selectRandom(hotAvailable, Math.min(changeCount, hotAvailable.length));
@@ -233,8 +235,9 @@ export class GameVariationsService {
           numbersToAdd.push(...this.selectRandom(availableNumbers.filter(n => !numbersToAdd.includes(n)), remaining));
         }
         break;
+      }
 
-      case 'cold_focused':
+      case 'cold_focused': {
         // Priorizar números frios
         const coldAvailable = availableNumbers.filter(n => coldNumbers.includes(n));
         numbersToAdd = this.selectRandom(coldAvailable, Math.min(changeCount, coldAvailable.length));
@@ -244,8 +247,9 @@ export class GameVariationsService {
           numbersToAdd.push(...this.selectRandom(availableNumbers.filter(n => !numbersToAdd.includes(n)), remaining));
         }
         break;
+      }
 
-      case 'even_odd_optimized':
+      case 'even_odd_optimized': {
         // Otimizar distribuição par/ímpar (50/50)
         const currentEven = toKeep.filter(n => n % 2 === 0).length;
         const currentOdd = keepCount - currentEven;
@@ -266,10 +270,10 @@ export class GameVariationsService {
           numbersToAdd.push(...this.selectRandom(availableNumbers.filter(n => !numbersToAdd.includes(n)), remaining));
         }
         break;
+      }
 
-      case 'dezena_optimized':
+      case 'dezena_optimized': {
         // Otimizar distribuição por dezenas
-        // Calcular dezenas atuais
         const dezenaCount: Record<number, number> = {};
         toKeep.forEach(num => {
           const dezena = Math.floor((num - 1) / 10) + 1;
@@ -301,6 +305,7 @@ export class GameVariationsService {
           numbersToAdd.push(...this.selectRandom(availableNumbers.filter(n => !numbersToAdd.includes(n)), remaining));
         }
         break;
+      }
 
       default:
         numbersToAdd = this.selectRandom(availableNumbers, changeCount);

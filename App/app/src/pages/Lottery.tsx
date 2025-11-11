@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { LoadingAnalysis } from "@/components/LoadingAnalysis";
@@ -7,7 +7,8 @@ import { NextDrawInfo } from "@/components/NextDrawInfo";
 import { RegenerateButton } from "@/components/RegenerateButton";
 import { GenerationSelector } from "@/components/GenerationSelector";
 import { GenerationHistoryModal } from "@/components/GenerationHistoryModal";
-import { FirstGenerationModal, isFirstGeneration } from "@/components/FirstGenerationModal";
+import { FirstGenerationModal } from "@/components/FirstGenerationModal";
+import { isFirstGeneration } from "@/utils/firstGenerationStorage";
 import { CreditsDisplay } from "@/components/CreditsDisplay";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -65,8 +66,50 @@ const Lottery = () => {
   );
 
   // Usar combinações da geração ativa se disponível, senão usar da análise original
-  const displayedCombinations = activeGeneration?.generated_numbers || analysisResult?.combinations || [];
-  const displayedHotNumbers = activeGeneration?.hot_numbers || analysisResult?.statistics.hotNumbers || [];
+  const displayedCombinations = useMemo(
+    () =>
+      activeGeneration?.generated_numbers ??
+      analysisResult?.combinations ??
+      [],
+    [activeGeneration?.generated_numbers, analysisResult?.combinations],
+  );
+  const displayedHotNumbers = useMemo(
+    () =>
+      activeGeneration?.hot_numbers ??
+      analysisResult?.statistics.hotNumbers ??
+      [],
+    [activeGeneration?.hot_numbers, analysisResult?.statistics.hotNumbers],
+  );
+
+  const featuredCombination = useMemo(() => {
+    if (!analysisResult || displayedCombinations.length === 0) {
+      return null;
+    }
+
+    const combo = displayedCombinations[0];
+    const hotNumbers = analysisResult.statistics?.hotNumbers || [];
+    const coldNumbers = analysisResult.statistics?.coldNumbers || [];
+    const hotCount = combo.filter((n) => hotNumbers.includes(n)).length;
+    const coldCount = combo.filter((n) => coldNumbers.includes(n)).length;
+
+    return {
+      numbers: combo,
+      hotCount,
+      coldCount,
+      balancedCount: combo.length - hotCount - coldCount,
+      lotteryName: lottery?.name || '',
+      lotteryType: type || '',
+      contestNumber: parsedContestNumber,
+    };
+  }, [analysisResult, displayedCombinations, lottery?.name, type, parsedContestNumber]);
+
+  // Tratamento de erro
+  useEffect(() => {
+    if (analysisError) {
+      toast.error("Erro ao analisar dados. Tente novamente.");
+      console.error("Erro na análise:", analysisError);
+    }
+  }, [analysisError]);
 
   if (!lottery) {
     return (
@@ -77,14 +120,6 @@ const Lottery = () => {
       </div>
     );
   }
-
-  // Tratamento de erro
-  useEffect(() => {
-    if (analysisError) {
-      toast.error("Erro ao analisar dados. Tente novamente.");
-      console.error("Erro na análise:", analysisError);
-    }
-  }, [analysisError]);
 
   const handleLoadingComplete = () => {
     setShowLoading(false);
@@ -254,11 +289,12 @@ const Lottery = () => {
                   dataSource: analysisResult.dataSource,
                 }}
                 strategy={analysisResult.strategy}
-                onExport={handleExport}
-                contestNumber={parsedContestNumber}
-                generationId={activeGeneration?.id || null}
-                userId={user?.id || null}
-              />
+                  onExport={handleExport}
+                  contestNumber={parsedContestNumber}
+                  generationId={activeGeneration?.id || null}
+                  userId={user?.id || null}
+                  featuredCombination={featuredCombination}
+                />
               </div>
             </div>
 
@@ -297,8 +333,11 @@ const Lottery = () => {
               gamesGenerated: displayedCombinations.length,
               accuracy: analysisResult.calculatedAccuracy,
               lotteryName: lottery.name,
+              lotteryType: type || '',
+              contestNumber: parsedContestNumber,
             }}
             userId={user?.id || null}
+            featuredCombination={featuredCombination}
           />
         )}
       </div>

@@ -124,14 +124,17 @@ export function RegenerateButton({
         onSuccess(result.combinations);
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Erro ao regenerar:', error);
 
       // Error toast
       toast({
         variant: 'destructive',
         title: 'Erro ao regenerar',
-        description: error.message || 'Não foi possível gerar novas combinações. Tente novamente.',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Não foi possível gerar novas combinações. Tente novamente.',
         duration: 7000
       });
 

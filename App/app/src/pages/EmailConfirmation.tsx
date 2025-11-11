@@ -19,8 +19,9 @@ const EmailConfirmation = () => {
     try {
       await resendConfirmationEmail(email);
       toast.success("Email reenviado com sucesso!");
-    } catch (error: any) {
-      toast.error(error.message || "Erro ao reenviar email");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Erro ao reenviar email";
+      toast.error(message);
     } finally {
       setIsResending(false);
     }

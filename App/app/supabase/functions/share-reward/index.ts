@@ -6,6 +6,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const DEFAULT_MONTHLY_CREDITS = 20;
+
 /**
  * Endpoint para conceder créditos por compartilhamento
  *
@@ -95,8 +97,8 @@ serve(async (req) => {
 
     if (!currentCredits) {
       // Usuário não tem registro de créditos ainda - criar
-      newCreditsRemaining = 50 + credits; // 50 iniciais + bônus de share
-      newCreditsTotal = 50 + credits;
+      newCreditsRemaining = DEFAULT_MONTHLY_CREDITS + credits; // Créditos iniciais + bônus de share
+      newCreditsTotal = DEFAULT_MONTHLY_CREDITS + credits;
 
       const { error: insertError } = await supabase
         .from('user_credits')

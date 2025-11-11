@@ -12,6 +12,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
+import { DEFAULT_MONTHLY_CREDITS } from '@/config/credits';
 import {
   getUserCredits,
   canRegenerate,
@@ -70,7 +71,7 @@ export function useCreditsStatus(userId: string | undefined, enabled: boolean = 
     // Credits data
     credits: creditsQuery.data,
     creditsRemaining: creditsQuery.data?.credits_remaining ?? 0,
-    creditsTotal: creditsQuery.data?.credits_total ?? 50,
+    creditsTotal: creditsQuery.data?.credits_total ?? DEFAULT_MONTHLY_CREDITS,
     lastResetAt: creditsQuery.data?.last_reset_at,
     lastGenerationAt: creditsQuery.data?.last_generation_at,
 

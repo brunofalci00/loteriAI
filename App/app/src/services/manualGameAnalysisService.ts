@@ -2,12 +2,16 @@
 import { LotteryType, getLotteryConfig } from '@/config/lotteryConfig';
 import { fetchHistoricalDraws } from '@/services/lotteryHistory';
 import { analyzeHistoricalData } from '@/services/lotteryAnalysis';
+import type { Database } from '@/integrations/supabase/types';
 
 export interface ManualGameAnalysisParams {
   lotteryType: LotteryType;
   contestNumber: number;
   selectedNumbers: number[];
 }
+
+type LotteryConfig = ReturnType<typeof getLotteryConfig>;
+type ManualSessionInsert = Database['public']['Tables']['manual_creation_sessions']['Insert'];
 
 export interface Recommendation {
   type: 'hot_numbers' | 'par_impar' | 'dezena' | 'general';
@@ -46,8 +50,7 @@ export interface AnalysisResult {
     availableHotNumbers?: number[];
     suggestedEvenNumbers?: number[];
     suggestedOddNumbers?: number[];
-    [key: string]: any;
-  };
+  } & Record<string, unknown>;
 }
 
 export class ManualGameAnalysisService {
@@ -415,7 +418,7 @@ export class ManualGameAnalysisService {
     evenCount: number;
     oddCount: number;
     dezenaDistribution: Record<string, number>;
-    lotteryConfig: any;
+    lotteryConfig: LotteryConfig;
     expectedCount: number;
   }): Recommendation[] {
     const recommendations: Recommendation[] = [];
@@ -602,10 +605,10 @@ export class ManualGameAnalysisService {
         .from('manual_creation_sessions')
         .insert({
           user_id: user.id,
-          lottery_type: normalizedLotteryType,
+          lottery_type: params.lotteryType,
           contest_number: params.contestNumber,
           selected_numbers: params.selectedNumbers,
-          analysis_result: params.analysisResult as any,
+          analysis_result: params.analysisResult as ManualSessionInsert['analysis_result'],
           completed_at: new Date().toISOString(),
           time_spent_step1: params.timeSpent.step1,
           time_spent_step2: params.timeSpent.step2,

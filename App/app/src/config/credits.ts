@@ -1,0 +1,2 @@
+﻿export const DEFAULT_MONTHLY_CREDITS = 20;
+export const CREDIT_COOLDOWN_SECONDS = 10;

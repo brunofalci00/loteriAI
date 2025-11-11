@@ -150,7 +150,7 @@ export async function saveGeneration(
       lottery_type: lotteryType,
       contest_number: contestNumber,
       strategy_type: 'balanced',
-      generated_numbers: data.generated_numbers as any,
+      generated_numbers: data.generated_numbers as GenerationInsert['generated_numbers'],
       hot_numbers: data.hot_numbers,
       cold_numbers: data.cold_numbers,
       accuracy_rate: data.accuracy_rate,
