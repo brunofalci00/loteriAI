@@ -8,17 +8,14 @@ interface TestimonialsSlideProps {
 const testimonials = [
   {
     name: "Ana • SP",
-    gain: "R$ 2.500",
     image: "https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg",
   },
   {
     name: "Lucas • MG",
-    gain: "R$ 370",
     image: "https://i.ibb.co/rfQNMBX2/Whats-App-Image-2025-10-27-at-16-32-16.jpg",
   },
   {
     name: "Marina • RJ",
-    gain: "R$ 2.030",
     image: "https://i.ibb.co/TD85XLkM/Whats-App-Image-2025-10-27-at-16-36-22.jpg",
   },
 ];
@@ -34,10 +31,10 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
             <span role="img" aria-hidden="true">
               🎥
             </span>
-            Antes de girar a roleta, veja o que os nossos usuários estão achando da LOTER.IA
+            Antes de resgatar seus prêmios, veja quem já ganhou com a LOTER.IA
           </h1>
           <p className="body-lead">
-            São centenas jogando com a LOTER.IA neste momento — sinta a energia antes de liberar seu giro.
+            Esses jogadores acabaram de destravar o mesmo bônus de R$500 e ativaram seus acessos com a IA.
           </p>
         </div>
 
@@ -54,10 +51,16 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
         <div className="grid gap-4 sm:grid-cols-3">
           {testimonials.map((testimonial) => (
             <Card key={testimonial.name} className="relative overflow-hidden border border-primary/30 p-0">
-              <img src={testimonial.image} alt={testimonial.name} className="w-full h-52 object-cover" loading="lazy" />
+              <div className="w-full bg-black aspect-[9/16] flex items-center justify-center">
+                <img
+                  src={testimonial.image}
+                  alt={testimonial.name}
+                  className="h-full w-auto object-contain"
+                  loading="lazy"
+                />
+              </div>
               <div className="absolute inset-x-3 bottom-3 bg-background/90 rounded-xl px-3 py-2 text-left shadow-lg">
                 <p className="text-sm font-semibold text-foreground">{testimonial.name}</p>
-                <p className="text-xs text-primary font-bold">+ {testimonial.gain}</p>
               </div>
             </Card>
           ))}
@@ -70,9 +73,9 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
             className="w-full sm:w-auto text-lg sm:text-xl py-5 sm:py-6 px-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold pulse-glow flex items-center justify-center gap-2"
           >
             <span role="img" aria-hidden="true">
-              🎰
+              🎯
             </span>
-            Liberar meu giro
+            Garantir Meu Desconto
           </Button>
         </div>
       </div>

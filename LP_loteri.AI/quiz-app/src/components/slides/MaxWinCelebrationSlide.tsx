@@ -24,43 +24,44 @@ export const MaxWinCelebrationSlide = ({ onNext }: MaxWinCelebrationSlideProps) 
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/60 via-transparent to-amber-900/60 blur-3xl" />
       <div className="slide-frame space-y-8 text-center relative z-10">
         <div className="space-y-3">
-          <p className="meta-label text-gold">Prêmio máximo</p>
-          <h1 className="heading-1 text-shadow flex items-center justify-center gap-2 text-gold">
-            <span role="img" aria-hidden="true">🏆</span>
-            Você recebeu R$500 de desconto!
+          <p className="meta-label text-gold flex items-center justify-center gap-2 uppercase">
+            <span role="img" aria-hidden="true">🎉</span>
+            Você destravou o prêmio máximo da IA!
+          </p>
+          <h1 className="heading-1 text-shadow text-gold">
+            🎁 Seu prêmio: R$500 OFF na ativação completa da LOTER.IA
           </h1>
           <p className="body-lead">
-            Essa sensação é de quem acabou de economizar alto: a oferta completa da LOTER.IA de R$547 saiu por apenas R$37.
+            A IA acabou de liberar R$500 de desconto exclusivo com base na sua performance. Isso derruba o acesso completo
+            para apenas R$37 por ano.
+          </p>
+          <p className="body-lead text-gold/80">
+            Esse bônus fica reservado somente enquanto o painel estiver aberto.
           </p>
         </div>
 
         <Card className="p-6 sm:p-8 border border-gold bg-gradient-to-br from-black/80 via-background/80 to-amber-900/30 backdrop-blur-lg space-y-6 shadow-[0_0_50px_rgba(250,204,21,0.3)]">
-          <div className="space-y-4">
-            <p className="text-sm text-gold uppercase flex items-center gap-2 justify-center">
-              <span role="img" aria-hidden="true">💎</span>
-              Desconto Desbloqueado
+          <div className="space-y-2 text-left">
+            <p className="text-sm text-gold uppercase flex items-center gap-2">
+              <span role="img" aria-hidden="true">🪙</span>
+              Válido por tempo limitado
             </p>
-            <div className="flex items-center justify-center gap-4 text-[clamp(2rem,6vw,3.5rem)] font-black text-primary">
-              <span className="line-through text-muted-foreground text-2xl sm:text-3xl">R$ 500</span>
-              <span className="text-foreground text-2xl">→</span>
-              <span className="text-gold">R$ 37</span>
-            </div>
-            <p className="text-sm text-muted-foreground">Você ganhou o desconto máximo da IA.</p>
+            <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside">
+              <li>Só aparece pra quem chegou até aqui.</li>
+              <li>Desconto ativado pela IA, sem pegadinha.</li>
+              <li>Reservado enquanto o painel estiver aberto.</li>
+            </ul>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4 text-left">
-            <div className="bg-primary/10 rounded-2xl p-4 border border-primary/30">
-              <p className="text-primary font-semibold">Suporte no WhatsApp</p>
-              <p className="text-sm text-muted-foreground">Equipe responde a cada passo da ativação.</p>
-            </div>
-            <div className="bg-primary/10 rounded-2xl p-4 border border-primary/30">
-              <p className="text-primary font-semibold">Jogos diários</p>
-              <p className="text-sm text-muted-foreground">Receba combinações calibradas todos os dias.</p>
-            </div>
-            <div className="bg-primary/10 rounded-2xl p-4 border border-primary/30 sm:col-span-2">
-              <p className="text-primary font-semibold">Bolão Mega da Virada</p>
-              <p className="text-sm text-muted-foreground">Acesso antecipado ao bolão VIP antes de abrir ao público.</p>
-            </div>
+          <div className="bg-primary/10 rounded-2xl p-5 border border-primary/40 text-left">
+            <p className="text-primary font-semibold text-lg flex items-center gap-2">
+              <span role="img" aria-hidden="true">⚠️</span>
+              Atenção
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Se você sair ou fechar esta página, o sistema zera o desconto e bloqueia o painel. Aproveite agora para
+              confirmar seu acesso anual por R$37.
+            </p>
           </div>
 
           <Button
@@ -71,8 +72,8 @@ export const MaxWinCelebrationSlide = ({ onNext }: MaxWinCelebrationSlideProps) 
             size="lg"
             className="w-full text-xl py-6 bg-gradient-to-r from-gold to-amber-400 text-background font-bold pulse-glow flex items-center justify-center gap-2"
           >
-            <span role="img" aria-hidden="true">🎯</span>
-            Quero liberar meu acesso
+            <span role="img" aria-hidden="true">🚀</span>
+            Resgatar meu prêmio agora
           </Button>
         </Card>
       </div>

@@ -74,9 +74,9 @@ const Index = () => {
       userSpins={userSpins}
       aiSpins={aiSpins}
     />,
-    <TestimonialsSlide key="testimonials" onNext={handleNext} />,
     <RouletteBonusSlide key="roulette" onNext={handleNext} userSpins={userSpins} onSpinComplete={() => setUserSpins(0)} />,
     <MaxWinCelebrationSlide key="max-win" onNext={handleNext} />,
+    <TestimonialsSlide key="testimonials" onNext={handleNext} />,
     <FinalOfferSlide key="final-offer" />,
   ];
 
@@ -86,7 +86,7 @@ const Index = () => {
     <div className="relative overflow-x-hidden">
       {shouldShowCoinCounter && <CoinCounter coins={coins} delta={coinDelta} />}
       {slides[currentSlide]}
-      <ExitIntentOverlay open={showExitOverlay} coinsEarned={coins} onStay={handleExitOverlayClose} />
+      <ExitIntentOverlay open={showExitOverlay} onStay={handleExitOverlayClose} />
     </div>
   );
 };

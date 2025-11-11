@@ -4,7 +4,7 @@ src/components/ExitIntentOverlay.tsx:39: Você chegou longe demais para sair ago
 src/components/ExitIntentOverlay.tsx:48: Quem fica até o fim desbloqueia 7x mais chances.
 src/components/ExitIntentOverlay.tsx:51: Você já acumulou
 src/components/ExitIntentOverlay.tsx:51: moedas e só falta uma decisão para liberar o Bônus 1.
-src/components/ExitIntentOverlay.tsx:56: Se fechar agora, o sistema zera suas moedas e fecha o acesso ao mapa secreto da IA.
+src/components/ExitIntentOverlay.tsx:56: Se fechar agora, o sistema zera suas moedas e fecha o acesso a IA secreta.
 src/components/ExitIntentOverlay.tsx:65: Continuar e liberar meu bônus
 src/components/ExitIntentOverlay.tsx:68: Precisa sair mesmo? Fique só mais 1 minuto para ver como a IA libera até R$500 em bônus.
 src/components/slides/AISimulationSlide.tsx:19: Escaneando

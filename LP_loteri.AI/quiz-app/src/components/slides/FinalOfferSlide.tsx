@@ -47,11 +47,12 @@ export const FinalOfferSlide = () => {
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
   const benefits = [
-    { icon: "🤖", text: "Recomendações personalizadas com IA em tempo real" },
-    { icon: "📊", text: "Painel de combinações calibradas diárias" },
-    { icon: "🛟", text: "Atendimento 24/7" },
-    { icon: "💬", text: "Suporte direto no WhatsApp" },
-    { icon: "🎯", text: "Acesso antecipado ao Bolão da Mega da Virada" },
+    { icon: "✅", text: "Jogos prontos com IA todos os dias" },
+    { icon: "✅", text: "Até 3 combinações inteligentes por dia" },
+    { icon: "✅", text: "Acesso VIP ao Bolão da Mega da Virada" },
+    { icon: "✅", text: "Painel atualizado em tempo real" },
+    { icon: "✅", text: "Suporte no WhatsApp com resposta em minutos" },
+    { icon: "✅", text: "Garantia total de 7 dias: testou, não gostou, cancela" },
   ];
 
   return (
@@ -64,9 +65,9 @@ export const FinalOfferSlide = () => {
             alt="LOTER.IA"
             className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(16,185,129,0.45)] pulse-glow"
           />
-          <h1 className="heading-1 text-glow">🎁 Parabéns! Desconto máximo ativado</h1>
+          <h1 className="heading-1 text-glow">🎁 Prêmio resgatado com sucesso!</h1>
           <p className="heading-3 text-primary">
-            Acesso completo à LOTER.IA por apenas de R$547,00 por apenas R$37,00 por ano!
+            Você liberou o acesso completo à LOTER.IA com R$500 de desconto garantido. Agora veja tudo que está incluso.
           </p>
         </div>
 
@@ -89,7 +90,7 @@ export const FinalOfferSlide = () => {
           <div className="flex items-center justify-center gap-4">
             <Clock className={`w-10 h-10 ${timeLeft <= 60 ? "text-destructive animate-bounce" : "text-primary"}`} />
             <div className="text-center">
-              <p className="text-sm text-muted-foreground uppercase tracking-[0.5em]">Oferta válida pelos próximos</p>
+              <p className="text-sm text-muted-foreground uppercase tracking-[0.5em]">Oferta válida enquanto o painel estiver aberto</p>
               <p className={`text-5xl font-bold ${timeLeft <= 60 ? "text-destructive text-glow" : "text-primary"}`}>
                 {minutes}:{seconds}
               </p>
@@ -106,7 +107,7 @@ export const FinalOfferSlide = () => {
         </Card>
 
         <div className="text-center space-y-4">
-          <h2 className="heading-2">O que você recebe agora:</h2>
+          <h2 className="heading-2">📦 Você vai receber:</h2>
         </div>
 
         <Card className="p-6 bg-primary/5 border border-primary/30">
@@ -120,11 +121,15 @@ export const FinalOfferSlide = () => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border border-primary text-center glow-primary-strong pulse-glow">
-          <p className="text-2xl font-bold text-foreground mb-2">💸 Desconto desbloqueado:</p>
-          <p className="text-lg text-muted-foreground line-through">De R$500</p>
-          <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">R$37</p>
-          <p className="text-lg text-foreground font-semibold">Garantia total de 7 dias — testou, não gostou, cancela sem risco.</p>
+        <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border border-primary text-center glow-primary-strong pulse-glow space-y-3">
+          <p className="text-2xl font-bold text-foreground">💸 De R$500 por apenas R$37/ano</p>
+          <div>
+            <p className="text-lg text-muted-foreground line-through">Valor original: R$500</p>
+            <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">R$37/ano</p>
+          </div>
+          <p className="text-lg text-foreground font-semibold">
+            Sem mensalidade e sem renovação automática sem aviso. Você garante 12 meses completos e ainda tem 7 dias para testar sem risco.
+          </p>
         </Card>
 
         <Button
@@ -134,7 +139,7 @@ export const FinalOfferSlide = () => {
           className="w-full text-xl md:text-2xl py-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
         >
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            Liberar acesso por R$37
+            🔐 Garantir acesso por R$37/ano
           </a>
         </Button>
 
@@ -151,14 +156,14 @@ export const FinalOfferSlide = () => {
             onClick={handleWhatsAppClick}
           >
             <MessageCircle className="w-5 h-5 flex-shrink-0" />
-            <span>Falar com especialista no WhatsApp</span>
+            <span>💬 Falar com especialista no WhatsApp</span>
           </a>
         </Button>
 
-        <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground text-center">
           <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Compra segura" className="w-40 sm:w-52 mx-auto" />
-          <p>Compra segura</p>
-          <p>+84 pessoas ativaram só hoje • 97% de satisfação no suporte 24/7</p>
+          <p>⏳ Oferta ativa enquanto o painel estiver aberto.</p>
+          <p>Já são +84 pessoas ativadas hoje. Depois disso, o acesso volta para o valor original.</p>
         </div>
 
         <Card className="p-6 bg-primary/10 border border-primary/30 text-center">
@@ -176,7 +181,7 @@ export const FinalOfferSlide = () => {
           className="w-full text-lg py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl"
         >
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            Garantir meu acesso
+            🔐 Garantir acesso por R$37/ano
           </a>
         </Button>
       </div>
