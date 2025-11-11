@@ -1,5 +1,21 @@
 {
-  "buildCommand": "cd LP_loteri.AI && npm install && npm run build",
+  "buildCommand": "cd LP_loteri.AI && npm run build",
   "outputDirectory": "LP_loteri.AI/dist",
-  "installCommand": "echo 'Install will be done in build command'"
+  "installCommand": "cd LP_loteri.AI && npm run install:all",
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/quiz",
+      "destination": "/quiz.html"
+    },
+    {
+      "source": "/app/:path((?!.*\\.).*)",
+      "destination": "/app/index.html"
+    },
+    {
+      "source": "/app",
+      "destination": "/app/index.html"
+    }
+  ]
 }

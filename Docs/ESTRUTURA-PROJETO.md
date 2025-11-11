@@ -29,11 +29,15 @@ Prod/
 │   ├── package.json               # Scripts de build do monorepo
 │   ├── public/                    # Landing Page (HTML estático)
 │   │   ├── index.html            # LP principal
-│   │   ├── quiz.html             # Quiz da LP
+│   │   ├── fb-capi.js            # Helper para Meta CAPI
 │   │   ├── thanks.html           # Página de agradecimento
 │   │   ├── fb-capi.js            # Facebook Conversions API
 │   │   ├── styles.css            # Estilos da LP
 │   │   └── *.mp4, *.mp3          # Assets da LP
+│   ├── quiz-app/                 # ✅ Novo: Quiz React (Vite)
+│   │   ├── src/                  # Código-fonte do quiz
+│   │   ├── public/               # Áudios e vídeos consumidos pelo quiz
+│   │   └── dist/                 # Output (copiado para dist/quiz.html via script)
 │   ├── app/                       # Aplicação React
 │   │   ├── package.json          # Dependências do React app
 │   │   ├── vite.config.ts        # Configuração do Vite
