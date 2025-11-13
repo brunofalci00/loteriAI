@@ -46,8 +46,8 @@ export const MegaEventHero = () => {
     []
   );
 
-  // Don't render if event is not active (past end date) and feature flag is true
-  if (!isEventActive && isMegaEventEnabled) {
+  // Don't render if feature flag is disabled OR event is not active
+  if (!isMegaEventEnabled || !isEventActive) {
     return null;
   }
 

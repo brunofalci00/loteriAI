@@ -1,0 +1,25 @@
+{
+  "name": "prod",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "shadcn:mcp": "node scripts/shadcn-mcp-wrapper.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brunofalci00/loteriAI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brunofalci00/loteriAI/issues"
+  },
+  "homepage": "https://github.com/brunofalci00/loteriAI#readme",
+  "dependencies": {
+    "shadcn": "^3.5.0"
+  }
+}
