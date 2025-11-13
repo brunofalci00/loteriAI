@@ -22,9 +22,7 @@ if (targetCwd && targetCwd.trim().length > 0) {
   }
 }
 
-const debugLogPath =
-  process.env.SHADCN_MCP_DEBUG_LOG ??
-  path.join(process.cwd(), ".shadcn-mcp.log");
+const debugLogPath = process.env.SHADCN_MCP_DEBUG_LOG ?? null;
 const debug = (...args) => {
   if (!debugLogPath) {
     return;
@@ -47,17 +45,6 @@ if (cwdSwitchError) {
   );
 }
 debug("Wrapper booted", `cwd=${process.cwd()}`);
-try {
-  fs.appendFileSync(
-    "/tmp/shadcn-wrapper-proof.log",
-    `booted to ${debugLogPath}\n`
-  );
-} catch (error) {
-  console.error(
-    "[shadcn-mcp-wrapper] Failed to write proof log:",
-    error?.message ?? error
-  );
-}
 
 const STATUS_RESOURCE = {
   uri: "shadcn://status",

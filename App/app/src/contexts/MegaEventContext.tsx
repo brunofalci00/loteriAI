@@ -6,6 +6,10 @@
  * - Configurações do evento
  *
  * Sistema simplificado: sem "modo mega", apenas flags
+ *
+ * IMPORTANTE: megaEvent.ts é importado APENAS dentro do Provider,
+ * nunca no escopo do módulo. Isto evita erros de parsing de datas
+ * quando o App carrega.
  */
 
 import {
@@ -14,24 +18,32 @@ import {
   ReactNode,
   useMemo,
 } from "react";
-import { MEGA_EVENT_CONFIG, isMegaEventActive } from "@/config/megaEvent";
+
+// Importação dinâmica - ocorre apenas quando o Provider é renderizado
+const getMegaEventConfig = () => {
+  const { MEGA_EVENT_CONFIG, isMegaEventActive } = require("@/config/megaEvent");
+  return { MEGA_EVENT_CONFIG, isMegaEventActive };
+};
 
 interface MegaEventContextValue {
   isEventActive: boolean;
-  eventConfig: typeof MEGA_EVENT_CONFIG;
+  eventConfig: any;
 }
 
 const MegaEventContext = createContext<MegaEventContextValue>({
   isEventActive: false,
-  eventConfig: MEGA_EVENT_CONFIG,
+  eventConfig: null,
 });
 
 export const MegaEventProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo<MegaEventContextValue>(
-    () => ({
-      isEventActive: isMegaEventActive(),
-      eventConfig: MEGA_EVENT_CONFIG,
-    }),
+    () => {
+      const { MEGA_EVENT_CONFIG, isMegaEventActive } = getMegaEventConfig();
+      return {
+        isEventActive: isMegaEventActive(),
+        eventConfig: MEGA_EVENT_CONFIG,
+      };
+    },
     []
   );
 
