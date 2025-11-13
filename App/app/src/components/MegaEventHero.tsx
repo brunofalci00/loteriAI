@@ -4,17 +4,14 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Coins, ArrowRight } from "lucide-react";
-import { isMegaEventEnabled } from "@/config/features";
 
 const formatNumber = (value: number) => value.toString().padStart(2, "0");
 
 export const MegaEventHero = () => {
   const navigate = useNavigate();
 
-  // Simples: só renderiza se feature flag está ativado
-  if (!isMegaEventEnabled) {
-    return null;
-  }
+  // SEMPRE renderiza - sem flags, sem condicionais
+  // Banner da Mega da Virada está sempre visível
 
   // Timeouts estáticos - sem verificação de data
   const [timeLeft, setTimeLeft] = useState({
@@ -92,14 +89,9 @@ export const MegaEventHero = () => {
                 size="lg"
                 variant="hero"
                 className="w-full sm:w-auto"
-                disabled={!isMegaEventEnabled}
-                onClick={() => {
-                  if (isMegaEventEnabled) {
-                    navigate("/mega-da-virada");
-                  }
-                }}
+                onClick={() => navigate("/mega-da-virada")}
               >
-                {isMegaEventEnabled ? "Entrar no evento" : "Em breve"}
+                Entrar no evento
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               <Button
