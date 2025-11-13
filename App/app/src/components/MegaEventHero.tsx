@@ -41,7 +41,7 @@ export const MegaEventHero = () => {
     () => [
       { label: "Prêmio", value: "R$ 850 Mi" },
       { label: "Para todos", value: "Usuários app" },
-      { label: "Até", value: "07/01/2026" },
+      { label: "Até", value: "31/12/2025" },
     ],
     []
   );
@@ -77,8 +77,8 @@ export const MegaEventHero = () => {
               </h1>
             </div>
             <p className="text-base text-slate-900/80 sm:text-lg">
-              Geração IA otimizada, análises com dados históricos e variações estratégicas da Mega da Virada.
-              Disponível até 07 de janeiro de 2026, poucos dias após o sorteio.
+              Geração IA otimizada, análises com dados históricos e variações estratégicas para a Mega da Virada.
+              Promoção especial estendida até 31 de dezembro - aproveite agora!
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Button

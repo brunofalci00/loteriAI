@@ -9,9 +9,10 @@ export const MEGA_EVENT_CONFIG = {
   // Feature flag controlado por env var
   enabled: (import.meta.env?.VITE_MEGA_EVENT_ENABLED ?? "true") === "true",
 
-  // Datas do evento (próxima Mega da Virada: 31 Dez 2025 - 07 Jan 2026)
-  eventDate: new Date("2025-12-31T23:59:59-03:00"),
-  endDate: new Date("2026-01-07T23:59:59-03:00"),
+  // Datas do evento (Mega da Virada especial com análises premium)
+  // Estendido: 13 Nov 2025 - 31 Dez 2025 (para aproveitar season de vendas)
+  eventDate: new Date("2025-11-13T00:00:00-03:00"),
+  endDate: new Date("2025-12-31T23:59:59-03:00"),
 
   // Informações do prêmio
   prizeAmount: "R$ 850 milhões",
