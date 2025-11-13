@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Coins, ArrowRight } from "lucide-react";
 import { isMegaEventEnabled } from "@/config/features";
-import { MEGA_EVENT_CONFIG } from "@/config/megaEvent";
+import { MEGA_EVENT_CONFIG, isMegaEventActive } from "@/config/megaEvent";
 
 const eventDate = MEGA_EVENT_CONFIG.endDate.getTime();
 
@@ -13,6 +13,8 @@ const formatNumber = (value: number) => value.toString().padStart(2, "0");
 
 export const MegaEventHero = () => {
   const navigate = useNavigate();
+  const [isEventActive, setIsEventActive] = useState(isMegaEventActive());
+
   const [timeLeft, setTimeLeft] = useState(() => {
     const diff = Math.max(eventDate - Date.now(), 0);
     return {
@@ -39,10 +41,15 @@ export const MegaEventHero = () => {
     () => [
       { label: "Prêmio", value: "R$ 850 Mi" },
       { label: "Para todos", value: "Usuários app" },
-      { label: "Até", value: "07/01/2025" },
+      { label: "Até", value: "07/01/2026" },
     ],
     []
   );
+
+  // Don't render if event is not active (past end date) and feature flag is true
+  if (!isEventActive && isMegaEventEnabled) {
+    return null;
+  }
 
   return (
     <Card className="relative mb-10 overflow-hidden border-0 bg-transparent shadow-none">
@@ -54,7 +61,7 @@ export const MegaEventHero = () => {
           <div className="flex-1 space-y-4 text-balance">
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-800/80">
               <Badge variant="secondary" className="bg-white/20 text-slate-900">
-                Mega da Virada 24/25
+                Mega da Virada 25/26
               </Badge>
               <span className="inline-flex items-center gap-1 rounded-full border border-white/40 px-3 py-1">
                 <Sparkles className="h-3 w-3" />
@@ -71,7 +78,7 @@ export const MegaEventHero = () => {
             </div>
             <p className="text-base text-slate-900/80 sm:text-lg">
               Geração IA otimizada, análises com dados históricos e variações estratégicas da Mega da Virada.
-              Disponível até 07 de janeiro, poucos dias após o sorteio.
+              Disponível até 07 de janeiro de 2026, poucos dias após o sorteio.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Button

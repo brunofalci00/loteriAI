@@ -38,7 +38,11 @@
       "Bash(supabase link:*)",
       "Bash(PGPASSWORD=\"Trendly2025@\" timeout 120 npx supabase db push:*)",
       "Bash(tee:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
