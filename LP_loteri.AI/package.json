@@ -1,15 +1,23 @@
 {
   "name": "loteriAI-monorepo",
+  "private": true,
   "version": "1.0.0",
-  "description": "Landing Page + App React em monorepo",
+  "description": "Landing Page + multi-funnel apps em monorepo",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "install:quiz": "cd quiz-app && npm install",
-    "install:app": "cd app && npm install",
-    "install:all": "npm run install:quiz && npm run install:app",
-    "build:quiz": "cd quiz-app && npm run build",
-    "build:app": "cd app && npm run build",
+    "dev:lp": "npm run dev --workspace @loteriai/lp",
+    "dev:quiz-classic": "npm run dev --workspace @loteriai/quiz-classic",
+    "dev:mega": "npm run dev --workspace @loteriai/mega-quiz",
+    "dev:lotozap": "npm run dev --workspace @loteriai/lotozap-quiz",
+    "build:lp": "npm run build --workspace @loteriai/lp",
+    "build:quiz-classic": "npm run build --workspace @loteriai/quiz-classic",
+    "build:mega": "npm run build --workspace @loteriai/mega-quiz",
+    "build:lotozap": "npm run build --workspace @loteriai/lotozap-quiz",
     "build:organize": "node scripts/organize-dist.js",
-    "build": "npm run build:quiz && npm run build:app && npm run build:organize"
+    "build": "npm run build:lp && npm run build:quiz-classic && npm run build:mega && npm run build:lotozap && npm run build:organize"
   },
   "engines": {
     "node": ">=18.0.0"

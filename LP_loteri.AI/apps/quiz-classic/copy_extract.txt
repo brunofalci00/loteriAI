@@ -1,0 +1,427 @@
+src/components/CoinCounter.tsx:25: Moedas
+src/components/ConfettiEffect.tsx:44: @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+src/components/ExitIntentOverlay.tsx:36: 🔐 Momento decisivo
+src/components/ExitIntentOverlay.tsx:37: Você chegou longe demais para sair agora.
+src/components/ExitIntentOverlay.tsx:46: Quem fica até o fim desbloqueia 7x mais chances.
+src/components/ExitIntentOverlay.tsx:49: Você já acumulou
+src/components/ExitIntentOverlay.tsx:49: moedas e só falta uma decisão para liberar o Bônus 1.
+src/components/ExitIntentOverlay.tsx:54: Se fechar agora, o sistema zera suas moedas e fecha o acesso a IA secreta.
+src/components/ExitIntentOverlay.tsx:63: Continuar e liberar meu bônus
+src/components/ExitIntentOverlay.tsx:66: Precisa sair mesmo? Fique só mais 1 minuto para ver como a IA libera até R$500 em bônus.
+src/components/NavLink.tsx:5: className
+src/components/NavLink.tsx:26: NavLink
+src/components/slides/AISimulationSlide.tsx:19: Escaneando
+src/components/slides/AISimulationSlide.tsx:19: Olha 2.500 resultados anteriores
+src/components/slides/AISimulationSlide.tsx:20: Montando jogo
+src/components/slides/AISimulationSlide.tsx:20: Escolhendo 15 números com maior chance
+src/components/slides/AISimulationSlide.tsx:21: Mostrando placar
+src/components/slides/AISimulationSlide.tsx:21: Libera o giro pago pela IA
+src/components/slides/AISimulationSlide.tsx:94: AISimulationVerdict
+src/components/slides/AISimulationSlide.tsx:108: IA em ação
+src/components/slides/AISimulationSlide.tsx:111: Conferindo seu jogo
+src/components/slides/AISimulationSlide.tsx:113: Escolhendo os 15 números dela
+src/components/slides/AISimulationSlide.tsx:114: Mostrando o placar final
+src/components/slides/AISimulationSlide.tsx:118: Painel protegido em tempo real
+src/components/slides/AISimulationSlide.tsx:138: IA conectando na sua aposta, auditando 2.500 sorteios anteriores e calculando probabilidades...
+src/components/slides/AISimulationSlide.tsx:145: IA escolhendo 15 números com maior chance agora.
+src/components/slides/AISimulationSlide.tsx:159: Comparativo final
+src/components/slides/AISimulationSlide.tsx:160: A IA está jogando por você agora.
+src/components/slides/AISimulationSlide.tsx:166: Você
+src/components/slides/AISimulationSlide.tsx:171: IA
+src/components/slides/AISimulationSlide.tsx:176: A IA fez
+src/components/slides/AISimulationSlide.tsx:176: pontos com os mesmos números. Você ficou nos
+src/components/slides/AISimulationSlide.tsx:177: Com isso ela liberou um giro para você resgatar o desconto.
+src/components/slides/AISimulationSlide.tsx:181: Bônus reservado
+src/components/slides/AISimulationSlide.tsx:182: Ela usou
+src/components/slides/AISimulationSlide.tsx:182: giros e guardou 1 pra você.
+src/components/slides/AISimulationSlide.tsx:183: Esse giro libera até R$500 em desconto.
+src/components/slides/AISimulationSlide.tsx:190: Seguir para o giro
+src/components/slides/AISimulationSlide.tsx:197: IA consolidando os pontos e auditando o painel para liberar seu relatório final...
+src/components/slides/AISyncLoadingSlide.tsx:14: Seu jogo
+src/components/slides/AISyncLoadingSlide.tsx:14: ${userScore} pontos conferidos
+src/components/slides/AISyncLoadingSlide.tsx:15: IA ativa
+src/components/slides/AISyncLoadingSlide.tsx:15: Mesmos números rodando na máquina
+src/components/slides/AISyncLoadingSlide.tsx:16: Giro pronto
+src/components/slides/AISyncLoadingSlide.tsx:16: Roleta carregada para você
+src/components/slides/AISyncLoadingSlide.tsx:31: Conferindo resultado
+src/components/slides/AISyncLoadingSlide.tsx:35: Estamos comparando seus
+src/components/slides/AISyncLoadingSlide.tsx:35: pontos com a jogada da IA
+src/components/slides/AISyncLoadingSlide.tsx:36: É uma tela rápida para não travar e garantir que o placar saia certinho.
+src/components/slides/AISyncLoadingSlide.tsx:40: O que está acontecendo agora
+src/components/slides/AISyncLoadingSlide.tsx:42: Conferimos seus 15 números em 2.500 resultados.
+src/components/slides/AISyncLoadingSlide.tsx:43: Separarmos o mesmo jogo rodado pela IA.
+src/components/slides/AISyncLoadingSlide.tsx:44: Carregamos o giro bônus que ela deixou pra você.
+src/components/slides/AISyncLoadingSlide.tsx:60: Segure uns segundos e já mostramos o comparativo.
+src/components/slides/AiWinSlide.tsx:14: A IA venceu essa rodada…
+src/components/slides/AiWinSlide.tsx:16: Mas ela liberou 1 giro especial para você virar o jogo.
+src/components/slides/AiWinSlide.tsx:22: A IA cravou 14 pontos usando análise preditiva. Ela já desbloqueou os 3 giros dela… e separou 1 giro bônus para você.
+src/components/slides/AiWinSlide.tsx:26: Você ganhou 1 giro na Roleta de Prêmios — ele pode liberar o MAX WIN a qualquer momento.
+src/components/slides/AiWinSlide.tsx:29: Se sair agora, o giro desaparece.
+src/components/slides/AiWinSlide.tsx:33: Antes de usar o giro, veja em segundos como outros jogadores estão ativando a LOTER.IA.
+src/components/slides/AiWinSlide.tsx:42: Ver jogadores reais e liberar meu giro
+src/components/slides/BonusMapSlide.tsx:44: 🎉 Bônus 1 liberado
+src/components/slides/BonusMapSlide.tsx:46: Mapa dos números quentes na sua tela
+src/components/slides/BonusMapSlide.tsx:47: Ele já vem pronto, sem termos difíceis e com letras grandes para você consultar antes de apostar.
+src/components/slides/BonusMapSlide.tsx:51: Veja suas moedas pagando o bônus:
+src/components/slides/BonusMapSlide.tsx:54: Moedas
+src/components/slides/BonusMapSlide.tsx:68: Bônus liberado
+src/components/slides/BonusMapSlide.tsx:71: As moedas não somem: elas viram acesso ao mapa sempre que você completar o quiz.
+src/components/slides/BonusMapSlide.tsx:78: Mapa dos números quentes
+src/components/slides/BonusMapSlide.tsx:86: Este mapa usa 500 sorteios auditados com IA. Não existe chute aqui: são probabilidades reais pensadas para quem trava nos 11.
+src/components/slides/BonusMapSlide.tsx:89: Acesso exclusivo enquanto o painel estiver aberto. Se fechar ou atualizar a página, a IA bloqueia o mapa.
+src/components/slides/BonusMapSlide.tsx:91: Depois desta etapa você vai direto para o duelo simples contra a IA.
+src/components/slides/BonusMapSlide.tsx:99: Ir para o desafio: Você vs IA
+src/components/slides/BonusMapSlide.tsx:107: Agora é você contra a IA
+src/components/slides/BonusMapSlide.tsx:109: Ela abre um duelo valendo até R$500 em bônus. Seu papel é mostrar sua intuição antes de ver como a máquina joga.
+src/components/slides/BonusMapSlide.tsx:113: Responda como jogador, compare com a inteligência artificial e libere o giro que pode pagar seu acesso à LOTER.IA.
+src/components/slides/BonusMapSlide.tsx:117: Partiu enfrentar a IA
+src/components/slides/BonusUnlockLoadingSlide.tsx:11: Conferindo suas respostas
+src/components/slides/BonusUnlockLoadingSlide.tsx:12: Usando as moedas para abrir o mapa
+src/components/slides/BonusUnlockLoadingSlide.tsx:13: Liberando a visualização segura
+src/components/slides/BonusUnlockLoadingSlide.tsx:17: Painel estável
+src/components/slides/BonusUnlockLoadingSlide.tsx:18: Dados protegidos
+src/components/slides/BonusUnlockLoadingSlide.tsx:19: Liberado em segundos
+src/components/slides/BonusUnlockLoadingSlide.tsx:37: IA preparando o Bônus 1
+src/components/slides/BonusUnlockLoadingSlide.tsx:41: Estamos trocando suas moedas pelo mapa
+src/components/slides/BonusUnlockLoadingSlide.tsx:42: Essa tela existe só para garantir que todo mundo veja o mesmo relatório sem travar o celular.
+src/components/slides/BonusUnlockLoadingSlide.tsx:60: Cofre digital segurando suas moedas
+src/components/slides/BonusUnlockLoadingSlide.tsx:73: É um respiro rápido para salvar seus dados no servidor.
+src/components/slides/EntrySlide.tsx:12: Perguntas rápidas
+src/components/slides/EntrySlide.tsx:13: Responda 5 perguntas simples e ganhe 10 moedas em cada uma.
+src/components/slides/EntrySlide.tsx:16: Moedas viram mapa
+src/components/slides/EntrySlide.tsx:17: As 50 moedas liberam o Mapa dos Números Quentes automático.
+src/components/slides/EntrySlide.tsx:20: Teste sua aposta
+src/components/slides/EntrySlide.tsx:21: Compare seus 15 números com a IA sem termos difíceis.
+src/components/slides/EntrySlide.tsx:24: Giro bônus
+src/components/slides/EntrySlide.tsx:25: As moedas pagam o primeiro giro da máquina e destravam descontos.
+src/components/slides/EntrySlide.tsx:32: Texto direto
+src/components/slides/EntrySlide.tsx:33: Frases curtas e letras grandes para quem tem 45+ enxergar tudo sem aperto.
+src/components/slides/EntrySlide.tsx:37: Moedas com função
+src/components/slides/EntrySlide.tsx:38: Elas não ficam sobrando: pagam o mapa e o primeiro bônus automaticamente.
+src/components/slides/EntrySlide.tsx:95: QuizEntryStart
+src/components/slides/EntrySlide.tsx:113: LOTER.IA
+src/components/slides/EntrySlide.tsx:116: Passo a passo guiado
+src/components/slides/EntrySlide.tsx:117: Chega de travar nos 11 pontos
+src/components/slides/EntrySlide.tsx:119: Responda as perguntas, junte moedas e veja a IA e troque por prêmios exclusivos.
+src/components/slides/EntrySlide.tsx:127: Como funciona
+src/components/slides/EntrySlide.tsx:129: Cada resposta vale 10 moedas. Ao conquistar 50, você poderá trocar pelo primeiro bônus secreto
+src/components/slides/EntrySlide.tsx:150: Preparando o painel
+src/components/slides/EntrySlide.tsx:152: Deixamos tudo alinhado.
+src/components/slides/EntrySlide.tsx:156: Linha do tempo
+src/components/slides/EntrySlide.tsx:184: Começar agora
+src/components/slides/EntrySlide.tsx:189: Ajustando painel...
+src/components/slides/EntrySlide.tsx:193: Sem cadastro nesta etapa. Só responder e seguir.
+src/components/slides/FinalOfferSlide.tsx:15: CheckoutClick
+src/components/slides/FinalOfferSlide.tsx:16: WhatsAppSupportClick
+src/components/slides/FinalOfferSlide.tsx:50: Recomendações personalizadas com IA em tempo real
+src/components/slides/FinalOfferSlide.tsx:51: Painel de combinações calibradas diárias
+src/components/slides/FinalOfferSlide.tsx:52: Atendimento 24/7
+src/components/slides/FinalOfferSlide.tsx:53: Suporte direto no WhatsApp
+src/components/slides/FinalOfferSlide.tsx:54: Acesso antecipado ao Bolão da Mega da Virada
+src/components/slides/FinalOfferSlide.tsx:64: LOTER.IA
+src/components/slides/FinalOfferSlide.tsx:67: 🎁 Parabéns! Desconto máximo ativado
+src/components/slides/FinalOfferSlide.tsx:69: Acesso completo à LOTER.IA por apenas de R$547,00 por apenas R$37,00 por ano!
+src/components/slides/FinalOfferSlide.tsx:92: Oferta válida pelos próximos
+src/components/slides/FinalOfferSlide.tsx:98: Depois disso, volta para R$500.
+src/components/slides/FinalOfferSlide.tsx:104: ${(timeLeft / (3 * 60)) * 100}%
+src/components/slides/FinalOfferSlide.tsx:109: O que você recebe agora:
+src/components/slides/FinalOfferSlide.tsx:124: 💸 Desconto desbloqueado:
+src/components/slides/FinalOfferSlide.tsx:125: De R$500
+src/components/slides/FinalOfferSlide.tsx:126: R$37
+src/components/slides/FinalOfferSlide.tsx:127: Garantia total de 7 dias — testou, não gostou, cancela sem risco.
+src/components/slides/FinalOfferSlide.tsx:137: Liberar acesso por R$37
+src/components/slides/FinalOfferSlide.tsx:154: Falar com especialista no WhatsApp
+src/components/slides/FinalOfferSlide.tsx:159: Compra segura
+src/components/slides/FinalOfferSlide.tsx:160: Compra segura
+src/components/slides/FinalOfferSlide.tsx:161: +84 pessoas ativaram só hoje • 97% de satisfação no suporte 24/7
+src/components/slides/FinalOfferSlide.tsx:166: Mesmo sistema usado por quem fez 13 ou 14 pontos nas últimas semanas.
+src/components/slides/FinalOfferSlide.tsx:179: Garantir meu acesso
+src/components/slides/IntuitionGameSlide.tsx:21: Toque uma vez
+src/components/slides/IntuitionGameSlide.tsx:21: Nada de duplo clique. Cada número acende na hora.
+src/components/slides/IntuitionGameSlide.tsx:22: Revise com calma
+src/components/slides/IntuitionGameSlide.tsx:22: Pode tocar de novo para apagar e trocar antes de enviar.
+src/components/slides/IntuitionGameSlide.tsx:23: Envie quando estiver seguro
+src/components/slides/IntuitionGameSlide.tsx:23: Assim que os 15 números estiverem marcados, a IA entra em cena.
+src/components/slides/IntuitionGameSlide.tsx:67: IntuitionSubmit
+src/components/slides/IntuitionGameSlide.tsx:79: 🎲 Desafio liberado
+src/components/slides/IntuitionGameSlide.tsx:80: Monte seu jogo com calma
+src/components/slides/IntuitionGameSlide.tsx:82: Escolha 15 números do jeito que você costuma apostar. Depois mostramos o jogo da feito pela IA
+src/components/slides/IntuitionGameSlide.tsx:87: Tela grande, sem pressa e com toque único. Dá tempo de revisar antes de enviar.
+src/components/slides/IntuitionGameSlide.tsx:123: IA conferindo seu jogo...
+src/components/slides/IntuitionGameSlide.tsx:125: Ver meu resultado
+src/components/slides/IntuitionGameSlide.tsx:126: Calibrando comparação...
+src/components/slides/IntuitionGameSlide.tsx:127: Selecione mais ${remaining} números
+src/components/slides/IntuitionGameSlide.tsx:133: Seu palpite foi registrado. Preparando comparação...
+src/components/slides/IntuitionGameSlide.tsx:134: Tudo pronto. A IA já está posicionada para analisar o seu jogo.
+src/components/slides/MaxWinCelebrationSlide.tsx:27: Prêmio máximo
+src/components/slides/MaxWinCelebrationSlide.tsx:30: Você recebeu R$500 de desconto!
+src/components/slides/MaxWinCelebrationSlide.tsx:33: Essa sensação é de quem acabou de economizar alto: a oferta completa da LOTER.IA de R$547 saiu por apenas R$37.
+src/components/slides/MaxWinCelebrationSlide.tsx:41: Desconto Desbloqueado
+src/components/slides/MaxWinCelebrationSlide.tsx:44: R$ 500
+src/components/slides/MaxWinCelebrationSlide.tsx:46: R$ 37
+src/components/slides/MaxWinCelebrationSlide.tsx:48: Você ganhou o desconto máximo da IA.
+src/components/slides/MaxWinCelebrationSlide.tsx:53: Suporte no WhatsApp
+src/components/slides/MaxWinCelebrationSlide.tsx:54: Equipe responde a cada passo da ativação.
+src/components/slides/MaxWinCelebrationSlide.tsx:57: Jogos diários
+src/components/slides/MaxWinCelebrationSlide.tsx:58: Receba combinações calibradas todos os dias.
+src/components/slides/MaxWinCelebrationSlide.tsx:61: Bolão Mega da Virada
+src/components/slides/MaxWinCelebrationSlide.tsx:62: Acesso antecipado ao bolão VIP antes de abrir ao público.
+src/components/slides/MaxWinCelebrationSlide.tsx:68: MaxWinCTA
+src/components/slides/MaxWinCelebrationSlide.tsx:75: Quero liberar meu acesso
+src/components/slides/QuizSlide.tsx:15: Quando você joga na Lotofácil, o que mais te incomoda?
+src/components/slides/QuizSlide.tsx:17: Jogar sem saber se estou no caminho certo
+src/components/slides/QuizSlide.tsx:18: Apostar várias vezes e nunca passar dos mesmos 11 pontos
+src/components/slides/QuizSlide.tsx:19: Ver os outros falando que usam sistema e eu aqui tentando na raça
+src/components/slides/QuizSlide.tsx:23: Quantas vezes você achou que "faltou pouco"?
+src/components/slides/QuizSlide.tsx:25: Sempre. 1 ou 2 números me perseguem
+src/components/slides/QuizSlide.tsx:26: Em quase todo jogo fico por um triz
+src/components/slides/QuizSlide.tsx:27: Nunca passei dos 11. Já tô desacreditado
+src/components/slides/QuizSlide.tsx:31: Como escolhe seus jogos hoje?
+src/components/slides/QuizSlide.tsx:33: Sigo minha intuição. Sinto quando vai dar certo
+src/components/slides/QuizSlide.tsx:34: Vou por datas, palpites, sensação
+src/components/slides/QuizSlide.tsx:35: Eu nem penso muito. Só jogo e espero
+src/components/slides/QuizSlide.tsx:39: E se pudesse testar seu palpite contra uma IA treinada?
+src/components/slides/QuizSlide.tsx:41: Toparia agora. Quero ver no que dá
+src/components/slides/QuizSlide.tsx:42: Seria bom ver se tá tão errado assim
+src/components/slides/QuizSlide.tsx:43: Talvez... mas acho que ela ganharia fácil
+src/components/slides/QuizSlide.tsx:47: O que você mais quer resolver hoje?
+src/components/slides/QuizSlide.tsx:49: Parar de jogar no escuro
+src/components/slides/QuizSlide.tsx:50: Descobrir se meu jeito funciona ou não
+src/components/slides/QuizSlide.tsx:51: Usar algo que dê vantagem real
+src/components/slides/QuizSlide.tsx:62: Seu jeito conta
+src/components/slides/QuizSlide.tsx:63: Responda do modo que fala com amigos. Quanto mais natural, melhor fica o plano final.
+src/components/slides/QuizSlide.tsx:67: Golpe direto
+src/components/slides/QuizSlide.tsx:68: Cada resposta vale 10 moedas. Não tem pegadinha ou cálculo escondido.
+src/components/slides/QuizSlide.tsx:72: Pensado pro celular
+src/components/slides/QuizSlide.tsx:73: Botões grandes, texto simples e nada de enrolação. É só tocar e seguir.
+src/components/slides/QuizSlide.tsx:96: QuizStart
+src/components/slides/QuizSlide.tsx:122: QuizAnswer
+src/components/slides/QuizSlide.tsx:134: QuizBonusUnlocked
+src/components/slides/QuizSlide.tsx:150: 🎯 Pergunta
+src/components/slides/QuizSlide.tsx:153: Responda com calma
+src/components/slides/QuizSlide.tsx:157: Moedas liberadas
+src/components/slides/QuizSlide.tsx:159: 🏅 Mapa liberado
+src/components/slides/QuizSlide.tsx:159: ${coinsCollected}/${TOTAL_COINS}
+src/components/slides/QuizSlide.tsx:166: Total acumulado
+src/components/slides/QuizSlide.tsx:173: Usamos essas moedas automaticamente para abrir o Mapa dos Números Quentes.
+src/components/slides/QuizSlide.tsx:177: ${progressPercentage}%
+src/components/slides/QuizSlide.tsx:184: Representação das perguntas rápidas
+src/components/slides/QuizSlide.tsx:202: Responda como você fala no dia a dia.
+src/components/slides/QuizSlide.tsx:224: Destravando o Bônus 1
+src/components/slides/QuizSlide.tsx:225: Segure um pouco: estamos preparando os dados para liberar o mapa secreto.
+src/components/slides/QuizSlide.tsx:229: Transferindo fichas e liberando o Mapa Secreto...
+src/components/slides/RouletteBonusSlide.tsx:12: R$ 10 OFF
+src/components/slides/RouletteBonusSlide.tsx:12: R$ 20 OFF
+src/components/slides/RouletteBonusSlide.tsx:12: R$ 50 OFF
+src/components/slides/RouletteBonusSlide.tsx:12: R$ 100 OFF
+src/components/slides/RouletteBonusSlide.tsx:12: R$ 200 OFF
+src/components/slides/RouletteBonusSlide.tsx:12: MAX WIN
+src/components/slides/RouletteBonusSlide.tsx:13: MAX WIN
+src/components/slides/RouletteBonusSlide.tsx:17: Cashback imediato
+src/components/slides/RouletteBonusSlide.tsx:18: Usado para reduzir o valor do acesso agora mesmo.
+src/components/slides/RouletteBonusSlide.tsx:22: Consultoria express
+src/components/slides/RouletteBonusSlide.tsx:23: Conversa rápida com o time para destravar estratégia.
+src/components/slides/RouletteBonusSlide.tsx:27: Bônus MAX WIN
+src/components/slides/RouletteBonusSlide.tsx:28: R$500 off quando os três rolos travam no dourado.
+src/components/slides/RouletteBonusSlide.tsx:48: SlotMaxWin
+src/components/slides/RouletteBonusSlide.tsx:121: SlotSpinStart
+src/components/slides/RouletteBonusSlide.tsx:153: Bônus 2 • Roleta da IA
+src/components/slides/RouletteBonusSlide.tsx:154: Giro pago pela IA
+src/components/slides/RouletteBonusSlide.tsx:156: Ela deixou 1 rodada para você. Você pode ganhar até R$500,00 de desconto na LOTER.IA.
+src/components/slides/RouletteBonusSlide.tsx:159: A IA deixou 1 chance ativa exclusivamente pra você.
+src/components/slides/RouletteBonusSlide.tsx:160: Spins disponíveis:
+src/components/slides/RouletteBonusSlide.tsx:180: Aperte uma vez.
+src/components/slides/RouletteBonusSlide.tsx:184: Prêmios possíveis:
+src/components/slides/RouletteBonusSlide.tsx:186: 🔹 R$10 OFF
+src/components/slides/RouletteBonusSlide.tsx:187: 🔹 R$20 OFF
+src/components/slides/RouletteBonusSlide.tsx:188: 🔹 R$50 OFF
+src/components/slides/RouletteBonusSlide.tsx:189: 🔹 R$100 OFF
+src/components/slides/RouletteBonusSlide.tsx:190: 🔹 R$200 OFF
+src/components/slides/RouletteBonusSlide.tsx:191: 🔹 MAX WIN: R$500 OFF (desconto máximo)
+src/components/slides/RouletteBonusSlide.tsx:210: Girando...
+src/components/slides/RouletteBonusSlide.tsx:210: Girar agora
+src/components/slides/RouletteBonusSlide.tsx:215: Resultado
+src/components/slides/RouletteBonusSlide.tsx:216: MAX WIN desbloqueado!
+src/components/slides/RouletteBonusSlide.tsx:218: Você ganhou R$500 de desconto para ativar a LOTER.IA agora.
+src/components/slides/RouletteBonusSlide.tsx:220: Aproveite enquanto o painel está aberto.
+src/components/slides/TestimonialsSlide.tsx:11: Ana • SP
+src/components/slides/TestimonialsSlide.tsx:12: R$ 2.500
+src/components/slides/TestimonialsSlide.tsx:16: Lucas • MG
+src/components/slides/TestimonialsSlide.tsx:17: R$ 370
+src/components/slides/TestimonialsSlide.tsx:21: Marina • RJ
+src/components/slides/TestimonialsSlide.tsx:22: R$ 2.030
+src/components/slides/TestimonialsSlide.tsx:35: LOTER.IA
+src/components/slides/TestimonialsSlide.tsx:40: Antes de girar a roleta, veja o que os nossos usuários estão achando da LOTER.IA
+src/components/slides/TestimonialsSlide.tsx:43: São centenas jogando com a LOTER.IA neste momento — sinta a energia antes de liberar seu giro.
+src/components/slides/TestimonialsSlide.tsx:78: Liberar meu giro
+src/components/slides/UserResultSlide.tsx:34: ManualResult
+src/components/slides/UserResultSlide.tsx:42: 🧮 IA analisando seu jogo
+src/components/slides/UserResultSlide.tsx:43: Seu resultado saiu
+src/components/slides/UserResultSlide.tsx:43: Estamos conferindo sua aposta
+src/components/slides/UserResultSlide.tsx:45: Veja quantos pontos faria sozinho antes de ligar a IA.
+src/components/slides/UserResultSlide.tsx:45: Segure alguns segundos. Conferimos tudo antes de mostrar.
+src/components/slides/UserResultSlide.tsx:53: Comparando seus 15 números com 2.500 resultados anteriores.
+src/components/slides/UserResultSlide.tsx:58: Placar sem IA
+src/components/slides/UserResultSlide.tsx:60: É aqui que você ficaria se entrasse com este jogo agora.
+src/components/slides/UserResultSlide.tsx:64: Seus números
+src/components/slides/UserResultSlide.tsx:74: Seus números aparecerão aqui ao fim da rodada.
+src/components/slides/UserResultSlide.tsx:79: Toque no botão abaixo para ver a mesma aposta com a IA trabalhando a seu favor.
+src/components/slides/UserResultSlide.tsx:83: Ver a IA jogando agora
+src/components/ui/accordion.tsx:15: AccordionItem
+src/components/ui/alert-dialog.tsx:49: AlertDialogHeader
+src/components/ui/alert-dialog.tsx:54: AlertDialogFooter
+src/components/ui/alert.tsx:27: Alert
+src/components/ui/alert.tsx:34: AlertTitle
+src/components/ui/alert.tsx:41: AlertDescription
+src/components/ui/breadcrumb.tsx:13: Breadcrumb
+src/components/ui/breadcrumb.tsx:27: BreadcrumbList
+src/components/ui/breadcrumb.tsx:34: BreadcrumbItem
+src/components/ui/breadcrumb.tsx:46: BreadcrumbLink
+src/components/ui/breadcrumb.tsx:60: BreadcrumbPage
+src/components/ui/breadcrumb.tsx:67: BreadcrumbSeparator
+src/components/ui/breadcrumb.tsx:77: More
+src/components/ui/breadcrumb.tsx:80: BreadcrumbElipssis
+src/components/ui/button.tsx:19: Button
+src/components/ui/calendar.tsx:52: Calendar
+src/components/ui/card.tsx:8: Card
+src/components/ui/card.tsx:15: CardHeader
+src/components/ui/card.tsx:22: CardTitle
+src/components/ui/card.tsx:29: CardDescription
+src/components/ui/card.tsx:34: CardContent
+src/components/ui/card.tsx:41: CardFooter
+src/components/ui/carousel.tsx:35: useCarousel must be used within a <Carousel />
+src/components/ui/carousel.tsx:72: ArrowLeft
+src/components/ui/carousel.tsx:75: ArrowRight
+src/components/ui/carousel.tsx:97: reInit
+src/components/ui/carousel.tsx:132: Carousel
+src/components/ui/carousel.tsx:149: CarouselContent
+src/components/ui/carousel.tsx:166: CarouselItem
+src/components/ui/carousel.tsx:189: Previous slide
+src/components/ui/carousel.tsx:194: CarouselPrevious
+src/components/ui/carousel.tsx:217: Next slide
+src/components/ui/carousel.tsx:222: CarouselNext
+src/components/ui/chart.tsx:26: useChart must be used within a <ChartContainer />
+src/components/ui/chart.tsx:40: chart-${id || uniqueId.replace(/:/g, "")}
+src/components/ui/chart.tsx:59: Chart
+src/components/ui/chart.tsx:129: ${labelKey || item.dataKey || item.name || "value"}
+src/components/ui/chart.tsx:164: ${nameKey || item.name || item.dataKey || "value"}
+src/components/ui/chart.tsx:226: ChartTooltip
+src/components/ui/chart.tsx:233: verticalAlign
+src/components/ui/chart.tsx:250: ${nameKey || item.dataKey || "value"}
+src/components/ui/chart.tsx:275: ChartLegend
+src/components/ui/command.tsx:120: CommandShortcut
+src/components/ui/context-menu.tsx:160: ContextMenuShortcut
+src/components/ui/dialog.tsx:47: Close
+src/components/ui/dialog.tsx:57: DialogHeader
+src/components/ui/dialog.tsx:62: DialogFooter
+src/components/ui/drawer.tsx:9: Drawer
+src/components/ui/drawer.tsx:44: DrawerContent
+src/components/ui/drawer.tsx:49: DrawerHeader
+src/components/ui/drawer.tsx:54: DrawerFooter
+src/components/ui/dropdown-menu.tsx:161: DropdownMenuShortcut
+src/components/ui/form.tsx:41: useFormField should be used within <FormField>
+src/components/ui/form.tsx:73: FormItem
+src/components/ui/form.tsx:83: FormLabel
+src/components/ui/form.tsx:93: ${formDescriptionId}
+src/components/ui/form.tsx:93: ${formDescriptionId} ${formMessageId}
+src/components/ui/form.tsx:100: FormControl
+src/components/ui/form.tsx:109: FormDescription
+src/components/ui/form.tsx:127: FormMessage
+src/components/ui/input-otp.tsx:17: InputOTP
+src/components/ui/input-otp.tsx:22: InputOTPGroup
+src/components/ui/input-otp.tsx:50: InputOTPSlot
+src/components/ui/input-otp.tsx:59: InputOTPSeparator
+src/components/ui/input.tsx:20: Input
+src/components/ui/menubar.tsx:188: MenubarShortcut
+src/components/ui/pagination.tsx:16: Pagination
+src/components/ui/pagination.tsx:23: PaginationContent
+src/components/ui/pagination.tsx:28: PaginationItem
+src/components/ui/pagination.tsx:48: PaginationLink
+src/components/ui/pagination.tsx:53: Previous
+src/components/ui/pagination.tsx:56: PaginationPrevious
+src/components/ui/pagination.tsx:60: Next
+src/components/ui/pagination.tsx:64: PaginationNext
+src/components/ui/pagination.tsx:69: More pages
+src/components/ui/pagination.tsx:72: PaginationEllipsis
+src/components/ui/progress.tsx:17: translateX(-${100 - (value || 0)}%)
+src/components/ui/sheet.tsx:62: Close
+src/components/ui/sheet.tsx:73: SheetHeader
+src/components/ui/sheet.tsx:78: SheetFooter
+src/components/ui/sidebar.tsx:37: useSidebar must be used within a SidebarProvider.
+src/components/ui/sidebar.tsx:68: ${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}
+src/components/ui/sidebar.tsx:129: SidebarProvider
+src/components/ui/sidebar.tsx:217: Sidebar
+src/components/ui/sidebar.tsx:237: Toggle Sidebar
+src/components/ui/sidebar.tsx:242: SidebarTrigger
+src/components/ui/sidebar.tsx:255: Toggle Sidebar
+src/components/ui/sidebar.tsx:270: SidebarRail
+src/components/ui/sidebar.tsx:285: SidebarInset
+src/components/ui/sidebar.tsx:302: SidebarInput
+src/components/ui/sidebar.tsx:307: SidebarHeader
+src/components/ui/sidebar.tsx:312: SidebarFooter
+src/components/ui/sidebar.tsx:326: SidebarSeparator
+src/components/ui/sidebar.tsx:341: SidebarContent
+src/components/ui/sidebar.tsx:353: SidebarGroup
+src/components/ui/sidebar.tsx:373: SidebarGroupLabel
+src/components/ui/sidebar.tsx:395: SidebarGroupAction
+src/components/ui/sidebar.tsx:402: SidebarGroupContent
+src/components/ui/sidebar.tsx:407: SidebarMenu
+src/components/ui/sidebar.tsx:412: SidebarMenuItem
+src/components/ui/sidebar.tsx:475: SidebarMenuButton
+src/components/ui/sidebar.tsx:506: SidebarMenuAction
+src/components/ui/sidebar.tsx:526: SidebarMenuBadge
+src/components/ui/sidebar.tsx:536: ${Math.floor(Math.random() * 40) + 50}%
+src/components/ui/sidebar.tsx:559: SidebarMenuSkeleton
+src/components/ui/sidebar.tsx:575: SidebarMenuSub
+src/components/ui/sidebar.tsx:580: SidebarMenuSubItem
+src/components/ui/sidebar.tsx:610: SidebarMenuSubButton
+src/components/ui/table.tsx:12: Table
+src/components/ui/table.tsx:17: TableHeader
+src/components/ui/table.tsx:24: TableBody
+src/components/ui/table.tsx:31: TableFooter
+src/components/ui/table.tsx:42: TableRow
+src/components/ui/table.tsx:56: TableHead
+src/components/ui/table.tsx:63: TableCell
+src/components/ui/table.tsx:70: TableCaption
+src/components/ui/textarea.tsx:19: Textarea
+src/hooks/use-mobile.tsx:9: (max-width: ${MOBILE_BREAKPOINT - 1}px)
+src/hooks/use-toast.ts:16: ADD_TOAST
+src/hooks/use-toast.ts:17: UPDATE_TOAST
+src/hooks/use-toast.ts:18: DISMISS_TOAST
+src/hooks/use-toast.ts:19: REMOVE_TOAST
+src/hooks/use-toast.ts:33: ADD_TOAST
+src/hooks/use-toast.ts:37: UPDATE_TOAST
+src/hooks/use-toast.ts:41: DISMISS_TOAST
+src/hooks/use-toast.ts:45: REMOVE_TOAST
+src/hooks/use-toast.ts:63: REMOVE_TOAST
+src/hooks/use-toast.ts:73: ADD_TOAST
+src/hooks/use-toast.ts:79: UPDATE_TOAST
+src/hooks/use-toast.ts:85: DISMISS_TOAST
+src/hooks/use-toast.ts:110: REMOVE_TOAST
+src/hooks/use-toast.ts:142: UPDATE_TOAST
+src/hooks/use-toast.ts:145: DISMISS_TOAST
+src/hooks/use-toast.ts:148: ADD_TOAST
+src/hooks/use-toast.ts:182: DISMISS_TOAST
+src/lib/analytics.ts:18: trackCustom
+src/lib/analytics.ts:25: fbCAPI_trackLead
+src/lib/analytics.ts:25: fbCAPI_trackCompleteRegistration
+src/lib/analytics.ts:25: fbCAPI_trackAddToCart
+src/lib/analytics.ts:25: fbCAPI_trackInitiateCheckout
+src/lib/analytics.ts:30: fbCAPI_trackLead
+src/lib/analytics.ts:31: Quiz Iniciado
+src/lib/analytics.ts:34: fbCAPI_trackCompleteRegistration
+src/lib/analytics.ts:35: Quiz Completo
+src/lib/analytics.ts:38: fbCAPI_trackAddToCart
+src/lib/analytics.ts:39: Oferta MAX WIN
+src/lib/analytics.ts:39: BRL
+src/lib/analytics.ts:42: fbCAPI_trackLead
+src/lib/analytics.ts:43: Suporte WhatsApp
+src/lib/analytics.ts:46: fbCAPI_trackInitiateCheckout
+src/lib/analytics.ts:47: CTA Pré-Checkout
+src/lib/analytics.ts:47: BRL
+src/lib/analytics.ts:50: fbCAPI_trackInitiateCheckout
+src/lib/analytics.ts:51: Checkout Loter.IA
+src/lib/analytics.ts:51: BRL
+src/pages/NotFound.tsx:8: 404 Error: User attempted to access non-existent route:
+src/pages/NotFound.tsx:15: Oops! Page not found
+src/pages/NotFound.tsx:17: Return to Home

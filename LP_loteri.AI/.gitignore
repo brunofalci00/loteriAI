@@ -9,15 +9,16 @@ desktop.ini
 
 # Dependencies
 node_modules/
-app/node_modules/
+apps/*/node_modules/
 
 # Build output
 dist/
-app/dist/
+apps/*/dist/
 
 # Environment variables
 .env
-app/.env
+.env.*
+apps/*/.env
 .env.local
 .env.*.local
 
