@@ -4,7 +4,6 @@ import { LotteryCard } from "@/components/LotteryCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import { MegaEventHero } from "@/components/MegaEventHero";
 import { useLotteryDrawInfo } from "@/hooks/useLotteryDrawInfo";
 import { useMemo } from "react";
 
@@ -168,9 +167,9 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      
+
       <div className="container mx-auto px-4 pt-24 pb-12">
-        <MegaEventHero />
+        {/* TODO: Ativar MegaEventHero no dia 31 de dezembro (próxima semana antes da data) */}
 
         <div className="mb-8">
           <h1 className="mb-2 text-4xl font-bold">Escolha sua Loteria</h1>
