@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/anthropic-skunkworks/main/mcp/json-schema/mcp.schema.json",
+  "name": "n8n-mcp",
+  "command": "npx",
+  "args": [
+    "n8n-mcp"
+  ],
+  "workingDirectory": ".",
+  "env": {
+    "DISABLE_CONSOLE_OUTPUT": "true",
+    "LOG_LEVEL": "error",
+    "MCP_MODE": "stdio",
+    "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlZjZhOGU4OS1lYWQ1LTQ5NDUtYjNkZi1jODVmNmEwZThhMTciLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYwMDQ1ODgxfQ.ANfaC3HXOJHH9uRmqlaYhKMZixjz-tFE23XLg8tiFnw",
+    "N8N_API_URL": "https://n8n.srv885329.hstgr.cloud"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/anthropic-skunkworks/main/mcp/json-schema/mcp.schema.json",
+  "name": "shadcn",
+  "command": "npx",
+  "args": [
+    "shadcn@latest",
+    "mcp"
+  ],
+  "workingDirectory": "App/app",
+  "env": {}
+}

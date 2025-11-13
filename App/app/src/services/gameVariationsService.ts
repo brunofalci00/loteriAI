@@ -46,7 +46,7 @@ export class GameVariationsService {
       }
       console.log(`✅ Usuário autenticado: ${user.id}`);
 
-      // **CONSUMIR 1 CRÉDITO ANTES DE GERAR**
+      // Consumir 1 crédito (sistema unificado)
       console.log('🎯 Consumindo 1 crédito para gerar variações...');
       const creditResult = await consumeCredit(user.id);
 
@@ -59,6 +59,7 @@ export class GameVariationsService {
         };
       }
 
+      const currencyBalance = creditResult.credits_remaining;
       console.log(`✅ Crédito consumido! Restam ${creditResult.credits_remaining} créditos`);
 
       // Buscar hot/cold numbers do concurso
@@ -174,7 +175,7 @@ export class GameVariationsService {
       return {
         success: true,
         data: variations,
-        creditsRemaining: creditResult.credits_remaining
+        creditsRemaining: currencyBalance
       };
     } catch (error) {
       console.error('Erro ao gerar variações:', error);

@@ -104,7 +104,41 @@ serve(async (req) => {
       console.log(`[kirvano-webhook] ✨ Novo usuário criado: ${userId}`);
     }
 
-    // 8. Enviar email de acesso (SEMPRE - para novos e existentes)
+    // 8. Chamar N8N para enviar email customizado (NOVO FLUXO)
+    const n8nWebhookUrl = Deno.env.get('N8N_WEBHOOK_URL') ||
+      'https://seu-n8n-instance.app/webhook/loter-ai-welcome';
+
+    const n8nPayload = {
+      email: customerEmail,
+      name: customerName,
+      userId: userId,
+      transactionId: transactionId,
+      value: amount,
+      timestamp: new Date().toISOString()
+    };
+
+    // Chamar n8n webhook de forma não-bloqueante
+    try {
+      fetch(n8nWebhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(n8nPayload)
+      })
+        .then(response => {
+          if (response.ok) {
+            console.log(`[kirvano-webhook] ✉️ Email enviado via n8n para: ${customerEmail}`);
+          } else {
+            console.error(`[kirvano-webhook] ⚠️ Erro n8n (${response.status})`);
+          }
+        })
+        .catch(error => {
+          console.error('[kirvano-webhook] ⚠️ Erro ao chamar n8n:', error);
+        });
+    } catch (error) {
+      console.error('[kirvano-webhook] ⚠️ Erro ao preparar n8n:', error);
+    }
+
+    // 9. FALLBACK: Enviar email Supabase genérico (se N8N falhar)
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_ANON_KEY')!
@@ -118,9 +152,9 @@ serve(async (req) => {
     );
 
     if (emailError) {
-      console.error('[kirvano-webhook] ⚠️ Erro ao enviar email de acesso:', emailError);
+      console.error('[kirvano-webhook] ⚠️ Erro ao enviar email fallback:', emailError);
     } else {
-      console.log(`[kirvano-webhook] ✉️ Email de acesso enviado para: ${customerEmail}`);
+      console.log(`[kirvano-webhook] ✉️ Email fallback (Supabase) enviado para: ${customerEmail}`);
     }
 
     // 9. Registrar/atualizar pagamento (upsert para prevenir duplicação)

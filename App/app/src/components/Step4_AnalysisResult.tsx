@@ -264,7 +264,7 @@ export function Step4_AnalysisResult({
             ) : (
               <>
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Gerar 5 Variações
+                Gerar 5 Variações (1 crédito)
               </>
             )}
           </Button>
@@ -308,7 +308,7 @@ export function Step4_AnalysisResult({
           open={confirmModalOpen}
           onOpenChange={setConfirmModalOpen}
           title="Gerar 5 Variações?"
-          description="Esta ação gerará 5 variações otimizadas mantendo 60-70% dos números originais."
+          description="Esta ação consome 1 crédito do seu saldo mensal."
           creditsRequired={1}
           creditsRemaining={creditsRemaining}
           onConfirm={handleConfirmVariations}

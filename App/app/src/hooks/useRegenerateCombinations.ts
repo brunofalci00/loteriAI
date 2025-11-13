@@ -2,10 +2,12 @@
  * Hook: useRegenerateCombinations
  *
  * Gerencia regeneração de combinações com:
- * - Validação de créditos + cooldown
+ * - Consumo de créditos unificado
  * - Geração de novas combinações
  * - Salvamento no histórico
  * - Invalidação de cache
+ *
+ * Sistema simplificado: sempre usa user_credits
  *
  * @author Claude Code
  * @date 2025-01-03
@@ -40,6 +42,7 @@ export interface RegenerateResult {
 /**
  * Hook para regenerar combinações
  * Usa React Query mutation + invalidação de cache
+ * Sistema unificado com user_credits
  */
 export function useRegenerateCombinations() {
   const queryClient = useQueryClient();
@@ -56,7 +59,7 @@ export function useRegenerateCombinations() {
           contestNumber: params.contestNumber
         });
 
-        // 1. Consumir crédito (valida cooldown + limite)
+        // 1. Consumir crédito (sistema unificado)
         const creditResult = await consumeCredit(params.userId);
 
         if (!creditResult.success) {
@@ -80,7 +83,7 @@ export function useRegenerateCombinations() {
 
         console.log(`✅ ${newCombinations.length} combinações geradas`);
 
-        // 3. Salvar no histórico (marca como ativa)
+        // 3. Salvar no histórico
         const generationId = await saveGeneration(
           params.userId,
           params.lotteryType,
@@ -97,7 +100,6 @@ export function useRegenerateCombinations() {
         console.log('✅ Geração salva no histórico:', generationId);
 
         // 4. Atualizar lottery_analyses (backward compatibility)
-        // Apenas atualizar, não inserir se não existir
         const { error: updateError } = await supabase
           .from('lottery_analyses')
           .update({
@@ -111,9 +113,8 @@ export function useRegenerateCombinations() {
 
         if (updateError) {
           console.warn('⚠️ Aviso ao atualizar lottery_analyses:', updateError);
-          // Não é fatal, continua
         } else {
-          console.log('✅ lottery_analyses atualizado (backward compatibility)');
+          console.log('✅ lottery_analyses atualizado');
         }
 
         return {

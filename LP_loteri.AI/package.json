@@ -15,5 +15,8 @@
     "node": ">=18.0.0"
   },
   "author": "Bruno Falci",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.81.1"
+  }
 }

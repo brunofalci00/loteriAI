@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/anthropic-skunkworks/main/mcp/json-schema/mcp.schema.json",
+  "name": "chrome-devtools",
+  "command": "npx",
+  "args": [
+    "chrome-devtools-mcp@latest"
+  ],
+  "workingDirectory": ".",
+  "env": {}
+}

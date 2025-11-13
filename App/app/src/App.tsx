@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { MegaEventProvider } from "@/contexts/MegaEventContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -14,7 +15,10 @@ import HowItWorks from "./pages/HowItWorks";
 import EmailConfirmation from "./pages/EmailConfirmation";
 import SavedGamesPage from "./pages/SavedGamesPage";
 import ManualGameCreationPage from "./pages/ManualGameCreationPage";
+import CreatePassword from "./pages/CreatePassword";
 import NotFound from "./pages/NotFound";
+import MegaEvent from "./pages/MegaEvent";
+import { isMegaEventEnabled } from "@/config/features";
 
 const queryClient = new QueryClient();
 
@@ -25,10 +29,12 @@ const App = () => (
       <Sonner />
       <BrowserRouter basename="/app">
         <AuthProvider>
-          <Routes>
+          <MegaEventProvider>
+            <Routes>
             <Route path="/" element={<Auth />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/email-confirmation" element={<EmailConfirmation />} />
+            <Route path="/criar-senha" element={<CreatePassword />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/lottery/:type/contests" element={<ProtectedRoute><LotteryContests /></ProtectedRoute>} />
             <Route path="/lottery/:type/analysis/:contestNumber" element={<ProtectedRoute><Lottery /></ProtectedRoute>} />
@@ -36,9 +42,20 @@ const App = () => (
             <Route path="/meus-jogos" element={<ProtectedRoute><SavedGamesPage /></ProtectedRoute>} />
             <Route path="/criar-jogo" element={<ProtectedRoute><ManualGameCreationPage /></ProtectedRoute>} />
             <Route path="/how-it-works" element={<HowItWorks />} />
+            {isMegaEventEnabled && (
+              <Route
+                path="/mega-da-virada"
+                element={
+                  <ProtectedRoute>
+                    <MegaEvent />
+                  </ProtectedRoute>
+                }
+              />
+            )}
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
-          </Routes>
+            </Routes>
+          </MegaEventProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

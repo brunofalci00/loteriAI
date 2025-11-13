@@ -7,6 +7,8 @@
  * - Estados de loading/erro
  * - Toast notifications
  *
+ * Sistema simplificado: sempre usa user_credits unificado
+ *
  * @author Claude Code
  * @date 2025-01-03
  */
@@ -61,7 +63,7 @@ export function RegenerateButton({
   disabled = false,
   variant = 'hero',
   size = 'default',
-  showCreditsCount = false
+  showCreditsCount = false,
 }: RegenerateButtonProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
@@ -73,7 +75,7 @@ export function RegenerateButton({
     creditsRemaining,
     cooldownSeconds,
     isLoading: isLoadingCredits
-  } = useCreditsStatus(userId, true);
+  } = useCreditsStatus(userId);
 
   // Regeneration mutation
   const {
@@ -109,10 +111,9 @@ export function RegenerateButton({
         statistics,
         numbersPerGame,
         maxNumber,
-        numberOfGames
+        numberOfGames,
       });
 
-      // Success toast
       toast({
         title: 'Sucesso!',
         description: `${result.combinations.length} novas combinações geradas. Créditos restantes: ${result.creditsRemaining}`,
@@ -142,7 +143,10 @@ export function RegenerateButton({
     }
   };
 
-  const isDisabled = disabled || isLoadingCredits || isGenerating || !canRegenerate;
+  const isDisabled =
+    disabled ||
+    isGenerating ||
+    (!canRegenerate || isLoadingCredits);
 
   return (
     <>
@@ -162,9 +166,9 @@ export function RegenerateButton({
           <>
             <Zap className="h-4 w-4" />
             Gerar Novamente
-            {showCreditsCount && !isLoadingCredits && (
+            {showCreditsCount && (
               <span className="ml-1 text-xs opacity-80">
-                ({creditsRemaining})
+                ({isLoadingCredits ? '...' : creditsRemaining})
               </span>
             )}
           </>
@@ -180,7 +184,7 @@ export function RegenerateButton({
           />
           <span className="text-xs text-muted-foreground flex items-center gap-1 whitespace-nowrap">
             <Clock className="h-3 w-3" />
-            Aguarde {cooldownSeconds}s
+            Aguarde {cooldownSeconds.toFixed(0)}s
           </span>
         </div>
       )}

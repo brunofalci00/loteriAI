@@ -136,12 +136,99 @@ export type Database = {
         }
         Relationships: []
       }
+      mega_token_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          feature: string | null
+          id: string
+          lottery_type: string | null
+          metadata: Json | null
+          type: string
+          user_id: string
+          contest_number: number | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          feature?: string | null
+          id?: string
+          lottery_type?: string | null
+          metadata?: Json | null
+          type: string
+          user_id: string
+          contest_number?: number | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          feature?: string | null
+          id?: string
+          lottery_type?: string | null
+          metadata?: Json | null
+          type?: string
+          user_id?: string
+          contest_number?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mega_token_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mega_tokens: {
+        Row: {
+          balance: number
+          created_at: string
+          expires_at: string
+          plan_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          expires_at: string
+          plan_type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          expires_at?: string
+          plan_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mega_tokens_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      consume_mega_token: {
+        Args: {
+          p_user_id: string
+          p_feature: string
+          p_amount?: number
+          p_metadata?: Json
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

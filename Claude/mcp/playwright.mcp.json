@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/anthropic-skunkworks/main/mcp/json-schema/mcp.schema.json",
+  "name": "playwright",
+  "command": "npx",
+  "args": [
+    "@playwright/mcp@latest"
+  ],
+  "workingDirectory": ".",
+  "env": {}
+}
