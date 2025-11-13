@@ -43,7 +43,13 @@
       "Bash(git push:*)",
       "Bash(gh pr create:*)",
       "Bash(git add:*)",
-      "mcp__n8n-mcp__search_templates"
+      "mcp__n8n-mcp__search_templates",
+      "mcp__n8n-mcp__n8n_list_workflows",
+      "mcp__n8n-mcp__n8n_get_execution",
+      "mcp__n8n-mcp__n8n_update_partial_workflow",
+      "mcp__n8n-mcp__n8n_list_executions",
+      "mcp__n8n-mcp__n8n_get_workflow",
+      "mcp__n8n-mcp__n8n_update_full_workflow"
     ],
     "deny": [],
     "ask": []

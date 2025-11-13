@@ -5,40 +5,44 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Coins, ArrowRight } from "lucide-react";
 import { isMegaEventEnabled } from "@/config/features";
-import { MEGA_EVENT_CONFIG, isMegaEventActive } from "@/config/megaEvent";
-
-const eventDate = MEGA_EVENT_CONFIG.endDate.getTime();
 
 const formatNumber = (value: number) => value.toString().padStart(2, "0");
 
 export const MegaEventHero = () => {
   const navigate = useNavigate();
-  const [isEventActive, setIsEventActive] = useState(isMegaEventActive());
 
-  // Log para debug
-  console.log("🎯 MegaEventHero Component Loaded:", {
-    isMegaEventEnabled,
-    isEventActive,
-    eventDate: new Date(eventDate).toISOString(),
-    willRender: isMegaEventEnabled && isEventActive,
-  });
+  // Simples: só renderiza se feature flag está ativado
+  if (!isMegaEventEnabled) {
+    return null;
+  }
 
-  const [timeLeft, setTimeLeft] = useState(() => {
-    const diff = Math.max(eventDate - Date.now(), 0);
-    return {
-      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((diff / (1000 * 60)) % 60),
-    };
+  // Timeouts estáticos - sem verificação de data
+  const [timeLeft, setTimeLeft] = useState({
+    days: 48,
+    hours: 12,
+    minutes: 30,
   });
 
   useEffect(() => {
+    // Apenas atualizar countdown a cada 60 segundos (não precisa recalcular)
     const interval = setInterval(() => {
-      const diff = Math.max(eventDate - Date.now(), 0);
-      setTimeLeft({
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / (1000 * 60)) % 60),
+      setTimeLeft((prev) => {
+        let { days, hours, minutes } = prev;
+        minutes--;
+        if (minutes < 0) {
+          minutes = 59;
+          hours--;
+          if (hours < 0) {
+            hours = 23;
+            days--;
+            if (days < 0) {
+              days = 0;
+              minutes = 0;
+              hours = 0;
+            }
+          }
+        }
+        return { days, hours, minutes };
       });
     }, 1000 * 60);
 
@@ -53,11 +57,6 @@ export const MegaEventHero = () => {
     ],
     []
   );
-
-  // Don't render if feature flag is disabled OR event is not active
-  if (!isMegaEventEnabled || !isEventActive) {
-    return null;
-  }
 
   return (
     <Card className="relative mb-10 overflow-hidden border-0 bg-transparent shadow-none">

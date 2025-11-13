@@ -47,6 +47,17 @@ if (cwdSwitchError) {
   );
 }
 debug("Wrapper booted", `cwd=${process.cwd()}`);
+try {
+  fs.appendFileSync(
+    "/tmp/shadcn-wrapper-proof.log",
+    `booted to ${debugLogPath}\n`
+  );
+} catch (error) {
+  console.error(
+    "[shadcn-mcp-wrapper] Failed to write proof log:",
+    error?.message ?? error
+  );
+}
 
 const STATUS_RESOURCE = {
   uri: "shadcn://status",
