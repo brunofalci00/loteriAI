@@ -15,6 +15,14 @@ export const MegaEventHero = () => {
   const navigate = useNavigate();
   const [isEventActive, setIsEventActive] = useState(isMegaEventActive());
 
+  // Log para debug
+  console.log("🎯 MegaEventHero Component Loaded:", {
+    isMegaEventEnabled,
+    isEventActive,
+    eventDate: new Date(eventDate).toISOString(),
+    willRender: isMegaEventEnabled && isEventActive,
+  });
+
   const [timeLeft, setTimeLeft] = useState(() => {
     const diff = Math.max(eventDate - Date.now(), 0);
     return {

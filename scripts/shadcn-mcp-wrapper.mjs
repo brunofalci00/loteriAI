@@ -8,7 +8,23 @@ import {
 import fs from "node:fs";
 import path from "node:path";
 
-const debugLogPath = process.env.SHADCN_MCP_DEBUG_LOG;
+const targetCwd = process.env.SHADCN_MCP_PROJECT_CWD;
+let cwdSwitchError = null;
+if (targetCwd && targetCwd.trim().length > 0) {
+  try {
+    process.chdir(targetCwd);
+  } catch (error) {
+    cwdSwitchError = error;
+    console.error(
+      `[shadcn-mcp-wrapper] Unable to switch to ${targetCwd}:`,
+      error
+    );
+  }
+}
+
+const debugLogPath =
+  process.env.SHADCN_MCP_DEBUG_LOG ??
+  path.join(process.cwd(), ".shadcn-mcp.log");
 const debug = (...args) => {
   if (!debugLogPath) {
     return;
@@ -16,22 +32,19 @@ const debug = (...args) => {
   const line = `[${new Date().toISOString()}] ${args.join(" ")}\n`;
   try {
     fs.appendFileSync(debugLogPath, line);
-  } catch {
-    // ignore fs errors to avoid crashing the MCP server
-  }
-};
-
-const targetCwd = process.env.SHADCN_MCP_PROJECT_CWD;
-if (targetCwd && targetCwd.trim().length > 0) {
-  try {
-    process.chdir(targetCwd);
   } catch (error) {
     console.error(
-      `[shadcn-mcp-wrapper] Unable to switch to ${targetCwd}:`,
-      error
+      "[shadcn-mcp-wrapper] Failed to write debug log:",
+      error?.message ?? error
     );
-    debug("Failed to switch cwd", targetCwd, error?.message ?? String(error));
   }
+};
+if (cwdSwitchError) {
+  debug(
+    "Failed to switch cwd",
+    targetCwd,
+    cwdSwitchError?.message ?? String(cwdSwitchError)
+  );
 }
 debug("Wrapper booted", `cwd=${process.cwd()}`);
 
@@ -122,3 +135,30 @@ shadcnServer.setRequestHandler(
       summary?.error ? `- Erro ao ler components.json: ${summary.error}` : "",
       "",
       "Este recurso existe apenas para satisfazer o método `resources/list` exigido pelo Codex. Use as ferramentas MCP do shadcn normalmente (`list_items_in_registries`, `view_items_in_registries`, etc.).",
+    ].filter(Boolean);
+
+    const response = {
+      contents: [
+        {
+          uri: STATUS_RESOURCE.uri,
+          mimeType: STATUS_RESOURCE.mimeType,
+          text: lines.join("\n"),
+        },
+      ],
+    };
+    debug("resources/read served", JSON.stringify(response.contents[0]));
+    return response;
+  }
+);
+
+async function main() {
+  const transport = new StdioServerTransport();
+  debug("Connecting transport");
+  await shadcnServer.connect(transport);
+}
+
+main().catch((error) => {
+  console.error("[shadcn-mcp-wrapper] Failed to start:", error);
+  debug("Fatal error", error?.stack ?? String(error));
+  process.exit(1);
+});
