@@ -61,7 +61,7 @@ export const FinalOfferSlide = () => {
       <div className="slide-frame space-y-8 relative z-10">
         <div className="text-center space-y-3">
           <img
-            src="https://i.ibb.co/r2FFdKRw/Logo-Lumen-1.png"
+            src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png"
             alt="LOTER.IA"
             className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(16,185,129,0.45)] pulse-glow"
           />

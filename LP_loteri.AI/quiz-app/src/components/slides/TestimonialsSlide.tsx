@@ -26,7 +26,7 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
       <div className="casino-grid" />
       <div className="slide-frame space-y-8 text-center relative z-10">
         <div className="space-y-3">
-          <img src="https://i.ibb.co/r2FFdKRw/Logo-Lumen-1.png" alt="LOTER.IA" className="mx-auto w-24 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]" />
+          <img src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png" alt="LOTER.IA" className="mx-auto w-24 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]" />
           <h1 className="heading-1 flex items-center justify-center gap-2 text-glow text-center">
             <span role="img" aria-hidden="true">
               🎥
