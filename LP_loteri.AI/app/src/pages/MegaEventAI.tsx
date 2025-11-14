@@ -167,15 +167,11 @@ export default function MegaEventAI() {
               >
                 <div>
                   <p className="text-xs uppercase tracking-[0.4em] text-amber-100/70">Mega da Virada</p>
-                  <h3 className="text-2xl font-black">{formatCurrency(featuredDraw.estimatedPrize)} em jogo</h3>
+                  <h3 className="text-2xl font-black">R$ 850 milhões em jogo</h3>
                   <p className="text-sm mega-text-muted">
-                    {featuredDraw.dayOfWeek} · {featuredDraw.drawDate.toLocaleDateString("pt-BR")} às{" "}
-                    {featuredDraw.drawDate.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                    31 de dezembro de 2025 · 20h
                   </p>
                 </div>
-                <Badge className="self-start rounded-full bg-amber-200/20 text-amber-50">
-                  {featuredDraw.status || "ÚNICO"}
-                </Badge>
               </button>
             </div>
           ) : (
