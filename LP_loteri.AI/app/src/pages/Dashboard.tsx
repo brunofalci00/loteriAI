@@ -172,7 +172,7 @@ const Dashboard = () => {
       <div className="container mx-auto px-4 pt-24 pb-12">
         <MegaEventHero />
 
-        <div className="mb-8">
+        <div className="mb-12 mt-6">
           <h1 className="mb-2 text-4xl font-bold">Escolha sua Loteria</h1>
           <p className="text-lg text-muted-foreground">
             Selecione a modalidade que deseja analisar
