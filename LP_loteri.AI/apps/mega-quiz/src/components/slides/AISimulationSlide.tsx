@@ -104,7 +104,7 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
                 {phase === "scan"
                   ? "Conferindo seu jogo"
                   : phase === "selection"
-                  ? "Escolhendo os 15 números dela"
+                  ? "Escolhendo os 6 números dela"
                   : "Mostrando o placar final"}
               </p>
             </div>
@@ -123,8 +123,8 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
 
         {phase === "selection" && (
           <Card className="p-6 space-y-4 border border-border">
-            <p className="text-center text-sm text-muted-foreground">IA escolhendo 15 números com maior chance agora.</p>
-            <div className="grid grid-cols-5 gap-2 sm:gap-3">
+            <p className="text-center text-sm text-muted-foreground">IA escolhendo 6 números com maior chance agora.</p>
+            <div className="grid grid-cols-6 sm:grid-cols-10 gap-2 sm:gap-3">
               {allNumbers.map((num) => (
                 <div key={num} className={`number-cell ${selectedNumbers.includes(num) ? "number-cell--active" : ""}`}>
                   {num}

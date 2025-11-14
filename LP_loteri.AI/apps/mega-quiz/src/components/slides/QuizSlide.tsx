@@ -12,10 +12,10 @@ interface QuizSlideProps {
 
 const questions = [
   {
-    question: "Quando você joga na Lotofácil, o que mais te incomoda?",
+    question: "Quando você joga na Mega-Sena, o que mais te incomoda?",
     options: [
       "Jogar sem saber se estou no caminho certo",
-      "Apostar várias vezes e nunca passar dos mesmos 11 pontos",
+      "Apostar várias vezes e nunca passar da quadra",
       "Ver os outros falando que usam sistema e eu aqui tentando na raça",
     ],
   },
@@ -24,7 +24,7 @@ const questions = [
     options: [
       "Sempre. 1 ou 2 números me perseguem",
       "Em quase todo jogo fico por um triz",
-      "Nunca passei dos 11. Já tô desacreditado",
+      "Nunca passei da quadra. Já tô desacreditado",
     ],
   },
   {

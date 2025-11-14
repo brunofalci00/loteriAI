@@ -26,7 +26,7 @@
     },
     {
       "source": "/quiz",
-      "destination": "/quiz.html"
+      "destination": "/funnels/classic/index.html"
     },
     {
       "source": "/app/:path((?!.*\\.).*)",

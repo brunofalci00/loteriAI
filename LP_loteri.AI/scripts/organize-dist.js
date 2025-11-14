@@ -7,7 +7,7 @@ const appDashboardDist = path.join(__dirname, '..', '..', 'App', 'app', 'dist');
 const publicSource = path.join(__dirname, '..', 'public');
 
 const funnels = [
-  { app: 'quiz-classic', slug: 'classic', aliasHtml: 'quiz.html', buildScript: 'build:quiz-classic' },
+  { app: 'quiz-classic', slug: 'classic', buildScript: 'build:quiz-classic' },
   { app: 'mega-quiz', slug: 'mega', buildScript: 'build:mega' },
   { app: 'lotozap-quiz', slug: 'lotozap', buildScript: 'build:lotozap' },
 ];
@@ -32,25 +32,25 @@ if (fs.existsSync(distDir)) {
 fs.mkdirSync(distDir, { recursive: true });
 console.log('dist/ recriado');
 
-ensure(fs.existsSync(publicSource), 'Pasta public/ n„o encontrada na raiz!');
+ensure(fs.existsSync(publicSource), 'Pasta public/ nÔøΩo encontrada na raiz!');
 fs.readdirSync(publicSource).forEach((file) => {
   copyDir(path.join(publicSource, file), path.join(distDir, file));
 });
-console.log('Conte˙do est·tico raiz copiado');
+console.log('ConteÔøΩdo estÔøΩtico raiz copiado');
 
-ensure(fs.existsSync(lpDist), 'Build de apps/lp n„o encontrado. Rode npm run build:lp');
+ensure(fs.existsSync(lpDist), 'Build de apps/lp nÔøΩo encontrado. Rode npm run build:lp');
 copyDir(lpDist, path.join(distDir, 'lp'));
 ensure(fs.existsSync(path.join(distDir, 'lp', 'index.html')), 'apps/lp/dist/index.html ausente!');
 console.log('App LP copiado para dist/lp');
 
-ensure(fs.existsSync(appDashboardDist), 'Build de App/app n„o encontrado. Rode npm run build:app');
+ensure(fs.existsSync(appDashboardDist), 'Build de App/app nÔøΩo encontrado. Rode npm run build:app');
 copyDir(appDashboardDist, path.join(distDir, 'app'));
-console.log('AplicaÁ„o principal copiada para dist/app');
+console.log('AplicaÔøΩÔøΩo principal copiada para dist/app');
 
 funnels.forEach(({ app, slug, aliasHtml, buildScript }) => {
   const source = path.join(__dirname, '..', 'apps', app, 'dist');
   const dest = path.join(distDir, 'funnels', slug);
-  ensure(fs.existsSync(source), `Build de apps/${app} n„o encontrado. Rode npm run ${buildScript}`);
+  ensure(fs.existsSync(source), `Build de apps/${app} nÔøΩo encontrado. Rode npm run ${buildScript}`);
   copyDir(source, dest);
 
   const indexPath = path.join(dest, 'index.html');
@@ -66,8 +66,8 @@ funnels.forEach(({ app, slug, aliasHtml, buildScript }) => {
 console.log('\nBuild organizado com sucesso!');
 console.log('dist/');
 console.log('  +- lp/ (app principal)');
+console.log('  +- app/ (dashboard)');
 console.log('  +- funnels/');
-console.log('  ¶   +- classic/ (backup)');
-console.log('  ¶   +- mega/');
-console.log('  ¶   +- lotozap/');
-console.log('  +- quiz.html (espelho do classic para compatibilidade)');
+console.log('      +- classic/ (quiz acess√≠vel via /quiz)');
+console.log('      +- mega/');
+console.log('      +- lotozap/');

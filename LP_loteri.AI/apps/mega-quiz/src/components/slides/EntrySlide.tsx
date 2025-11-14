@@ -21,7 +21,7 @@ const timelineSteps = [
   {
     icon: "🤝",
     title: "Teste sua aposta",
-    description: "Compare seus 15 números com a IA sem termos difíceis.",
+    description: "Compare seus 6 números com a IA sem termos difíceis.",
   },
   {
     icon: "🎰",
@@ -104,9 +104,9 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
               alt="LOTER.IA"
               className="mx-auto w-24 sm:w-28 drop-shadow-[0_0_20px_rgba(16,185,129,0.45)]"
             />
-            <h1 className="heading-hero text-glow">Chega de perder na Lotofácil</h1>
+            <h1 className="heading-hero text-glow">Chega de perder na Mega-Sena</h1>
             <p className="body-lead max-w-2xl">
-              Faça o teste e desbloqueie a IA que já gerou mais de R$250.000 com jogos da Lotofácil.
+              Faça o teste e desbloqueie a IA que já analisou milhares de sorteios e aumenta suas chances na Mega da Virada.
             </p>
           </div>
         </section>
