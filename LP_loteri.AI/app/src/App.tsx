@@ -14,6 +14,7 @@ import HowItWorks from "./pages/HowItWorks";
 import EmailConfirmation from "./pages/EmailConfirmation";
 import SavedGamesPage from "./pages/SavedGamesPage";
 import ManualGameCreationPage from "./pages/ManualGameCreationPage";
+import MegaEvent from "./pages/MegaEvent";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/meus-jogos" element={<ProtectedRoute><SavedGamesPage /></ProtectedRoute>} />
             <Route path="/criar-jogo" element={<ProtectedRoute><ManualGameCreationPage /></ProtectedRoute>} />
+            <Route path="/mega-da-virada" element={<ProtectedRoute><MegaEvent /></ProtectedRoute>} />
             <Route path="/how-it-works" element={<HowItWorks />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

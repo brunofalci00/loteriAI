@@ -1,21 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Coins, ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles, Clock, Crown, Target, Zap } from "lucide-react";
 
 const formatNumber = (value: number) => value.toString().padStart(2, "0");
 
+const insights = [
+  { icon: Crown, title: "Jackpot", value: "R$ 850 Mi" },
+  { icon: Target, title: "Para", value: "Todos os usuários" },
+  { icon: Clock, title: "Até", value: "31/12/2025" },
+];
+
 export const MegaEventHero = () => {
   const navigate = useNavigate();
-
-  // Sempre visível: removemos flags/condicionais para forçar o banner na home
-  const [timeLeft, setTimeLeft] = useState({
-    days: 48,
-    hours: 12,
-    minutes: 30,
-  });
+  const [timeLeft, setTimeLeft] = useState({ days: 48, hours: 12, minutes: 30 });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -27,124 +26,99 @@ export const MegaEventHero = () => {
           hours--;
           if (hours < 0) {
             hours = 23;
-            days--;
-            if (days < 0) {
-              days = 0;
-              minutes = 0;
-              hours = 0;
-            }
+            days = Math.max(days - 1, 0);
           }
         }
         return { days, hours, minutes };
       });
-    }, 1000 * 60);
+    }, 60_000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const stats = useMemo(
+  const countdown = useMemo(
     () => [
-      { label: "Prêmio", value: "R$ 850 Mi" },
-      { label: "Para todos", value: "Usuários app" },
-      { label: "Até", value: "31/12/2025" },
+      { label: "dias", value: formatNumber(timeLeft.days) },
+      { label: "horas", value: formatNumber(timeLeft.hours) },
+      { label: "min", value: formatNumber(timeLeft.minutes) },
     ],
-    []
+    [timeLeft]
   );
 
   return (
-    <Card className="relative mb-10 overflow-hidden border-0 bg-transparent shadow-none">
-      <div className="relative flex flex-col gap-8 overflow-hidden rounded-3xl bg-gradient-to-br from-[#f7c948] via-[#ffb347] to-[#f06543] p-6 text-slate-900 sm:p-8">
-        <div className="absolute inset-0 opacity-20 mix-blend-soft-light">
-          <div className="h-full w-full bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.7),_transparent_60%)]" />
-        </div>
-        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center">
-          <div className="flex-1 space-y-4 text-balance">
-            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-800/80">
-              <Badge variant="secondary" className="bg-white/20 text-slate-900">
-                Mega da Virada 25/26
-              </Badge>
-              <span className="inline-flex items-center gap-1 rounded-full border border-white/40 px-3 py-1">
-                <Sparkles className="h-3 w-3" />
-                Somente no app
-              </span>
-            </div>
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-800/80">
-                Análises exclusivas para o evento
-              </p>
-              <h1 className="mt-2 text-3xl font-black leading-tight text-slate-900 sm:text-4xl lg:text-5xl">
-                Use seus créditos em ferramentas especiais para disputar R$ 850 milhões.
-              </h1>
-            </div>
-            <p className="text-base text-slate-900/80 sm:text-lg">
-              Geração IA otimizada, análises com dados históricos e variações estratégicas para a Mega da Virada.
-              Promoção especial estendida até 31 de dezembro - aproveite agora!
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button
-                size="lg"
-                variant="hero"
-                className="w-full sm:w-auto"
-                onClick={() => navigate("/mega-da-virada")}
-              >
-                Entrar no evento
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full border-white/50 text-slate-900 hover:bg-white/20 sm:w-auto"
-                onClick={() => navigate("/criar-jogo")}
-              >
-                Construir jogo manual
-              </Button>
-            </div>
+    <div className="shimmer-border rounded-3xl p-[1px] text-foreground shadow-lg shadow-emerald-500/20">
+      <div className="relative flex flex-col gap-6 rounded-[calc(var(--radius)*2)] bg-gradient-to-br from-emerald-950/80 via-emerald-900/60 to-slate-950/80 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-2 text-xs uppercase tracking-[0.25em] text-emerald-100/70">
+            <Badge variant="secondary" className="bg-emerald-400/15 text-emerald-100">
+              Mega da Virada 25/26
+            </Badge>
+            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300/30 px-3 py-1 text-[11px] font-semibold">
+              <Sparkles className="h-3 w-3 text-amber-300" />
+              Somente no app
+            </span>
           </div>
-          <div className="flex flex-col gap-4 rounded-2xl bg-white/20 p-5 text-center text-slate-900 shadow-lg sm:flex-row sm:items-center sm:justify-center lg:flex-col lg:text-left">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-slate-800/70">
-                Contagem regressiva
-              </p>
-              <div className="mt-2 flex items-center justify-between gap-3 text-3xl font-bold sm:text-4xl">
-                <div className="flex flex-col">
-                  <span>{formatNumber(timeLeft.days)}</span>
-                  <span className="text-xs font-medium uppercase tracking-wide text-slate-800/70">
-                    dias
-                  </span>
-                </div>
-                <span className="text-2xl">:</span>
-                <div className="flex flex-col">
-                  <span>{formatNumber(timeLeft.hours)}</span>
-                  <span className="text-xs font-medium uppercase tracking-wide text-slate-800/70">
-                    horas
-                  </span>
-                </div>
-                <span className="text-2xl">:</span>
-                <div className="flex flex-col">
-                  <span>{formatNumber(timeLeft.minutes)}</span>
-                  <span className="text-xs font-medium uppercase tracking-wide text-slate-800/70">
-                    min
-                  </span>
+
+          <div className="space-y-2">
+            <p className="text-xs uppercase tracking-[0.4em] text-emerald-100/70">
+              Evento exclusivo
+            </p>
+            <h2 className="text-2xl font-black leading-tight sm:text-3xl">
+              Estratégias prontas para disputar o maior prêmio do ano.
+            </h2>
+            <p className="text-sm text-emerald-100/70">
+              Insights históricos, análises assistidas por IA e combos de números sugeridos para entrar no concurso especial da Mega da Virada.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Button size="lg" className="min-w-[180px]" onClick={() => navigate("/mega-da-virada")}>
+              Entrar no evento
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-white/30 text-white hover:bg-white/10"
+              onClick={() => navigate("/criar-jogo")}
+            >
+              Montar jogo manual
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 rounded-2xl bg-white/5 p-4 text-sm text-white/80 backdrop-blur lg:max-w-sm">
+          <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
+            <span>Contagem</span>
+            <span>regressiva</span>
+          </div>
+          <div className="flex items-center justify-between rounded-2xl bg-emerald-600/10 px-4 py-3">
+            {countdown.map((item, index) => (
+              <div key={item.label} className="text-center">
+                <p className="text-2xl font-bold text-white">{item.value}</p>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-white/60">{item.label}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            {insights.map((stat) => (
+              <div key={stat.title} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+                <stat.icon className="h-4 w-4 text-amber-300" />
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.3em] text-white/60">{stat.title}</p>
+                  <p className="text-sm font-semibold text-white">{stat.value}</p>
                 </div>
               </div>
-            </div>
-            <div className="flex flex-wrap justify-center gap-3 lg:flex-col lg:items-start">
-              {stats.map((item) => (
-                <div key={item.label} className="rounded-xl bg-white/30 px-4 py-3 text-left shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-slate-800/70">
-                    {item.label}
-                  </p>
-                  <p className="text-lg font-bold">{item.value}</p>
-                </div>
-              ))}
-            </div>
-            <div className="flex items-center gap-2 rounded-lg bg-white/30 px-4 py-3 text-sm font-medium">
-              <Coins className="h-4 w-4 text-slate-800" />
-              1 crédito por ação premium
-            </div>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 px-3 py-2 text-xs text-emerald-100">
+            <Zap className="h-4 w-4" />
+            1 crédito por ação premium
           </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
