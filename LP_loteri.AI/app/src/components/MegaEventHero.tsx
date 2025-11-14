@@ -40,19 +40,17 @@ export const MegaEventHero = () => {
   );
 
   return (
-    <div className="shimmer-border rounded-3xl p-[1px]">
-      <div className="flex flex-col gap-4 rounded-[calc(var(--radius)*2)] bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 px-5 py-6 text-emerald-950 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
-        <div className="space-y-3">
-          <Badge className="bg-amber-100/20 text-emerald-950">Mega da Virada 25/26</Badge>
-          <h2 className="text-2xl font-black leading-tight sm:text-3xl">
+    <div className="mega-border rounded-3xl p-[1px]">
+      <div className="flex flex-col gap-4 rounded-[calc(var(--radius)*2)] bg-gradient-to-b from-amber-200 to-amber-400 px-5 py-5 text-emerald-950 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-2">
+          <Badge className="bg-amber-200/30 text-emerald-950">Mega da Virada</Badge>
+          <h2 className="text-xl font-black leading-tight sm:text-2xl">
             Tá pronto pra disputar o maior prêmio do ano?
           </h2>
-          <p className="text-sm font-semibold text-emerald-900">
-            R$ 850 milhões garantidos para quem jogar na virada. Reserve seus créditos e entre agora.
-          </p>
+          <p className="text-4xl font-black text-emerald-950">R$ 850 milhões</p>
           <Button
             size="lg"
-            className="mt-2 w-full rounded-full bg-emerald-950 text-amber-200 hover:bg-emerald-900 sm:w-auto"
+            className="mt-1 w-full rounded-full bg-emerald-950 text-amber-200 hover:bg-emerald-900 sm:w-auto"
             onClick={() => navigate("/mega-da-virada")}
           >
             Entrar no evento
@@ -60,15 +58,15 @@ export const MegaEventHero = () => {
           </Button>
         </div>
 
-        <div className="rounded-2xl bg-emerald-950/10 px-4 py-3 text-center text-emerald-950 shadow-inner sm:min-w-[220px]">
+        <div className="rounded-2xl bg-emerald-950/10 px-4 py-3 text-center text-emerald-950 shadow-inner sm:min-w-[200px]">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-950/70">
             Contagem
           </p>
           <div className="mt-2 flex items-center justify-between gap-3">
             {countdown.map((item) => (
               <div key={item.label} className="flex-1">
-                <p className="text-2xl font-black">{item.value}</p>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-emerald-950/70">
+                <p className="text-xl font-black">{item.value}</p>
+                <p className="text-[9px] uppercase tracking-[0.3em] text-emerald-950/70">
                   {item.label}
                 </p>
               </div>

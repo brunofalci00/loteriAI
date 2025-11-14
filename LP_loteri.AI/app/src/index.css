@@ -169,4 +169,94 @@ All colors MUST be HSL.
       background-position: 0% 50%;
     }
   }
+
+  .mega-border {
+    position: relative;
+    border-radius: calc(var(--radius) * 2);
+    padding: 2px;
+    background: linear-gradient(120deg, hsla(45, 95%, 65%, 0.8), hsla(35, 90%, 60%, 0.8), hsla(142, 70%, 55%, 0.8));
+    animation: mega-glow 8s linear infinite;
+  }
+
+  @keyframes mega-glow {
+    0% {
+      filter: drop-shadow(0 0 8px hsla(45, 95%, 60%, 0.4));
+    }
+    50% {
+      filter: drop-shadow(0 0 25px hsla(142, 70%, 55%, 0.35));
+    }
+    100% {
+      filter: drop-shadow(0 0 8px hsla(45, 95%, 60%, 0.4));
+    }
+  }
+
+  .mega-panel {
+    position: relative;
+    border-radius: calc(var(--radius) * 1.5);
+    padding: 1px;
+    background: linear-gradient(140deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
+    border: 1px solid hsla(45, 90%, 65%, 0.25);
+    box-shadow: 0 10px 40px hsla(0,0%,0%,0.45);
+  }
+
+  .mega-panel > .mega-panel__inner {
+    border-radius: calc(var(--radius) * 1.35);
+    background: radial-gradient(circle at top, rgba(255,255,255,0.08), rgba(0,0,0,0.6));
+    padding: 1.25rem;
+  }
+
+  .mega-button {
+    border-radius: 9999px;
+    background: linear-gradient(120deg, #030303, #0d0d0d);
+    color: #fef8e7;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  }
+
+  .mega-button:hover {
+    background: linear-gradient(120deg, #0d0d0d, #1a1a1a);
+    color: #ffe59d;
+  }
+
+  .mega-text-muted {
+    color: hsla(45, 50%, 80%, 0.75);
+  }
+
+  .mega-timeline {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+
+  .mega-timeline::before {
+    content: "";
+    position: absolute;
+    left: 0.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, hsla(45, 100%, 70%, 0), hsla(45,100%,70%,0.6), hsla(45,100%,70%,0));
+  }
+
+  .mega-timeline-item {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .mega-timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -0.25rem;
+    top: 0.35rem;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 9999px;
+    background: radial-gradient(circle, #ffd78a, #fbbf24);
+    box-shadow: 0 0 12px rgba(255, 215, 138, 0.8);
+  }
+
+  @keyframes sparkle {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
 }

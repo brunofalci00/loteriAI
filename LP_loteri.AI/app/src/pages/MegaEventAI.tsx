@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Header } from "@/components/Header";
+import { useNavigate } from "react-router-dom";
 import { LoadingAnalysis } from "@/components/LoadingAnalysis";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
 import { GenerationSelector } from "@/components/GenerationSelector";
@@ -22,6 +23,7 @@ import { ArrowLeft, Archive } from "lucide-react";
 const MEGA_TYPE = "mega-sena";
 
 export default function MegaEventAI() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [selectedContest, setSelectedContest] = useState<number | null>(null);
   const [showLoading, setShowLoading] = useState(false);
@@ -123,71 +125,72 @@ export default function MegaEventAI() {
     toast.success("Jogos exportados!");
   };
 
-  const renderContestSelection = () => (
-    <div className="space-y-8">
-      <section className="space-y-4 text-center">
-        <Badge className="mx-auto bg-amber-100/20 text-amber-50">Mega da Virada</Badge>
-        <h1 className="text-3xl font-black sm:text-4xl">Escolha o concurso com cara de virada.</h1>
-        <p className="mx-auto max-w-2xl text-sm text-amber-100/80">
-          Cada cartão abaixo tem o contorno dourado do evento e mostra data + prêmio estimado. Clique para gerar jogos com IA.
-        </p>
-      </section>
+  const renderContestSelection = () => {
+    const featuredDraw = upcomingDraws?.[0];
 
-      {drawsError && (
-        <Alert className="border-amber-300/40 bg-amber-300/10 text-amber-50">
-          <AlertTitle>Erro ao carregar concursos</AlertTitle>
-          <AlertDescription>{drawsError.message}</AlertDescription>
-        </Alert>
-      )}
+    return (
+      <div className="space-y-8">
+        <Button
+          variant="ghost"
+          onClick={() => navigate("/mega-da-virada")}
+          className="mega-button bg-transparent text-amber-100 hover:text-amber-100"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar para o evento
+        </Button>
 
-      <div className="space-y-4">
-        {(loadingDraws ? [...Array(3)].map((_, i) => ({ placeholder: true, key: i })) : upcomingDraws)?.map(
-          (draw: any, index: number) => {
-            if (draw?.placeholder) {
-              return (
-                <div
-                  key={`placeholder-${index}`}
-                  className="shimmer-border rounded-3xl p-[1px] opacity-60 animate-pulse"
-                >
-                  <div className="rounded-[calc(var(--radius)*2)] bg-emerald-950/40 p-6 h-36" />
-                </div>
-              );
-            }
+        <section className="space-y-4 text-center">
+          <Badge className="mx-auto bg-amber-100/20 text-amber-50">Mega da Virada</Badge>
+          <h1 className="text-3xl font-black sm:text-4xl text-white">Escolha o concurso dourado.</h1>
+          <p className="mx-auto max-w-2xl text-sm mega-text-muted">
+            Cada cartão exibe data, prêmio e status exclusivo. Basta tocar para abrir a sala da IA.
+          </p>
+        </section>
 
-            return (
-              <button
-                key={draw.contestNumber}
-                onClick={() => handleContestSelection(draw.contestNumber)}
-                className="w-full text-left transition-transform hover:scale-[1.01] focus-visible:outline-none"
-              >
-                <div className="shimmer-border rounded-3xl p-[1px]">
-                  <div className="rounded-[calc(var(--radius)*2)] bg-gradient-to-br from-emerald-950 via-emerald-900/80 to-emerald-950 p-5 text-amber-50">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <div>
-                        <p className="text-xs uppercase tracking-[0.4em] text-amber-100/70">
-                          Concurso {draw.contestNumber}
-                        </p>
-                        <h3 className="text-2xl font-black">
-                          {formatCurrency(draw.estimatedPrize)} em jogo
-                        </h3>
-                        <p className="text-sm text-amber-100/80">
-                          {draw.dayOfWeek} · {draw.drawDate.toLocaleDateString("pt-BR")} às{" "}
-                          {draw.drawDate.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
-                        </p>
-                      </div>
-                      <Badge className="self-start rounded-full bg-amber-200/20 text-amber-50">
-                        {draw.status || "AGENDADO"}
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-              </button>
-            );
-          }
+        {drawsError && (
+          <Alert className="border-amber-300/40 bg-amber-300/10 text-amber-50">
+            <AlertTitle>Erro ao carregar concursos</AlertTitle>
+            <AlertDescription>{drawsError.message}</AlertDescription>
+          </Alert>
         )}
+
+        <div className="space-y-4">
+          {loadingDraws ? (
+            <div className="mega-border rounded-3xl p-[1px] opacity-60 animate-pulse">
+              <div className="rounded-[calc(var(--radius)*2)] bg-emerald-950/40 p-6 h-36" />
+            </div>
+          ) : featuredDraw ? (
+            <button
+              onClick={() => handleContestSelection(featuredDraw.contestNumber)}
+              className="w-full text-left transition-transform hover:scale-[1.01] focus-visible:outline-none"
+            >
+              <div className="mega-panel">
+                <div className="mega-panel__inner flex flex-col gap-3 text-amber-50">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.4em] text-amber-100/70">
+                      Concurso {featuredDraw.contestNumber}
+                    </p>
+                    <h3 className="text-2xl font-black">{formatCurrency(featuredDraw.estimatedPrize)} em jogo</h3>
+                    <p className="text-sm mega-text-muted">
+                      {featuredDraw.dayOfWeek} · {featuredDraw.drawDate.toLocaleDateString("pt-BR")} às{" "}
+                      {featuredDraw.drawDate.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                    </p>
+                  </div>
+                  <Badge className="self-start rounded-full bg-amber-200/20 text-amber-50">
+                    {featuredDraw.status || "ÚNICO"}
+                  </Badge>
+                </div>
+              </div>
+            </button>
+          ) : (
+            <p className="text-center text-amber-100/70">
+              Nenhum concurso disponível no momento. Volte mais tarde.
+            </p>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderAnalysisView = () => {
     if (!selectedContest) return null;
@@ -195,7 +198,7 @@ export default function MegaEventAI() {
     return (
       <div className="space-y-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <Button variant="ghost" onClick={() => setSelectedContest(null)} className="w-fit text-amber-100 hover:text-amber-100">
+          <Button variant="ghost" onClick={() => setSelectedContest(null)} className="mega-button bg-transparent w-fit text-amber-100 hover:text-amber-100">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Voltar para concursos
           </Button>
@@ -205,8 +208,10 @@ export default function MegaEventAI() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-amber-100/20 bg-emerald-950/40 p-6">
-          <NextDrawInfo lotteryType={MEGA_TYPE} lotteryName="Mega-Sena" />
+        <div className="mega-panel">
+          <div className="mega-panel__inner">
+            <NextDrawInfo lotteryType={MEGA_TYPE} lotteryName="Mega-Sena" />
+          </div>
         </div>
 
         {analysisResult?.fromCache && (
@@ -251,12 +256,13 @@ export default function MegaEventAI() {
                   </div>
                 )}
 
-                <div className="relative rounded-3xl border border-amber-100/20 bg-emerald-950/40 p-4">
-                  {!activeGeneration && (
-                    <Badge className="absolute -top-4 right-6 bg-amber-300 text-emerald-950">ANÁLISE GRATUITA</Badge>
-                  )}
-                  <ResultsDisplay
-                    lotteryName="Mega-Sena"
+                <div className="mega-panel">
+                  <div className="mega-panel__inner relative">
+                    {!activeGeneration && (
+                      <Badge className="absolute -top-4 right-6 bg-amber-300 text-emerald-950">ANÁLISE GRATUITA</Badge>
+                    )}
+                    <ResultsDisplay
+                      lotteryName="Mega-Sena"
                     lotteryType={MEGA_TYPE}
                     combinations={displayedCombinations}
                     stats={{
@@ -273,18 +279,22 @@ export default function MegaEventAI() {
                     generationId={activeGeneration?.id || null}
                     userId={user?.id || null}
                   />
+                  </div>
                 </div>
               </div>
 
               <div className="lg:col-span-1 space-y-6">
                 {user?.id && (
-                  <CreditsDisplay
-                    userId={user.id}
-                    variant="default"
-                    showProgress
-                    showResetInfo
-                    className="rounded-3xl border border-amber-100/30 bg-emerald-950/30"
-                  />
+                  <div className="mega-panel">
+                    <div className="mega-panel__inner">
+                      <CreditsDisplay
+                        userId={user.id}
+                        variant="default"
+                        showProgress
+                        showResetInfo
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
@@ -318,7 +328,7 @@ export default function MegaEventAI() {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(18,53,38,0.9),_#02130d)] text-foreground">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(6,16,14,0.95),_#010302)] text-foreground">
       <Header />
       <div className="container mx-auto px-4 pt-24 pb-16">
         {!selectedContest ? renderContestSelection() : renderAnalysisView()}
