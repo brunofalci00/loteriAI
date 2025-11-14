@@ -11,9 +11,11 @@ export const AiWinSlide = ({ onNext }: AiWinSlideProps) => {
       <div className="w-full max-w-3xl space-y-8 text-center">
         <div className="space-y-2">
           <h1 className="text-[clamp(2rem,6vw,3.2rem)] font-bold text-foreground">
-            A IA venceu essa rodada…
+            Parabéns! Bônus secreto reservado só pra você.
           </h1>
-          <p className="text-muted-foreground">Mas ela liberou 1 giro especial para você virar o jogo.</p>
+          <p className="text-muted-foreground">
+            Você é o primeiro ganhador do mês e, por isso, destravou o desconto máximo de R$200 para acessar a plataforma.
+          </p>
         </div>
 
         <Card className="p-6 sm:p-8 space-y-6 border-2 border-primary/40">
@@ -23,14 +25,14 @@ export const AiWinSlide = ({ onNext }: AiWinSlideProps) => {
             </p>
             <div className="bg-muted rounded-xl p-4">
               <p className="text-foreground font-semibold">
-                Você ganhou 1 giro na Roleta de Prêmios — ele pode liberar o MAX WIN a qualquer momento.
+                Você ganhou 1 giro na Roleta de Prêmios — ele pode liberar imediatamente a LotoZap com R$200 de desconto.
               </p>
               <p className="text-xs text-muted-foreground mt-2">
                 Se sair agora, o giro desaparece.
               </p>
             </div>
             <p className="text-sm text-muted-foreground">
-              Antes de usar o giro, veja em segundos como outros jogadores estão ativando a LOTER.IA.
+              Antes de usar o giro, veja em segundos como outros jogadores estão ativando a LotoZap.
             </p>
           </div>
 

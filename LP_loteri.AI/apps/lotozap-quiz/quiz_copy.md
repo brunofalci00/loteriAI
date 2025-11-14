@@ -1,4 +1,4 @@
-# Copy do quiz por etapas do funil
+﻿# Copy do quiz por etapas do funil
 
 ## 1. Entrada inicial — despertar atenção
 
@@ -16,7 +16,7 @@
 - L37: Moedas com função
 - L38: Elas não ficam sobrando: pagam o mapa e o primeiro bônus automaticamente.
 - L95: QuizEntryStart
-- L113: LOTER.IA
+- L113: LotoZap
 - L116: Passo a passo guiado
 - L117: Chega de travar nos 11 pontos
 - L119: Responda poucas perguntas, junte moedas e veja a IA montar um plano simples. Tudo explicado em tela grande para quem tem 45+ e quer entender cada movimento.
@@ -63,7 +63,7 @@
 - L122: QuizAnswer
 - L134: QuizBonusUnlocked
 - L150: 🎯 Pergunta
-- L153: Responda com calma
+- L153: Responda no seu ritmo
 - L157: Moedas liberadas
 - L159: ${coinsCollected}/${TOTAL_COINS}
 - L159: 🏅 Mapa liberado
@@ -101,19 +101,19 @@
 ### src/components/slides/BonusMapSlide.tsx
 - L44: 🎉 Bônus 1 liberado
 - L46: Mapa dos números quentes na sua tela
-- L47: Ele já vem pronto, sem termos difíceis e com letras grandes para você consultar antes de apostar.
+- L47: Você acabou de liberar o Mapa dos Números Quentes dentro da IA. Ele mostra as combinações mais quentes do dia sem tecnicês.
 - L51: Veja suas moedas pagando o bônus:
 - L54: Moedas
 - L68: Bônus liberado
 - L71: As moedas não somem: elas viram acesso ao mapa sempre que você completar o quiz.
 - L78: Mapa dos números quentes
-- L86: Este mapa usa 500 sorteios auditados com IA. Não existe chute aqui: são probabilidades reais pensadas para quem trava nos 11.
+  - L86: Este mapa usa 500 sorteios auditados com IA. Não existe chute aqui: são probabilidades reais pensadas para quem trava nos 11.
 - L89: Acesso exclusivo enquanto o painel estiver aberto. Se fechar ou atualizar a página, a IA bloqueia o mapa.
 - L91: Depois desta etapa você vai direto para o duelo simples contra a IA.
 - L99: Ir para o desafio: Você vs IA
 - L107: Agora é você contra a IA
-- L109: Ela abre um duelo valendo até R$500 em bônus. Seu papel é mostrar sua intuição antes de ver como a máquina joga.
-- L113: Responda como jogador, compare com a inteligência artificial e libere o giro que pode pagar seu acesso à LOTER.IA.
+- L109: Ela abre um duelo valendo a assinatura anual da LotoZap. Seu papel é mostrar sua intuição antes de ver como a máquina joga.
+- L113: Responda como jogador, compare com a inteligência artificial e libere o giro que pode pagar seu acesso à LotoZap.
 - L117: Partiu enfrentar a IA
 
 
@@ -128,9 +128,9 @@
 - L23: Envie quando estiver seguro
 - L67: IntuitionSubmit
 - L80: 🎲 Desafio liberado
-- L82: Monte seu jogo com calma
+- L82: Monte seu jogo do seu jeito
 - L84: Escolha 15 números do jeito que você costuma apostar. Depois mostramos o mesmo jogo com e sem IA, sem palavras difíceis.
-- L89: Tela grande, sem pressa e com toque único. Dá tempo de revisar antes de enviar.
+- L89: Toque uma vez para ligar ou desligar cada número. Dá para revisar antes de enviar.
 - L125: IA conferindo seu jogo...
 - L127: Ver meu resultado
 - L128: Calibrando comparação...
@@ -203,7 +203,7 @@
 - L181: Bônus reservado
 - L182: Ela usou
 - L182: giros e guardou 1 pra você.
-- L183: Esse giro destrava até R$500 em desconto.
+- L183: Esse giro libera a assinatura anual da LotoZap com envios diários.
 - L190: Seguir para o giro
 - L197: IA consolidando os pontos e auditando o painel para liberar seu relatório final...
 
@@ -211,63 +211,63 @@
 ## 9. Prova social e validação
 
 ### src/components/slides/AiWinSlide.tsx
-- L14: A IA venceu essa rodada…
-- L16: Mas ela liberou 1 giro especial para você virar o jogo.
+- L14: Parabéns! Bônus secreto reservado só pra você.
+- L16: Você é o primeiro ganhador do mês e, por isso, destravou o desconto máximo de R$200 para acessar a plataforma.
 - L22: A IA cravou 14 pontos usando análise preditiva. Ela já desbloqueou os 3 giros dela… e separou 1 giro bônus para você.
-- L26: Você ganhou 1 giro na Roleta de Prêmios — ele pode liberar o MAX WIN a qualquer momento.
+- L26: Você ganhou 1 giro na Roleta de Prêmios — ele pode liberar imediatamente a LotoZap com R$200 de desconto.
 - L29: Se sair agora, o giro desaparece.
-- L33: Antes de usar o giro, veja em segundos como outros jogadores estão ativando a LOTER.IA.
+- L33: Antes de usar o giro, veja em segundos como outros jogadores estão ativando a LotoZap.
 - L42: Ver jogadores reais e liberar meu giro
 
 ### src/components/slides/TestimonialsSlide.tsx
 - L11: Ana • SP
 - L12: R$ 2.500
 - L16: Lucas • MG
-- L17: R$ 370
+- L17: R$ 19,900
 - L21: Marina • RJ
 - L22: R$ 2.030
-- L35: LOTER.IA
-- L40: Antes de girar a roleta, veja o que os nossos usuários estão achando da LOTER.IA
-- L43: São centenas jogando com a LOTER.IA neste momento — sinta a energia antes de liberar seu giro.
-- L78: Liberar meu giro
+- L35: LotoZap
+- L40: Antes de girar a roleta, veja o que os nossos usuários estão achando da LotoZap
+- L43: São centenas jogando com a LotoZap neste momento — sinta a energia antes de liberar seu giro.
+- L78: Garantir minha LotoZap diária
 
 
 ## 10. Bônus 2 — Roleta da IA
 
 ### src/components/slides/RouletteBonusSlide.tsx
 - L12: MAX WIN
-- L12: R$ 10 OFF
-- L12: R$ 100 OFF
-- L12: R$ 20 OFF
-- L12: R$ 200 OFF
-- L12: R$ 50 OFF
+- L12: R$10 de desconto
+- L12: R$100 de desconto
+- L12: R$20 de desconto
+- L12: R$200 de desconto
+- L12: R$50 de desconto
 - L13: MAX WIN
 - L17: Cashback imediato
 - L18: Usado para reduzir o valor do acesso agora mesmo.
 - L22: Consultoria express
 - L23: Conversa rápida com o time para destravar estratégia.
 - L27: Bônus MAX WIN
-- L28: R$500 off quando os três rolos travam no dourado.
+- L28: R$200 de desconto quando os três rolos travam no dourado.
 - L48: SlotMaxWin
 - L121: SlotSpinStart
 - L153: Bônus 2 • Roleta da IA
 - L154: Giro pago pela IA
-- L156: Ela deixou 1 rodada para você. Se os três rolos pararem em MAX WIN, o desconto de R$500 aparece na hora e já vamos para a oferta.
+- L156: Ela deixou 1 rodada para você. Se o desconto máximo aparecer, você entra na LotoZap com R$200 de desconto e recebe os 5 jogos diários.
 - L159: A IA deixou 1 chance ativa exclusivamente pra você.
 - L160: Spins disponíveis:
 - L180: Aperte uma vez. Mostramos cada rolo parando devagar.
 - L184: Prêmios possíveis:
-- L186: 🔹 R$10 OFF
-- L187: 🔹 R$20 OFF
-- L188: 🔹 R$50 OFF
-- L189: 🔹 R$100 OFF
-- L190: 🔹 R$200 OFF
-- L191: 🔹 MAX WIN: R$500 OFF (desconto máximo)
+- L186: 🔹 R$5 de desconto
+- L187: 🔹 R$10 de desconto
+- L188: 🔹 R$25 de desconto
+- L189: 🔹 R$50 de desconto
+- L190: 🔹 R$100 de desconto
+- L191: 🔹 R$200 de desconto (acesso completo)
 - L210: Girando...
 - L210: Girar agora
 - L215: Resultado
-- L216: MAX WIN desbloqueado!
-- L218: Você ganhou R$500 de desconto para ativar a LOTER.IA agora.
+- L216: Desconto máximo destravado!
+- L218: Você garantiu R$200 de desconto para ativar a LotoZap. Os envios diários liberam na próxima etapa.
 - L220: Aproveite enquanto o painel está aberto. Levamos você automaticamente para a próxima tela.
 
 
@@ -275,11 +275,11 @@
 
 ### src/components/slides/MaxWinCelebrationSlide.tsx
 - L27: Prêmio máximo
-- L32: Você recebeu R$500!
-- L35: Essa sensação é de quem acabou de economizar alto: a oferta completa da LOTER.IA de R$500 saiu por apenas R$37.
+- L32: Você recebeu o aviso oficial da IA.
+- L35: Essa sensação é de quem acabou de garantir o envio diário da IA por 4x de R$5,51 ou R$19,90.
 - L45: Economia desbloqueada
-- L48: R$ 500
-- L50: R$ 37
+- L48: R$200
+- L50: R$ 19,90
 - L53: Você travou o desconto máximo da IA. Prepare o checkout e finalize enquanto o painel ainda está aberto.
 - L59: Suporte no WhatsApp
 - L60: Equipe responde a cada passo da ativação.
@@ -301,23 +301,24 @@
 - L52: Atendimento 24/7 com 97% de satisfação
 - L53: Suporte direto no WhatsApp
 - L54: Acesso antecipado ao Bolão da Mega da Virada
-- L64: LOTER.IA
+- L64: LotoZap
 - L68: 🎁 Parabéns! Desconto máximo ativado
-- L71: Acesso completo à LOTER.IA por apenas R$37 — de R$500!
+  - L71: Você liberou o acesso completo à LotoZap — a IA que envia os 5 jogos com maiores probabilidades todos os dias direto pra você.
 - L94: Oferta válida pelos próximos
-- L100: Depois disso, volta para R$500.
+- L100: Quando o tempo zera, o painel fecha e os envios diários são pausados.
 - L106: ${(timeLeft / (3 * 60)) * 100}%
 - L111: O que você recebe agora:
-- L126: 💸 Desconto desbloqueado:
-- L127: De R$500
-- L128: R$37
-- L129: Garantia total de 7 dias — testou, não gostou, cancela sem risco.
-- L139: Liberar acesso por R$37
+  - L126: 💸 Condição exclusiva
+  - L127: Plano anual sem mensalidade escondida.
+  - L128: R$19,90/ano
+  - L129: ou 4x de R$5,51 no cartão
+  - L130: Garantia total de 7 dias — testou, não gostou, cancela sem risco.
+  - L139: 🔐 Ativar minha LotoZap agora
 - L156: Falar com especialista no WhatsApp (24/7)
 - L161: Compra segura
 - L162: +84 pessoas ativaram só hoje • 97% de satisfação no suporte 24/7
 - L167: Mesmo sistema usado por quem fez 13 ou 14 pontos nas últimas semanas.
-- L180: Garantir meu acesso - R$37
+- L180: Garantir meu acesso - R$19,90/ano
 
 
 ## 13. Recuperação e saída
@@ -330,4 +331,9 @@
 - L51: moedas e só falta uma decisão para liberar o Bônus 1.
 - L56: Se fechar agora, o sistema zera suas moedas e fecha o acesso a IA secreta.
 - L65: Continuar e liberar meu bônus
-- L68: Precisa sair mesmo? Fique só mais 1 minuto para ver como a IA libera até R$500 em bônus.
+- L68: 
+
+
+
+
+

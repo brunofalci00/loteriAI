@@ -26,15 +26,15 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
       <div className="casino-grid" />
       <div className="slide-frame space-y-8 text-center relative z-10">
         <div className="space-y-3">
-          <img src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png" alt="LOTER.IA" className="mx-auto w-24 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]" />
+          <img src="https://i.ibb.co/3YvJFgHm/Logo-Lumen-4.png" alt="LotoZap" className="mx-auto w-24 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]" />
           <h1 className="heading-1 flex items-center justify-center gap-2 text-glow text-center">
             <span role="img" aria-hidden="true">
               🎥
             </span>
-            Antes de resgatar seus prêmios, veja quem já ganhou com a LOTER.IA
+            Antes de resgatar seus prêmios, veja quem já recebe a LotoZap todo dia
           </h1>
           <p className="body-lead">
-            Esses jogadores acabaram de destravar o mesmo bônus de R$500 e ativaram seus acessos com a IA.
+            Esses jogadores já recebem os 5 jogos diários da IA e estão usando a LotoZap para não perder as melhores combinações do dia.
           </p>
         </div>
 
@@ -75,7 +75,7 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
             <span role="img" aria-hidden="true">
               🎯
             </span>
-            Garantir Meu Desconto
+            Garantir minha LotoZap diária
           </Button>
         </div>
       </div>

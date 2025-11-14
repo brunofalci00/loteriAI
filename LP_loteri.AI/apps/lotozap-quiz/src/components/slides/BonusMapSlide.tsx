@@ -44,7 +44,7 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
             🎉 Bônus 1 liberado
           </p>
           <h1 className="heading-1 text-glow">Mapa dos números quentes na sua tela</h1>
-          <p className="body-lead">Ele já vem pronto, sem termos difíceis e com letras grandes para você consultar antes de apostar.</p>
+          <p className="body-lead">Você acabou de liberar o Mapa dos Números Quentes dentro da IA. Ele mostra as combinações mais quentes do dia sem tecnicês.</p>
         </div>
 
         <div className="coin-flow-panel">
@@ -106,11 +106,11 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
           <DialogHeader>
             <DialogTitle>Agora é você contra a IA</DialogTitle>
             <DialogDescription>
-              Ela abre um duelo valendo até R$500 em bônus. Seu papel é mostrar sua intuição antes de ver como a máquina joga.
+              Ela abre um duelo valendo a assinatura anual da LotoZap. Seu papel é mostrar sua intuição antes de ver como a máquina joga.
             </DialogDescription>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Responda como jogador, compare com a inteligência artificial e libere o giro que pode pagar seu acesso à LOTER.IA.
+            Responda como jogador, compare com a inteligência artificial e libere o giro que pode pagar seu acesso à LotoZap.
           </p>
           <DialogFooter className="sm:justify-center">
             <Button onClick={handleProceed} className="w-full sm:w-auto">

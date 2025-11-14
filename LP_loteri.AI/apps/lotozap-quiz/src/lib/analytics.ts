@@ -36,7 +36,7 @@ export const trackPixelEvent = (event: string, payload?: Record<string, unknown>
     },
     SlotMaxWin: {
       handler: "fbCAPI_trackAddToCart",
-      defaults: { contentName: "Oferta MAX WIN", value: 37, currency: "BRL" },
+      defaults: { contentName: "LotoZap MAX WIN", value: 19.9, currency: "BRL" },
     },
     WhatsAppSupportClick: {
       handler: "fbCAPI_trackLead",
@@ -44,11 +44,11 @@ export const trackPixelEvent = (event: string, payload?: Record<string, unknown>
     },
     MaxWinCTA: {
       handler: "fbCAPI_trackInitiateCheckout",
-      defaults: { contentName: "CTA Pré-Checkout", value: 37, currency: "BRL" },
+      defaults: { contentName: "CTA Pré-Checkout LotoZap", value: 19.9, currency: "BRL" },
     },
     CheckoutClick: {
       handler: "fbCAPI_trackInitiateCheckout",
-      defaults: { contentName: "Checkout Loter.IA", value: 37, currency: "BRL" },
+      defaults: { contentName: "Checkout LotoZap", value: 19.9, currency: "BRL" },
     },
   };
 

@@ -29,11 +29,11 @@ export const MaxWinCelebrationSlide = ({ onNext }: MaxWinCelebrationSlideProps) 
             Você destravou o prêmio máximo da IA!
           </p>
           <h1 className="heading-1 text-shadow text-gold">
-            🎁 Seu prêmio: R$500 OFF na ativação completa da LOTER.IA
+            🎁 Seu prêmio: ativação completa da LotoZap
           </h1>
           <p className="body-lead">
-            A IA acabou de liberar R$500 de desconto exclusivo com base na sua performance. Isso derruba o acesso completo
-            para apenas R$37 por ano.
+            A IA garantiu para você o acesso anual da LotoZap com R$200 de desconto — ela envia os 5 jogos com maiores
+            probabilidades todos os dias direto para você.
           </p>
           <p className="body-lead text-gold/80">
             Esse bônus fica reservado somente enquanto o painel estiver aberto.
@@ -59,8 +59,7 @@ export const MaxWinCelebrationSlide = ({ onNext }: MaxWinCelebrationSlideProps) 
               Atenção
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Se você sair ou fechar esta página, o sistema zera o desconto e bloqueia o painel. Aproveite agora para
-              confirmar seu acesso anual por R$37.
+              Se você sair ou fechar esta página, o sistema pausa o envio diário e a condição especial é perdida.
             </p>
           </div>
 

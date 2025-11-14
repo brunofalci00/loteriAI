@@ -5,7 +5,7 @@ import { Clock, MessageCircle, Volume2, VolumeX } from "lucide-react";
 import { trackPixelEvent } from "@/lib/analytics";
 
 export const FinalOfferSlide = () => {
-  const checkoutUrl = "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
+  const checkoutUrl = "https://pay.kirvano.com/8ae58c85-0868-4f7a-ae5c-ab2eb114517a";
   const whatsappUrl = "https://wa.me/5511993371766";
   const [timeLeft, setTimeLeft] = useState(3 * 60);
   const [tickSpeedUp, setTickSpeedUp] = useState(false);
@@ -47,10 +47,11 @@ export const FinalOfferSlide = () => {
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
   const benefits = [
-    { icon: "✅", text: "Jogos prontos com IA todos os dias" },
-    { icon: "✅", text: "Até 3 combinações inteligentes por dia" },
-    { icon: "✅", text: "Acesso VIP ao Bolão da Mega da Virada" },
-    { icon: "✅", text: "Painel atualizado em tempo real" },
+    { icon: "✅", text: "5 jogos com maiores probabilidades enviados todo dia" },
+    { icon: "✅", text: "Alertas extras quando o prêmio acumula ou muda" },
+    { icon: "✅", text: "Painel com histórico e leitura dos números quentes" },
+    { icon: "✅", text: "Recomendações recalculadas com base nos últimos 500 concursos" },
+    { icon: "✅", text: "Envio direto no seu WhatsApp ou e-mail diariamente" },
     { icon: "✅", text: "Suporte no WhatsApp com resposta em minutos" },
     { icon: "✅", text: "Garantia total de 7 dias: testou, não gostou, cancela" },
   ];
@@ -61,31 +62,25 @@ export const FinalOfferSlide = () => {
       <div className="slide-frame space-y-8 relative z-10">
         <div className="text-center space-y-3">
           <img
-            src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png"
-            alt="LOTER.IA"
+            src="https://i.ibb.co/3YvJFgHm/Logo-Lumen-4.png"
+            alt="LotoZap"
             className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(16,185,129,0.45)] pulse-glow"
           />
           <h1 className="heading-1 text-glow">🎁 Prêmio resgatado com sucesso!</h1>
           <p className="heading-3 text-primary">
-            Você liberou o acesso completo à LOTER.IA com R$500 de desconto garantido. Agora veja tudo que está incluso.
+            Você liberou o acesso completo à LotoZap — a IA que envia os 5 jogos com maiores probabilidades todos os dias direto pra você.
           </p>
         </div>
 
-        <div className="video-shell">
-          <video
-            ref={videoRef}
-            src="/video/demo.mp4"
-            autoPlay
-            muted={isMuted}
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            poster="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg"
-          />
-          <Button size="icon" variant="secondary" onClick={toggleAudio} className="sound-pill">
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-          </Button>
-        </div>
+        <Card className="p-6 flex flex-col gap-4 border border-primary/40 bg-card/80">
+          <div className="flex items-center gap-3 justify-center">
+            <Volume2 className="w-6 h-6 text-primary" />
+            <p className="text-lg font-semibold text-primary">Aviso do painel</p>
+          </div>
+          <p className="text-base text-muted-foreground text-center">
+            A IA acompanhou todo o seu teste e separou os envios diários mais quentes para você. Use o cronômetro abaixo e finalize enquanto o painel estiver aberto.
+          </p>
+        </Card>
         <Card className={`p-6 border ${timeLeft <= 60 ? "border-destructive animate-pulse pulse-glow" : "border-primary glow-primary"}`}>
           <div className="flex items-center justify-center gap-4">
             <Clock className={`w-10 h-10 ${timeLeft <= 60 ? "text-destructive animate-bounce" : "text-primary"}`} />
@@ -96,7 +91,7 @@ export const FinalOfferSlide = () => {
               </p>
               {timeLeft <= 60 && (
                 <p className="text-xs text-destructive mt-2 animate-pulse">
-                  Depois disso, volta para R$500.
+                  Quando o tempo zera, o painel fecha e os envios diários são pausados.
                 </p>
               )}
             </div>
@@ -122,13 +117,14 @@ export const FinalOfferSlide = () => {
         </Card>
 
         <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border border-primary text-center glow-primary-strong pulse-glow space-y-3">
-          <p className="text-2xl font-bold text-foreground">💸 De R$500 por apenas R$37/ano</p>
-          <div>
-            <p className="text-lg text-muted-foreground line-through">Valor original: R$500</p>
-            <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">R$37/ano</p>
+          <p className="text-2xl font-bold text-foreground">💸 Condição exclusiva</p>
+          <div className="space-y-2">
+            <p className="text-lg text-muted-foreground">Plano anual sem mensalidade escondida.</p>
+            <p className="text-4xl md:text-5xl font-bold text-primary text-glow my-2 leading-tight">R$19,90/ano</p>
+            <p className="text-sm sm:text-base text-muted-foreground">ou 4x de R$5,51 no cartão</p>
           </div>
           <p className="text-lg text-foreground font-semibold">
-            Sem mensalidade e sem renovação automática sem aviso. Você garante 12 meses completos e ainda tem 7 dias para testar sem risco.
+            Não é aplicativo: é a IA que dispara 5 jogos calibrados todos os dias, com garantia de 7 dias para testar sem risco.
           </p>
         </Card>
 
@@ -136,10 +132,10 @@ export const FinalOfferSlide = () => {
           asChild
           size="lg"
           onClick={handleCheckoutClick}
-          className="w-full text-xl md:text-2xl py-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
+          className="w-full text-lg md:text-xl py-7 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
         >
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            🔐 Garantir acesso por R$37/ano
+            🔐 Ativar minha LotoZap agora
           </a>
         </Button>
 
@@ -178,10 +174,10 @@ export const FinalOfferSlide = () => {
           asChild
           size="lg"
           onClick={handleCheckoutClick}
-          className="w-full text-lg py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl"
+          className="w-full text-base py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl"
         >
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            🔐 Garantir acesso por R$37/ano
+            🔐 Ativar minha LotoZap agora
           </a>
         </Button>
       </div>

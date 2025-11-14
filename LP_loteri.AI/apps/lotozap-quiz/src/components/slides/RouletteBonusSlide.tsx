@@ -9,8 +9,8 @@ interface RouletteBonusSlideProps {
   onSpinComplete?: () => void;
 }
 
-const SLOT_PRIZES = ["R$ 10 OFF", "R$ 20 OFF", "R$ 50 OFF", "R$ 100 OFF", "R$ 200 OFF", "MAX WIN"];
-const TARGET_PRIZE = "MAX WIN";
+const SLOT_PRIZES = ["R$5 de desconto", "R$10 de desconto", "R$25 de desconto", "R$50 de desconto", "R$100 de desconto", "R$200 de desconto"];
+const TARGET_PRIZE = "R$200 de desconto";
 export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: RouletteBonusSlideProps) => {
   const [reels, setReels] = useState<string[]>(() => Array(3).fill(TARGET_PRIZE));
   const [isSpinning, setIsSpinning] = useState(false);
@@ -135,7 +135,7 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
           <p className="meta-label text-primary">Bônus 2 • Roleta da IA</p>
           <h2 className="heading-1">Giro pago pela IA</h2>
           <p className="body-lead">
-            Ela deixou 1 rodada para você. Você pode ganhar até R$500,00 de desconto na LOTER.IA.
+            Ela deixou 1 rodada para você. Se o desconto máximo aparecer, você entra na LotoZap com R$200 de desconto e recebe os 5 jogos diários.
           </p>
           <div className="bg-primary/10 border border-primary/30 rounded-lg p-3 text-sm text-primary font-semibold inline-flex flex-col sm:flex-row gap-2 justify-center">
             <span>A IA deixou 1 chance ativa exclusivamente pra você.</span>
@@ -150,7 +150,7 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
                 {reels.map((value, index) => (
                   <div
                     key={index}
-                    className={`h-28 sm:h-32 rounded-xl flex items-center justify-center text-center text-xl sm:text-2xl font-black tracking-tight ${
+                    className={`h-28 sm:h-32 rounded-xl flex items-center justify-center text-center text-lg sm:text-xl font-bold tracking-tight px-3 leading-tight break-words ${
                       value === TARGET_PRIZE ? "bg-gold/20 text-gold border border-gold" : "bg-secondary text-foreground border border-border"
                     }`}
                   >
@@ -173,20 +173,20 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
             </Button>
             <p className="text-sm text-muted-foreground font-semibold">Prêmios possíveis:</p>
             <ul className="text-sm text-muted-foreground space-y-1">
-              <li>🔹 R$10 OFF</li>
-              <li>🔹 R$20 OFF</li>
-              <li>🔹 R$50 OFF</li>
-              <li>🔹 R$100 OFF</li>
-              <li>🔹 R$200 OFF</li>
-              <li>🔹 MAX WIN: R$500 OFF (desconto máximo)</li>
+              <li>🔹 R$5 de desconto</li>
+              <li>🔹 R$10 de desconto</li>
+              <li>🔹 R$25 de desconto</li>
+              <li>🔹 R$50 de desconto</li>
+              <li>🔹 R$100 de desconto</li>
+              <li>🔹 R$200 de desconto (acesso completo)</li>
             </ul>
 
             {result && (
               <Card className="p-4 border border-primary/40 space-y-2">
                 <p className="meta-label text-primary">Resultado</p>
-                <h3 className="heading-3 text-primary">MAX WIN desbloqueado!</h3>
+                <h3 className="heading-3 text-primary">Desconto máximo destravado!</h3>
                 <p className="text-sm sm:text-base text-foreground font-semibold">
-                  Você ganhou R$500 de desconto para ativar a LOTER.IA agora.
+                  Você garantiu R$200 de desconto para ativar a LotoZap. Os envios diários liberam na próxima etapa.
                 </p>
                 <p className="text-sm text-muted-foreground">Aproveite enquanto o painel está aberto.</p>
               </Card>

@@ -100,13 +100,13 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
         <section className="bg-card/80 border border-primary/30 rounded-3xl p-5 sm:p-8 space-y-4 landing-hero">
           <div className="space-y-3 text-left sm:text-center">
             <img
-                src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png"
-              alt="LOTER.IA"
+              src="https://i.ibb.co/3YvJFgHm/Logo-Lumen-4.png"
+              alt="LotoZap"
               className="mx-auto w-24 sm:w-28 drop-shadow-[0_0_20px_rgba(16,185,129,0.45)]"
             />
             <h1 className="heading-hero text-glow">Chega de perder na Lotofácil</h1>
             <p className="body-lead max-w-2xl">
-              Faça o teste e desbloqueie a IA que já gerou mais de R$250.000 com jogos da Lotofácil.
+              Faça o teste e desbloqueie a LotoZap — a IA que envia todo dia os 5 jogos com maiores probabilidades da Lotofácil direto para você.
             </p>
           </div>
         </section>

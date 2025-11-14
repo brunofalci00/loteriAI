@@ -71,14 +71,14 @@ export const IntuitionGameSlide = ({ onNext, onComplete }: IntuitionGameSlidePro
       <div className="slide-frame space-y-6 relative z-10">
         <div className="text-center space-y-3">
           <p className="meta-label text-primary flex items-center justify-center gap-2">🎲 Desafio liberado</p>
-          <h1 className="heading-1">Monte seu jogo com calma</h1>
+          <h1 className="heading-1">Monte seu jogo do seu jeito</h1>
           <p className="body-lead max-w-2xl mx-auto">
-            Escolha 15 números do jeito que você costuma apostar. Depois mostramos o jogo da feito pela IA
+            Escolha 15 números do jeito que você costuma apostar. Depois mostramos o jogo que a IA montou para o mesmo sorteio.
           </p>
           <div className={`text-lg sm:text-2xl font-bold slot-highlight inline-flex items-center justify-center px-6 py-2 ${shake ? "shake" : ""}`}>
             {selectedNumbers.length}/15 escolhidos {remaining > 0 ? `— selecione mais ${remaining}` : "— pronto para comparar"}
           </div>
-          <p className="text-sm text-muted-foreground">Tela grande, sem pressa e com toque único. Dá tempo de revisar antes de enviar.</p>
+          <p className="text-sm text-muted-foreground">Toque uma vez para ligar ou desligar cada número. Dá para revisar antes de enviar.</p>
         </div>
 
         <Card className="p-5 sm:p-6 space-y-6 border border-border">

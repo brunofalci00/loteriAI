@@ -1,4 +1,4 @@
-src/components/CoinCounter.tsx:25: Moedas
+﻿src/components/CoinCounter.tsx:25: Moedas
 src/components/ExitIntentOverlay.tsx:37: 🔐 Momento decisivo
 src/components/ExitIntentOverlay.tsx:39: Você chegou longe demais para sair agora.
 src/components/ExitIntentOverlay.tsx:48: Quem fica até o fim desbloqueia 7x mais chances.
@@ -6,7 +6,7 @@ src/components/ExitIntentOverlay.tsx:51: Você já acumulou
 src/components/ExitIntentOverlay.tsx:51: moedas e só falta uma decisão para liberar o Bônus 1.
 src/components/ExitIntentOverlay.tsx:56: Se fechar agora, o sistema zera suas moedas e fecha o acesso a IA secreta.
 src/components/ExitIntentOverlay.tsx:65: Continuar e liberar meu bônus
-src/components/ExitIntentOverlay.tsx:68: Precisa sair mesmo? Fique só mais 1 minuto para ver como a IA libera até R$500 em bônus.
+src/components/ExitIntentOverlay.tsx:68: 
 src/components/slides/AISimulationSlide.tsx:19: Escaneando
 src/components/slides/AISimulationSlide.tsx:19: Olha 2.500 resultados anteriores
 src/components/slides/AISimulationSlide.tsx:20: Montando jogo
@@ -30,7 +30,7 @@ src/components/slides/AISimulationSlide.tsx:177: Com isso ela liberou um giro pa
 src/components/slides/AISimulationSlide.tsx:181: Bônus reservado
 src/components/slides/AISimulationSlide.tsx:182: Ela usou
 src/components/slides/AISimulationSlide.tsx:182: giros e guardou 1 pra você.
-src/components/slides/AISimulationSlide.tsx:183: Esse giro destrava até R$500 em desconto.
+src/components/slides/AISimulationSlide.tsx:183: Esse giro libera a assinatura anual da LotoZap com envios diários.
 src/components/slides/AISimulationSlide.tsx:190: Seguir para o giro
 src/components/slides/AISimulationSlide.tsx:197: IA consolidando os pontos e auditando o painel para liberar seu relatório final...
 src/components/slides/AISyncLoadingSlide.tsx:14: Seu jogo
@@ -48,16 +48,16 @@ src/components/slides/AISyncLoadingSlide.tsx:42: Conferimos seus 15 números em 
 src/components/slides/AISyncLoadingSlide.tsx:43: Separarmos o mesmo jogo rodado pela IA.
 src/components/slides/AISyncLoadingSlide.tsx:44: Carregamos o giro bônus que ela deixou pra você.
 src/components/slides/AISyncLoadingSlide.tsx:60: Segure uns segundos e já mostramos o comparativo.
-src/components/slides/AiWinSlide.tsx:14: A IA venceu essa rodada…
-src/components/slides/AiWinSlide.tsx:16: Mas ela liberou 1 giro especial para você virar o jogo.
+src/components/slides/AiWinSlide.tsx:14: Parabéns! Bônus secreto reservado só pra você.
+src/components/slides/AiWinSlide.tsx:16: Você é o primeiro ganhador do mês e, por isso, destravou o desconto máximo de R$200 para acessar a plataforma.
 src/components/slides/AiWinSlide.tsx:22: A IA cravou 14 pontos usando análise preditiva. Ela já desbloqueou os 3 giros dela… e separou 1 giro bônus para você.
-src/components/slides/AiWinSlide.tsx:26: Você ganhou 1 giro na Roleta de Prêmios — ele pode liberar o MAX WIN a qualquer momento.
+src/components/slides/AiWinSlide.tsx:26: Você ganhou 1 giro na Roleta de Prêmios — ele pode liberar imediatamente a LotoZap com R$200 de desconto.
 src/components/slides/AiWinSlide.tsx:29: Se sair agora, o giro desaparece.
-src/components/slides/AiWinSlide.tsx:33: Antes de usar o giro, veja em segundos como outros jogadores estão ativando a LOTER.IA.
+src/components/slides/AiWinSlide.tsx:33: Antes de usar o giro, veja em segundos como outros jogadores estão ativando a LotoZap.
 src/components/slides/AiWinSlide.tsx:42: Ver jogadores reais e liberar meu giro
 src/components/slides/BonusMapSlide.tsx:44: 🎉 Bônus 1 liberado
 src/components/slides/BonusMapSlide.tsx:46: Mapa dos números quentes na sua tela
-src/components/slides/BonusMapSlide.tsx:47: Ele já vem pronto, sem termos difíceis e com letras grandes para você consultar antes de apostar.
+src/components/slides/BonusMapSlide.tsx:47: Você acabou de liberar o Mapa dos Números Quentes dentro da IA. Ele mostra as combinações mais quentes do dia sem tecnicês.
 src/components/slides/BonusMapSlide.tsx:51: Veja suas moedas pagando o bônus:
 src/components/slides/BonusMapSlide.tsx:54: Moedas
 src/components/slides/BonusMapSlide.tsx:68: Bônus liberado
@@ -68,8 +68,8 @@ src/components/slides/BonusMapSlide.tsx:89: Acesso exclusivo enquanto o painel e
 src/components/slides/BonusMapSlide.tsx:91: Depois desta etapa você vai direto para o duelo simples contra a IA.
 src/components/slides/BonusMapSlide.tsx:99: Ir para o desafio: Você vs IA
 src/components/slides/BonusMapSlide.tsx:107: Agora é você contra a IA
-src/components/slides/BonusMapSlide.tsx:109: Ela abre um duelo valendo até R$500 em bônus. Seu papel é mostrar sua intuição antes de ver como a máquina joga.
-src/components/slides/BonusMapSlide.tsx:113: Responda como jogador, compare com a inteligência artificial e libere o giro que pode pagar seu acesso à LOTER.IA.
+src/components/slides/BonusMapSlide.tsx:109: Ela abre um duelo valendo a assinatura anual da LotoZap. Seu papel é mostrar sua intuição antes de ver como a máquina joga.
+src/components/slides/BonusMapSlide.tsx:113: Responda como jogador, compare com a inteligência artificial e libere o giro que pode pagar seu acesso à LotoZap.
 src/components/slides/BonusMapSlide.tsx:117: Partiu enfrentar a IA
 src/components/slides/BonusUnlockLoadingSlide.tsx:11: Conferindo suas respostas
 src/components/slides/BonusUnlockLoadingSlide.tsx:12: Usando as moedas para abrir o mapa
@@ -95,7 +95,7 @@ src/components/slides/EntrySlide.tsx:33: Frases curtas e letras grandes para que
 src/components/slides/EntrySlide.tsx:37: Moedas com função
 src/components/slides/EntrySlide.tsx:38: Elas não ficam sobrando: pagam o mapa e o primeiro bônus automaticamente.
 src/components/slides/EntrySlide.tsx:95: QuizEntryStart
-src/components/slides/EntrySlide.tsx:113: LOTER.IA
+src/components/slides/EntrySlide.tsx:113: LotoZap
 src/components/slides/EntrySlide.tsx:116: Passo a passo guiado
 src/components/slides/EntrySlide.tsx:117: Chega de travar nos 11 pontos
 src/components/slides/EntrySlide.tsx:119: Responda poucas perguntas, junte moedas e veja a IA montar um plano simples. Tudo explicado em tela grande para quem tem 45+ e quer entender cada movimento.
@@ -114,23 +114,24 @@ src/components/slides/FinalOfferSlide.tsx:51: Painel de combinações calibradas
 src/components/slides/FinalOfferSlide.tsx:52: Atendimento 24/7 com 97% de satisfação
 src/components/slides/FinalOfferSlide.tsx:53: Suporte direto no WhatsApp
 src/components/slides/FinalOfferSlide.tsx:54: Acesso antecipado ao Bolão da Mega da Virada
-src/components/slides/FinalOfferSlide.tsx:64: LOTER.IA
+src/components/slides/FinalOfferSlide.tsx:64: LotoZap
 src/components/slides/FinalOfferSlide.tsx:68: 🎁 Parabéns! Desconto máximo ativado
-src/components/slides/FinalOfferSlide.tsx:71: Acesso completo à LOTER.IA por apenas R$37 — de R$500!
+src/components/slides/FinalOfferSlide.tsx:71: Você liberou o acesso completo à LotoZap — a IA que envia os 5 jogos com maiores probabilidades todos os dias direto pra você.
 src/components/slides/FinalOfferSlide.tsx:94: Oferta válida pelos próximos
-src/components/slides/FinalOfferSlide.tsx:100: Depois disso, volta para R$500.
+src/components/slides/FinalOfferSlide.tsx:100: Quando o tempo zera, o painel fecha e os envios diários são pausados.
 src/components/slides/FinalOfferSlide.tsx:106: ${(timeLeft / (3 * 60)) * 100}%
 src/components/slides/FinalOfferSlide.tsx:111: O que você recebe agora:
-src/components/slides/FinalOfferSlide.tsx:126: 💸 Desconto desbloqueado:
-src/components/slides/FinalOfferSlide.tsx:127: De R$500
-src/components/slides/FinalOfferSlide.tsx:128: R$37
-src/components/slides/FinalOfferSlide.tsx:129: Garantia total de 7 dias — testou, não gostou, cancela sem risco.
-src/components/slides/FinalOfferSlide.tsx:139: Liberar acesso por R$37
+src/components/slides/FinalOfferSlide.tsx:126: 💸 Condição exclusiva
+src/components/slides/FinalOfferSlide.tsx:127: Plano anual sem mensalidade escondida.
+src/components/slides/FinalOfferSlide.tsx:128: R$19,90/ano
+src/components/slides/FinalOfferSlide.tsx:129: ou 4x de R$5,51 no cartão
+src/components/slides/FinalOfferSlide.tsx:130: Garantia total de 7 dias — testou, não gostou, cancela sem risco.
+src/components/slides/FinalOfferSlide.tsx:139: 🔐 Ativar minha LotoZap agora
 src/components/slides/FinalOfferSlide.tsx:156: Falar com especialista no WhatsApp (24/7)
 src/components/slides/FinalOfferSlide.tsx:161: Compra segura
 src/components/slides/FinalOfferSlide.tsx:162: +84 pessoas ativaram só hoje • 97% de satisfação no suporte 24/7
 src/components/slides/FinalOfferSlide.tsx:167: Mesmo sistema usado por quem fez 13 ou 14 pontos nas últimas semanas.
-src/components/slides/FinalOfferSlide.tsx:180: Garantir meu acesso - R$37
+src/components/slides/FinalOfferSlide.tsx:180: Garantir meu acesso - R$19,90/ano
 src/components/slides/IntuitionGameSlide.tsx:21: Toque uma vez
 src/components/slides/IntuitionGameSlide.tsx:21: Nada de duplo clique. Cada número acende na hora.
 src/components/slides/IntuitionGameSlide.tsx:22: Revise com calma
@@ -139,9 +140,9 @@ src/components/slides/IntuitionGameSlide.tsx:23: Envie quando estiver seguro
 src/components/slides/IntuitionGameSlide.tsx:23: Assim que os 15 números estiverem marcados, a IA entra em cena.
 src/components/slides/IntuitionGameSlide.tsx:67: IntuitionSubmit
 src/components/slides/IntuitionGameSlide.tsx:80: 🎲 Desafio liberado
-src/components/slides/IntuitionGameSlide.tsx:82: Monte seu jogo com calma
+src/components/slides/IntuitionGameSlide.tsx:82: Monte seu jogo do seu jeito
 src/components/slides/IntuitionGameSlide.tsx:84: Escolha 15 números do jeito que você costuma apostar. Depois mostramos o mesmo jogo com e sem IA, sem palavras difíceis.
-src/components/slides/IntuitionGameSlide.tsx:89: Tela grande, sem pressa e com toque único. Dá tempo de revisar antes de enviar.
+src/components/slides/IntuitionGameSlide.tsx:89: Toque uma vez para ligar ou desligar cada número. Dá para revisar antes de enviar.
 src/components/slides/IntuitionGameSlide.tsx:125: IA conferindo seu jogo...
 src/components/slides/IntuitionGameSlide.tsx:127: Ver meu resultado
 src/components/slides/IntuitionGameSlide.tsx:128: Calibrando comparação...
@@ -149,11 +150,11 @@ src/components/slides/IntuitionGameSlide.tsx:129: Selecione mais ${remaining} n�
 src/components/slides/IntuitionGameSlide.tsx:135: Seu palpite foi registrado. Preparando comparação...
 src/components/slides/IntuitionGameSlide.tsx:136: Tudo pronto. A IA já está posicionada para analisar o seu jogo.
 src/components/slides/MaxWinCelebrationSlide.tsx:27: Prêmio máximo
-src/components/slides/MaxWinCelebrationSlide.tsx:32: Você recebeu R$500!
-src/components/slides/MaxWinCelebrationSlide.tsx:35: Essa sensação é de quem acabou de economizar alto: a oferta completa da LOTER.IA de R$500 saiu por apenas R$37.
+src/components/slides/MaxWinCelebrationSlide.tsx:32: Você recebeu o aviso oficial da IA.
+src/components/slides/MaxWinCelebrationSlide.tsx:35: Essa sensação é de quem acabou de garantir o envio diário da IA por 4x de R$5,51 ou R$19,90.
 src/components/slides/MaxWinCelebrationSlide.tsx:45: Economia desbloqueada
-src/components/slides/MaxWinCelebrationSlide.tsx:48: R$ 500
-src/components/slides/MaxWinCelebrationSlide.tsx:50: R$ 37
+src/components/slides/MaxWinCelebrationSlide.tsx:48: R$200
+src/components/slides/MaxWinCelebrationSlide.tsx:50: R$ 19,90
 src/components/slides/MaxWinCelebrationSlide.tsx:53: Você travou o desconto máximo da IA. Prepare o checkout e finalize enquanto o painel ainda está aberto.
 src/components/slides/MaxWinCelebrationSlide.tsx:59: Suporte no WhatsApp
 src/components/slides/MaxWinCelebrationSlide.tsx:60: Equipe responde a cada passo da ativação.
@@ -193,7 +194,7 @@ src/components/slides/QuizSlide.tsx:96: QuizStart
 src/components/slides/QuizSlide.tsx:122: QuizAnswer
 src/components/slides/QuizSlide.tsx:134: QuizBonusUnlocked
 src/components/slides/QuizSlide.tsx:150: 🎯 Pergunta
-src/components/slides/QuizSlide.tsx:153: Responda com calma
+src/components/slides/QuizSlide.tsx:153: Responda no seu ritmo
 src/components/slides/QuizSlide.tsx:157: Moedas liberadas
 src/components/slides/QuizSlide.tsx:159: 🏅 Mapa liberado
 src/components/slides/QuizSlide.tsx:159: ${coinsCollected}/${TOTAL_COINS}
@@ -205,11 +206,11 @@ src/components/slides/QuizSlide.tsx:202: Responda como você fala no dia a dia.
 src/components/slides/QuizSlide.tsx:224: Destravando o Bônus 1
 src/components/slides/QuizSlide.tsx:225: Segure um pouco: estamos preparando os dados para liberar o mapa secreto.
 src/components/slides/QuizSlide.tsx:229: Transferindo fichas e liberando o Mapa Secreto...
-src/components/slides/RouletteBonusSlide.tsx:12: R$ 10 OFF
-src/components/slides/RouletteBonusSlide.tsx:12: R$ 20 OFF
-src/components/slides/RouletteBonusSlide.tsx:12: R$ 50 OFF
-src/components/slides/RouletteBonusSlide.tsx:12: R$ 100 OFF
-src/components/slides/RouletteBonusSlide.tsx:12: R$ 200 OFF
+src/components/slides/RouletteBonusSlide.tsx:12: R$10 de desconto
+src/components/slides/RouletteBonusSlide.tsx:12: R$20 de desconto
+src/components/slides/RouletteBonusSlide.tsx:12: R$50 de desconto
+src/components/slides/RouletteBonusSlide.tsx:12: R$100 de desconto
+src/components/slides/RouletteBonusSlide.tsx:12: R$200 de desconto
 src/components/slides/RouletteBonusSlide.tsx:12: MAX WIN
 src/components/slides/RouletteBonusSlide.tsx:13: MAX WIN
 src/components/slides/RouletteBonusSlide.tsx:17: Cashback imediato
@@ -217,38 +218,38 @@ src/components/slides/RouletteBonusSlide.tsx:18: Usado para reduzir o valor do a
 src/components/slides/RouletteBonusSlide.tsx:22: Consultoria express
 src/components/slides/RouletteBonusSlide.tsx:23: Conversa rápida com o time para destravar estratégia.
 src/components/slides/RouletteBonusSlide.tsx:27: Bônus MAX WIN
-src/components/slides/RouletteBonusSlide.tsx:28: R$500 off quando os três rolos travam no dourado.
+src/components/slides/RouletteBonusSlide.tsx:28: R$200 de desconto quando os três rolos travam no dourado.
 src/components/slides/RouletteBonusSlide.tsx:48: SlotMaxWin
 src/components/slides/RouletteBonusSlide.tsx:121: SlotSpinStart
 src/components/slides/RouletteBonusSlide.tsx:153: Bônus 2 • Roleta da IA
 src/components/slides/RouletteBonusSlide.tsx:154: Giro pago pela IA
-src/components/slides/RouletteBonusSlide.tsx:156: Ela deixou 1 rodada para você. Se os três rolos pararem em MAX WIN, o desconto de R$500 aparece na hora e já vamos para a oferta.
+src/components/slides/RouletteBonusSlide.tsx:156: Ela deixou 1 rodada para você. Se o desconto máximo aparecer, você entra na LotoZap com R$200 de desconto e recebe os 5 jogos diários.
 src/components/slides/RouletteBonusSlide.tsx:159: A IA deixou 1 chance ativa exclusivamente pra você.
 src/components/slides/RouletteBonusSlide.tsx:160: Spins disponíveis:
 src/components/slides/RouletteBonusSlide.tsx:180: Aperte uma vez. Mostramos cada rolo parando devagar.
 src/components/slides/RouletteBonusSlide.tsx:184: Prêmios possíveis:
-src/components/slides/RouletteBonusSlide.tsx:186: 🔹 R$10 OFF
-src/components/slides/RouletteBonusSlide.tsx:187: 🔹 R$20 OFF
-src/components/slides/RouletteBonusSlide.tsx:188: 🔹 R$50 OFF
-src/components/slides/RouletteBonusSlide.tsx:189: 🔹 R$100 OFF
-src/components/slides/RouletteBonusSlide.tsx:190: 🔹 R$200 OFF
-src/components/slides/RouletteBonusSlide.tsx:191: 🔹 MAX WIN: R$500 OFF (desconto máximo)
+src/components/slides/RouletteBonusSlide.tsx:186: 🔹 R$5 de desconto
+src/components/slides/RouletteBonusSlide.tsx:187: 🔹 R$10 de desconto
+src/components/slides/RouletteBonusSlide.tsx:188: 🔹 R$25 de desconto
+src/components/slides/RouletteBonusSlide.tsx:189: 🔹 R$50 de desconto
+src/components/slides/RouletteBonusSlide.tsx:190: 🔹 R$100 de desconto
+src/components/slides/RouletteBonusSlide.tsx:191: 🔹 R$200 de desconto (acesso completo)
 src/components/slides/RouletteBonusSlide.tsx:210: Girando...
 src/components/slides/RouletteBonusSlide.tsx:210: Girar agora
 src/components/slides/RouletteBonusSlide.tsx:215: Resultado
-src/components/slides/RouletteBonusSlide.tsx:216: MAX WIN desbloqueado!
-src/components/slides/RouletteBonusSlide.tsx:218: Você ganhou R$500 de desconto para ativar a LOTER.IA agora.
+src/components/slides/RouletteBonusSlide.tsx:216: Desconto máximo destravado!
+src/components/slides/RouletteBonusSlide.tsx:218: Você garantiu R$200 de desconto para ativar a LotoZap. Os envios diários liberam na próxima etapa.
 src/components/slides/RouletteBonusSlide.tsx:220: Aproveite enquanto o painel está aberto. Levamos você automaticamente para a próxima tela.
 src/components/slides/TestimonialsSlide.tsx:11: Ana • SP
 src/components/slides/TestimonialsSlide.tsx:12: R$ 2.500
 src/components/slides/TestimonialsSlide.tsx:16: Lucas • MG
-src/components/slides/TestimonialsSlide.tsx:17: R$ 370
+src/components/slides/TestimonialsSlide.tsx:17: R$ 19,900
 src/components/slides/TestimonialsSlide.tsx:21: Marina • RJ
 src/components/slides/TestimonialsSlide.tsx:22: R$ 2.030
-src/components/slides/TestimonialsSlide.tsx:35: LOTER.IA
-src/components/slides/TestimonialsSlide.tsx:40: Antes de girar a roleta, veja o que os nossos usuários estão achando da LOTER.IA
-src/components/slides/TestimonialsSlide.tsx:43: São centenas jogando com a LOTER.IA neste momento — sinta a energia antes de liberar seu giro.
-src/components/slides/TestimonialsSlide.tsx:78: Liberar meu giro
+src/components/slides/TestimonialsSlide.tsx:35: LotoZap
+src/components/slides/TestimonialsSlide.tsx:40: Antes de girar a roleta, veja o que os nossos usuários estão achando da LotoZap
+src/components/slides/TestimonialsSlide.tsx:43: São centenas jogando com a LotoZap neste momento — sinta a energia antes de liberar seu giro.
+src/components/slides/TestimonialsSlide.tsx:78: Garantir minha LotoZap diária
 src/components/slides/UserResultSlide.tsx:34: ManualResult
 src/components/slides/UserResultSlide.tsx:43: 🧮 IA auditando seu jogo
 src/components/slides/UserResultSlide.tsx:45: Seu resultado saiu
@@ -262,3 +263,9 @@ src/components/slides/UserResultSlide.tsx:66: Seus números
 src/components/slides/UserResultSlide.tsx:76: Seus números aparecerão aqui ao fim da rodada.
 src/components/slides/UserResultSlide.tsx:81: Toque no botão abaixo para ver a mesma aposta com a IA trabalhando a seu favor.
 src/components/slides/UserResultSlide.tsx:85: Ver a IA jogando agora
+
+
+
+
+
+

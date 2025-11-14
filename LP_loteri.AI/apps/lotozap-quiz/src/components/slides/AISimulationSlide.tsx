@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -155,13 +155,13 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
                 </div>
                 <div className="space-y-2 text-center text-sm text-muted-foreground">
                   <p>A IA fez {aiScore} pontos com os mesmos números. Você ficou nos {userScore}.</p>
-                  <p>Com isso ela liberou um giro para você resgatar o desconto.</p>
+                  <p>Com isso ela liberou um giro para você travar sua assinatura na LotoZap.</p>
                 </div>
                 {showSpinReveal && (
                   <div className="bg-secondary rounded-2xl p-4 border border-primary/20 text-sm text-left sm:text-center space-y-1">
                     <p className="font-semibold text-primary">Bônus reservado</p>
                     <p>Ela usou {aiSpins} giros e guardou 1 pra você.</p>
-                    <p className="text-muted-foreground">Esse giro libera até R$500 em desconto.</p>
+                    <p className="text-muted-foreground">Esse giro libera a assinatura anual da LotoZap com envios diários.</p>
                   </div>
                 )}
                 <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 flex items-center justify-center gap-2">
@@ -185,3 +185,7 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
     </div>
   );
 };
+
+
+
+

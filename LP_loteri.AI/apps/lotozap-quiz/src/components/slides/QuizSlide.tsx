@@ -176,7 +176,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
               🎯 Pergunta {currentQuestion + 1} de {questions.length}
             </p>
             <h2 className="heading-2 flex items-center gap-2 justify-center sm:justify-start">
-              Responda com calma
+              Responda no seu ritmo
             </h2>
           </div>
           <div className="text-center sm:text-right">
