@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { LotteryCard } from "@/components/LotteryCard";
+import { MegaEventHero } from "@/components/MegaEventHero";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
@@ -167,9 +168,13 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      
+
       <div className="container mx-auto px-4 pt-24 pb-12">
         <div className="mb-8">
+          <MegaEventHero />
+        </div>
+
+        <div className="mb-8 mt-8">
           <h1 className="mb-2 text-4xl font-bold">Escolha sua Loteria</h1>
           <p className="text-lg text-muted-foreground">
             Selecione a modalidade que deseja analisar
