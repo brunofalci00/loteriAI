@@ -220,6 +220,7 @@ export default function MegaEventManual() {
               Reiniciar fluxo
             </Button>
           </div>
+          </div>
         </div>
       </div>
     </div>
