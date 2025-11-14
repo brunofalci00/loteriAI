@@ -17,12 +17,35 @@
   ],
   "rewrites": [
     {
+      "source": "/lotozap",
+      "destination": "/funnels/lotozap/"
+    },
+    {
+      "source": "/mega",
+      "destination": "/funnels/mega/"
+    },
+    {
+      "source": "/quiz",
+      "destination": "/quiz.html"
+    },
+    {
+      "source": "/funnels/:slug((?!.*\\.).*)",
+      "destination": "/funnels/:slug/index.html"
+    },
+    {
       "source": "/app/:path((?!.*\\.).*)",
       "destination": "/app/index.html"
     },
     {
       "source": "/app",
       "destination": "/app/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/funnels/:slug",
+      "destination": "/funnels/:slug/",
+      "permanent": false
     }
   ]
 }
