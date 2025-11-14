@@ -59,7 +59,7 @@ export const BonusUnlockLoadingSlide = ({ onNext }: BonusUnlockLoadingSlideProps
           <div className="loading-visual">
             <img
               src="https://i.ibb.co/wrYL4fMd/como-funciona-o-jogo-lotofacil.webp"
-              alt="Imagem explicativa do funcionamento do jogo Lotofacil"
+              alt="Imagem explicativa do funcionamento da IA"
               loading="lazy"
             />
             <div className="loading-visual__badges">

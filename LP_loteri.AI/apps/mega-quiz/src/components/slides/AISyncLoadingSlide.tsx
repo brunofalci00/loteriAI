@@ -39,7 +39,7 @@ export const AISyncLoadingSlide = ({ onNext, userScore }: AISyncLoadingSlideProp
           <div className="bg-secondary/60 rounded-xl p-4 space-y-2 text-sm text-foreground">
             <p className="font-semibold text-primary">O que está acontecendo agora</p>
             <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-              <li>Conferimos seus 15 números em 2.500 resultados.</li>
+              <li>Conferimos seus 6 números em 2.500 resultados.</li>
               <li>Separarmos o mesmo jogo rodado pela IA.</li>
               <li>Carregamos o giro bônus que ela deixou pra você.</li>
             </ul>

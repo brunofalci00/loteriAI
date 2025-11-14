@@ -50,7 +50,7 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
           {!showResult ? (
             <div className="flex flex-col items-center gap-3 py-6">
               <Loader2 className="w-10 h-10 text-primary animate-spin" />
-              <p className="text-sm text-muted-foreground text-center">Comparando seus 15 números com 2.500 resultados anteriores.</p>
+              <p className="text-sm text-muted-foreground text-center">Comparando seus 6 números com 2.500 resultados anteriores.</p>
             </div>
           ) : (
             <>

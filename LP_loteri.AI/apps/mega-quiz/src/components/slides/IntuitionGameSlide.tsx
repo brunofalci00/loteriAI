@@ -15,7 +15,7 @@ export const IntuitionGameSlide = ({ onNext, onComplete }: IntuitionGameSlidePro
   const [submitting, setSubmitting] = useState(false);
   const selectSoundRef = useRef<HTMLAudioElement | null>(null);
 
-  const numbers = Array.from({ length: 25 }, (_, i) => i + 1);
+  const numbers = Array.from({ length: 60 }, (_, i) => i + 1);
 
   useEffect(() => {
     selectSoundRef.current = new Audio("/sounds/select-number.mp3");
@@ -25,7 +25,7 @@ export const IntuitionGameSlide = ({ onNext, onComplete }: IntuitionGameSlidePro
   }, []);
 
   useEffect(() => {
-    if (selectedNumbers.length === 15) {
+    if (selectedNumbers.length === 6) {
       setAnalysisState("analyzing");
       const timer = setTimeout(() => setAnalysisState("ready"), 2400);
       return () => clearTimeout(timer);
@@ -39,7 +39,7 @@ export const IntuitionGameSlide = ({ onNext, onComplete }: IntuitionGameSlidePro
       return;
     }
 
-    if (selectedNumbers.length >= 15) {
+    if (selectedNumbers.length >= 6) {
       setShake(true);
       setTimeout(() => setShake(false), 500);
       return;
@@ -52,10 +52,10 @@ export const IntuitionGameSlide = ({ onNext, onComplete }: IntuitionGameSlidePro
     setSelectedNumbers([...selectedNumbers, num]);
   };
 
-  const remaining = 15 - selectedNumbers.length;
+  const remaining = 6 - selectedNumbers.length;
 
   const handleSubmit = () => {
-    if (selectedNumbers.length !== 15 || submitting) return;
+    if (selectedNumbers.length !== 6 || submitting) return;
     setSubmitting(true);
     onComplete?.(selectedNumbers);
     trackPixelEvent("IntuitionSubmit");
@@ -73,16 +73,16 @@ export const IntuitionGameSlide = ({ onNext, onComplete }: IntuitionGameSlidePro
           <p className="meta-label text-primary flex items-center justify-center gap-2">🎲 Desafio liberado</p>
           <h1 className="heading-1">Monte seu jogo com calma</h1>
           <p className="body-lead max-w-2xl mx-auto">
-            Escolha 15 números do jeito que você costuma apostar. Depois mostramos o jogo da feito pela IA
+            Escolha 6 números do jeito que você costuma apostar. Depois mostramos o jogo feito pela IA
           </p>
           <div className={`text-lg sm:text-2xl font-bold slot-highlight inline-flex items-center justify-center px-6 py-2 ${shake ? "shake" : ""}`}>
-            {selectedNumbers.length}/15 escolhidos {remaining > 0 ? `— selecione mais ${remaining}` : "— pronto para comparar"}
+            {selectedNumbers.length}/6 escolhidos {remaining > 0 ? `— selecione mais ${remaining}` : "— pronto para comparar"}
           </div>
           <p className="text-sm text-muted-foreground">Tela grande, sem pressa e com toque único. Dá tempo de revisar antes de enviar.</p>
         </div>
 
         <Card className="p-5 sm:p-6 space-y-6 border border-border">
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
+          <div className="grid grid-cols-6 sm:grid-cols-10 gap-2 sm:gap-3">
             {numbers.map((num) => {
               const isSelected = selectedNumbers.includes(num);
               return (
@@ -95,11 +95,11 @@ export const IntuitionGameSlide = ({ onNext, onComplete }: IntuitionGameSlidePro
 
           <Button
             onClick={handleSubmit}
-            disabled={selectedNumbers.length !== 15 || submitting || analysisState !== "ready"}
+            disabled={selectedNumbers.length !== 6 || submitting || analysisState !== "ready"}
             size="lg"
             className="w-full text-base sm:text-xl py-5 bg-primary hover:bg-primary-glow text-primary-foreground font-bold disabled:opacity-50"
           >
-            {selectedNumbers.length === 15
+            {selectedNumbers.length === 6
               ? submitting
                 ? "IA conferindo seu jogo..."
                 : analysisState === "ready"
