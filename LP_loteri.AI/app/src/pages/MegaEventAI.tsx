@@ -161,10 +161,11 @@ export default function MegaEventAI() {
             </div>
           ) : featuredDraw ? (
             <div className="mega-panel">
-              <button
-                onClick={() => handleContestSelection(featuredDraw.contestNumber)}
-                className="mega-panel__inner flex w-full flex-col gap-3 border-0 text-left text-amber-50"
-              >
+              <div className="mega-panel__inner flex flex-col gap-3 border-0 text-left text-amber-50 opacity-60">
+                <div className="flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-amber-100/70">
+                  <Lock className="h-3 w-3" />
+                  Acesso exclusivo
+                </div>
                 <div>
                   <p className="text-xs uppercase tracking-[0.4em] text-amber-100/70">Mega da Virada</p>
                   <h3 className="text-2xl font-black">R$ 850 milhões em jogo</h3>
@@ -172,7 +173,10 @@ export default function MegaEventAI() {
                     31 de dezembro de 2025 · 20h
                   </p>
                 </div>
-              </button>
+                <p className="text-xs mega-text-muted">
+                  Disponível apenas para convidados. Aguarde desbloqueio oficial.
+                </p>
+              </div>
             </div>
           ) : (
             <p className="text-center text-amber-100/70">
