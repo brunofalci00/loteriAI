@@ -4,10 +4,29 @@
   "installCommand": "cd LP_loteri.AI && npm run install:all",
   "cleanUrls": false,
   "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*).html",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
+      "source": "/lotozap",
+      "destination": "/funnels/lotozap/index.html"
+    },
+    {
+      "source": "/mega",
+      "destination": "/funnels/mega/index.html"
+    },
+    {
       "source": "/quiz",
-      "destination": "/quiz.html"
+      "destination": "/funnels/classic/index.html"
     },
     {
       "source": "/app/:path((?!.*\\.).*)",

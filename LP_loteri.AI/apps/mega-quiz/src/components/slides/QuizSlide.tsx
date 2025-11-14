@@ -12,43 +12,27 @@ interface QuizSlideProps {
 
 const questions = [
   {
-    question: "Quando você joga na Mega-Sena, o que mais te incomoda?",
+    question: "Você sabia que a Mega da Virada pode pagar mais de R$ 850 milhões?",
     options: [
-      "Jogar sem saber se estou no caminho certo",
-      "Apostar várias vezes e nunca passar da quadra",
-      "Ver os outros falando que usam sistema e eu aqui tentando na raça",
+      "Sim, estou acompanhando de perto",
+      "Sabia que era alto, mas não tanto",
+      "Nem fazia ideia, me mostra como funciona",
     ],
   },
   {
-    question: 'Quantas vezes você achou que "faltou pouco"?',
+    question: "Você já apostou e sentiu que só perde, mesmo seguindo sua intuição?",
     options: [
-      "Sempre. 1 ou 2 números me perseguem",
-      "Em quase todo jogo fico por um triz",
-      "Nunca passei da quadra. Já tô desacreditado",
+      "Sempre. Escolho e nunca passo dos mesmos pontos",
+      "Jogo às vezes, mas já desanimei",
+      "Ainda não jogo, quero começar com estratégia",
     ],
   },
   {
-    question: "Como escolhe seus jogos hoje?",
+    question: "Quer ver a IA que analisou 20 anos de concursos montar um jogo só pra você?",
     options: [
-      "Sigo minha intuição. Sinto quando vai dar certo",
-      "Vou por datas, palpites, sensação",
-      "Eu nem penso muito. Só jogo e espero",
-    ],
-  },
-  {
-    question: "E se pudesse testar seu palpite contra uma IA treinada?",
-    options: [
-      "Toparia agora. Quero ver no que dá",
-      "Seria bom ver se tá tão errado assim",
-      "Talvez... mas acho que ela ganharia fácil",
-    ],
-  },
-  {
-    question: "O que você mais quer resolver hoje?",
-    options: [
-      "Parar de jogar no escuro",
-      "Descobrir se meu jeito funciona ou não",
-      "Usar algo que dê vantagem real",
+      "Quero ver agora",
+      "Quero entender como funciona",
+      "Tô curioso, pode liberar",
     ],
   },
 ];
@@ -85,8 +69,8 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
 
   useEffect(() => {
     if (recentGain === null) return;
-    const timer = setTimeout(() => setRecentGain(null), 1200);
-    return () => clearTimeout(timer);
+    const timer = window.setTimeout(() => setRecentGain(null), 1200);
+    return () => window.clearTimeout(timer);
   }, [recentGain]);
 
   const animateCoinJourney = (sourceButton: HTMLButtonElement) => {
@@ -148,9 +132,9 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
     trackPixelEvent("QuizAnswer", { question: currentQuestion + 1 });
 
     if (answeredCount + 1 === questions.length) {
-      setTimeout(() => setShowCompletionModal(true), 600);
+      window.setTimeout(() => setShowCompletionModal(true), 600);
     } else {
-      setTimeout(() => setCurrentQuestion((prev) => prev + 1), 900);
+      window.setTimeout(() => setCurrentQuestion((prev) => prev + 1), 900);
     }
   };
 
@@ -158,11 +142,11 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
     if (!showCompletionModal) return;
     bonusSoundRef.current?.play().catch(() => undefined);
     trackPixelEvent("QuizBonusUnlocked");
-    const timer = setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setShowCompletionModal(false);
       onNext();
     }, 2100);
-    return () => clearTimeout(timer);
+    return () => window.clearTimeout(timer);
   }, [showCompletionModal, onNext]);
 
   const current = questions[currentQuestion];
@@ -173,11 +157,9 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
         <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
           <div className="space-y-1">
             <p className="meta-label flex items-center gap-2 justify-center sm:justify-start">
-              🎯 Pergunta {currentQuestion + 1} de {questions.length}
+              ⚡ Pergunta {currentQuestion + 1} de {questions.length}
             </p>
-            <h2 className="heading-2 flex items-center gap-2 justify-center sm:justify-start">
-              Responda com calma
-            </h2>
+            <h2 className="heading-2 flex items-center gap-2 justify-center sm:justify-start">Responda com calma</h2>
           </div>
           <div className="text-center sm:text-right">
             <p className="text-sm text-muted-foreground">Moedas liberadas</p>
@@ -232,7 +214,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
           </DialogHeader>
           <div className="flex flex-col items-center gap-3 py-5">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-sm text-muted-foreground">Transferindo fichas e liberando o Mapa Secreto...</p>
+            <p className="text-sm text-muted-foreground">Transferindo fichas e liberando o mapa secreto...</p>
           </div>
         </DialogContent>
       </Dialog>

@@ -4,6 +4,15 @@ import { Card } from "@/components/ui/card";
 import { Clock, MessageCircle, Volume2, VolumeX } from "lucide-react";
 import { trackPixelEvent } from "@/lib/analytics";
 
+const benefits = [
+  { icon: "✅", text: "Jogos prontos com IA todos os dias" },
+  { icon: "✅", text: "Até 3 combinações inteligentes por dia" },
+  { icon: "✅", text: "Acesso VIP ao painel Mega da Virada" },
+  { icon: "✅", text: "Atualizações em tempo real antes dos sorteios" },
+  { icon: "✅", text: "Suporte no WhatsApp com resposta rápida" },
+  { icon: "✅", text: "Garantia total de 7 dias: testou, não gostou, cancela" },
+];
+
 export const FinalOfferSlide = () => {
   const checkoutUrl = "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
   const whatsappUrl = "https://wa.me/5511993371766";
@@ -16,10 +25,10 @@ export const FinalOfferSlide = () => {
   const handleWhatsAppClick = () => trackPixelEvent("WhatsAppSupportClick");
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    const timer = window.setInterval(() => {
       setTimeLeft((prev) => Math.max(prev - 1, 0));
     }, 1000);
-    return () => clearInterval(timer);
+    return () => window.clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -46,15 +55,6 @@ export const FinalOfferSlide = () => {
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
-  const benefits = [
-    { icon: "✅", text: "Jogos prontos com IA todos os dias" },
-    { icon: "✅", text: "Até 3 combinações inteligentes por dia" },
-    { icon: "✅", text: "Acesso VIP ao Bolão da Mega da Virada" },
-    { icon: "✅", text: "Painel atualizado em tempo real" },
-    { icon: "✅", text: "Suporte no WhatsApp com resposta em minutos" },
-    { icon: "✅", text: "Garantia total de 7 dias: testou, não gostou, cancela" },
-  ];
-
   return (
     <div className="slide-shell relative py-14">
       <div className="casino-grid" />
@@ -63,11 +63,11 @@ export const FinalOfferSlide = () => {
           <img
             src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png"
             alt="LOTER.IA"
-            className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(16,185,129,0.45)] pulse-glow"
+            className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(255,215,0,0.35)] pulse-glow"
           />
           <h1 className="heading-1 text-glow">🎁 Prêmio resgatado com sucesso!</h1>
           <p className="heading-3 text-primary">
-            Você liberou o acesso completo à LOTER.IA com R$500 de desconto garantido. Agora veja tudo que está incluso.
+            Você liberou o acesso completo à Loter.IA com a condição especial da Mega da Virada. Veja tudo que está incluso.
           </p>
         </div>
 
@@ -96,7 +96,7 @@ export const FinalOfferSlide = () => {
               </p>
               {timeLeft <= 60 && (
                 <p className="text-xs text-destructive mt-2 animate-pulse">
-                  Depois disso, volta para R$500.
+                  Depois disso, voltamos ao valor cheio.
                 </p>
               )}
             </div>
@@ -107,7 +107,7 @@ export const FinalOfferSlide = () => {
         </Card>
 
         <div className="text-center space-y-4">
-          <h2 className="heading-2">📦 Você vai receber:</h2>
+          <h2 className="heading-2">💡 Você vai receber:</h2>
         </div>
 
         <Card className="p-6 bg-primary/5 border border-primary/30">
@@ -121,14 +121,15 @@ export const FinalOfferSlide = () => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border border-primary text-center glow-primary-strong pulse-glow space-y-3">
-          <p className="text-2xl font-bold text-foreground">💸 De R$500 por apenas R$37/ano</p>
+        <Card className="p-6 bg-gradient-to-br from-black/40 via-secondary/80 to-gold/20 border border-primary text-center glow-primary-strong space-y-3">
+          <p className="text-2xl font-bold text-foreground">🔥 De R$297 por 12x de R$8,91</p>
           <div>
-            <p className="text-lg text-muted-foreground line-through">Valor original: R$500</p>
-            <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">R$37/ano</p>
+            <p className="text-lg text-muted-foreground line-through">Valor cheio: R$297</p>
+            <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">12x R$8,91</p>
+            <p className="text-base text-foreground font-semibold">ou R$87,00 à vista (acesso anual)</p>
           </div>
           <p className="text-lg text-foreground font-semibold">
-            Sem mensalidade e sem renovação automática sem aviso. Você garante 12 meses completos e ainda tem 7 dias para testar sem risco.
+            Sem mensalidade escondida e sem renovação automática sem aviso. Você garante 12 meses completos e ainda tem 7 dias para testar sem risco.
           </p>
         </Card>
 
@@ -139,7 +140,7 @@ export const FinalOfferSlide = () => {
           className="w-full text-xl md:text-2xl py-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
         >
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            🔐 Garantir acesso por R$37/ano
+            ⚡ Garantir Acesso
           </a>
         </Button>
 
@@ -162,13 +163,13 @@ export const FinalOfferSlide = () => {
 
         <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground text-center">
           <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Compra segura" className="w-40 sm:w-52 mx-auto" />
-          <p>⏳ Oferta ativa enquanto o painel estiver aberto.</p>
-          <p>Já são +84 pessoas ativadas hoje. Depois disso, o acesso volta para o valor original.</p>
+          <p>✅ Oferta ativa enquanto o painel estiver aberto.</p>
+          <p>Já são dezenas de acessos liberados hoje. Depois disso voltamos ao valor cheio.</p>
         </div>
 
         <Card className="p-6 bg-primary/10 border border-primary/30 text-center">
           <p className="text-lg font-bold text-foreground">
-            Mesmo sistema usado por quem fez 13 ou 14 pontos nas últimas semanas.
+            Mesmo sistema usado por quem fez 13 ou 14 pontos nos últimos concursos.
           </p>
         </Card>
       </div>
@@ -181,7 +182,7 @@ export const FinalOfferSlide = () => {
           className="w-full text-lg py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl"
         >
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            🔐 Garantir acesso por R$37/ano
+            ⚡ Garantir Acesso
           </a>
         </Button>
       </div>

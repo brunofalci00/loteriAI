@@ -8,15 +8,16 @@ interface BonusUnlockLoadingSlideProps {
 }
 
 const steps = [
-  { icon: "📝", text: "Conferindo suas respostas" },
-  { icon: "🪙", text: "Usando as moedas para abrir o mapa" },
-  { icon: "🔐", text: "Liberando a visualização segura" },
+  { icon: "🧊", text: "Reservando sua vaga entre os testadores" },
+  { icon: "📡", text: "Sincronizando 20 anos da Mega da Virada" },
+  { icon: "🔐", text: "Preparando rodada manual + IA" },
+  { icon: "⚡", text: "Liberando o painel seguro" },
 ];
 
 const visualBadges = [
-  { icon: "📶", label: "Painel estável" },
-  { icon: "🛡️", label: "Dados protegidos" },
-  { icon: "⚡", label: "Liberado em segundos" },
+  { icon: "🛡️", label: "Painel blindado" },
+  { icon: "📊", label: "Dados auditados" },
+  { icon: "⏱️", label: "Pronto em segundos" },
 ];
 
 export const BonusUnlockLoadingSlide = ({ onNext }: BonusUnlockLoadingSlideProps) => {
@@ -24,8 +25,8 @@ export const BonusUnlockLoadingSlide = ({ onNext }: BonusUnlockLoadingSlideProps
 
   useEffect(() => {
     ambientRef.current?.play().catch(() => undefined);
-    const timer = setTimeout(onNext, 5200);
-    return () => clearTimeout(timer);
+    const timer = window.setTimeout(onNext, 5200);
+    return () => window.clearTimeout(timer);
   }, [ambientRef, onNext]);
 
   return (
@@ -34,12 +35,11 @@ export const BonusUnlockLoadingSlide = ({ onNext }: BonusUnlockLoadingSlideProps
       <div className="slide-frame space-y-6 relative z-10">
         <p className="meta-label text-primary flex items-center justify-center gap-2">
           <Loader2 className="w-4 h-4 animate-spin" />
-          IA preparando o Bônus 1
+          IA preparando o bônus 1
         </p>
         <Card className="loading-panel space-y-6">
           <div className="space-y-2 text-center">
-            <h2 className="heading-2 text-foreground">Estamos trocando suas moedas pelo mapa</h2>
-            <p className="body-lead">Essa tela existe só para garantir que todo mundo veja o mesmo relatório sem travar o celular.</p>
+            <h2 className="heading-2 text-foreground">Estamos ativando seu teste da IA da Mega da Virada</h2>
           </div>
 
           <div className="space-y-3">
@@ -58,8 +58,8 @@ export const BonusUnlockLoadingSlide = ({ onNext }: BonusUnlockLoadingSlideProps
 
           <div className="loading-visual">
             <img
-              src="https://i.ibb.co/wrYL4fMd/como-funciona-o-jogo-lotofacil.webp"
-              alt="Imagem explicativa do funcionamento da IA"
+              src="https://i.ibb.co/JWTvC1bs/Chat-GPT-Image-13-de-nov-de-2025-18-20-05.png"
+              alt="Pré-visualização do painel Mega da Virada"
               loading="lazy"
             />
             <div className="loading-visual__badges">
@@ -74,7 +74,7 @@ export const BonusUnlockLoadingSlide = ({ onNext }: BonusUnlockLoadingSlideProps
             </div>
           </div>
 
-          <div className="text-xs text-muted-foreground text-center">É um respiro rápido para salvar seus dados no servidor.</div>
+          <div className="text-xs text-muted-foreground text-center">Pausa rápida para salvar seus dados sem travar o painel.</div>
         </Card>
       </div>
     </div>

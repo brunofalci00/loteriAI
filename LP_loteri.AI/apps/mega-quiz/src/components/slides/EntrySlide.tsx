@@ -9,24 +9,24 @@ interface EntrySlideProps {
 
 const timelineSteps = [
   {
-    icon: "📝",
-    title: "Perguntas rápidas",
-    description: "Responda 5 perguntas simples e ganhe 10 moedas em cada uma.",
+    icon: "🚨",
+    title: "3 aquecimentos",
+    description: "Reservamos sua vaga respondendo 3 perguntas rápidas.",
   },
   {
-    icon: "🪙",
-    title: "Moedas viram mapa",
-    description: "As 50 moedas liberam o Mapa dos Números Quentes automático.",
+    icon: "🧠",
+    title: "Rodada manual",
+    description: "Você monta 6 dezenas na intuição, igual na lotérica.",
   },
   {
-    icon: "🤝",
-    title: "Teste sua aposta",
-    description: "Compare seus 6 números com a IA sem termos difíceis.",
+    icon: "🤖",
+    title: "IA recalcula",
+    description: "A IA usa 20 anos de Mega da Virada para montar o contra-ataque.",
   },
   {
     icon: "🎰",
-    title: "Giro bônus",
-    description: "As moedas pagam o primeiro giro da máquina e destravam descontos.",
+    title: "Libera o giro",
+    description: "O duelo desbloqueia o giro bônus e a oferta secreta.",
   },
 ];
 
@@ -55,18 +55,18 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setLoading(false);
-      setTimeout(() => setCtaReady(true), 600);
+      window.setTimeout(() => setCtaReady(true), 600);
     }, 3600);
-    return () => clearTimeout(timer);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    const dotsInterval = setInterval(() => {
+    const dotsInterval = window.setInterval(() => {
       setDots((prev) => (prev.length >= 3 ? "." : prev + "."));
     }, 450);
-    return () => clearInterval(dotsInterval);
+    return () => window.clearInterval(dotsInterval);
   }, []);
 
   const handleHover = (isHovering: boolean) => {
@@ -100,13 +100,13 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
         <section className="bg-card/80 border border-primary/30 rounded-3xl p-5 sm:p-8 space-y-4 landing-hero">
           <div className="space-y-3 text-left sm:text-center">
             <img
-                src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png"
+              src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png"
               alt="LOTER.IA"
-              className="mx-auto w-24 sm:w-28 drop-shadow-[0_0_20px_rgba(16,185,129,0.45)]"
+              className="mx-auto w-24 sm:w-28 drop-shadow-[0_0_20px_rgba(255,215,0,0.35)]"
             />
-            <h1 className="heading-hero text-glow">Chega de perder na Mega-Sena</h1>
+            <h1 className="heading-hero text-glow">Acesso liberado à IA da Mega da Virada</h1>
             <p className="body-lead max-w-2xl">
-              Faça o teste e desbloqueie a IA que já analisou milhares de sorteios e aumenta suas chances na Mega da Virada.
+              A Loter.IA está recalculando apostas com dados reais da Mega. Responda o aquecimento e teste antes de um possível bloqueio.
             </p>
           </div>
         </section>
@@ -138,7 +138,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
                   ))}
                 </div>
                 <div className="timeline-visual__badges">
-                  <span>🚀 Rápido</span>
+                  <span>⚡ Rápido</span>
                   <span>🛡️ Seguro</span>
                   <span>🎯 Guiado</span>
                 </div>
@@ -150,12 +150,14 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
                 size="lg"
                 disabled={!ctaReady}
                 className={`relative overflow-hidden w-full text-base sm:text-xl py-4 sm:py-6 font-bold rounded-2xl ${
-                  ctaReady ? "bg-primary hover:bg-primary-glow text-primary-foreground shadow-[0_10px_40px_rgba(16,185,129,0.35)]" : "bg-muted text-muted-foreground"
+                  ctaReady ? "bg-primary hover:bg-primary-glow text-primary-foreground shadow-[0_10px_40px_rgba(255,215,0,0.35)]" : "bg-muted text-muted-foreground"
                 }`}
               >
                 {ctaReady ? (
                   <span className="flex items-center gap-2">
-                    <span role="img" aria-hidden="true">▶️</span>
+                    <span role="img" aria-hidden="true">
+                      🟡
+                    </span>
                     Começar agora
                   </span>
                 ) : (
@@ -172,7 +174,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
         <section className="rounded-2xl border border-border/60 p-5 bg-secondary/40">
           <p className="text-sm text-muted-foreground mb-2 font-semibold uppercase tracking-[0.3em]">Como funciona</p>
           <p className="text-base text-foreground">
-            Cada resposta vale 10 moedas. Ao conquistar 50, você poderá trocar pelo primeiro bônus secreto
+            Cada resposta vale 10 moedas. Ao completar 30, garantimos sua vaga e liberamos a etapa manual + IA.
           </p>
         </section>
       </div>

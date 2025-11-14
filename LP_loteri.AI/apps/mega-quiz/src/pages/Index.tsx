@@ -19,9 +19,9 @@ const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [coins, setCoins] = useState(0);
   const [coinDelta, setCoinDelta] = useState(0);
-  const [userScore, setUserScore] = useState(11);
+  const [userScore, setUserScore] = useState(1);
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
-  const aiScore = 14;
+  const aiScore = 5;
   const [userSpins, setUserSpins] = useState(1);
   const aiSpins = 3;
   const [showExitOverlay, setShowExitOverlay] = useState(false);
@@ -38,7 +38,7 @@ const Index = () => {
 
   const handleIntuitionComplete = (selection: number[]) => {
     setSelectedNumbers(selection);
-    setUserScore(11);
+    setUserScore(1);
   };
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const Index = () => {
     <BonusMapSlide key="bonus-map" onNext={handleNext} />,
     <IntuitionGameSlide key="intuition" onNext={handleNext} onComplete={handleIntuitionComplete} />,
     <UserResultSlide key="user-result" onNext={handleNext} userScore={userScore} selectedNumbers={selectedNumbers} />,
-    <AISyncLoadingSlide key="ai-sync" onNext={handleNext} userScore={userScore} />,
+    <AISyncLoadingSlide key="ai-sync" onNext={handleNext} />,
     <AISimulationSlide
       key="ai-simulation"
       onNext={handleNext}
