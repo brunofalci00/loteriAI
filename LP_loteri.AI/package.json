@@ -12,6 +12,7 @@
     "dev:quiz-classic": "npm run dev --workspace @loteriai/quiz-classic",
     "dev:mega": "npm run dev --workspace @loteriai/mega-quiz",
     "dev:lotozap": "npm run dev --workspace @loteriai/lotozap-quiz",
+    "install:all": "npm install --workspaces --include-workspace-root",
     "build:lp": "npm run build --workspace @loteriai/lp",
     "build:quiz-classic": "npm run build --workspace @loteriai/quiz-classic",
     "build:mega": "npm run build --workspace @loteriai/mega-quiz",
