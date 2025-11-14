@@ -1,0 +1,284 @@
+ANÁLISE COMPLETA: Branch feat/mega-da-virada-refactoring vs master
+===================================================================
+
+SUMÁRIO EXECUTIVO
+=================
+
+Data: 14 de Novembro de 2025
+Branch: feat/mega-da-virada-refactoring
+Base: master
+Commits: 138
+Recomendação: SEGURO FAZER MERGE COM CAUTELA
+
+1. MUDANÇAS NO BRANCH
+====================
+
+ARQUIVOS CRIADOS (Código)
+- App/app/src/components/MegaEventHero.tsx (154 linhas)
+- App/app/src/components/CreditsDisplayMega.tsx (111 linhas)
+- App/app/src/contexts/MegaEventContext.tsx (57 linhas)
+- App/app/src/config/megaEvent.ts (63 linhas)
+- App/app/src/pages/MegaEvent.tsx (410 linhas)
+- App/app/src/pages/CreatePassword.tsx (357 linhas)
+- App/app/src/config/features.ts (13 linhas)
+- LP_loteri.AI/app/src/components/MegaEventHero.tsx
+- LP_loteri.AI/app/src/pages/MegaEvent.tsx
+- LP_loteri.AI/app/src/pages/MegaEventAI.tsx
+- LP_loteri.AI/app/src/pages/MegaEventManual.tsx
+
+ARQUIVOS MODIFICADOS (Críticos)
+- App/app/src/App.tsx (41 linhas ±) - Novas rotas
+- LP_loteri.AI/app/src/App.tsx (50+ linhas) - Novas rotas
+- LP_loteri.AI/app/src/pages/Dashboard.tsx (200+ linhas ±) - MegaEventHero
+- App/src/integrations/supabase/types.ts (89 linhas ±) - Tipos mega_tokens
+- App/.env (NOVO) - Env vars
+- LP_loteri.AI/package.json - @supabase/supabase-js ^2.81.1
+- package.json (NOVO no root) - shadcn ^3.5.0
+
+MIGRATIONS SQL
+- App/supabase/migrations/20250113_remove_mega_tokens_system.sql
+  Deleta: mega_tokens table, mega_token_transactions table, funções RPC
+
+DOCUMENTAÇÃO REORGANIZADA
+- ~60 arquivos movidos/deletados
+- ~500+ novos em Docs/Mega_virada/ e Docs/Infra/
+- ~500+ node_modules alterados
+
+2. FEATURES IMPLEMENTADAS
+=========================
+
+MEGA DA VIRADA EVENT
+- Período: 13 Nov 2025 - 31 Dez 2025 (49 dias)
+- Prêmio: R$ 850 milhões
+- Sistema: Créditos unificados (user_credits, não mega_tokens)
+- Custo: 1 crédito por ação
+
+AÇÕES PREMIUM (1 crédito cada)
+1. Gerar 3 jogos IA com dados históricos
+2. Análise de jogos manuais
+3. Regenerar combinações
+4. Gerar variações IA
+
+COMPONENTES NOVOS
+- MegaEventHero (banner com countdown)
+- CreditsDisplayMega (widget de créditos)
+- MegaEvent (página central)
+- CreatePassword (criar senha via token)
+
+ROTAS NOVAS
+- App: /criar-senha, /mega-da-virada
+- LP: /mega-da-virada, /mega-da-virada/jogo-ia, /mega-da-virada/manual
+
+CONTEXTOS/HOOKS
+- MegaEventContext / useMegaEvent()
+- isMegaEventActive() - helper de datas
+- Feature flags centralizadas
+
+3. CONFLITOS POTENCIAIS
+=======================
+
+ALTO RISCO
+1. App/app/src/App.tsx
+   - Rota /mega-da-virada pode conflitar
+   - Feature flag mitiga risco
+   - Ação: Verificar se outro branch modificou rotas
+
+2. LP_loteri.AI/app/src/App.tsx
+   - 3 novas rotas mega-da-virada
+   - Ação: Testar após merge
+
+3. App/src/integrations/supabase/types.ts
+   - Adiciona tipos que serão deletados por migration
+   - Ação: Regenerar types.ts após migration
+   
+MÉDIO RISCO
+4. Dashboard.tsx (App e LP)
+   - Ambos adicionam MegaEventHero
+   - Ação: Resolver manualmente se necessário
+
+5. package.json
+   - Novo arquivo no root
+   - Modificação em LP_loteri.AI
+   - Ação: Fácil de resolver (adições claras)
+
+BREAKING CHANGES - CRÍTICO
+===========================
+
+SISTEMA MEGA_TOKENS REMOVIDO
+- mega_tokens table será deletada
+- mega_token_transactions será deletada
+- consume_mega_token() RPC será removida
+- Tipos orphaned em types.ts
+
+IMPACTO:
+- Se há código usando mega_tokens → erro
+- Dados históricos perdidos (mas era beta)
+- Frontend não deve referenciar mega_tokens
+
+VERIFICAÇÃO:
+grep -r "mega_token" App/app/src/ --include="*.tsx" --include="*.ts"
+(Resultado esperado: NENHUM)
+
+OUTRAS MUDANÇAS IMPORTANTES
+- Feature flag VITE_MEGA_EVENT_ENABLED é OBRIGATÓRIO
+- Novas rotas podem quebrar deeplinks antigos
+
+4. TESTES NECESSÁRIOS
+=====================
+
+OBRIGATÓRIOS
+[ ] MegaEventContext renderização
+[ ] isMegaEventActive() com datas
+[ ] Rota /mega-da-virada carrega
+[ ] Feature flag desativa/ativa evento
+[ ] Dashboard.tsx (App) carrega
+[ ] Dashboard.tsx (LP) carrega
+[ ] Countdown funciona
+[ ] Migration remove mega_tokens
+[ ] Types regenerado após migration
+[ ] user_credits continua funcionando
+
+MANUAIS
+[ ] Login → Dashboard → MegaEventHero visível
+[ ] Clicar "Entrar no evento" → /mega-da-virada
+[ ] Ver créditos disponíveis
+[ ] Countdown regressivo
+[ ] Responsivo mobile
+
+5. PLANO DE MIGRAÇÃO
+====================
+
+PASSO 1: PREPARAÇÃO
+- Backup Supabase (Dashboard > Backups > Manual)
+- Criar branch hotfix (para rollback)
+- Documentar estado atual
+
+PASSO 2: MERGE LOCAL
+git checkout master
+git pull origin master
+git merge feat/mega-da-virada-refactoring
+(Resolver conflitos se necessário)
+
+PASSO 3: DATABASE MIGRATION
+cd App
+supabase db push
+supabase gen types typescript --linked > src/integrations/supabase/types.ts
+
+PASSO 4: BUILD & VALIDAÇÃO
+npm run build (App)
+npm run build (LP_loteri.AI)
+Verificar: nenhum erro TypeScript
+
+PASSO 5: DEPLOY
+- Deploy LP (menos crítico)
+- Deploy App (mais crítico)
+- Monitorar logs
+
+PASSO 6: PÓS-DEPLOY
+- Testar em produção
+- Monitorar performance
+- Comunicar ao time
+
+ROLLBACK PLAN (SE NECESSÁRIO)
+git revert -m 1 <commit-merge-hash>
+npm run build
+Re-deploy
+
+OU (emergência)
+git reset --hard <commit-anterior>
+git push origin master --force
+Restaurar backup Supabase
+
+6. DEPENDÊNCIAS
+===============
+
+DEPENDÊNCIAS NOVAS
+- @supabase/supabase-js: ^2.81.1 (LP_loteri.AI)
+- shadcn: ^3.5.0 (root)
+
+ENV VARS NOVAS
+- VITE_MEGA_EVENT_ENABLED (feature flag)
+
+ENV VARS EXISTENTES (manter)
+- VITE_SUPABASE_PROJECT_ID
+- VITE_SUPABASE_PUBLISHABLE_KEY
+- VITE_SUPABASE_URL
+
+DATABASE CHANGES
+REMOVIDO:
+- mega_tokens table
+- mega_token_transactions table
+- consume_mega_token() RPC
+- expire_mega_tokens_job() function
+
+MANTIDO:
+- user_credits table (inalterada)
+- user_credit_transactions table (inalterada)
+
+7. DOCUMENTAÇÃO
+===============
+
+ADICIONADA
+✅ Docs/Mega_virada/README_FINAL.md
+✅ Docs/Mega_virada/REFATORACAO_COMPLETA_MEGA_EVENTO.md
+✅ Docs/Mega_virada/SUPABASE_DEPLOYMENT_CHECKLIST.md
+✅ Docs/Infra/Novo/* (nova estrutura)
+✅ Claude/* (configuração Claude Code)
+
+BREAKING CHANGES (NÃO DOCUMENTADO EXPLICITAMENTE)
+Recomendação: Criar BREAKING_CHANGES.md antes do merge
+
+8. CHECKLIST PRÉ-MERGE
+======================
+
+[ ] Backup Supabase feito
+[ ] Hotfix branch criado
+[ ] Master atualizado (git pull)
+[ ] Build local passou
+[ ] Nenhum erro TypeScript
+[ ] Feature flag testado (true/false)
+[ ] Rotas testadas (navegação)
+[ ] Countdown funciona
+[ ] Dashboard (App) carrega
+[ ] Dashboard (LP) carrega
+[ ] MegaEventHero renderiza
+[ ] Sem console errors
+[ ] Migration SQL pronta
+[ ] Breaking changes documentados
+[ ] .env vars setup
+[ ] Stakeholders informados
+
+9. SUMÁRIO DE RISCO
+===================
+
+Aspecto                 Risco      Mitigação
+────────────────────────────────────────────
+Merge conflicts         MÉDIO      Testar local
+Feature flag config     ALTO       Checklist .env
+Database migration      MÉDIO      Backup + staging
+Types regeneration      BAIXO      Script disponível
+Breaking changes        MÉDIO      Documentação
+Duas landing pages      MÉDIO      Testar ambas
+Novas rotas            BAIXO      Bem isoladas
+Env vars missing       ALTO       Checklist
+
+10. RECOMENDAÇÃO FINAL
+======================
+
+STATUS: SEGURO FAZER MERGE COM CAUTELA
+
+PRÓXIMOS PASSOS
+1. Comunicar ao time sobre merge planejado
+2. Fazer backup do Supabase
+3. Revisar este documento
+4. Preparar ambiente de staging
+5. Testar merge local
+6. Executar plano de migração
+7. Deploy em staging ANTES de produção
+8. Monitorar logs por 24h após deploy
+
+ATENÇÃO CRÍTICA
+- VITE_MEGA_EVENT_ENABLED deve estar em todos os .env
+- Regenerar types.ts após migration
+- Testar ambas landing pages (App + LP)
+- Backup do banco é obrigatório
