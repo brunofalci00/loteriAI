@@ -35,13 +35,13 @@ export default function MegaEventManual() {
   const [contestInput, setContestInput] = useState("");
 
   useEffect(() => {
-    if (state.lotteryType !== "mega-sena") {
-      selectLottery("mega-sena");
+    if (state.lotteryType !== "megasena") {
+      selectLottery("megasena");
     }
   }, [state.lotteryType, selectLottery]);
 
   useEffect(() => {
-    if (state.lotteryType === "mega-sena" && state.currentStep === 1) {
+    if (state.lotteryType === "megasena" && state.currentStep === 1) {
       goToStep(2 as StepNumber);
     }
   }, [state.lotteryType, state.currentStep, goToStep]);
@@ -152,7 +152,7 @@ export default function MegaEventManual() {
             {state.currentStep === 3 && (
               <div className="rounded-3xl border border-amber-100/20 bg-emerald-950/30 p-6">
                 <Step3_NumberGrid
-                  lotteryType="mega-sena"
+                  lotteryType="megasena"
                   selectedNumbers={state.selectedNumbers}
                   onToggleNumber={toggleNumber}
                   onClear={clearSelection}
@@ -163,7 +163,7 @@ export default function MegaEventManual() {
               </div>
             )}
 
-            {state.currentStep === 4 && state.lotteryType === "mega-sena" && state.contestNumber && (
+            {state.currentStep === 4 && state.lotteryType === "megasena" && state.contestNumber && (
               <div className="space-y-12">
                 {analyzeGame.isPending && (
                   <div className="rounded-3xl border border-amber-100/20 bg-emerald-950/30 p-10 text-center">
@@ -175,7 +175,7 @@ export default function MegaEventManual() {
                   <>
                     <div className="rounded-3xl border border-amber-100/20 bg-emerald-950/30 p-4">
                       <Step4_AnalysisResult
-                        lotteryType="mega-sena"
+                        lotteryType="megasena"
                         contestNumber={state.contestNumber}
                         selectedNumbers={state.selectedNumbers}
                         analysisResult={state.analysisResult}
@@ -191,7 +191,7 @@ export default function MegaEventManual() {
                       <VariationsGrid
                         variations={state.variations}
                         originalNumbers={state.selectedNumbers}
-                        lotteryType="mega-sena"
+                        lotteryType="megasena"
                         contestNumber={state.contestNumber}
                         userId={user?.id || null}
                       />

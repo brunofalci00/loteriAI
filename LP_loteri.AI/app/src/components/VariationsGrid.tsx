@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Heart, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Variation } from "@/services/gameVariationsService";
+import type { LotteryType } from "@/config/lotteryConfig";
 import { SaveToggleButton } from "@/components/SaveToggleButton";
 import { ShareButton } from "@/components/ShareButton";
 
 interface VariationsGridProps {
   variations: Variation[];
   originalNumbers: number[];
-  lotteryType: 'lotofacil' | 'lotomania';
+  lotteryType: LotteryType;
   contestNumber: number;
   userId: string | null;
 }
