@@ -1,16 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { Header } from "@/components/Header";
-import { ManualGameStepper } from "@/components/ManualGameStepper";
 import { Step3_NumberGrid } from "@/components/Step3_NumberGrid";
 import { Step4_AnalysisResult } from "@/components/Step4_AnalysisResult";
 import { VariationsGrid } from "@/components/VariationsGrid";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useManualGameCreation, type StepNumber } from "@/hooks/useManualGameCreation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUpcomingDraws } from "@/hooks/useUpcomingDraws";
+import { cn } from "@/lib/utils";
 
 export default function MegaEventManual() {
   const { user } = useAuth();
@@ -31,7 +29,7 @@ export default function MegaEventManual() {
   } = useManualGameCreation();
 
   const { data: upcomingDraws } = useUpcomingDraws("mega-sena", 1);
-  const [contestInput, setContestInput] = useState("");
+  const featuredContest = useMemo(() => upcomingDraws?.[0]?.contestNumber ?? 2940, [upcomingDraws]);
 
   useEffect(() => {
     if (state.lotteryType !== "megasena") {
@@ -40,8 +38,8 @@ export default function MegaEventManual() {
   }, [state.lotteryType, selectLottery]);
 
   useEffect(() => {
-    if (state.lotteryType === "megasena" && state.currentStep === 1) {
-      goToStep(2 as StepNumber);
+    if (state.lotteryType === "megasena" && state.currentStep < 3) {
+      goToStep(3 as StepNumber);
     }
   }, [state.lotteryType, state.currentStep, goToStep]);
 
@@ -52,18 +50,11 @@ export default function MegaEventManual() {
   }, [state.currentStep, state.analysisResult, analyzeGame]);
 
   useEffect(() => {
-    if (upcomingDraws?.[0] && !contestInput) {
-      setContestInput(String(upcomingDraws[0].contestNumber));
+    if (featuredContest && state.contestNumber !== featuredContest) {
+      selectContest(featuredContest);
     }
-  }, [upcomingDraws, contestInput]);
 
-  const handleContestSelection = () => {
-    const parsed = parseInt(contestInput, 10);
-    if (!Number.isNaN(parsed) && parsed > 0) {
-      selectContest(parsed);
-      nextStep();
-    }
-  };
+  }, [featuredContest, selectContest, state.contestNumber]);
 
   const handleNumbersNext = () => {
     if (canProceedToStep4) {
@@ -76,9 +67,15 @@ export default function MegaEventManual() {
   };
 
   const handleStepperClick = (step: StepNumber) => {
-    if (step === 1) return;
+    if (step < 3) return;
     goToStep(step);
   };
+
+  const stages = [
+    { id: 3 as StepNumber, label: "Números" },
+    { id: 4 as StepNumber, label: "Análise" },
+  ];
+  const activeStage = state.currentStep >= 4 ? 4 : 3;
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(6,16,14,0.95),_#010302)] text-foreground">
@@ -97,61 +94,30 @@ export default function MegaEventManual() {
 
         <div className="mega-panel">
           <div className="mega-panel__inner space-y-8">
-          <ManualGameStepper currentStep={state.currentStep} onStepClick={handleStepperClick} />
-
-          <div className="rounded-2xl border border-amber-200/20 bg-amber-100/10 p-4 text-center text-sm text-emerald-900">
-            <p className="font-semibold">Loteria fixa: Mega-Sena</p>
-            <p>Todas as análises usam os parâmetros oficiais do evento.</p>
-          </div>
-
-          <div className="space-y-12">
-            {state.currentStep === 2 && (
-              <div className="mega-panel max-w-3xl mx-auto">
-                <div className="mega-panel__inner space-y-6">
-                  <div className="space-y-2 text-center text-amber-50">
-                    <h2 className="text-2xl font-bold">Escolha o concurso da virada</h2>
-                    <p className="text-sm mega-text-muted">
-                      Use o número oficial divulgado pela Caixa ou aceite a sugestão abaixo.
-                    </p>
-                  </div>
-                  <div className="space-y-3">
-                    <Label htmlFor="contest" className="text-sm text-amber-100">
-                      Número do concurso
-                    </Label>
-                    <Input
-                      id="contest"
-                      type="number"
-                      min={1}
-                      value={contestInput}
-                      onChange={(event) => setContestInput(event.target.value)}
-                      className="bg-emerald-950/60 border-amber-100/30 text-amber-50"
-                    />
-                    {upcomingDraws?.[0] && (
-                      <p className="text-xs mega-text-muted">
-                        Próximo previsto: {upcomingDraws[0].contestNumber} - {upcomingDraws[0].dayOfWeek}
-                      </p>
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+              {stages.map((stage, index) => (
+                <div key={stage.id} className="flex items-center gap-3">
+                  <button
+                    onClick={() => handleStepperClick(stage.id)}
+                    className={cn(
+                      "flex h-12 w-12 items-center justify-center rounded-full border text-sm font-semibold",
+                      activeStage === stage.id ? "bg-amber-300 text-emerald-950" : "bg-transparent text-amber-200 border-amber-200/40"
                     )}
-                  </div>
-                  <div className="flex justify-end gap-3">
-                    <Button
-                      variant="outline"
-                      className="mega-button bg-transparent text-amber-100 border border-amber-100/40"
-                      onClick={() => goToStep(2)}
-                    >
-                      Voltar
-                    </Button>
-                    <Button
-                      className="mega-button"
-                      disabled={!contestInput}
-                      onClick={handleContestSelection}
-                    >
-                      Confirmar
-                    </Button>
-                  </div>
+                  >
+                    {stage.label.charAt(0)}
+                  </button>
+                  {index < stages.length - 1 && <div className="hidden sm:block h-[2px] w-16 bg-amber-200/40" />}
                 </div>
-              </div>
-            )}
+              ))}
+            </div>
 
+            <div className="rounded-2xl border border-amber-200/30 bg-amber-100/5 p-4 text-center text-sm text-amber-100">
+              <p className="font-semibold">Loteria fixa: Mega-Sena</p>
+              <p>Todas as análises usam os parâmetros oficiais do evento.</p>
+              <p className="text-xs mega-text-muted">Concurso oficial nº {featuredContest}</p>
+            </div>
+
+            <div className="space-y-12">
             {state.currentStep === 3 && (
               <div className="mega-panel">
                 <div className="mega-panel__inner">
