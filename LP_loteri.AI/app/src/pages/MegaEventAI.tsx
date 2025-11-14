@@ -160,28 +160,24 @@ export default function MegaEventAI() {
               <div className="rounded-[calc(var(--radius)*2)] bg-emerald-950/40 p-6 h-36" />
             </div>
           ) : featuredDraw ? (
-            <button
-              onClick={() => handleContestSelection(featuredDraw.contestNumber)}
-              className="w-full text-left transition-transform hover:scale-[1.01] focus-visible:outline-none"
-            >
-              <div className="mega-panel">
-                <div className="mega-panel__inner flex flex-col gap-3 text-amber-50">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.4em] text-amber-100/70">
-                      Concurso {featuredDraw.contestNumber}
-                    </p>
-                    <h3 className="text-2xl font-black">{formatCurrency(featuredDraw.estimatedPrize)} em jogo</h3>
-                    <p className="text-sm mega-text-muted">
-                      {featuredDraw.dayOfWeek} · {featuredDraw.drawDate.toLocaleDateString("pt-BR")} às{" "}
-                      {featuredDraw.drawDate.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
-                    </p>
-                  </div>
-                  <Badge className="self-start rounded-full bg-amber-200/20 text-amber-50">
-                    {featuredDraw.status || "ÚNICO"}
-                  </Badge>
+            <div className="mega-panel">
+              <button
+                onClick={() => handleContestSelection(featuredDraw.contestNumber)}
+                className="mega-panel__inner flex w-full flex-col gap-3 border-0 text-left text-amber-50"
+              >
+                <div>
+                  <p className="text-xs uppercase tracking-[0.4em] text-amber-100/70">Mega da Virada</p>
+                  <h3 className="text-2xl font-black">{formatCurrency(featuredDraw.estimatedPrize)} em jogo</h3>
+                  <p className="text-sm mega-text-muted">
+                    {featuredDraw.dayOfWeek} · {featuredDraw.drawDate.toLocaleDateString("pt-BR")} às{" "}
+                    {featuredDraw.drawDate.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                  </p>
                 </div>
-              </div>
-            </button>
+                <Badge className="self-start rounded-full bg-amber-200/20 text-amber-50">
+                  {featuredDraw.status || "ÚNICO"}
+                </Badge>
+              </button>
+            </div>
           ) : (
             <p className="text-center text-amber-100/70">
               Nenhum concurso disponível no momento. Volte mais tarde.
@@ -205,12 +201,6 @@ export default function MegaEventAI() {
           <div className="text-right">
             <p className="text-sm uppercase tracking-[0.3em] text-amber-200/70">Mega da Virada</p>
             <h1 className="text-3xl font-black text-white">Concurso {selectedContest}</h1>
-          </div>
-        </div>
-
-        <div className="mega-panel">
-          <div className="mega-panel__inner">
-            <NextDrawInfo lotteryType={MEGA_TYPE} lotteryName="Mega-Sena" />
           </div>
         </div>
 
