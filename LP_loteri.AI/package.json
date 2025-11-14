@@ -13,12 +13,13 @@
     "dev:mega": "npm run dev --workspace @loteriai/mega-quiz",
     "dev:lotozap": "npm run dev --workspace @loteriai/lotozap-quiz",
     "install:all": "npm install --workspaces --include-workspace-root",
+    "build:app": "cd ../App/app && npm install && npm run build",
     "build:lp": "npm run build --workspace @loteriai/lp",
     "build:quiz-classic": "npm run build --workspace @loteriai/quiz-classic",
     "build:mega": "npm run build --workspace @loteriai/mega-quiz",
     "build:lotozap": "npm run build --workspace @loteriai/lotozap-quiz",
     "build:organize": "node scripts/organize-dist.js",
-    "build": "npm run build:lp && npm run build:quiz-classic && npm run build:mega && npm run build:lotozap && npm run build:organize"
+    "build": "npm run build:lp && npm run build:quiz-classic && npm run build:mega && npm run build:lotozap && npm run build:app && npm run build:organize"
   },
   "engines": {
     "node": ">=18.0.0"

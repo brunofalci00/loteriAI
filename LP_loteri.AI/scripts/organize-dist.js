@@ -3,6 +3,7 @@ const path = require('path');
 
 const distDir = path.join(__dirname, '..', 'dist');
 const lpDist = path.join(__dirname, '..', 'apps', 'lp', 'dist');
+const appDashboardDist = path.join(__dirname, '..', '..', 'App', 'app', 'dist');
 const publicSource = path.join(__dirname, '..', 'public');
 
 const funnels = [
@@ -41,6 +42,10 @@ ensure(fs.existsSync(lpDist), 'Build de apps/lp não encontrado. Rode npm run bui
 copyDir(lpDist, path.join(distDir, 'lp'));
 ensure(fs.existsSync(path.join(distDir, 'lp', 'index.html')), 'apps/lp/dist/index.html ausente!');
 console.log('App LP copiado para dist/lp');
+
+ensure(fs.existsSync(appDashboardDist), 'Build de App/app não encontrado. Rode npm run build:app');
+copyDir(appDashboardDist, path.join(distDir, 'app'));
+console.log('Aplicação principal copiada para dist/app');
 
 funnels.forEach(({ app, slug, aliasHtml, buildScript }) => {
   const source = path.join(__dirname, '..', 'apps', app, 'dist');
