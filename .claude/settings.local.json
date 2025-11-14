@@ -50,10 +50,7 @@
       "mcp__n8n-mcp__n8n_list_executions",
       "mcp__n8n-mcp__n8n_get_workflow",
       "mcp__n8n-mcp__n8n_update_full_workflow",
-      "mcp__n8n-mcp__n8n_validate_workflow",
-      "mcp__n8n-mcp__n8n_get_workflow_minimal",
-      "Bash(git merge-base:*)",
-      "Bash(xargs -I {} git diff {} HEAD -- App/app/src/App.tsx)"
+      "mcp__n8n-mcp__n8n_validate_workflow"
     ],
     "deny": [],
     "ask": []
