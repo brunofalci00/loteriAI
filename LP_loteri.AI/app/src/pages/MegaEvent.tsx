@@ -119,7 +119,7 @@ export default function MegaEvent() {
               <div key={step.title} className="mega-timeline-item">
                 <p className="text-sm font-semibold text-white">{step.title}</p>
                 <p className="text-xs mega-text-muted">{step.text}</p>
-              </p>
+              </div>
             ))}
           </div>
         </section>
