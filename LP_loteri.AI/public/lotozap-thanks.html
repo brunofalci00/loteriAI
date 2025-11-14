@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LotoZap | Confirmação de Compra</title>
+    <script>
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = "2.0";
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+      fbq("init", "369969430611939");
+      fbq("track", "PageView");
+    </script>
+    <noscript
+      ><img
+        height="1"
+        width="1"
+        style="display: none"
+        src="https://www.facebook.com/tr?id=369969430611939&ev=PageView&noscript=1"
+    /></noscript>
+    <script src="fb-parameter-builder-lite.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="thanks.css" />
+    <script src="fb-capi.js"></script>
+  </head>
+  <body class="thank-body">
+    <header class="thank-header">
+      <img class="brand-logo" src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png" alt="Logo Loter.IA" />
+    </header>
+    <main class="thank-wrapper">
+      <section class="thank-card">
+        <span class="badge badge--success">Pagamento confirmado</span>
+        <h1>Seu acesso LotoZap está garantido</h1>
+        <p class="lead">
+          Já recebemos sua compra. Agora é só aguardar: <strong>em até 12 horas úteis a equipe LotoZap envia a primeira sequência personalizada de jogos</strong>
+          direto no canal que você usou na compra (WhatsApp ou e-mail).
+        </p>
+        <div class="info-grid">
+          <div class="info-box">
+            <h2>O que acontece agora?</h2>
+            <ul>
+              <li>Validamos o pagamento e conectamos seu contato ao time de especialistas.</li>
+              <li>Montamos a primeira sequência exclusiva com base nos filtros que a IA escolheu.</li>
+              <li>Você recebe o pacote de jogos + instruções para os próximos envios.</li>
+            </ul>
+          </div>
+          <div class="info-box">
+            <h2>Enquanto isso</h2>
+            <ul>
+              <li>Garanta que o WhatsApp cadastrado aceita mensagens de contatos desconhecidos.</li>
+              <li>Adicione <strong>contato@loter.ia</strong> à lista segura para evitar spam.</li>
+              <li>Separe eventuais apostas anteriores para comparar com o método novo.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="whatsapp-card">
+          <div class="whatsapp-card__icon">💬</div>
+          <h3>Precisa antecipar alguma informação?</h3>
+          <p>Nosso suporte responde rápido via WhatsApp.</p>
+          <a
+            href="https://api.whatsapp.com/send?phone=5511993371766&text=Olá!%20Acabei%20de%20comprar%20o%20LotoZap%20e%20quero%20alinhar%20meu%20acesso."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="whatsapp-btn"
+            >Falar com o suporte</a
+          >
+          <p class="whatsapp-card__note">Ou escreva para <strong>contato.fqdigital@gmail.com</strong></p>
+        </div>
+        <p class="lead">
+          Caso não receba a primeira sequência dentro do prazo, responda esta página pelo WhatsApp e priorizamos seu atendimento.
+        </p>
+      </section>
+    </main>
+    <footer class="thank-footer">
+      <p>© <span id="year"></span> Loter.IA — Inteligência estatística aplicada em loterias.</p>
+    </footer>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+      (function () {
+        if (typeof fbCAPI_trackPurchase === "function") {
+          fbCAPI_trackPurchase({
+            contentName: "Acesso Exclusivo LotoZap",
+            value: 97,
+            currency: "BRL",
+            numItems: 1,
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
