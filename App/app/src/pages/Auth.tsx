@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { ShoppingCart } from "lucide-react";
 import logo from "@/assets/logo-loterai.png";
+import { supabase } from "@/integrations/supabase/client";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -20,7 +21,43 @@ const Auth = () => {
   const isInvited = searchParams.get('invited') === 'true';
   const hasToken = searchParams.get('token') !== null;
   const isRecovery = searchParams.get('type') === 'recovery';
+  const token = searchParams.get('token');
   const [showEmailField, setShowEmailField] = useState(!isRecovery);
+  const [tokenEmail, setTokenEmail] = useState<string | null>(null);
+  const [tokenValidating, setTokenValidating] = useState(false);
+
+  // Validate token-based access when token is present
+  useEffect(() => {
+    if (hasToken && token) {
+      setTokenValidating(true);
+      validateToken(token);
+    }
+  }, [token, hasToken]);
+
+  const validateToken = async (accessToken: string) => {
+    try {
+      const response = await supabase.functions.invoke('validate-access-token', {
+        body: { token: accessToken },
+      });
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      const { email } = response.data;
+      setTokenEmail(email);
+      toast.success('🎉 Bem-vindo ao loter.AI! Defina sua senha para começar.');
+    } catch (error) {
+      console.error('Token validation error:', error);
+      toast.error('Link inválido ou expirado. Por favor, gere um novo.');
+      // Redirect after 2 seconds
+      setTimeout(() => {
+        navigate('/auth');
+      }, 2000);
+    } finally {
+      setTokenValidating(false);
+    }
+  };
 
   useEffect(() => {
     // Mensagens especiais
@@ -37,12 +74,12 @@ const Auth = () => {
       }, 2000);
 
       return () => clearTimeout(timer);
-    } else if (isInvited || hasToken) {
+    } else if (isInvited) {
       toast.success('🎉 Bem-vindo ao loter.AI! Defina sua senha para começar.');
     } else if (searchParams.get('confirmed') === 'true') {
       toast.success('Email confirmado! Você já pode fazer login.');
     }
-  }, [searchParams, isInvited, hasToken, isRecovery, user]);
+  }, [searchParams, isInvited, isRecovery, user]);
 
   useEffect(() => {
     // Se já está autenticado e não está em recovery mode, redireciona
@@ -59,6 +96,24 @@ const Auth = () => {
         // Modo esqueci senha: enviar email de recuperação
         await resetPassword(email);
         setIsForgotPassword(false); // Volta para tela de login após enviar
+      } else if (hasToken && token) {
+        // Modo token-based: chamar set-password-with-token Edge Function
+        const response = await supabase.functions.invoke('set-password-with-token', {
+          body: {
+            token,
+            password,
+            email: tokenEmail,
+          },
+        });
+
+        if (response.error) {
+          throw response.error;
+        }
+
+        toast.success('Senha definida com sucesso! Redirecionando...');
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1000);
       } else if (isRecovery && user?.isAuthenticated) {
         // Modo recovery: apenas definir senha (se já estiver autenticado)
         await updatePassword(password);
@@ -67,21 +122,50 @@ const Auth = () => {
         await login(email, password);
       }
     } catch (error) {
-      // Erros já são tratados no AuthContext
+      // Erros já são tratados
+      console.error('Submit error:', error);
     }
   };
+
+  // Show loading state while validating token
+  if (hasToken && tokenValidating) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+
+        <div className="flex min-h-screen items-center justify-center px-4 pt-16">
+          <Card className="w-full max-w-md border-border bg-card p-8 shadow-card">
+            <div className="mb-8 text-center">
+              <div className="mb-4 inline-flex items-center justify-center">
+                <img src={logo} alt="loter.AI" className="h-32 w-auto" />
+              </div>
+
+              <h1 className="mb-2 text-2xl font-bold">Validando seu acesso...</h1>
+              <p className="text-sm text-muted-foreground">
+                Um momento por favor...
+              </p>
+
+              <div className="mt-6 flex justify-center">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="flex min-h-screen items-center justify-center px-4 pt-16">
         <Card className="w-full max-w-md border-border bg-card p-8 shadow-card">
           <div className="mb-8 text-center">
             <div className="mb-4 inline-flex items-center justify-center">
               <img src={logo} alt="loter.AI" className="h-32 w-auto" />
             </div>
-            
+
             {isForgotPassword ? (
               <>
                 <h1 className="mb-2 text-2xl font-bold">Recuperar senha</h1>

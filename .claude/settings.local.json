@@ -23,7 +23,9 @@
       "Bash(npm install:*)",
       "Bash(git merge:*)",
       "Bash(npm run build:lp:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "mcp__n8n-mcp__n8n_get_workflow",
+      "mcp__n8n-mcp__n8n_update_partial_workflow"
     ],
     "deny": [],
     "ask": []

@@ -14,6 +14,7 @@ import HowItWorks from "./pages/HowItWorks";
 import EmailConfirmation from "./pages/EmailConfirmation";
 import SavedGamesPage from "./pages/SavedGamesPage";
 import ManualGameCreationPage from "./pages/ManualGameCreationPage";
+import CreatePasswordPage from "./pages/CreatePasswordPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Auth />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/criar-senha" element={<CreatePasswordPage />} />
             <Route path="/email-confirmation" element={<EmailConfirmation />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/lottery/:type/contests" element={<ProtectedRoute><LotteryContests /></ProtectedRoute>} />
