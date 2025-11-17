@@ -2,9 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 
 const formatNumber = (value: number) => value.toString().padStart(2, "0");
+
+// 🔒 CONTROLE DE ACESSO: Mude para false para ativar o evento
+const MEGA_EVENT_LOCKED = true;
 
 export const MegaEventHero = () => {
   const navigate = useNavigate();
@@ -49,14 +52,25 @@ export const MegaEventHero = () => {
             Tá pronto pra disputar o maior prêmio do ano?
           </h2>
           <p className="text-4xl font-black text-emerald-950">R$ 850 milhões</p>
-          <Button
-            size="lg"
-            className="mt-1 w-full rounded-full bg-emerald-950 text-amber-200 hover:bg-emerald-900 sm:w-auto"
-            onClick={() => navigate("/mega-da-virada")}
-          >
-            Entrar no evento
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          {MEGA_EVENT_LOCKED ? (
+            <Button
+              size="lg"
+              disabled
+              className="mt-1 w-full rounded-full bg-emerald-950/50 text-amber-200/50 cursor-not-allowed sm:w-auto"
+            >
+              <Lock className="mr-2 h-4 w-4" />
+              Acesso exclusivo
+            </Button>
+          ) : (
+            <Button
+              size="lg"
+              className="mt-1 w-full rounded-full bg-emerald-950 text-amber-200 hover:bg-emerald-900 sm:w-auto"
+              onClick={() => navigate("/mega-da-virada")}
+            >
+              Entrar no evento
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          )}
         </div>
 
         <div className="rounded-2xl bg-emerald-950/10 px-4 py-3 text-center text-emerald-950 shadow-inner sm:min-w-[200px]">
