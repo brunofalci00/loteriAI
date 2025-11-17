@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -148,9 +147,7 @@ const CreatePasswordPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-
-      <div className="flex min-h-screen items-center justify-center px-4 pt-16">
+      <div className="flex min-h-screen items-center justify-center px-4">
         <Card className="w-full max-w-md border-border bg-card p-8 shadow-card">
           <div className="mb-8 text-center">
             <div className="mb-4 inline-flex items-center justify-center">
