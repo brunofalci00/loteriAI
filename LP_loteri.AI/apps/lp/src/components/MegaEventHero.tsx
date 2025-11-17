@@ -11,6 +11,7 @@ export const MegaEventHero = () => {
   const [timeLeft, setTimeLeft] = useState({ days: 48, hours: 12, minutes: 30 });
 
   useEffect(() => {
+    console.log("🏆 MegaEventHero mounted successfully");
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         let { days, hours, minutes } = prev;
