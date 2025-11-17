@@ -145,4 +145,29 @@ All colors MUST be HSL.
       transform: translateY(-20px);
     }
   }
+
+  /* Mega da Virada Event Styles */
+  .mega-border {
+    @apply border-amber-300/40;
+  }
+
+  .mega-panel {
+    @apply rounded-2xl border border-amber-200/30 bg-amber-100/5 p-6;
+  }
+
+  .mega-panel__inner {
+    @apply space-y-6;
+  }
+
+  .mega-text-muted {
+    @apply text-amber-100/70;
+  }
+
+  .mega-button {
+    @apply rounded-full font-semibold transition-colors;
+  }
+
+  .mega-timeline {
+    @apply relative space-y-6 pt-6;
+  }
 }
