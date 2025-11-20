@@ -174,6 +174,16 @@ export const FinalOfferSlide = () => {
           </div>
         </Card>
 
+        <Card className="p-5 sm:p-6 bg-amber-500/10 border border-amber-400/70 text-center space-y-2">
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold text-amber-200 leading-tight">
+            Receba seu acesso em até 10 minutos ou seu dinheiro de volta + um pix de R$100,00!
+          </p>
+          <p className="text-sm sm:text-base md:text-lg text-amber-100/90 leading-relaxed">
+            Nos comprometemos em enviar o seu acesso e bônus em até 10 minutos no WhatsApp cadastrado. Caso não receba,
+            te enviaremos um pix de R$100,00 e o valor investido de volta.
+          </p>
+        </Card>
+
         <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border border-primary text-center glow-primary-strong pulse-glow space-y-3">
           <p className="text-2xl font-bold text-foreground">💸 Oferta completa da LOTER.IA</p>
           <div className="space-y-2 text-left text-sm sm:text-base">
