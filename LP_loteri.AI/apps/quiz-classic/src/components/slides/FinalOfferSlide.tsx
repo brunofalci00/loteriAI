@@ -46,6 +46,35 @@ export const FinalOfferSlide = () => {
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
+  const totalValue = "R$781,00";
+  const discountValue = "R$744,00";
+  const finalValue = "R$37,00";
+
+  const bonuses = [
+    {
+      title: "Suporte 24/7 no WhatsApp",
+      subtitle: "Respostas em minutos, a qualquer hora.",
+      body: "Tire dúvidas, peça conferência de jogos e receba ajustes de estratégia direto no WhatsApp, todo dia e toda hora.",
+      image: "https://i.ibb.co/VWPQP3dP/cadastro-bersi.png",
+    },
+    {
+      title: "Apostador Consistente – O Método 3x3",
+      subtitle: "Um mini-método usado por jogadores que sempre ganham faixas.",
+      body: "Simples, rápido e feito pra você acertar mais vezes sem gastar mais.",
+      priceFrom: "R$97,00",
+      priceTo: "R$0,00",
+      image: "https://i.ibb.co/TqHxhKyf/Chat-GPT-Image-19-de-nov-de-2025-19-45-22.png",
+    },
+    {
+      title: "Estratégia de R$ 10 por Semana",
+      subtitle: "A forma mais barata e inteligente de lucrar com loteria.",
+      body: "Com apenas R$10, você já joga com vantagem e deixa de perder dinheiro à toa.",
+      priceFrom: "R$147,00",
+      priceTo: "R$0,00",
+      image: "https://i.ibb.co/67hHkCzb/Chat-GPT-Image-19-de-nov-de-2025-19-42-54.png",
+    },
+  ];
+
   const benefits = [
     { icon: "✅", text: "Jogos prontos com IA todos os dias" },
     { icon: "✅", text: "Até 3 combinações inteligentes por dia" },
@@ -67,7 +96,7 @@ export const FinalOfferSlide = () => {
           />
           <h1 className="heading-1 text-glow">🎁 Prêmio resgatado com sucesso!</h1>
           <p className="heading-3 text-primary">
-            Você liberou o acesso completo à LOTER.IA com R$500 de desconto garantido. Agora veja tudo que está incluso.
+            Você liberou o acesso completo à LOTER.IA com R$744,00 de desconto garantido. Agora veja tudo que está incluso.
           </p>
         </div>
 
@@ -96,7 +125,7 @@ export const FinalOfferSlide = () => {
               </p>
               {timeLeft <= 60 && (
                 <p className="text-xs text-destructive mt-2 animate-pulse">
-                  Depois disso, volta para R$500.
+                  Depois disso, volta para {totalValue}.
                 </p>
               )}
             </div>
@@ -108,6 +137,30 @@ export const FinalOfferSlide = () => {
 
         <div className="text-center space-y-4">
           <h2 className="heading-2">📦 Você vai receber:</h2>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          {bonuses.map((bonus) => (
+            <Card key={bonus.title} className="h-full bg-background border border-primary/30 overflow-hidden flex flex-col">
+              {bonus.image && (
+                <div className="relative aspect-[4/3] overflow-hidden border-b border-primary/20 bg-black/50">
+                  <img src={bonus.image} alt={bonus.title} className="w-full h-full object-contain bg-black/60 p-3" loading="lazy" />
+                </div>
+              )}
+              <div className="p-4 sm:p-5 flex flex-col gap-3 flex-1">
+                <div className="space-y-1">
+                  <p className="text-lg font-bold text-foreground">{bonus.title}</p>
+                  <p className="text-sm sm:text-base text-foreground font-semibold">{bonus.subtitle}</p>
+                </div>
+                <p className="text-sm sm:text-base text-muted-foreground flex-1">{bonus.body}</p>
+                {bonus.priceFrom && bonus.priceTo && (
+                  <div className="text-sm font-semibold text-primary">
+                    De {bonus.priceFrom} por <span className="text-foreground">{bonus.priceTo}</span>
+                  </div>
+                )}
+              </div>
+            </Card>
+          ))}
         </div>
 
         <Card className="p-6 bg-primary/5 border border-primary/30">
@@ -122,10 +175,21 @@ export const FinalOfferSlide = () => {
         </Card>
 
         <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border border-primary text-center glow-primary-strong pulse-glow space-y-3">
-          <p className="text-2xl font-bold text-foreground">💸 De R$500 por apenas R$37/ano</p>
+          <p className="text-2xl font-bold text-foreground">💸 Oferta completa da LOTER.IA</p>
+          <div className="space-y-2 text-left text-sm sm:text-base">
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Valor total (oferta + bônus)</span>
+              <span className="font-semibold text-foreground">{totalValue}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Desconto aplicado</span>
+              <span className="font-semibold text-emerald-400">-{discountValue}</span>
+            </div>
+          </div>
           <div>
-            <p className="text-lg text-muted-foreground line-through">Valor original: R$500</p>
-            <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">R$37/ano</p>
+            <p className="text-lg text-muted-foreground line-through">De {totalValue}</p>
+            <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">{finalValue}</p>
+            <p className="text-sm text-muted-foreground">Pagamento único, acesso por 12 meses.</p>
           </div>
           <p className="text-lg text-foreground font-semibold">
             Sem mensalidade e sem renovação automática sem aviso. Você garante 12 meses completos e ainda tem 7 dias para testar sem risco.
@@ -139,7 +203,7 @@ export const FinalOfferSlide = () => {
           className="w-full text-xl md:text-2xl py-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
         >
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            🔐 Garantir acesso por R$37/ano
+            🔐 Garantir acesso por R$37,00
           </a>
         </Button>
 
@@ -159,6 +223,13 @@ export const FinalOfferSlide = () => {
             <span>💬 Falar com especialista no WhatsApp</span>
           </a>
         </Button>
+
+        <Card className="p-4 sm:p-5 bg-amber-500/10 border border-amber-400/60 text-center space-y-2">
+          <p className="text-base sm:text-lg font-semibold text-amber-100">
+            🛡️ Atenção: somos a única página oficial do Loter.IA. Evite golpes! Você está comprando com segurança nesta página verificada.
+          </p>
+          <p className="text-sm sm:text-base text-amber-100/90">📲 Suporte exclusivo via WhatsApp após a compra.</p>
+        </Card>
 
         <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground text-center">
           <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Compra segura" className="w-40 sm:w-52 mx-auto" />
@@ -181,7 +252,7 @@ export const FinalOfferSlide = () => {
           className="w-full text-lg py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl"
         >
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            🔐 Garantir acesso por R$37/ano
+            🔐 Garantir acesso por R$37,00
           </a>
         </Button>
       </div>
