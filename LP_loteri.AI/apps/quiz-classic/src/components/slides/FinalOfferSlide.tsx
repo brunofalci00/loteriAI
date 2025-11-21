@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { CheckShield, Clock, MessageCircle, Volume2, VolumeX } from "lucide-react";
+import { ShieldCheck, Clock, MessageCircle, Volume2, VolumeX } from "lucide-react";
 import { trackPixelEvent } from "@/lib/analytics";
 
 export const FinalOfferSlide = () => {
@@ -227,7 +227,7 @@ export const FinalOfferSlide = () => {
         
         <Card className="p-5 sm:p-6 bg-emerald-900/40 border border-emerald-400/70 text-center space-y-3 shadow-lg">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-emerald-50">
-            <CheckShield className="w-8 h-8 text-emerald-100 drop-shadow" />
+            <ShieldCheck className="w-8 h-8 text-emerald-100 drop-shadow" />
             <div className="space-y-1">
               <p className="text-lg sm:text-xl font-bold">Pagina oficial verificada</p>
               <p className="text-sm sm:text-base text-emerald-100/80">Compra segura, pagamento protegido e suporte direto da equipe.</p>
