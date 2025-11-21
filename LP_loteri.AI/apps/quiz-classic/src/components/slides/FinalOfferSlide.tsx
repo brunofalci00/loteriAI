@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Clock, MessageCircle, Volume2, VolumeX } from "lucide-react";
+import { CheckShield, Clock, MessageCircle, Volume2, VolumeX } from "lucide-react";
 import { trackPixelEvent } from "@/lib/analytics";
 
 export const FinalOfferSlide = () => {
@@ -183,7 +183,7 @@ export const FinalOfferSlide = () => {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Desconto aplicado</span>
-              <span className="font-semibold text-emerald-400">-{discountValue}</span>
+              <span className="font-semibold text-destructive bg-destructive/10 border border-destructive/40 px-3 py-1 rounded-full shadow-sm">-{discountValue}</span>
             </div>
           </div>
           <div>
@@ -224,12 +224,22 @@ export const FinalOfferSlide = () => {
           </a>
         </Button>
 
-        <Card className="p-4 sm:p-5 bg-amber-500/10 border border-amber-400/60 text-center space-y-2">
-          <p className="text-base sm:text-lg font-semibold text-amber-100">
-            🛡️ Atenção: somos a única página oficial do Loter.IA. Evite golpes! Você está comprando com segurança nesta página verificada.
-          </p>
-          <p className="text-sm sm:text-base text-amber-100/90">📲 Suporte exclusivo via WhatsApp após a compra.</p>
+        
+        <Card className="p-5 sm:p-6 bg-emerald-900/40 border border-emerald-400/70 text-center space-y-3 shadow-lg">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-emerald-50">
+            <CheckShield className="w-8 h-8 text-emerald-100 drop-shadow" />
+            <div className="space-y-1">
+              <p className="text-lg sm:text-xl font-bold">Pagina oficial verificada</p>
+              <p className="text-sm sm:text-base text-emerald-100/80">Compra segura, pagamento protegido e suporte direto da equipe.</p>
+            </div>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-2 text-sm sm:text-base text-emerald-50/90">
+            <div className="bg-emerald-800/50 border border-emerald-500/40 rounded-lg px-3 py-2 shadow-sm">✅ Protecao antifraude e reembolso em 7 dias</div>
+            <div className="bg-emerald-800/50 border border-emerald-500/40 rounded-lg px-3 py-2 shadow-sm">✅ Suporte oficial pelo WhatsApp apos a compra</div>
+            <div className="bg-emerald-800/50 border border-emerald-500/40 rounded-lg px-3 py-2 shadow-sm">✅ Pagina unica e autenticada: evite golpes</div>
+          </div>
         </Card>
+
 
         <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground text-center">
           <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Compra segura" className="w-40 sm:w-52 mx-auto" />
