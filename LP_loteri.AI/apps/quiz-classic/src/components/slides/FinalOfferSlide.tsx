@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ShieldCheck, Clock, MessageCircle, Volume2, VolumeX } from "lucide-react";
+import { ShieldCheck, Clock, MessageCircle, Volume2, VolumeX, Bot, MailCheck, RefreshCcw, Lock, Zap } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { trackPixelEvent } from "@/lib/analytics";
 
 export const FinalOfferSlide = () => {
@@ -84,6 +85,21 @@ export const FinalOfferSlide = () => {
     { icon: "✅", text: "Garantia total de 7 dias: testou, não gostou, cancela" },
   ];
 
+  const trustPoints = [
+    { icon: ShieldCheck, text: "Plataforma verificada e segura" },
+    { icon: Bot, text: "Jogos gerados com IA todos os dias" },
+    { icon: MessageCircle, text: "Suporte direto no WhatsApp" },
+    { icon: MailCheck, text: "Entrega automática após pagamento" },
+    { icon: RefreshCcw, text: "Garantia de 7 dias: testou, não gostou, cancela" },
+    { icon: Lock, text: "Sem renovação automática, sem pegadinha" },
+  ];
+
+  const socialProofImages = [
+    "https://i.ibb.co/bjbS09P9/print-2-plataforma.jpg",
+    "https://i.ibb.co/hxb3L1ss/print-3-plataforma.jpg",
+    "https://i.ibb.co/fYvTSFYM/print-1-plataforma.jpg",
+  ];
+
   return (
     <div className="slide-shell relative py-14">
       <div className="casino-grid" />
@@ -133,6 +149,48 @@ export const FinalOfferSlide = () => {
           <div className="timer-shell mt-4">
             <div className={`timer-bar ${tickSpeedUp ? "timer-bar--fast" : ""}`} style={{ width: `${(timeLeft / (3 * 60)) * 100}%` }} />
           </div>
+        </Card>
+
+        <div className="space-y-2 text-center">
+          <p className="text-3xl sm:text-4xl font-extrabold text-foreground text-glow">Seu acesso está pronto para ser liberado!</p>
+          <p className="text-base sm:text-lg text-muted-foreground">
+            Pague via PIX e receba automaticamente no seu WhatsApp em segundos. Sem enrolação, sem risco.
+          </p>
+        </div>
+
+        <Card className="p-4 sm:p-5 border border-primary/30 bg-background/60 backdrop-blur-sm shadow-lg">
+          <Carousel
+            className="relative"
+            opts={{ loop: true }}
+          >
+            <CarouselContent>
+              {socialProofImages.map((src) => (
+                <CarouselItem key={src}>
+                  <div className="aspect-[4/5] sm:aspect-[16/9] overflow-hidden rounded-lg border border-primary/20 bg-black/40">
+                    <img src={src} alt="Prova social WhatsApp" className="w-full h-full object-cover" loading="lazy" />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="-left-3 sm:-left-4 top-1/2 -translate-y-1/2 bg-background/80 border-primary/30 hover:bg-primary/20" />
+            <CarouselNext className="-right-3 sm:-right-4 top-1/2 -translate-y-1/2 bg-background/80 border-primary/30 hover:bg-primary/20" />
+          </Carousel>
+        </Card>
+
+        <div className="grid sm:grid-cols-2 gap-3">
+          {trustPoints.map(({ icon: Icon, text }) => (
+            <div key={text} className="flex items-center gap-3 p-3 rounded-lg border border-primary/25 bg-primary/5 shadow-sm">
+              <Icon className="w-5 h-5 text-primary flex-shrink-0" />
+              <p className="text-sm sm:text-base text-foreground font-semibold">{text}</p>
+            </div>
+          ))}
+        </div>
+
+        <Card className="p-4 bg-destructive/10 border border-destructive/40 text-center shadow-sm">
+          <p className="text-base sm:text-lg font-semibold text-destructive flex items-center justify-center gap-2">
+            <Zap className="w-5 h-5" />
+            Mais de 250 pessoas ativadas hoje. Painel pode fechar a qualquer momento.
+          </p>
         </Card>
 
         <div className="text-center space-y-4">
@@ -195,6 +253,10 @@ export const FinalOfferSlide = () => {
             Sem mensalidade e sem renovação automática sem aviso. Você garante 12 meses completos e ainda tem 7 dias para testar sem risco.
           </p>
         </Card>
+
+        <p className="text-center text-lg font-semibold text-foreground">
+          Clique no botão abaixo, finalize seu PIX e receba tudo na hora.
+        </p>
 
         <Button
           asChild
