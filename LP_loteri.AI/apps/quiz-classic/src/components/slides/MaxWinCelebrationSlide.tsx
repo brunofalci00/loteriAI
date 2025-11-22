@@ -20,7 +20,7 @@ export const MaxWinCelebrationSlide = ({ onNext }: MaxWinCelebrationSlideProps) 
 
   return (
     <div className="slide-shell relative overflow-hidden">
-      <ConfettiEffect trigger={showConfetti} />
+      <ConfettiEffect trigger={showConfetti} variant="emoji-rain" intensity="big" />
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/60 via-transparent to-amber-900/60 blur-3xl" />
       <div className="slide-frame space-y-8 text-center relative z-10">
         <div className="space-y-3">

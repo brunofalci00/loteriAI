@@ -8,12 +8,15 @@ interface UserResultSlideProps {
   onNext: () => void;
   userScore: number;
   selectedNumbers: number[];
+  drawnNumbers: number[];
 }
 
-export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResultSlideProps) => {
+export const UserResultSlide = ({ onNext, userScore, selectedNumbers, drawnNumbers }: UserResultSlideProps) => {
   const hasSelection = selectedNumbers.length > 0;
   const [showResult, setShowResult] = useState(false);
   const manualResultSoundRef = useRef<HTMLAudioElement | null>(null);
+  const hits = drawnNumbers.filter((num) => selectedNumbers.includes(num));
+  const misses = drawnNumbers.filter((num) => !selectedNumbers.includes(num));
 
   useEffect(() => {
     const timer = setTimeout(() => setShowResult(true), 3200);
@@ -60,16 +63,36 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
                 <p className="text-sm text-muted-foreground">É aqui que você ficaria se entrasse com este jogo agora.</p>
               </div>
 
-              <div className="bg-secondary rounded-2xl p-4 text-left">
+              <div className="bg-secondary rounded-2xl p-4 text-left space-y-3">
                 <p className="text-xs text-muted-foreground uppercase mb-2">Seus números</p>
                 {hasSelection ? (
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {selectedNumbers.map((num) => (
-                      <span key={num} className="px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold text-sm">
-                        {num}
-                      </span>
-                    ))}
-                  </div>
+                  <>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {selectedNumbers.map((num) => (
+                        <span key={num} className="px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                          {num}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground uppercase">Sorteio desta rodada</p>
+                      <div className="flex flex-wrap gap-2 justify-center">
+                        {drawnNumbers.map((num) => (
+                          <span
+                            key={num}
+                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                              hits.includes(num) ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40" : "bg-muted text-muted-foreground"
+                            }`}
+                          >
+                            {num} {hits.includes(num) ? "✔️" : "✖️"}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="text-sm text-muted-foreground text-center">
+                        Você acertou {hits.length} e errou {misses.length} neste cenário.
+                      </p>
+                    </div>
+                  </>
                 ) : (
                   <p className="text-sm text-muted-foreground text-center">Seus números aparecerão aqui ao fim da rodada.</p>
                 )}

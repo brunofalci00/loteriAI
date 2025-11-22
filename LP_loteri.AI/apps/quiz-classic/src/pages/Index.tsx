@@ -16,13 +16,30 @@ import { FinalOfferSlide } from "@/components/slides/FinalOfferSlide";
 import { useExitIntent } from "@/hooks/useExitIntent";
 import { useSoundEffect } from "@/hooks/useSoundEffect";
 
+const AI_NUMBERS = [3, 5, 7, 9, 11, 13, 15, 17, 18, 19, 20, 21, 23, 24, 25];
+
+const generateDrawnNumbers = () => {
+  const totalNumbers = 25;
+  const drawn: number[] = [];
+  while (drawn.length < 15) {
+    const candidate = Math.floor(Math.random() * totalNumbers) + 1;
+    if (!drawn.includes(candidate)) {
+      drawn.push(candidate);
+    }
+  }
+  return drawn.sort((a, b) => a - b);
+};
+
+const countHits = (source: number[], target: number[]) => source.filter((num) => target.includes(num)).length;
+
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [drawnNumbers] = useState<number[]>(() => generateDrawnNumbers());
   const [coins, setCoins] = useState(0);
   const [coinDelta, setCoinDelta] = useState(0);
-  const [userScore, setUserScore] = useState(11);
+  const [userScore, setUserScore] = useState(0);
+  const [aiScore, setAiScore] = useState(0);
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
-  const aiScore = 14;
   const [userSpins, setUserSpins] = useState(1);
   const aiSpins = 3;
   const [showExitOverlay, setShowExitOverlay] = useState(false);
@@ -57,7 +74,7 @@ const Index = () => {
 
   const handleIntuitionComplete = (selection: number[]) => {
     setSelectedNumbers(selection);
-    setUserScore(11);
+    setUserScore(countHits(selection, drawnNumbers));
   };
 
   useEffect(() => {
@@ -80,6 +97,10 @@ const Index = () => {
     acknowledge();
   };
 
+  useEffect(() => {
+    setAiScore(countHits(AI_NUMBERS, drawnNumbers));
+  }, [drawnNumbers]);
+
   const FIRST_BONUS_UNLOCK_SLIDE_INDEX = 3;
 
   const slides = [
@@ -88,13 +109,22 @@ const Index = () => {
     <BonusUnlockLoadingSlide key="bonus-loading" onNext={handleNext} />,
     <BonusMapSlide key="bonus-map" onNext={handleNext} />,
     <IntuitionGameSlide key="intuition" onNext={handleNext} onComplete={handleIntuitionComplete} />,
-    <UserResultSlide key="user-result" onNext={handleNext} userScore={userScore} selectedNumbers={selectedNumbers} />,
+    <UserResultSlide
+      key="user-result"
+      onNext={handleNext}
+      userScore={userScore}
+      selectedNumbers={selectedNumbers}
+      drawnNumbers={drawnNumbers}
+    />,
     <AISyncLoadingSlide key="ai-sync" onNext={handleNext} userScore={userScore} />,
     <AISimulationSlide
       key="ai-simulation"
       onNext={handleNext}
       userScore={userScore}
       aiScore={aiScore}
+      aiNumbers={AI_NUMBERS}
+      drawnNumbers={drawnNumbers}
+      userNumbers={selectedNumbers}
       userSpins={userSpins}
       aiSpins={aiSpins}
     />,

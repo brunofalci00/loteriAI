@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useSoundEffect } from "@/hooks/useSoundEffect";
@@ -10,6 +10,8 @@ interface AISyncLoadingSlideProps {
 
 export const AISyncLoadingSlide = ({ onNext, userScore }: AISyncLoadingSlideProps) => {
   const ambientRef = useSoundEffect("/sounds/suspense-whoosh.mp3", { loop: true, volume: 0.09 });
+  const [, forceRender] = useState(0);
+  const progressRef = useRef<number[]>([0, 0, 0]);
   const syncTimeline = [
     { icon: "1️⃣", label: "Seu jogo", description: `${userScore} pontos conferidos` },
     { icon: "2️⃣", label: "IA ativa", description: "Mesmos números rodando na máquina" },
@@ -21,6 +23,31 @@ export const AISyncLoadingSlide = ({ onNext, userScore }: AISyncLoadingSlideProp
     const timer = setTimeout(onNext, 4800);
     return () => clearTimeout(timer);
   }, [ambientRef, onNext]);
+
+  useEffect(() => {
+    const stepDuration = 1400;
+    const tickMs = 120;
+    let active = 0;
+    let elapsed = 0;
+    const interval = setInterval(() => {
+      elapsed += tickMs;
+      const pct = Math.min(100, Math.round((elapsed / stepDuration) * 100));
+      progressRef.current = progressRef.current.map((value, index) => {
+        if (index < active) return 100;
+        if (index === active) return pct;
+        return value;
+      });
+      forceRender((v) => v + 1);
+      if (pct >= 100) {
+        active += 1;
+        elapsed = 0;
+        if (active >= syncTimeline.length) {
+          clearInterval(interval);
+        }
+      }
+    }, tickMs);
+    return () => clearInterval(interval);
+  }, [syncTimeline.length]);
 
   return (
     <div className="slide-shell relative">
@@ -46,13 +73,19 @@ export const AISyncLoadingSlide = ({ onNext, userScore }: AISyncLoadingSlideProp
           </div>
 
           <div className="timeline-strip">
-            {syncTimeline.map((item) => (
+            {syncTimeline.map((item, index) => (
               <div key={item.label} className="timeline-badge">
                 <span className="timeline-badge__icon" role="img" aria-hidden="true">
                   {item.icon}
                 </span>
                 <p className="timeline-badge__label">{item.label}</p>
                 <p className="timeline-badge__description">{item.description}</p>
+                <div className="mt-2 h-2 rounded-full bg-muted/40 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-primary"
+                    style={{ width: `${progressRef.current[index]}%`, transition: "width 0.2s ease" }}
+                  />
+                </div>
               </div>
             ))}
           </div>

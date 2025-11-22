@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -8,26 +8,25 @@ interface TestimonialsSlideProps {
   onVideoPause?: () => void;
 }
 
-const testimonials = [
-  {
-    name: "Ana • SP",
-    image: "https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg",
-  },
-  {
-    name: "Lucas • MG",
-    image: "https://i.ibb.co/rfQNMBX2/Whats-App-Image-2025-10-27-at-16-32-16.jpg",
-  },
-  {
-    name: "Marina • RJ",
-    image: "https://i.ibb.co/TD85XLkM/Whats-App-Image-2025-10-27-at-16-36-22.jpg",
-  },
-];
-
 export const TestimonialsSlide = ({ onNext, onVideoPause, onVideoPlay }: TestimonialsSlideProps) => {
-  const handleVideoPlay = () => onVideoPlay?.();
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [muted, setMuted] = useState(true);
+  const [showOverlay, setShowOverlay] = useState(true);
+
+  const handleStartWithSound = () => {
+    if (!videoRef.current) return;
+    setMuted(false);
+    setShowOverlay(false);
+    videoRef.current.currentTime = 0;
+    videoRef.current.muted = false;
+    videoRef.current.play().catch(() => undefined);
+    onVideoPlay?.();
+  };
+
   const handleVideoPause = () => onVideoPause?.();
 
   useEffect(() => {
+    videoRef.current?.play().catch(() => undefined);
     return () => {
       onVideoPause?.();
     };
@@ -41,7 +40,7 @@ export const TestimonialsSlide = ({ onNext, onVideoPause, onVideoPlay }: Testimo
           <img src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png" alt="LOTER.IA" className="mx-auto w-24 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]" />
           <h1 className="heading-1 flex items-center justify-center gap-2 text-glow text-center">
             <span role="img" aria-hidden="true">
-              🎥
+              💬
             </span>
             Antes de resgatar seus prêmios, veja quem já ganhou com a LOTER.IA
           </h1>
@@ -51,35 +50,30 @@ export const TestimonialsSlide = ({ onNext, onVideoPause, onVideoPlay }: Testimo
         </div>
 
         <Card className="border-0 bg-gradient-to-r from-primary/10 to-gold/10 p-0 overflow-hidden">
-          <video
-            className="w-full h-full rounded-2xl"
-            src="/video/slot.mp4"
-            controls
-            playsInline
-            poster="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg"
-            onPlay={handleVideoPlay}
-            onPause={handleVideoPause}
-            onEnded={handleVideoPause}
-          />
+          <div className="relative">
+            <video
+              ref={videoRef}
+              className="w-full h-full rounded-2xl"
+              src="/video/slot.mp4"
+              autoPlay
+              muted={muted}
+              loop
+              playsInline
+              controls={!showOverlay}
+              onPause={handleVideoPause}
+              onEnded={handleVideoPause}
+            />
+            {showOverlay && (
+              <button
+                type="button"
+                onClick={handleStartWithSound}
+                className="absolute inset-0 flex items-center justify-center bg-black/45 text-primary-foreground text-lg font-semibold"
+              >
+                Clique para assistir com som
+              </button>
+            )}
+          </div>
         </Card>
-
-        <div className="grid gap-4 sm:grid-cols-3">
-          {testimonials.map((testimonial) => (
-            <Card key={testimonial.name} className="relative overflow-hidden border border-primary/30 p-0">
-              <div className="w-full bg-black aspect-[9/16] flex items-center justify-center">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  className="h-full w-auto object-contain"
-                  loading="lazy"
-                />
-              </div>
-              <div className="absolute inset-x-3 bottom-3 bg-background/90 rounded-xl px-3 py-2 text-left shadow-lg">
-                <p className="text-sm font-semibold text-foreground">{testimonial.name}</p>
-              </div>
-            </Card>
-          ))}
-        </div>
 
         <div>
           <Button
@@ -88,7 +82,7 @@ export const TestimonialsSlide = ({ onNext, onVideoPause, onVideoPlay }: Testimo
             className="w-full sm:w-auto text-lg sm:text-xl py-5 sm:py-6 px-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold pulse-glow flex items-center justify-center gap-2"
           >
             <span role="img" aria-hidden="true">
-              🎯
+              🏆
             </span>
             Garantir Meu Desconto
           </Button>
