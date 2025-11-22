@@ -17,9 +17,9 @@ All colors MUST be HSL.
     --popover: 220 20% 12%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 142 76% 36%;
+    --primary: 148 100% 34%;
     --primary-foreground: 220 25% 8%;
-    --primary-glow: 142 76% 56%;
+    --primary-glow: 148 100% 48%;
 
     --secondary: 220 20% 18%;
     --secondary-foreground: 210 40% 98%;
@@ -27,7 +27,7 @@ All colors MUST be HSL.
     --muted: 220 15% 20%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 142 60% 45%;
+    --accent: 148 80% 40%;
     --accent-foreground: 220 25% 8%;
 
     --destructive: 0 72% 51%;
@@ -35,7 +35,7 @@ All colors MUST be HSL.
 
     --border: 220 20% 20%;
     --input: 220 20% 18%;
-    --ring: 142 76% 36%;
+    --ring: 148 100% 34%;
 
     --radius: 0.75rem;
 
@@ -44,12 +44,12 @@ All colors MUST be HSL.
     
     --sidebar-background: 220 20% 10%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 142 76% 36%;
+    --sidebar-primary: 148 100% 34%;
     --sidebar-primary-foreground: 220 25% 8%;
     --sidebar-accent: 220 20% 18%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 220 20% 20%;
-    --sidebar-ring: 142 76% 36%;
+    --sidebar-ring: 148 100% 34%;
   }
 }
 
@@ -106,9 +106,11 @@ All colors MUST be HSL.
   .casino-grid {
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(circle at 25% 25%, hsl(var(--primary) / 0.18), transparent 60%),
-      radial-gradient(circle at 75% 0%, hsl(var(--gold) / 0.16), transparent 55%),
-      linear-gradient(125deg, hsl(var(--background)), hsl(var(--background) / 0.6) 45%, transparent 80%);
+    background-image:
+      radial-gradient(circle at 22% 18%, hsl(var(--primary) / 0.25), transparent 55%),
+      radial-gradient(circle at 78% 10%, hsl(var(--primary) / 0.16), transparent 52%),
+      radial-gradient(circle at 45% 70%, hsl(var(--primary) / 0.12), transparent 60%),
+      linear-gradient(140deg, hsl(var(--background)), hsl(var(--background) / 0.72) 42%, hsl(var(--primary) / 0.12) 95%);
     filter: blur(0px);
     opacity: 0.75;
     pointer-events: none;

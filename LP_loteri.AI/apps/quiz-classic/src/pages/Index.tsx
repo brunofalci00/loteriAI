@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CoinCounter } from "@/components/CoinCounter";
 import { ExitIntentOverlay } from "@/components/ExitIntentOverlay";
 import { EntrySlide } from "@/components/slides/EntrySlide";
@@ -14,6 +14,7 @@ import { RouletteBonusSlide } from "@/components/slides/RouletteBonusSlide";
 import { MaxWinCelebrationSlide } from "@/components/slides/MaxWinCelebrationSlide";
 import { FinalOfferSlide } from "@/components/slides/FinalOfferSlide";
 import { useExitIntent } from "@/hooks/useExitIntent";
+import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -26,6 +27,24 @@ const Index = () => {
   const aiSpins = 3;
   const [showExitOverlay, setShowExitOverlay] = useState(false);
   const { exitIntentTriggered, acknowledge } = useExitIntent(currentSlide > 0);
+  const backgroundMusicRef = useSoundEffect("/sounds/good-luck-353353.mp3", { loop: true, volume: 0.5, autoplay: true });
+
+  const playBackgroundMusic = useCallback(() => {
+    const audio = backgroundMusicRef.current;
+    if (!audio) return;
+    audio.play().catch(() => undefined);
+  }, [backgroundMusicRef]);
+
+  const pauseBackgroundMusic = useCallback(() => {
+    backgroundMusicRef.current?.pause();
+  }, [backgroundMusicRef]);
+
+  const stopBackgroundMusic = useCallback(() => {
+    const audio = backgroundMusicRef.current;
+    if (!audio) return;
+    audio.pause();
+    audio.currentTime = 0;
+  }, [backgroundMusicRef]);
 
   const handleCoinsEarned = (amount: number) => {
     setCoins((prev) => prev + amount);
@@ -50,6 +69,11 @@ const Index = () => {
       setShowExitOverlay(true);
     }
   }, [exitIntentTriggered]);
+
+  useEffect(() => {
+    playBackgroundMusic();
+    return () => stopBackgroundMusic();
+  }, [playBackgroundMusic, stopBackgroundMusic]);
 
   const handleExitOverlayClose = () => {
     setShowExitOverlay(false);
@@ -76,8 +100,18 @@ const Index = () => {
     />,
     <RouletteBonusSlide key="roulette" onNext={handleNext} userSpins={userSpins} onSpinComplete={() => setUserSpins(0)} />,
     <MaxWinCelebrationSlide key="max-win" onNext={handleNext} />,
-    <TestimonialsSlide key="testimonials" onNext={handleNext} />,
-    <FinalOfferSlide key="final-offer" />,
+    <TestimonialsSlide
+      key="testimonials"
+      onNext={handleNext}
+      onVideoPlay={pauseBackgroundMusic}
+      onVideoPause={playBackgroundMusic}
+    />,
+    <FinalOfferSlide
+      key="final-offer"
+      onCheckoutClick={stopBackgroundMusic}
+      onVideoPlay={pauseBackgroundMusic}
+      onVideoPause={playBackgroundMusic}
+    />,
   ];
 
   const shouldShowCoinCounter = currentSlide > 0 && currentSlide <= FIRST_BONUS_UNLOCK_SLIDE_INDEX;

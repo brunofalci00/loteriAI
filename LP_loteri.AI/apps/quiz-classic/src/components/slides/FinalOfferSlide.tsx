@@ -5,7 +5,13 @@ import { ShieldCheck, Clock, MessageCircle, Volume2, VolumeX, Bot, MailCheck, Re
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { trackPixelEvent } from "@/lib/analytics";
 
-export const FinalOfferSlide = () => {
+interface FinalOfferSlideProps {
+  onCheckoutClick?: () => void;
+  onVideoPlay?: () => void;
+  onVideoPause?: () => void;
+}
+
+export const FinalOfferSlide = ({ onCheckoutClick, onVideoPause, onVideoPlay }: FinalOfferSlideProps) => {
   const checkoutUrl = "https://www.seguropagamentos.com.br/loteriaapp";
   const whatsappUrl = "https://wa.me/5511993371766";
   const [timeLeft, setTimeLeft] = useState(3 * 60);
@@ -13,7 +19,10 @@ export const FinalOfferSlide = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
 
-  const handleCheckoutClick = () => trackPixelEvent("CheckoutClick");
+  const handleCheckoutClick = () => {
+    trackPixelEvent("CheckoutClick");
+    onCheckoutClick?.();
+  };
   const handleWhatsAppClick = () => trackPixelEvent("WhatsAppSupportClick");
 
   useEffect(() => {
@@ -33,6 +42,12 @@ export const FinalOfferSlide = () => {
     videoRef.current?.play().catch(() => undefined);
   }, []);
 
+  useEffect(() => {
+    return () => {
+      onVideoPause?.();
+    };
+  }, [onVideoPause]);
+
   const toggleAudio = () => {
     if (!videoRef.current) return;
     const nextMuted = !isMuted;
@@ -42,6 +57,11 @@ export const FinalOfferSlide = () => {
       videoRef.current.play().catch(() => undefined);
     }
     setIsMuted(nextMuted);
+    if (!nextMuted) {
+      onVideoPlay?.();
+    } else {
+      onVideoPause?.();
+    }
   };
 
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");

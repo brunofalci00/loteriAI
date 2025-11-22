@@ -13,7 +13,7 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showNextStepModal, setShowNextStepModal] = useState(false);
   const [coinStage, setCoinStage] = useState<"stack" | "travel" | "spent">("stack");
-  const fanfareRef = useSoundEffect("/sounds/winning-unlock.mp3", { autoplay: false, volume: 0.3 });
+  const fanfareRef = useSoundEffect("/sounds/you-win-sequence-2-183949.mp3", { autoplay: false, volume: 0.35 });
 
   useEffect(() => {
     setShowConfetti(true);

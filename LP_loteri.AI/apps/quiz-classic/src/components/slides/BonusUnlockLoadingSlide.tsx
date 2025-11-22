@@ -20,7 +20,7 @@ const visualBadges = [
 ];
 
 export const BonusUnlockLoadingSlide = ({ onNext }: BonusUnlockLoadingSlideProps) => {
-  const ambientRef = useSoundEffect("/sounds/processing-loop.mp3", { loop: true, volume: 0.05 });
+  const ambientRef = useSoundEffect("/sounds/game-loading-sound-effect-380367.mp3", { loop: true, volume: 0.35 });
 
   useEffect(() => {
     ambientRef.current?.play().catch(() => undefined);

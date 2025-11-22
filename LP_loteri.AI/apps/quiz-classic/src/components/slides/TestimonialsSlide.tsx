@@ -1,8 +1,11 @@
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 interface TestimonialsSlideProps {
   onNext: () => void;
+  onVideoPlay?: () => void;
+  onVideoPause?: () => void;
 }
 
 const testimonials = [
@@ -20,7 +23,16 @@ const testimonials = [
   },
 ];
 
-export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
+export const TestimonialsSlide = ({ onNext, onVideoPause, onVideoPlay }: TestimonialsSlideProps) => {
+  const handleVideoPlay = () => onVideoPlay?.();
+  const handleVideoPause = () => onVideoPause?.();
+
+  useEffect(() => {
+    return () => {
+      onVideoPause?.();
+    };
+  }, [onVideoPause]);
+
   return (
     <div className="slide-shell relative">
       <div className="casino-grid" />
@@ -45,6 +57,9 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
             controls
             playsInline
             poster="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg"
+            onPlay={handleVideoPlay}
+            onPause={handleVideoPause}
+            onEnded={handleVideoPause}
           />
         </Card>
 

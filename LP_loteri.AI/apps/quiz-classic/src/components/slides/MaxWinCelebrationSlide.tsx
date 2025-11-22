@@ -13,8 +13,8 @@ export const MaxWinCelebrationSlide = ({ onNext }: MaxWinCelebrationSlideProps) 
 
   useEffect(() => {
     setShowConfetti(true);
-    const jackpot = new Audio("/sounds/winning-alt.mp3");
-    jackpot.volume = 0.3;
+    const jackpot = new Audio("/sounds/you-win-sequence-2-183949.mp3");
+    jackpot.volume = 0.35;
     jackpot.play().catch(() => undefined);
   }, []);
 
