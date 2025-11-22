@@ -11,45 +11,45 @@ All colors MUST be HSL.
     --background: 148 100% 34%;
     --foreground: 210 40% 98%;
 
-    --card: 220 20% 12%;
+    --card: 148 45% 10%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 220 20% 12%;
+    --popover: 148 45% 10%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 148 100% 34%;
+    --primary: 148 90% 32%;
     --primary-foreground: 220 25% 8%;
-    --primary-glow: 148 100% 48%;
+    --primary-glow: 148 90% 48%;
 
-    --secondary: 220 20% 18%;
+    --secondary: 148 35% 16%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 220 15% 20%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 148 25% 22%;
+    --muted-foreground: 148 18% 72%;
 
-    --accent: 148 80% 40%;
+    --accent: 148 75% 40%;
     --accent-foreground: 220 25% 8%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 20% 20%;
-    --input: 220 20% 18%;
-    --ring: 148 100% 34%;
+    --border: 148 30% 22%;
+    --input: 148 30% 18%;
+    --ring: 148 90% 32%;
 
     --radius: 0.75rem;
 
     --gold: 45 100% 51%;
     --coin-shadow: 45 100% 35%;
     
-    --sidebar-background: 220 20% 10%;
+    --sidebar-background: 148 35% 12%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 148 100% 34%;
+    --sidebar-primary: 148 90% 32%;
     --sidebar-primary-foreground: 220 25% 8%;
-    --sidebar-accent: 220 20% 18%;
+    --sidebar-accent: 148 30% 18%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 220 20% 20%;
-    --sidebar-ring: 148 100% 34%;
+    --sidebar-border: 148 30% 22%;
+    --sidebar-ring: 148 90% 32%;
   }
 }
 
@@ -107,10 +107,10 @@ All colors MUST be HSL.
     position: absolute;
     inset: 0;
     background-image:
-      radial-gradient(circle at 22% 18%, hsl(var(--primary) / 0.25), transparent 55%),
-      radial-gradient(circle at 78% 10%, hsl(var(--primary) / 0.16), transparent 52%),
-      radial-gradient(circle at 45% 70%, hsl(var(--primary) / 0.12), transparent 60%),
-      linear-gradient(140deg, hsl(var(--background)), hsl(var(--background) / 0.72) 42%, hsl(var(--primary) / 0.12) 95%);
+      radial-gradient(circle at 22% 18%, hsl(var(--primary) / 0.28), transparent 55%),
+      radial-gradient(circle at 78% 10%, hsl(var(--primary) / 0.18), transparent 52%),
+      radial-gradient(circle at 45% 70%, hsl(var(--primary) / 0.14), transparent 60%),
+      linear-gradient(160deg, hsl(var(--background) / 0.78), hsl(var(--background) / 0.62) 45%, hsl(var(--background) / 0.25) 100%);
     filter: blur(0px);
     opacity: 0.75;
     pointer-events: none;
