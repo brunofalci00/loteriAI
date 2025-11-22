@@ -34,7 +34,7 @@ const Index = () => {
   const [showExitOverlay, setShowExitOverlay] = useState(false);
   const [bgStarted, setBgStarted] = useState(false);
   const { exitIntentTriggered, acknowledge } = useExitIntent(currentSlide > 0);
-  const backgroundMusicRef = useSoundEffect("/sounds/good-luck-353353.mp3", { loop: true, volume: 0.12, autoplay: false });
+  const backgroundMusicRef = useSoundEffect("/sounds/good-luck-353353.mp3", { loop: true, volume: 0.08, autoplay: false });
 
   const playBackgroundMusic = useCallback(() => {
     const audio = backgroundMusicRef.current;
@@ -82,12 +82,17 @@ const Index = () => {
   }, [exitIntentTriggered]);
 
   useEffect(() => {
-    if (!bgStarted) {
+    // Start background music only on TestimonialsSlide (slide 10)
+    if (currentSlide === 10 && !bgStarted) {
       playBackgroundMusic();
       setBgStarted(true);
     }
-    return () => stopBackgroundMusic();
-  }, [bgStarted, playBackgroundMusic, stopBackgroundMusic]);
+    return () => {
+      if (currentSlide < 10) {
+        stopBackgroundMusic();
+      }
+    };
+  }, [currentSlide, bgStarted, playBackgroundMusic, stopBackgroundMusic]);
 
   const handleExitOverlayClose = () => {
     setShowExitOverlay(false);

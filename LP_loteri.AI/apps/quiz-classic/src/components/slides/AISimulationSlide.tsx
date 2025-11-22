@@ -199,23 +199,45 @@ export const AISimulationSlide = ({
             </div>
             {verdictReady ? (
               <>
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground text-center">Sorteio desta rodada</p>
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {drawnNumbers.map((num) => {
-                      const aiHit = aiHits.includes(num);
-                      const userHit = userHits.includes(num);
-                      return (
-                        <span
-                          key={num}
-                          className={`px-3 py-1 rounded-full text-sm font-semibold border ${
-                            aiHit ? "bg-primary/20 text-primary border-primary/50" : userHit ? "bg-emerald-500/15 text-emerald-300 border-emerald-400/40" : "bg-muted text-muted-foreground border-border"
-                          }`}
-                        >
-                          {num} {aiHit ? "🤖" : userHit ? "✔️" : "✖️"}
+                <div className="space-y-4">
+                  <div className="bg-secondary/50 rounded-2xl p-4 space-y-2">
+                    <p className="text-xs text-muted-foreground uppercase">Seus números</p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {userNumbers.map((num) => (
+                        <span key={num} className="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-400/40 font-semibold text-sm">
+                          {num}
                         </span>
-                      );
-                    })}
+                      ))}
+                    </div>
+                  </div>
+                  <div className="bg-secondary/50 rounded-2xl p-4 space-y-2">
+                    <p className="text-xs text-muted-foreground uppercase">Números da IA</p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {aiNumbers.map((num) => (
+                        <span key={num} className="px-3 py-1 rounded-full bg-primary/15 text-primary border border-primary/40 font-semibold text-sm">
+                          {num}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground text-center">Sorteio desta rodada</p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {drawnNumbers.map((num) => {
+                        const aiHit = aiHits.includes(num);
+                        const userHit = userHits.includes(num);
+                        return (
+                          <span
+                            key={num}
+                            className={`px-3 py-1 rounded-full text-sm font-semibold border ${
+                              aiHit ? "bg-primary/20 text-primary border-primary/50" : userHit ? "bg-emerald-500/15 text-emerald-300 border-emerald-400/40" : "bg-muted text-muted-foreground border-border"
+                            }`}
+                          >
+                            {num} {aiHit ? "🤖" : userHit ? "✔️" : "✖️"}
+                          </span>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
                 <div className="scoreboard">

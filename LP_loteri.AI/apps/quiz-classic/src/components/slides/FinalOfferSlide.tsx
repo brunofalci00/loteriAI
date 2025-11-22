@@ -12,7 +12,7 @@ interface FinalOfferSlideProps {
 }
 
 export const FinalOfferSlide = ({ onCheckoutClick, onVideoPause, onVideoPlay }: FinalOfferSlideProps) => {
-  const checkoutUrl = "https://www.seguropagamentos.com.br/loteriaapp";
+  const checkoutUrl = "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
   const whatsappUrl = "https://wa.me/5511993371766";
   const [timeLeft, setTimeLeft] = useState(3 * 60);
   const [tickSpeedUp, setTickSpeedUp] = useState(false);
@@ -245,31 +245,31 @@ export const FinalOfferSlide = ({ onCheckoutClick, onVideoPause, onVideoPlay }: 
           </div>
           <p className="text-sm text-muted-foreground">Pagamento unico, acesso por 12 meses, sem renovacao automatica.</p>
 
-          <div className="grid sm:grid-cols-2 gap-3 pt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
             <Button
               asChild
               size="lg"
               onClick={handleCheckoutClick}
-              className="w-full text-xl py-5 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
+              className="w-full text-base sm:text-xl py-4 sm:py-5 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
             >
-              <a href={checkoutUrl} target="_blank" rel="noreferrer">
+              <a href={checkoutUrl} target="_blank" rel="noreferrer" className="block px-2">
                 🚀 Garantir acesso por R$37,00
               </a>
             </Button>
             <Button
               asChild
               size="lg"
-              className="w-full text-base py-5 bg-emerald-500 hover:bg-emerald-400 text-background font-bold shadow-2xl flex items-center justify-center gap-2 text-center leading-snug"
+              className="w-full text-sm sm:text-base py-4 sm:py-5 bg-emerald-500 hover:bg-emerald-400 text-background font-bold shadow-2xl flex items-center justify-center gap-2 text-center leading-snug"
             >
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 whitespace-normal"
+                className="flex items-center justify-center gap-2 px-2"
                 onClick={handleWhatsAppClick}
               >
-                <MessageCircle className="w-5 h-5 flex-shrink-0" />
-                <span>🤝 Falar com especialista</span>
+                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                <span className="whitespace-nowrap">🤝 Falar com especialista</span>
               </a>
             </Button>
           </div>

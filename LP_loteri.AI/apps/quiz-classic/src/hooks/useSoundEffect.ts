@@ -21,10 +21,18 @@ export function useSoundEffect(src: string | null, options: UseSoundEffectOption
     audio.loop = loop;
     audio.volume = volume;
     audio.playbackRate = playbackRate;
+    audio.preload = "auto";
     audioRef.current = audio;
 
     if (autoplay) {
-      audio.play().catch(() => undefined);
+      // Try to play with better mobile support
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Mobile browsers often block autoplay until user interaction
+          // The audio ref is still available for manual play
+        });
+      }
     }
 
     return () => {
