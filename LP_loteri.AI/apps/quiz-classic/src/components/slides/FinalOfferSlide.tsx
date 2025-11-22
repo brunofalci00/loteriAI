@@ -6,7 +6,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { trackPixelEvent } from "@/lib/analytics";
 
 export const FinalOfferSlide = () => {
-  const checkoutUrl = "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
+  const checkoutUrl = "https://www.seguropagamentos.com.br/loteriaapp";
   const whatsappUrl = "https://wa.me/5511993371766";
   const [timeLeft, setTimeLeft] = useState(3 * 60);
   const [tickSpeedUp, setTickSpeedUp] = useState(false);
