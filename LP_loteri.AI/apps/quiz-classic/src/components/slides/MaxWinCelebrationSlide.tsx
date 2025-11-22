@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ConfettiEffect } from "@/components/ConfettiEffect";
 import { trackPixelEvent } from "@/lib/analytics";
+import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 interface MaxWinCelebrationSlideProps {
   onNext: () => void;
@@ -10,13 +11,10 @@ interface MaxWinCelebrationSlideProps {
 
 export const MaxWinCelebrationSlide = ({ onNext }: MaxWinCelebrationSlideProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
+  useSoundEffect("/sounds/you-win-sequence-2-183949.mp3", { autoplay: true, volume: 0.35 });
 
   useEffect(() => {
     setShowConfetti(true);
-    const jackpot = new Audio("/sounds/you-win-sequence-2-183949.mp3");
-    jackpot.volume = 0.35;
-    jackpot.currentTime = 0;
-    jackpot.play().catch(() => undefined);
   }, []);
 
   return (

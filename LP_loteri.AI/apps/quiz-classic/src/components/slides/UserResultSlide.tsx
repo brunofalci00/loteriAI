@@ -15,8 +15,10 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers, drawnNumbe
   const hasSelection = selectedNumbers.length > 0;
   const [showResult, setShowResult] = useState(false);
   const manualResultSoundRef = useRef<HTMLAudioElement | null>(null);
-  const forcedHits = drawnNumbers.slice(0, 11);
-  const forcedMisses = drawnNumbers.slice(11);
+
+  // Calculate real hits and misses from user's actual selection
+  const userHits = selectedNumbers.filter((num) => drawnNumbers.includes(num));
+  const userMisses = selectedNumbers.filter((num) => !drawnNumbers.includes(num));
 
   useEffect(() => {
     const timer = setTimeout(() => setShowResult(true), 3200);
@@ -77,18 +79,23 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers, drawnNumbe
                 <div className="space-y-2">
                   <p className="text-xs text-muted-foreground uppercase">Sorteio desta rodada</p>
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {drawnNumbers.map((num) => (
-                      <span
-                        key={num}
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          forcedHits.includes(num) ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40" : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        {num} {forcedHits.includes(num) ? "✔️" : "✖️"}
-                      </span>
-                    ))}
+                    {drawnNumbers.map((num) => {
+                      const isHit = userHits.includes(num);
+                      return (
+                        <span
+                          key={num}
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            isHit ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40" : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          {num} {isHit ? "✔️" : "✖️"}
+                        </span>
+                      );
+                    })}
                   </div>
-                  <p className="text-sm text-muted-foreground text-center">Você acertou 11 e errou 4 neste cenário.</p>
+                  <p className="text-sm text-muted-foreground text-center">
+                    Você acertou {userHits.length} e errou {userMisses.length} neste cenário.
+                  </p>
                 </div>
               </>
             ) : (

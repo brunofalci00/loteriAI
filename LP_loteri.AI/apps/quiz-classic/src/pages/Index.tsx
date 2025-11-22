@@ -62,12 +62,9 @@ const Index = () => {
     setCurrentSlide((prev) => prev + 1);
   };
 
-  const handleIntuitionComplete = () => {
-    const hits = DRAWN_NUMBERS.slice(0, 11);
-    const missesPool = Array.from({ length: 25 }, (_, i) => i + 1).filter((num) => !DRAWN_NUMBERS.includes(num));
-    const misses = missesPool.slice(0, 4);
-    const enforcedSelection = [...hits, ...misses];
-    setSelectedNumbers(enforcedSelection);
+  const handleIntuitionComplete = (selection: number[]) => {
+    // Keep user's real selection but force score to always be 11
+    setSelectedNumbers(selection);
     setUserScore(11);
   };
 
@@ -82,16 +79,12 @@ const Index = () => {
   }, [exitIntentTriggered]);
 
   useEffect(() => {
-    // Start background music only on TestimonialsSlide (slide 10)
-    if (currentSlide === 10 && !bgStarted) {
+    // Start background music on first slide
+    if (currentSlide === 0 && !bgStarted) {
       playBackgroundMusic();
       setBgStarted(true);
     }
-    return () => {
-      if (currentSlide < 10) {
-        stopBackgroundMusic();
-      }
-    };
+    return () => stopBackgroundMusic();
   }, [currentSlide, bgStarted, playBackgroundMusic, stopBackgroundMusic]);
 
   const handleExitOverlayClose = () => {

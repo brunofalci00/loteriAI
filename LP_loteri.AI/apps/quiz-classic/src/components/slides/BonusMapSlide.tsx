@@ -13,15 +13,11 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showNextStepModal, setShowNextStepModal] = useState(false);
   const [coinStage, setCoinStage] = useState<"stack" | "travel" | "spent">("stack");
-  const fanfareRef = useSoundEffect("/sounds/you-win-sequence-2-183949.mp3", { autoplay: false, volume: 0.35 });
+  const fanfareRef = useSoundEffect("/sounds/you-win-sequence-2-183949.mp3", { autoplay: true, volume: 0.35 });
 
   useEffect(() => {
     setShowConfetti(true);
-    if (fanfareRef.current) {
-      fanfareRef.current.currentTime = 0;
-      fanfareRef.current.play().catch(() => undefined);
-    }
-  }, [fanfareRef]);
+  }, []);
 
   useEffect(() => {
     const timers = [
