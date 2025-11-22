@@ -5,6 +5,7 @@ import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 interface BonusUnlockLoadingSlideProps {
   onNext: () => void;
+  onComplete?: () => void;
 }
 
 const steps = [
@@ -19,16 +20,19 @@ const visualBadges = [
   { icon: "⚡", label: "Liberado em segundos" },
 ];
 
-export const BonusUnlockLoadingSlide = ({ onNext }: BonusUnlockLoadingSlideProps) => {
+export const BonusUnlockLoadingSlide = ({ onNext, onComplete }: BonusUnlockLoadingSlideProps) => {
   const ambientRef = useSoundEffect("/sounds/game-loading-sound-effect-380367.mp3", { loop: true, volume: 0.35 });
   const [, forceRender] = useState(0);
   const progressRef = useRef<number[]>(Array(steps.length).fill(0));
 
   useEffect(() => {
     ambientRef.current?.play().catch(() => undefined);
-    const timer = setTimeout(onNext, 5600);
+    const timer = setTimeout(() => {
+      onComplete?.(); // Trigger callback before advancing
+      onNext();
+    }, 5600);
     return () => clearTimeout(timer);
-  }, [ambientRef, onNext]);
+  }, [ambientRef, onNext, onComplete]);
 
   useEffect(() => {
     const stepDuration = 1500;

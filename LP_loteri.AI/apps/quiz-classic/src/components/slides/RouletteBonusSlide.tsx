@@ -7,13 +7,14 @@ interface RouletteBonusSlideProps {
   onNext: () => void;
   userSpins: number;
   onSpinComplete?: () => void;
+  onMaxWinClick?: () => void;
 }
 
 const SLOT_PRIZES = ["R$ 10 OFF", "R$ 20 OFF", "R$ 50 OFF", "R$ 100 OFF", "R$ 200 OFF", "MAX WIN"];
 const WEIGHTED_SPIN_POOL = ["Nao ganhou nada", "Nao ganhou nada", "Nao ganhou nada", "Nao ganhou nada", ...SLOT_PRIZES, "Nao ganhou nada"];
 const TARGET_PRIZE = "MAX WIN";
 
-export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: RouletteBonusSlideProps) => {
+export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWinClick }: RouletteBonusSlideProps) => {
   const [reels, setReels] = useState<string[]>(() => Array(3).fill(TARGET_PRIZE));
   const [isSpinning, setIsSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
@@ -30,9 +31,13 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
     rain.volume = 0.2;
     rain.play().catch(() => undefined);
     trackPixelEvent("SlotMaxWin");
-    const timer = setTimeout(() => onNext(), 2200);
-    return () => clearTimeout(timer);
-  }, [result, onNext]);
+  }, [result]);
+
+  const handleClaimPrize = () => {
+    // Play Max Win sound and advance to next slide
+    onMaxWinClick?.();
+    onNext();
+  };
 
   const playSound = (file: string, volume: number) => {
     const sound = new Audio(file);
@@ -190,13 +195,22 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
             </ul>
 
             {result && (
-              <Card className="p-4 border border-primary/40 space-y-2">
-                <p className="meta-label text-primary">Resultado</p>
-                <h3 className="heading-3 text-primary">MAX WIN desbloqueado!</h3>
-                <p className="text-sm sm:text-base text-foreground font-semibold">
-                  Voce ganhou R$500 de desconto para ativar a LOTER.IA agora.
-                </p>
-                <p className="text-sm text-muted-foreground">Aproveite enquanto o painel esta aberto.</p>
+              <Card className="p-4 border border-primary/40 space-y-4">
+                <div className="space-y-2">
+                  <p className="meta-label text-primary">Resultado</p>
+                  <h3 className="heading-3 text-primary">MAX WIN desbloqueado!</h3>
+                  <p className="text-sm sm:text-base text-foreground font-semibold">
+                    Voce ganhou R$500 de desconto para ativar a LOTER.IA agora.
+                  </p>
+                  <p className="text-sm text-muted-foreground">Aproveite enquanto o painel esta aberto.</p>
+                </div>
+                <Button
+                  onClick={handleClaimPrize}
+                  size="lg"
+                  className="w-full text-base sm:text-xl py-4 sm:py-5 bg-gold hover:bg-gold/90 text-background font-bold pulse-glow"
+                >
+                  🏆 Resgatar meu prêmio
+                </Button>
               </Card>
             )}
           </div>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { trackPixelEvent } from "@/lib/analytics";
+import { useAudio } from "@/contexts/AudioContext";
 
 interface EntrySlideProps {
   onNext: () => void;
@@ -37,6 +38,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
   const slotSoundRef = useRef<HTMLAudioElement | null>(null);
   const introSoundRef = useRef<HTMLAudioElement | null>(null);
   const clickSoundRef = useRef<HTMLAudioElement | null>(null);
+  const { playBackgroundMusic } = useAudio();
 
   useEffect(() => {
     introSoundRef.current = new Audio("/sounds/intro-chime.mp3");
@@ -83,6 +85,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
     introSoundRef.current?.play().catch(() => undefined);
     clickSoundRef.current?.play().catch(() => undefined);
     slotSoundRef.current?.pause();
+    playBackgroundMusic(); // Start background music on user interaction
     trackPixelEvent("QuizEntryStart");
     onNext();
   };

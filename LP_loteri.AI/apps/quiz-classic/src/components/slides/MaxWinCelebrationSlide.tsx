@@ -1,21 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ConfettiEffect } from "@/components/ConfettiEffect";
 import { trackPixelEvent } from "@/lib/analytics";
-import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 interface MaxWinCelebrationSlideProps {
   onNext: () => void;
+  playWinSound?: boolean;
 }
 
-export const MaxWinCelebrationSlide = ({ onNext }: MaxWinCelebrationSlideProps) => {
+export const MaxWinCelebrationSlide = ({ onNext, playWinSound }: MaxWinCelebrationSlideProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
-  useSoundEffect("/sounds/you-win-sequence-2-183949.mp3", { autoplay: true, volume: 0.35 });
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setShowConfetti(true);
-  }, []);
+
+    // Only play sound if triggered by user interaction (from previous slide button click)
+    if (playWinSound) {
+      audioRef.current = new Audio("/sounds/you-win-sequence-2-183949.mp3");
+      audioRef.current.volume = 0.35;
+      audioRef.current.play().catch(() => undefined);
+    }
+
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    };
+  }, [playWinSound]);
 
   return (
     <div className="slide-shell relative overflow-hidden">
