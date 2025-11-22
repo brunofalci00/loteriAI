@@ -186,7 +186,7 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
               <li>💰 R$100 OFF</li>
               <li>💰 R$200 OFF</li>
               <li>🏆 MAX WIN: R$500 OFF (desconto maximo)</li>
-              <li>🔕 Nao ganhou nada (aparece mais durante o giro)</li>
+              <li>🔕 Nao ganhou nada</li>
             </ul>
 
             {result && (

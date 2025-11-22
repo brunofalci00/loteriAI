@@ -50,24 +50,26 @@ export const TestimonialsSlide = ({ onNext, onVideoPause, onVideoPlay }: Testimo
         </div>
 
         <Card className="border-0 bg-gradient-to-r from-primary/10 to-gold/10 p-0 overflow-hidden">
-          <div className="relative">
-            <video
-              ref={videoRef}
-              className="w-full h-full rounded-2xl"
-              src="/video/slot.mp4"
-              autoPlay
-              muted={muted}
-              loop
-              playsInline
-              controls={!showOverlay}
-              onPause={handleVideoPause}
-              onEnded={handleVideoPause}
-            />
+          <div className="relative mx-auto w-full max-w-md">
+            <div className="rounded-2xl overflow-hidden border border-primary/20 bg-black">
+              <video
+                ref={videoRef}
+                className="w-full aspect-[9/16] object-cover"
+                src="/video/slot.mp4"
+                autoPlay
+                muted={muted}
+                loop
+                playsInline
+                controls={!showOverlay}
+                onPause={handleVideoPause}
+                onEnded={handleVideoPause}
+              />
+            </div>
             {showOverlay && (
               <button
                 type="button"
                 onClick={handleStartWithSound}
-                className="absolute inset-0 flex items-center justify-center bg-black/45 text-primary-foreground text-lg font-semibold"
+                className="absolute inset-0 flex items-center justify-center bg-black/45 text-primary-foreground text-lg font-semibold rounded-2xl"
               >
                 Clique para assistir com som
               </button>

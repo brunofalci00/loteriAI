@@ -17,28 +17,17 @@ import { useExitIntent } from "@/hooks/useExitIntent";
 import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 const AI_NUMBERS = [3, 5, 7, 9, 11, 13, 15, 17, 18, 19, 20, 21, 23, 24, 25];
-
-const generateDrawnNumbers = () => {
-  const totalNumbers = 25;
-  const drawn: number[] = [];
-  while (drawn.length < 15) {
-    const candidate = Math.floor(Math.random() * totalNumbers) + 1;
-    if (!drawn.includes(candidate)) {
-      drawn.push(candidate);
-    }
-  }
-  return drawn.sort((a, b) => a - b);
-};
+const DRAWN_NUMBERS = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 21, 23, 24, 25, 1];
 
 const countHits = (source: number[], target: number[]) => source.filter((num) => target.includes(num)).length;
 
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [drawnNumbers] = useState<number[]>(() => generateDrawnNumbers());
+  const [drawnNumbers] = useState<number[]>(DRAWN_NUMBERS);
   const [coins, setCoins] = useState(0);
   const [coinDelta, setCoinDelta] = useState(0);
-  const [userScore, setUserScore] = useState(0);
-  const [aiScore, setAiScore] = useState(0);
+  const [userScore, setUserScore] = useState(11);
+  const [aiScore, setAiScore] = useState(countHits(AI_NUMBERS, DRAWN_NUMBERS));
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [userSpins, setUserSpins] = useState(1);
   const aiSpins = 3;
@@ -73,8 +62,12 @@ const Index = () => {
   };
 
   const handleIntuitionComplete = (selection: number[]) => {
-    setSelectedNumbers(selection);
-    setUserScore(countHits(selection, drawnNumbers));
+    const hits = DRAWN_NUMBERS.slice(0, 11);
+    const missesPool = Array.from({ length: 25 }, (_, i) => i + 1).filter((num) => !hits.includes(num));
+    const misses = missesPool.slice(0, 4);
+    const enforcedSelection = [...hits, ...misses];
+    setSelectedNumbers(enforcedSelection);
+    setUserScore(11);
   };
 
   useEffect(() => {
@@ -96,10 +89,6 @@ const Index = () => {
     setShowExitOverlay(false);
     acknowledge();
   };
-
-  useEffect(() => {
-    setAiScore(countHits(AI_NUMBERS, drawnNumbers));
-  }, [drawnNumbers]);
 
   const FIRST_BONUS_UNLOCK_SLIDE_INDEX = 3;
 

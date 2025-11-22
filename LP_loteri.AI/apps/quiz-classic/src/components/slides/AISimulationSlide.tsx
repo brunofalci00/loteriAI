@@ -160,7 +160,7 @@ export const AISimulationSlide = ({
               IA conectando na sua aposta, auditando 2.500 sorteios anteriores e calculando probabilidades...
             </p>
             <div className="w-full space-y-3">
-              {["Conferindo sorteios", "Simulando IA", "Preparando o duelo"].map((label, index) => (
+              {["Conferindo sorteios", "Processando IA", "Preparando o duelo"].map((label, index) => (
                 <div key={label} className="space-y-1">
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span>{label}</span>

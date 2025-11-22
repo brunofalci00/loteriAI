@@ -14,7 +14,7 @@ export const AISyncLoadingSlide = ({ onNext, userScore }: AISyncLoadingSlideProp
   const progressRef = useRef<number[]>([0, 0, 0]);
   const syncTimeline = [
     { icon: "1️⃣", label: "Seu jogo", description: `${userScore} pontos conferidos` },
-    { icon: "2️⃣", label: "IA ativa", description: "Mesmos números rodando na máquina" },
+    { icon: "2️⃣", label: "IA ativa", description: "Mesmos números rodando na IA" },
     { icon: "3️⃣", label: "Giro pronto", description: "Roleta carregada para você" },
   ];
 
