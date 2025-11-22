@@ -24,7 +24,7 @@ const countHits = (source: number[], target: number[]) => source.filter((num) =>
 
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [drawnNumbers] = useState<number[]>(DRAWN_NUMBERS);
+  const [drawnNumbers, setDrawnNumbers] = useState<number[]>(DRAWN_NUMBERS);
   const [coins, setCoins] = useState(0);
   const [coinDelta, setCoinDelta] = useState(0);
   const [userScore, setUserScore] = useState(11);
