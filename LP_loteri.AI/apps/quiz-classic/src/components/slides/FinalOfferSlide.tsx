@@ -26,16 +26,12 @@ export const FinalOfferSlide = ({ onCheckoutClick, onVideoPause, onVideoPlay }: 
   const handleWhatsAppClick = () => trackPixelEvent("WhatsAppSupportClick");
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => Math.max(prev - 1, 0));
-    }, 1000);
+    const timer = setInterval(() => setTimeLeft((prev) => Math.max(prev - 1, 0)), 1000);
     return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
-    if (timeLeft <= 20) {
-      setTickSpeedUp(true);
-    }
+    if (timeLeft <= 20) setTickSpeedUp(true);
   }, [timeLeft]);
 
   useEffect(() => {
@@ -166,9 +162,7 @@ export const FinalOfferSlide = ({ onCheckoutClick, onVideoPause, onVideoPlay }: 
                 {minutes}:{seconds}
               </p>
               {timeLeft <= 60 && (
-                <p className="text-xs text-destructive mt-2 animate-pulse">
-                  Depois disso, volta para {totalValue}.
-                </p>
+                <p className="text-xs text-destructive mt-2 animate-pulse">Depois disso, volta para {totalValue}.</p>
               )}
             </div>
           </div>
@@ -183,59 +177,6 @@ export const FinalOfferSlide = ({ onCheckoutClick, onVideoPause, onVideoPlay }: 
             Pague via PIX e receba automaticamente no seu WhatsApp em segundos. Sem enrolacao, sem risco.
           </p>
         </div>
-
-        <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border border-primary text-center glow-primary-strong pulse-glow space-y-4">
-          <p className="text-2xl font-bold text-foreground">💎 Oferta completa da LOTER.IA</p>
-          <div className="space-y-3 text-left text-sm sm:text-base">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Valor total (oferta + bonus)</span>
-              <span className="font-bold text-foreground text-xl">{totalValue}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Desconto reservado pela IA</span>
-              <span className="font-bold text-destructive bg-destructive/15 border border-destructive/50 px-3 py-1 rounded-full shadow-sm">
-                -{discountValue}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-foreground font-semibold">Voce paga hoje</span>
-              <span className="text-4xl sm:text-5xl font-black text-primary text-glow">{finalValue}</span>
-            </div>
-          </div>
-          <div className="rounded-xl border border-destructive/50 bg-destructive/10 text-destructive text-center px-4 py-3 font-semibold">
-            Economia total garantida: {discountValue}
-          </div>
-          <p className="text-sm text-muted-foreground">Pagamento unico, acesso por 12 meses, sem renovacao automatica.</p>
-
-          <div className="grid sm:grid-cols-2 gap-3 pt-4">
-            <Button
-              asChild
-              size="lg"
-              onClick={handleCheckoutClick}
-              className="w-full text-xl py-5 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
-            >
-              <a href={checkoutUrl} target="_blank" rel="noreferrer">
-                🚀 Garantir acesso por R$37,00
-              </a>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              className="w-full text-base py-5 bg-emerald-500 hover:bg-emerald-400 text-background font-bold shadow-2xl flex items-center justify-center gap-2 text-center leading-snug"
-            >
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center justify-center gap-2 whitespace-normal"
-                onClick={handleWhatsAppClick}
-              >
-                <MessageCircle className="w-5 h-5 flex-shrink-0" />
-                <span>🤝 Falar com especialista</span>
-              </a>
-            </Button>
-          </div>
-        </Card>
 
         <Card className="p-4 sm:p-5 border border-primary/30 bg-background/60 backdrop-blur-sm shadow-lg">
           <Carousel className="relative" opts={{ loop: true }}>
@@ -350,34 +291,6 @@ export const FinalOfferSlide = ({ onCheckoutClick, onVideoPause, onVideoPlay }: 
           </p>
         </Card>
 
-        <div className="text-center space-y-4">
-          <h2 className="heading-2">🎁 Voce vai receber:</h2>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          {bonuses.map((bonus) => (
-            <Card key={bonus.title} className="h-full bg-background border border-primary/30 overflow-hidden flex flex-col">
-              {bonus.image && (
-                <div className="relative aspect-[4/3] overflow-hidden border-b border-primary/20 bg-black/50">
-                  <img src={bonus.image} alt={bonus.title} className="w-full h-full object-contain bg-black/60 p-3" loading="lazy" />
-                </div>
-              )}
-              <div className="p-4 sm:p-5 flex flex-col gap-3 flex-1">
-                <div className="space-y-1">
-                  <p className="text-lg font-bold text-foreground">{bonus.title}</p>
-                  <p className="text-sm sm:text-base text-foreground font-semibold">{bonus.subtitle}</p>
-                </div>
-                <p className="text-sm sm:text-base text-muted-foreground flex-1">{bonus.body}</p>
-                {bonus.priceFrom && bonus.priceTo && (
-                  <div className="text-sm font-semibold text-primary">
-                    De {bonus.priceFrom} por <span className="text-foreground">{bonus.priceTo}</span>
-                  </div>
-                )}
-              </div>
-            </Card>
-          ))}
-        </div>
-
         <Card className="p-6 bg-primary/5 border border-primary/30">
           <div className="space-y-4 text-left">
             {benefits.map((benefit) => (
@@ -404,53 +317,6 @@ export const FinalOfferSlide = ({ onCheckoutClick, onVideoPause, onVideoPlay }: 
             ))}
           </div>
         </div>
-
-        <p className="text-center text-lg font-semibold text-foreground">
-          Clique no botao abaixo, finalize seu PIX e receba tudo na hora.
-        </p>
-
-        <Button
-          asChild
-          size="lg"
-          onClick={handleCheckoutClick}
-          className="w-full text-xl md:text-2xl py-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
-        >
-          <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            🚀 Garantir acesso por R$37,00
-          </a>
-        </Button>
-
-        <Button
-          asChild
-          size="lg"
-          className="w-full text-base md:text-xl py-6 px-4 bg-emerald-500 hover:bg-emerald-400 text-background font-bold shadow-2xl flex items-center justify-center gap-2 text-center leading-snug"
-        >
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center justify-center gap-2 whitespace-normal"
-            onClick={handleWhatsAppClick}
-          >
-            <MessageCircle className="w-5 h-5 flex-shrink-0" />
-            <span>🤝 Falar com especialista no WhatsApp</span>
-          </a>
-        </Button>
-
-        <Card className="p-5 sm:p-6 bg-emerald-900/40 border border-emerald-400/70 text-center space-y-3 shadow-lg">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-emerald-50">
-            <ShieldCheck className="w-8 h-8 text-emerald-100 drop-shadow" />
-            <div className="space-y-1">
-              <p className="text-lg sm:text-xl font-bold">Pagina oficial verificada</p>
-              <p className="text-sm sm:text-base text-emerald-100/80">Compra segura, pagamento protegido e suporte direto da equipe.</p>
-            </div>
-          </div>
-          <div className="grid sm:grid-cols-3 gap-2 text-sm sm:text-base text-emerald-50/90">
-            <div className="bg-emerald-800/50 border border-emerald-500/40 rounded-lg px-3 py-2 shadow-sm">✅ Protecao antifraude e reembolso em 7 dias</div>
-            <div className="bg-emerald-800/50 border border-emerald-500/40 rounded-lg px-3 py-2 shadow-sm">✅ Suporte oficial pelo WhatsApp apos a compra</div>
-            <div className="bg-emerald-800/50 border border-emerald-500/40 rounded-lg px-3 py-2 shadow-sm">✅ Pagina unica e autenticada: evite golpes</div>
-          </div>
-        </Card>
 
         <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground text-center">
           <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Compra segura" className="w-40 sm:w-52 mx-auto" />
