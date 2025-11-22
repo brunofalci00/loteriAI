@@ -17,7 +17,10 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
 
   useEffect(() => {
     setShowConfetti(true);
-    fanfareRef.current?.play().catch(() => undefined);
+    if (fanfareRef.current) {
+      fanfareRef.current.currentTime = 0;
+      fanfareRef.current.play().catch(() => undefined);
+    }
   }, [fanfareRef]);
 
   useEffect(() => {

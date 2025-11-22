@@ -32,8 +32,9 @@ const Index = () => {
   const [userSpins, setUserSpins] = useState(1);
   const aiSpins = 3;
   const [showExitOverlay, setShowExitOverlay] = useState(false);
+  const [bgStarted, setBgStarted] = useState(false);
   const { exitIntentTriggered, acknowledge } = useExitIntent(currentSlide > 0);
-  const backgroundMusicRef = useSoundEffect("/sounds/good-luck-353353.mp3", { loop: true, volume: 0.5, autoplay: true });
+  const backgroundMusicRef = useSoundEffect("/sounds/good-luck-353353.mp3", { loop: true, volume: 0.12, autoplay: false });
 
   const playBackgroundMusic = useCallback(() => {
     const audio = backgroundMusicRef.current;
@@ -81,9 +82,12 @@ const Index = () => {
   }, [exitIntentTriggered]);
 
   useEffect(() => {
-    playBackgroundMusic();
+    if (!bgStarted) {
+      playBackgroundMusic();
+      setBgStarted(true);
+    }
     return () => stopBackgroundMusic();
-  }, [playBackgroundMusic, stopBackgroundMusic]);
+  }, [bgStarted, playBackgroundMusic, stopBackgroundMusic]);
 
   const handleExitOverlayClose = () => {
     setShowExitOverlay(false);

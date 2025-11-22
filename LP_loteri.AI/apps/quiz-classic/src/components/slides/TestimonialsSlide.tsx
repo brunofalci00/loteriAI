@@ -49,7 +49,7 @@ export const TestimonialsSlide = ({ onNext, onVideoPause, onVideoPlay }: Testimo
           </p>
         </div>
 
-        <Card className="border-0 bg-gradient-to-r from-primary/10 to-gold/10 p-0 overflow-hidden">
+        <Card className="border border-primary/25 bg-background/70 p-0 overflow-hidden">
           <div className="relative mx-auto w-full max-w-md">
             <div className="rounded-2xl overflow-hidden border border-primary/20 bg-black">
               <video
@@ -60,18 +60,20 @@ export const TestimonialsSlide = ({ onNext, onVideoPause, onVideoPlay }: Testimo
                 muted={muted}
                 loop
                 playsInline
+                preload="metadata"
                 controls={!showOverlay}
                 onPause={handleVideoPause}
                 onEnded={handleVideoPause}
+                poster="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg"
               />
             </div>
             {showOverlay && (
               <button
                 type="button"
                 onClick={handleStartWithSound}
-                className="absolute inset-0 flex items-center justify-center bg-black/45 text-primary-foreground text-lg font-semibold rounded-2xl"
+                className="absolute inset-0 flex items-center justify-center bg-black/55 text-primary-foreground text-lg font-semibold rounded-2xl px-4 text-center"
               >
-                Clique para assistir com som
+                Toque para ouvir o depoimento
               </button>
             )}
           </div>

@@ -253,6 +253,87 @@ export const FinalOfferSlide = ({ onCheckoutClick, onVideoPause, onVideoPlay }: 
           </Carousel>
         </Card>
 
+        <div className="text-center space-y-4">
+          <h2 className="heading-2">🎁 Voce vai receber:</h2>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          {bonuses.map((bonus) => (
+            <Card key={bonus.title} className="h-full bg-background border border-primary/30 overflow-hidden flex flex-col">
+              {bonus.image && (
+                <div className="relative aspect-[4/3] overflow-hidden border-b border-primary/20 bg-black/50">
+                  <img src={bonus.image} alt={bonus.title} className="w-full h-full object-contain bg-black/60 p-3" loading="lazy" />
+                </div>
+              )}
+              <div className="p-4 sm:p-5 flex flex-col gap-3 flex-1">
+                <div className="space-y-1">
+                  <p className="text-lg font-bold text-foreground">{bonus.title}</p>
+                  <p className="text-sm sm:text-base text-foreground font-semibold">{bonus.subtitle}</p>
+                </div>
+                <p className="text-sm sm:text-base text-muted-foreground flex-1">{bonus.body}</p>
+                {bonus.priceFrom && bonus.priceTo && (
+                  <div className="text-sm font-semibold text-primary">
+                    De {bonus.priceFrom} por <span className="text-foreground">{bonus.priceTo}</span>
+                  </div>
+                )}
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border border-primary text-center glow-primary-strong pulse-glow space-y-4">
+          <p className="text-2xl font-bold text-foreground">💎 Oferta completa da LOTER.IA</p>
+          <div className="space-y-3 text-left text-sm sm:text-base">
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Valor total (oferta + bonus)</span>
+              <span className="font-bold text-foreground text-xl">{totalValue}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Desconto reservado pela IA</span>
+              <span className="font-bold text-destructive bg-destructive/15 border border-destructive/50 px-3 py-1 rounded-full shadow-sm">
+                -{discountValue}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-foreground font-semibold">Voce paga hoje</span>
+              <span className="text-4xl sm:text-5xl font-black text-primary text-glow">{finalValue}</span>
+            </div>
+          </div>
+          <div className="rounded-xl border border-destructive/50 bg-destructive/10 text-destructive text-center px-4 py-3 font-semibold">
+            Economia total garantida: {discountValue}
+          </div>
+          <p className="text-sm text-muted-foreground">Pagamento unico, acesso por 12 meses, sem renovacao automatica.</p>
+
+          <div className="grid sm:grid-cols-2 gap-3 pt-4">
+            <Button
+              asChild
+              size="lg"
+              onClick={handleCheckoutClick}
+              className="w-full text-xl py-5 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
+            >
+              <a href={checkoutUrl} target="_blank" rel="noreferrer">
+                🚀 Garantir acesso por R$37,00
+              </a>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              className="w-full text-base py-5 bg-emerald-500 hover:bg-emerald-400 text-background font-bold shadow-2xl flex items-center justify-center gap-2 text-center leading-snug"
+            >
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2 whitespace-normal"
+                onClick={handleWhatsAppClick}
+              >
+                <MessageCircle className="w-5 h-5 flex-shrink-0" />
+                <span>🤝 Falar com especialista</span>
+              </a>
+            </Button>
+          </div>
+        </Card>
+
         <div className="grid sm:grid-cols-2 gap-3">
           {trustPoints.map(({ icon: Icon, text }) => (
             <div key={text} className="flex items-center gap-3 p-3 rounded-lg border border-primary/25 bg-primary/5 shadow-sm">

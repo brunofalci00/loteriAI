@@ -15,6 +15,7 @@ export const MaxWinCelebrationSlide = ({ onNext }: MaxWinCelebrationSlideProps) 
     setShowConfetti(true);
     const jackpot = new Audio("/sounds/you-win-sequence-2-183949.mp3");
     jackpot.volume = 0.35;
+    jackpot.currentTime = 0;
     jackpot.play().catch(() => undefined);
   }, []);
 
