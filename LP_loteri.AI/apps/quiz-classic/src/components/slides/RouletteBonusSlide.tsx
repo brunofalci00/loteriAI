@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { trackPixelEvent } from "@/lib/analytics";
 
 interface RouletteBonusSlideProps {
@@ -19,6 +20,7 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
   const [isSpinning, setIsSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [hasSpun, setHasSpun] = useState(false);
+  const [showPrizeModal, setShowPrizeModal] = useState(false);
   const spinLoopRef = useRef<HTMLAudioElement | null>(null);
   type TimerHandle = ReturnType<typeof setTimeout>;
   const timersRef = useRef<TimerHandle[]>([]);
@@ -31,6 +33,9 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
     rain.volume = 0.2;
     rain.play().catch(() => undefined);
     trackPixelEvent("SlotMaxWin");
+    // Show modal after a short delay
+    const timer = setTimeout(() => setShowPrizeModal(true), 800);
+    return () => clearTimeout(timer);
   }, [result]);
 
   const handleClaimPrize = () => {
@@ -193,28 +198,41 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
               <li>🏆 MAX WIN: R$500 OFF (desconto maximo)</li>
               <li>🔕 Nao ganhou nada</li>
             </ul>
-
-            {result && (
-              <Card className="p-4 border border-primary/40 space-y-4">
-                <div className="space-y-2">
-                  <p className="meta-label text-primary">Resultado</p>
-                  <h3 className="heading-3 text-primary">MAX WIN desbloqueado!</h3>
-                  <p className="text-sm sm:text-base text-foreground font-semibold">
-                    Voce ganhou R$500 de desconto para ativar a LOTER.IA agora.
-                  </p>
-                  <p className="text-sm text-muted-foreground">Aproveite enquanto o painel esta aberto.</p>
-                </div>
-                <Button
-                  onClick={handleClaimPrize}
-                  size="lg"
-                  className="w-full text-base sm:text-xl py-4 sm:py-5 bg-gold hover:bg-gold/90 text-background font-bold pulse-glow"
-                >
-                  🏆 Resgatar meu prêmio
-                </Button>
-              </Card>
-            )}
           </div>
         </div>
+
+        <Dialog open={showPrizeModal} onOpenChange={setShowPrizeModal}>
+          <DialogContent className="max-w-md text-center space-y-6 border-gold bg-gradient-to-br from-background to-gold/10">
+            <DialogHeader>
+              <DialogTitle className="text-3xl font-black text-gold flex items-center justify-center gap-2">
+                🏆 MAX WIN Desbloqueado!
+              </DialogTitle>
+              <DialogDescription className="text-lg text-foreground font-semibold">
+                Parabéns! Você ganhou o prêmio máximo!
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="text-center space-y-2">
+                <p className="text-5xl font-black text-gold animate-pulse">R$500 OFF</p>
+                <p className="text-base text-muted-foreground">
+                  Desconto exclusivo para ativar a LOTER.IA agora
+                </p>
+              </div>
+              <div className="bg-primary/10 rounded-lg p-4 text-sm text-muted-foreground">
+                ⚠️ Este desconto fica reservado somente enquanto o painel estiver aberto. Aproveite agora!
+              </div>
+            </div>
+            <DialogFooter className="sm:justify-center">
+              <Button
+                onClick={handleClaimPrize}
+                size="lg"
+                className="w-full text-xl py-6 bg-gold hover:bg-gold/90 text-background font-bold pulse-glow shadow-[0_0_40px_rgba(250,204,21,0.4)]"
+              >
+                🏆 Resgatar meu prêmio
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

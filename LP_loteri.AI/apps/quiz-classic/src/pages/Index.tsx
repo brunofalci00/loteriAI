@@ -51,21 +51,26 @@ const Index = () => {
     // Keep user's real selection
     setSelectedNumbers(selection);
 
-    // Manipulate drawnNumbers to ensure user gets exactly 11 hits
-    // Take 11 random numbers from user's selection
+    // Strategy: Create 15 drawn numbers that guarantee:
+    // - User hits exactly 11 (from their 15 selected)
+    // - AI hits exactly 14 (from AI_NUMBERS)
+
+    // Step 1: Pick 11 random numbers from user's selection (user will hit these)
     const shuffledUserNumbers = [...selection].sort(() => Math.random() - 0.5);
     const userHits = shuffledUserNumbers.slice(0, 11);
 
-    // Take 14 random numbers from AI's numbers
-    const shuffledAINumbers = [...AI_NUMBERS].sort(() => Math.random() - 0.5);
-    const aiHits = shuffledAINumbers.slice(0, 14);
+    // Step 2: From AI_NUMBERS, pick numbers that overlap with userHits
+    const aiNumbersInUserHits = AI_NUMBERS.filter((num) => userHits.includes(num));
 
-    // Combine both hits, remove duplicates, and fill with random numbers to reach 15
-    const combinedHits = [...new Set([...userHits, ...aiHits])];
-    const allNumbers = Array.from({ length: 25 }, (_, i) => i + 1);
-    const remainingNumbers = allNumbers.filter((num) => !combinedHits.includes(num));
-    const shuffledRemaining = [...remainingNumbers].sort(() => Math.random() - 0.5);
-    const finalDrawn = [...combinedHits, ...shuffledRemaining].slice(0, 15);
+    // Step 3: Pick additional AI numbers (not in userHits) to reach 14 total AI hits
+    const aiNumbersNotInUserHits = AI_NUMBERS.filter((num) => !userHits.includes(num));
+    const shuffledAIExtra = [...aiNumbersNotInUserHits].sort(() => Math.random() - 0.5);
+    const neededAINumbers = 14 - aiNumbersInUserHits.length;
+    const aiExtraHits = shuffledAIExtra.slice(0, neededAINumbers);
+
+    // Step 4: Combine to create final 15 drawn numbers
+    // = userHits (11) + aiExtraHits (4 max, to reach 15 total)
+    const finalDrawn = [...userHits, ...aiExtraHits].slice(0, 15);
 
     setDrawnNumbers(finalDrawn);
     setUserScore(11);

@@ -32,7 +32,7 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
     if (!backgroundMusicRef.current) {
       const audio = new Audio("/sounds/good-luck-353353.mp3");
       audio.loop = true;
-      audio.volume = 0.08;
+      audio.volume = 0.04;
       backgroundMusicRef.current = audio;
     }
 
