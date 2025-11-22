@@ -230,7 +230,7 @@ export const AISimulationSlide = ({
                   </div>
                 </div>
                 <div className="space-y-2 text-center text-sm text-muted-foreground">
-                  <p>A IA fez {aiScore} pontos com os mesmos números. Você ficou nos {userScore}.</p>
+              <p>A IA fez {aiScore} pontos com os mesmos números. Você ficou nos {userScore}.</p>
                   <p>Com isso ela liberou um giro para você resgatar o desconto.</p>
                 </div>
                 {showSpinReveal && (
