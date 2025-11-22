@@ -59,53 +59,23 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers, drawnNumbe
             </div>
           ) : (
             <>
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground uppercase">Placar sem IA</p>
-                <p className="text-[clamp(2.5rem,8vw,4rem)] font-black text-primary">{userScore} pontos</p>
-                <p className="text-sm text-muted-foreground">É aqui que você ficaria se entrasse com este jogo agora.</p>
-              </div>
-
-              <div className="bg-secondary rounded-2xl p-4 text-left space-y-3">
-                <p className="text-xs text-muted-foreground uppercase mb-2">Seus números</p>
-                {hasSelection ? (
-                  <>
-                    <div className="flex flex-wrap gap-2 justify-center">
-                      {selectedNumbers.map((num) => (
-                        <span key={num} className="px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold text-sm">
-                          {num}
-                        </span>
-                      ))}
-                    </div>
+              <div className="space-y-4">
                 <div className="space-y-2">
-                  <p className="text-xs text-muted-foreground uppercase">Sorteio desta rodada</p>
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {drawnNumbers.map((num) => {
-                      const isHit = userHits.includes(num);
-                      return (
-                        <span
-                          key={num}
-                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            isHit ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40" : "bg-muted text-muted-foreground"
-                          }`}
-                        >
-                          {num} {isHit ? "✔️" : "✖️"}
-                        </span>
-                      );
-                    })}
-                  </div>
-                  <p className="text-sm text-muted-foreground text-center">
-                    Você acertou {userHits.length} e errou {userMisses.length} neste cenário.
+                  <p className="text-sm text-muted-foreground uppercase">Placar sem IA</p>
+                  <p className="text-[clamp(2.5rem,8vw,4rem)] font-black text-primary">{userScore} pontos</p>
+                  <p className="text-sm text-muted-foreground">É aqui que você ficaria se entrasse com este jogo agora.</p>
+                </div>
+
+                <div className="bg-secondary/50 rounded-2xl p-4 text-center">
+                  <p className="text-base sm:text-lg text-foreground font-semibold">
+                    Você acertou {userScore} números neste cenário
                   </p>
                 </div>
-              </>
-            ) : (
-                  <p className="text-sm text-muted-foreground text-center">Seus números aparecerão aqui ao fim da rodada.</p>
-                )}
-              </div>
 
-              <p className="text-sm text-muted-foreground text-center">
-                Toque no botão abaixo para ver a mesma aposta com a IA trabalhando a seu favor.
-              </p>
+                <p className="text-sm text-muted-foreground text-center">
+                  Toque no botão abaixo para ver a mesma aposta com a IA trabalhando a seu favor.
+                </p>
+              </div>
 
               <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 sm:py-6">
                 Ver a IA jogando agora

@@ -199,47 +199,6 @@ export const AISimulationSlide = ({
             </div>
             {verdictReady ? (
               <>
-                <div className="space-y-4">
-                  <div className="bg-secondary/50 rounded-2xl p-4 space-y-2">
-                    <p className="text-xs text-muted-foreground uppercase">Seus números</p>
-                    <div className="flex flex-wrap gap-2 justify-center">
-                      {userNumbers.map((num) => (
-                        <span key={num} className="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-400/40 font-semibold text-sm">
-                          {num}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="bg-secondary/50 rounded-2xl p-4 space-y-2">
-                    <p className="text-xs text-muted-foreground uppercase">Números da IA</p>
-                    <div className="flex flex-wrap gap-2 justify-center">
-                      {aiNumbers.map((num) => (
-                        <span key={num} className="px-3 py-1 rounded-full bg-primary/15 text-primary border border-primary/40 font-semibold text-sm">
-                          {num}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground text-center">Sorteio desta rodada</p>
-                    <div className="flex flex-wrap gap-2 justify-center">
-                      {drawnNumbers.map((num) => {
-                        const aiHit = aiHits.includes(num);
-                        const userHit = userHits.includes(num);
-                        return (
-                          <span
-                            key={num}
-                            className={`px-3 py-1 rounded-full text-sm font-semibold border ${
-                              aiHit ? "bg-primary/20 text-primary border-primary/50" : userHit ? "bg-emerald-500/15 text-emerald-300 border-emerald-400/40" : "bg-muted text-muted-foreground border-border"
-                            }`}
-                          >
-                            {num} {aiHit ? "🤖" : userHit ? "✔️" : "✖️"}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
                 <div className="scoreboard">
                   <div className="scoreboard__side">
                     <p className="text-xs text-muted-foreground uppercase">Você</p>
@@ -251,9 +210,15 @@ export const AISimulationSlide = ({
                     <p className="scoreboard__value scoreboard__value--win">{aiScore}</p>
                   </div>
                 </div>
-                <div className="space-y-2 text-center text-sm text-muted-foreground">
-              <p>A IA fez {aiScore} pontos com os mesmos números. Você ficou nos {userScore}.</p>
-                  <p>Com isso ela liberou um giro para você resgatar o desconto.</p>
+                <div className="space-y-3 text-center">
+                  <div className="bg-secondary/50 rounded-2xl p-4">
+                    <p className="text-base sm:text-lg text-foreground font-semibold">
+                      A IA acertou {aiScore} números. Você acertou {userScore}.
+                    </p>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Com essa vantagem, a IA liberou um giro para você resgatar o desconto.
+                  </p>
                 </div>
                 {showSpinReveal && (
                   <div className="bg-secondary rounded-2xl p-4 border border-primary/20 text-sm text-left sm:text-center space-y-1">
