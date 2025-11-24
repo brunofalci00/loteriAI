@@ -4,11 +4,9 @@ import { Card } from "@/components/ui/card";
 
 interface TestimonialsSlideProps {
   onNext: () => void;
-  onVideoPlay?: () => void;
-  onVideoPause?: () => void;
 }
 
-export const TestimonialsSlide = ({ onNext, onVideoPause, onVideoPlay }: TestimonialsSlideProps) => {
+export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [muted, setMuted] = useState(true);
   const [showOverlay, setShowOverlay] = useState(true);
@@ -20,17 +18,11 @@ export const TestimonialsSlide = ({ onNext, onVideoPause, onVideoPlay }: Testimo
     videoRef.current.currentTime = 0;
     videoRef.current.muted = false;
     videoRef.current.play().catch(() => undefined);
-    onVideoPlay?.();
   };
-
-  const handleVideoPause = () => onVideoPause?.();
 
   useEffect(() => {
     videoRef.current?.play().catch(() => undefined);
-    return () => {
-      onVideoPause?.();
-    };
-  }, [onVideoPause]);
+  }, []);
 
   return (
     <div className="slide-shell relative">
@@ -62,8 +54,6 @@ export const TestimonialsSlide = ({ onNext, onVideoPause, onVideoPlay }: Testimo
                 playsInline
                 preload="metadata"
                 controls={!showOverlay}
-                onPause={handleVideoPause}
-                onEnded={handleVideoPause}
                 poster="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg"
               />
             </div>

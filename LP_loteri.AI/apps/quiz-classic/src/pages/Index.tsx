@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CoinCounter } from "@/components/CoinCounter";
-import { AudioToggle } from "@/components/AudioToggle";
 import { ExitIntentOverlay } from "@/components/ExitIntentOverlay";
 import { EntrySlide } from "@/components/slides/EntrySlide";
 import { QuizSlide } from "@/components/slides/QuizSlide";
@@ -15,7 +14,6 @@ import { RouletteBonusSlide } from "@/components/slides/RouletteBonusSlide";
 import { MaxWinCelebrationSlide } from "@/components/slides/MaxWinCelebrationSlide";
 import { FinalOfferSlide } from "@/components/slides/FinalOfferSlide";
 import { useExitIntent } from "@/hooks/useExitIntent";
-import { useAudio } from "@/contexts/AudioContext";
 
 const AI_NUMBERS = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 21, 23, 24, 25, 3];
 const DRAWN_NUMBERS = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 21, 23, 24, 25, 1];
@@ -36,7 +34,6 @@ const Index = () => {
   const [shouldPlayMaxWinSound, setShouldPlayMaxWinSound] = useState(false);
   const [shouldPlayMapSound, setShouldPlayMapSound] = useState(false);
   const { exitIntentTriggered, acknowledge } = useExitIntent(currentSlide > 0);
-  const { pauseBackgroundMusic, playBackgroundMusic, stopBackgroundMusic } = useAudio();
 
   const handleCoinsEarned = (amount: number) => {
     setCoins((prev) => prev + amount);
@@ -126,25 +123,14 @@ const Index = () => {
       onMaxWinClick={() => setShouldPlayMaxWinSound(true)}
     />,
     <MaxWinCelebrationSlide key="max-win" onNext={handleNext} playWinSound={shouldPlayMaxWinSound} />,
-    <TestimonialsSlide
-      key="testimonials"
-      onNext={handleNext}
-      onVideoPlay={pauseBackgroundMusic}
-      onVideoPause={playBackgroundMusic}
-    />,
-    <FinalOfferSlide
-      key="final-offer"
-      onCheckoutClick={stopBackgroundMusic}
-      onVideoPlay={pauseBackgroundMusic}
-      onVideoPause={playBackgroundMusic}
-    />,
+    <TestimonialsSlide key="testimonials" onNext={handleNext} />,
+    <FinalOfferSlide key="final-offer" />,
   ];
 
   const shouldShowCoinCounter = currentSlide > 0 && currentSlide <= FIRST_BONUS_UNLOCK_SLIDE_INDEX;
 
   return (
     <div className="relative overflow-x-hidden">
-      <AudioToggle />
       {shouldShowCoinCounter && <CoinCounter coins={coins} delta={coinDelta} />}
       {slides[currentSlide]}
       <ExitIntentOverlay open={showExitOverlay} onStay={handleExitOverlayClose} />

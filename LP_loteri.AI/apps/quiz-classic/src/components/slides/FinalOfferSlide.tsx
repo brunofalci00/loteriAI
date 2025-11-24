@@ -7,11 +7,9 @@ import { trackPixelEvent } from "@/lib/analytics";
 
 interface FinalOfferSlideProps {
   onCheckoutClick?: () => void;
-  onVideoPlay?: () => void;
-  onVideoPause?: () => void;
 }
 
-export const FinalOfferSlide = ({ onCheckoutClick, onVideoPause, onVideoPlay }: FinalOfferSlideProps) => {
+export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
   const checkoutUrl = "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
   const whatsappUrl = "https://wa.me/5511993371766";
   const [timeLeft, setTimeLeft] = useState(3 * 60);
@@ -38,12 +36,6 @@ export const FinalOfferSlide = ({ onCheckoutClick, onVideoPause, onVideoPlay }: 
     videoRef.current?.play().catch(() => undefined);
   }, []);
 
-  useEffect(() => {
-    return () => {
-      onVideoPause?.();
-    };
-  }, [onVideoPause]);
-
   const toggleAudio = () => {
     if (!videoRef.current) return;
     const nextMuted = !isMuted;
@@ -53,11 +45,6 @@ export const FinalOfferSlide = ({ onCheckoutClick, onVideoPause, onVideoPlay }: 
       videoRef.current.play().catch(() => undefined);
     }
     setIsMuted(nextMuted);
-    if (!nextMuted) {
-      onVideoPlay?.();
-    } else {
-      onVideoPause?.();
-    }
   };
 
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
