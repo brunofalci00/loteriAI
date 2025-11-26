@@ -9,18 +9,21 @@ import { ShoppingCart } from "lucide-react";
 import logo from "@/assets/logo-loterai.png";
 import { supabase } from "@/integrations/supabase/client";
 
+const SUPABASE_URL = "https://aaqthgqsuhyagsrlnyqk.supabase.co";
+
 const CreatePasswordPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPurchaseWarning, setShowPurchaseWarning] = useState(false);
-  const [validatingEmail, setValidatingEmail] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const validateAndCreatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMessage("");
 
     try {
       // Validação básica
@@ -42,82 +45,39 @@ const CreatePasswordPage = () => {
         return;
       }
 
-      // Valida se email tem compra registrada
-      setValidatingEmail(true);
-      const { data: payments, error: paymentError } = await supabase
-        .from("payments")
-        .select("id, user_id")
-        .eq("customer_email", email.toLowerCase().trim())
-        .eq("status", "active")
-        .limit(1);
-
-      if (paymentError) {
-        console.error("Erro ao validar pagamento:", paymentError);
-        throw paymentError;
-      }
-
-      if (!payments || payments.length === 0) {
-        // Email não tem compra ativa
-        setShowPurchaseWarning(true);
-        setValidatingEmail(false);
-        setIsLoading(false);
-        return;
-      }
-
-      // Email tem compra ativa - permite criar senha
-      const paymentRecord = payments[0];
-      const existingUserId = paymentRecord.user_id;
-
-      // Verifica se usuário já existe no Supabase Auth
-      const { data: existingUsers } = await supabase.auth.admin.listUsers();
-      const userExists = existingUsers?.users.find(
-        (u) => u.email?.toLowerCase() === email.toLowerCase()
-      );
-
-      let userId = existingUserId;
-
-      if (!userExists && existingUserId) {
-        // Usuário já está na tabela de pagamentos mas não no Auth
-        // Tenta atualizar sua senha diretamente
-        const { error: updateError } = await supabase.auth.admin.updateUserById(
-          existingUserId,
-          { password }
-        );
-
-        if (updateError) {
-          console.error("Erro ao atualizar senha:", updateError);
-          throw updateError;
-        }
-      } else if (!userExists) {
-        // Criar novo usuário (caso não exista em nenhum lugar)
-        const { data: newUser, error: authError } =
-          await supabase.auth.admin.createUser({
+      // Chama a Edge Function para criar a senha (usa service role key no servidor)
+      const response = await fetch(
+        `${SUPABASE_URL}/functions/v1/create-password-direct`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
             email: email.toLowerCase().trim(),
             password,
-            email_confirm: true,
-            user_metadata: {
-              full_name: email.split("@")[0],
-              created_via: "password_creation_page",
-            },
-          });
-
-        if (authError) {
-          console.error("Erro ao criar usuário:", authError);
-          throw authError;
+          }),
         }
+      );
 
-        userId = newUser.user.id;
+      const data = await response.json();
 
-        // Atualiza o registro de pagamento com o novo user_id
-        if (paymentRecord.id) {
-          await supabase
-            .from("payments")
-            .update({ user_id: userId })
-            .eq("id", paymentRecord.id);
+      if (!data.success) {
+        // Verifica se é erro de email não encontrado ou pagamento não encontrado
+        const errorMsg = data.error || "Erro ao criar senha";
+        if (
+          errorMsg.includes("Email não encontrado") ||
+          errorMsg.includes("Nenhum pagamento ativo")
+        ) {
+          setShowPurchaseWarning(true);
+          setErrorMessage(errorMsg);
+          setIsLoading(false);
+          return;
         }
+        throw new Error(errorMsg);
       }
 
-      // Faz login automático
+      // Sucesso - faz login automático
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: email.toLowerCase().trim(),
         password,
@@ -125,10 +85,15 @@ const CreatePasswordPage = () => {
 
       if (signInError) {
         console.error("Erro ao fazer login:", signInError);
-        throw signInError;
+        // Mesmo se falhar o login automático, a senha foi criada
+        toast.success("Senha criada com sucesso! Faça login para continuar.");
+        setTimeout(() => {
+          navigate("/auth");
+        }, 1500);
+        return;
       }
 
-      toast.success("Senha criada com sucesso! Bem-vindo ao loter.AI! 🎉");
+      toast.success("Senha criada com sucesso! Bem-vindo ao loter.AI!");
 
       // Aguarda um pouco e redireciona
       setTimeout(() => {
@@ -141,7 +106,6 @@ const CreatePasswordPage = () => {
       toast.error(message);
     } finally {
       setIsLoading(false);
-      setValidatingEmail(false);
     }
   };
 
@@ -227,16 +191,12 @@ const CreatePasswordPage = () => {
                 variant="hero"
                 className="w-full"
                 size="lg"
-                disabled={isLoading || validatingEmail}
+                disabled={isLoading}
               >
-                {isLoading || validatingEmail ? (
+                {isLoading ? (
                   <div className="flex items-center gap-2">
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                    <span>
-                      {validatingEmail
-                        ? "Validando email..."
-                        : "Processando..."}
-                    </span>
+                    <span>Criando acesso...</span>
                   </div>
                 ) : (
                   "Criar Senha e Acessar"
@@ -247,7 +207,7 @@ const CreatePasswordPage = () => {
             <div className="space-y-4">
               <div className="rounded-lg bg-amber-50 border border-amber-200 p-4">
                 <p className="text-sm text-amber-900">
-                  😢 Não encontramos uma compra ativa para este email.
+                  {errorMessage || "😢 Não encontramos uma compra ativa para este email."}
                 </p>
                 <p className="text-xs text-amber-800 mt-2">
                   Se você comprou recentemente, talvez ainda não tenha processado.
@@ -258,6 +218,7 @@ const CreatePasswordPage = () => {
               <Button
                 onClick={() => {
                   setShowPurchaseWarning(false);
+                  setErrorMessage("");
                   setEmail("");
                   setPassword("");
                   setConfirmPassword("");
