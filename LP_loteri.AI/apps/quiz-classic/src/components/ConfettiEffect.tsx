@@ -28,16 +28,17 @@ const emojiBurst = ["🔥", "🎉", "💰", "✨", "🪙", "⚡"];
 interface ConfettiEffectProps {
   trigger: boolean;
   variant?: ConfettiVariant;
+  intensity?: "normal" | "big";
 }
 
-export const ConfettiEffect = ({ trigger, variant = "standard" }: ConfettiEffectProps) => {
+export const ConfettiEffect = ({ trigger, variant = "standard", intensity = "normal" }: ConfettiEffectProps) => {
   const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
     if (!trigger) return;
 
     const isEmojiVariant = variant === "emoji-rain";
-    const totalParticles = isEmojiVariant ? 90 : 50;
+    const totalParticles = isEmojiVariant ? (intensity === "big" ? 140 : 90) : intensity === "big" ? 90 : 50;
 
     const newParticles: Particle[] = Array.from({ length: totalParticles }, (_, index) => {
       const isEmoji = isEmojiVariant && index % 3 === 0;

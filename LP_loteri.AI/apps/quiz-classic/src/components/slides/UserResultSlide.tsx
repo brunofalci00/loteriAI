@@ -8,12 +8,17 @@ interface UserResultSlideProps {
   onNext: () => void;
   userScore: number;
   selectedNumbers: number[];
+  drawnNumbers: number[];
 }
 
-export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResultSlideProps) => {
+export const UserResultSlide = ({ onNext, userScore, selectedNumbers, drawnNumbers }: UserResultSlideProps) => {
   const hasSelection = selectedNumbers.length > 0;
   const [showResult, setShowResult] = useState(false);
   const manualResultSoundRef = useRef<HTMLAudioElement | null>(null);
+
+  // Calculate real hits and misses from user's actual selection
+  const userHits = selectedNumbers.filter((num) => drawnNumbers.includes(num));
+  const userMisses = selectedNumbers.filter((num) => !drawnNumbers.includes(num));
 
   useEffect(() => {
     const timer = setTimeout(() => setShowResult(true), 3200);
@@ -46,7 +51,7 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
           </p>
         </div>
 
-        <Card className="p-5 sm:p-6 space-y-6 border border-border">
+        <Card className="p-5 sm:p-6 space-y-6 border border-emerald-400/60 bg-emerald-950/50">
           {!showResult ? (
             <div className="flex flex-col items-center gap-3 py-6">
               <Loader2 className="w-10 h-10 text-primary animate-spin" />
@@ -54,30 +59,23 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
             </div>
           ) : (
             <>
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground uppercase">Placar sem IA</p>
-                <p className="text-[clamp(2.5rem,8vw,4rem)] font-black text-primary">{userScore} pontos</p>
-                <p className="text-sm text-muted-foreground">É aqui que você ficaria se entrasse com este jogo agora.</p>
-              </div>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground uppercase">Placar sem IA</p>
+                  <p className="text-[clamp(2.5rem,8vw,4rem)] font-black text-primary">{userScore} pontos</p>
+                  <p className="text-sm text-muted-foreground">É aqui que você ficaria se entrasse com este jogo agora.</p>
+                </div>
 
-              <div className="bg-secondary rounded-2xl p-4 text-left">
-                <p className="text-xs text-muted-foreground uppercase mb-2">Seus números</p>
-                {hasSelection ? (
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {selectedNumbers.map((num) => (
-                      <span key={num} className="px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold text-sm">
-                        {num}
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground text-center">Seus números aparecerão aqui ao fim da rodada.</p>
-                )}
-              </div>
+                <div className="bg-secondary/50 rounded-2xl p-4 text-center">
+                  <p className="text-base sm:text-lg text-foreground font-semibold">
+                    Você acertou {userScore} números neste cenário
+                  </p>
+                </div>
 
-              <p className="text-sm text-muted-foreground text-center">
-                Toque no botão abaixo para ver a mesma aposta com a IA trabalhando a seu favor.
-              </p>
+                <p className="text-sm text-muted-foreground text-center">
+                  Toque no botão abaixo para ver a mesma aposta com a IA trabalhando a seu favor.
+                </p>
+              </div>
 
               <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 sm:py-6">
                 Ver a IA jogando agora

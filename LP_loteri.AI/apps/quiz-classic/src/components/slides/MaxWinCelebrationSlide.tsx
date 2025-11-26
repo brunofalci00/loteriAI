@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ConfettiEffect } from "@/components/ConfettiEffect";
@@ -6,21 +6,32 @@ import { trackPixelEvent } from "@/lib/analytics";
 
 interface MaxWinCelebrationSlideProps {
   onNext: () => void;
+  playWinSound?: boolean;
 }
 
-export const MaxWinCelebrationSlide = ({ onNext }: MaxWinCelebrationSlideProps) => {
+export const MaxWinCelebrationSlide = ({ onNext, playWinSound }: MaxWinCelebrationSlideProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setShowConfetti(true);
-    const jackpot = new Audio("/sounds/winning-alt.mp3");
-    jackpot.volume = 0.3;
-    jackpot.play().catch(() => undefined);
-  }, []);
+
+    // Only play sound if triggered by user interaction (from previous slide button click)
+    if (playWinSound) {
+      audioRef.current = new Audio("/sounds/you-win-sequence-2-183949.mp3");
+      audioRef.current.volume = 0.35;
+      audioRef.current.play().catch(() => undefined);
+    }
+
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    };
+  }, [playWinSound]);
 
   return (
     <div className="slide-shell relative overflow-hidden">
-      <ConfettiEffect trigger={showConfetti} />
+      <ConfettiEffect trigger={showConfetti} variant="emoji-rain" intensity="big" />
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/60 via-transparent to-amber-900/60 blur-3xl" />
       <div className="slide-frame space-y-8 text-center relative z-10">
         <div className="space-y-3">

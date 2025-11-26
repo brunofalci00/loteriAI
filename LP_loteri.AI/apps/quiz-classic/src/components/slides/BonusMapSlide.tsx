@@ -1,24 +1,35 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ConfettiEffect } from "@/components/ConfettiEffect";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 interface BonusMapSlideProps {
   onNext: () => void;
+  playMapSound?: boolean;
 }
 
-export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
+export const BonusMapSlide = ({ onNext, playMapSound }: BonusMapSlideProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showNextStepModal, setShowNextStepModal] = useState(false);
   const [coinStage, setCoinStage] = useState<"stack" | "travel" | "spent">("stack");
-  const fanfareRef = useSoundEffect("/sounds/winning-unlock.mp3", { autoplay: false, volume: 0.3 });
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setShowConfetti(true);
-    fanfareRef.current?.play().catch(() => undefined);
-  }, [fanfareRef]);
+
+    // Only play sound if triggered by user interaction (from previous slide)
+    if (playMapSound) {
+      audioRef.current = new Audio("/sounds/you-win-sequence-2-183949.mp3");
+      audioRef.current.volume = 0.35;
+      audioRef.current.play().catch(() => undefined);
+    }
+
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    };
+  }, [playMapSound]);
 
   useEffect(() => {
     const timers = [

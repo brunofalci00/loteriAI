@@ -8,21 +8,34 @@ interface AISimulationSlideProps {
   onNext: () => void;
   userScore: number;
   aiScore: number;
+  userNumbers: number[];
+  aiNumbers: number[];
+  drawnNumbers: number[];
   userSpins: number;
   aiSpins: number;
 }
 
 type Phase = "scan" | "selection" | "verdict";
 
-const AI_NUMBERS = [3, 5, 7, 9, 11, 13, 15, 17, 18, 19, 20, 21, 23, 24, 25];
-export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpins }: AISimulationSlideProps) => {
+export const AISimulationSlide = ({
+  onNext,
+  userScore,
+  aiScore,
+  userNumbers,
+  aiNumbers,
+  drawnNumbers,
+  userSpins,
+  aiSpins,
+}: AISimulationSlideProps) => {
   const [phase, setPhase] = useState<Phase>("scan");
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [verdictReady, setVerdictReady] = useState(false);
   const [showSpinReveal, setShowSpinReveal] = useState(false);
+  const [, forceRender] = useState(0);
   const processingRef = useRef<HTMLAudioElement | null>(null);
   const aiSelectSoundRef = useRef<HTMLAudioElement | null>(null);
   const aiResultSoundRef = useRef<HTMLAudioElement | null>(null);
+  const loadingSteps = useRef<number[]>([0, 0, 0]);
 
   useEffect(() => {
     processingRef.current = new Audio("/sounds/processing-loop.mp3");
@@ -47,31 +60,31 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
 
   useEffect(() => {
     const selectionDelay = 3200;
-    const verdictDelay = selectionDelay + AI_NUMBERS.length * 320 + 2400;
+    const verdictDelay = selectionDelay + aiNumbers.length * 320 + 2400;
     const timers = [
       setTimeout(() => setPhase("selection"), selectionDelay),
       setTimeout(() => setPhase("verdict"), verdictDelay),
     ];
     return () => timers.forEach(clearTimeout);
-  }, []);
+  }, [aiNumbers.length]);
 
   useEffect(() => {
     if (phase !== "selection") return;
     setSelectedNumbers([]);
     let index = 0;
     const timer = setInterval(() => {
-      setSelectedNumbers((prev) => [...prev, AI_NUMBERS[index]]);
+      setSelectedNumbers((prev) => [...prev, aiNumbers[index]]);
       if (aiSelectSoundRef.current) {
         aiSelectSoundRef.current.currentTime = 0;
         aiSelectSoundRef.current.play().catch(() => undefined);
       }
       index += 1;
-      if (index >= AI_NUMBERS.length) {
+      if (index >= aiNumbers.length) {
         clearInterval(timer);
       }
     }, 320);
     return () => clearInterval(timer);
-  }, [phase]);
+  }, [aiNumbers, phase]);
 
   useEffect(() => {
     if (phase !== "verdict") return;
@@ -91,6 +104,34 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
   }, [verdictReady, userScore, aiScore]);
 
   const allNumbers = Array.from({ length: 25 }, (_, i) => i + 1);
+  const aiHits = aiNumbers.filter((num) => drawnNumbers.includes(num));
+  const userHits = userNumbers.filter((num) => drawnNumbers.includes(num));
+
+  useEffect(() => {
+    const stepDuration = 1400;
+    const tick = 120;
+    let activeStep = 0;
+    let elapsed = 0;
+    const interval = setInterval(() => {
+      elapsed += tick;
+      const pct = Math.min(100, Math.round((elapsed / stepDuration) * 100));
+      loadingSteps.current = loadingSteps.current.map((value, index) => {
+        if (index < activeStep) return 100;
+        if (index === activeStep) return pct;
+        return value;
+      });
+      forceRender((v) => v + 1);
+      if (pct >= 100) {
+        activeStep += 1;
+        elapsed = 0;
+        if (activeStep >= loadingSteps.current.length) {
+          clearInterval(interval);
+        }
+      }
+    }, tick);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="slide-shell relative">
@@ -118,6 +159,22 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
             <p className="text-center text-sm text-muted-foreground">
               IA conectando na sua aposta, auditando 2.500 sorteios anteriores e calculando probabilidades...
             </p>
+            <div className="w-full space-y-3">
+              {["Conferindo sorteios", "Processando IA", "Preparando o duelo"].map((label, index) => (
+                <div key={label} className="space-y-1">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{label}</span>
+                    <span>{loadingSteps.current[index]}%</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-muted/50 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-primary"
+                      style={{ width: `${loadingSteps.current[index]}%`, transition: "width 0.2s ease" }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
           </Card>
         )}
 
@@ -153,9 +210,15 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
                     <p className="scoreboard__value scoreboard__value--win">{aiScore}</p>
                   </div>
                 </div>
-                <div className="space-y-2 text-center text-sm text-muted-foreground">
-                  <p>A IA fez {aiScore} pontos com os mesmos números. Você ficou nos {userScore}.</p>
-                  <p>Com isso ela liberou um giro para você resgatar o desconto.</p>
+                <div className="space-y-3 text-center">
+                  <div className="bg-secondary/50 rounded-2xl p-4">
+                    <p className="text-base sm:text-lg text-foreground font-semibold">
+                      A IA acertou {aiScore} números. Você acertou {userScore}.
+                    </p>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Com essa vantagem, a IA liberou um giro para você resgatar o desconto.
+                  </p>
                 </div>
                 {showSpinReveal && (
                   <div className="bg-secondary rounded-2xl p-4 border border-primary/20 text-sm text-left sm:text-center space-y-1">

@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Clock, MessageCircle, Volume2, VolumeX } from "lucide-react";
+import { ShieldCheck, Clock, MessageCircle, Volume2, VolumeX, Bot, MailCheck, RefreshCcw, Lock, Zap } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { trackPixelEvent } from "@/lib/analytics";
 
-export const FinalOfferSlide = () => {
+interface FinalOfferSlideProps {
+  onCheckoutClick?: () => void;
+}
+
+export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
   const checkoutUrl = "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
   const whatsappUrl = "https://wa.me/5511993371766";
   const [timeLeft, setTimeLeft] = useState(3 * 60);
@@ -12,20 +17,19 @@ export const FinalOfferSlide = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
 
-  const handleCheckoutClick = () => trackPixelEvent("CheckoutClick");
+  const handleCheckoutClick = () => {
+    trackPixelEvent("CheckoutClick");
+    onCheckoutClick?.();
+  };
   const handleWhatsAppClick = () => trackPixelEvent("WhatsAppSupportClick");
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => Math.max(prev - 1, 0));
-    }, 1000);
+    const timer = setInterval(() => setTimeLeft((prev) => Math.max(prev - 1, 0)), 1000);
     return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
-    if (timeLeft <= 20) {
-      setTickSpeedUp(true);
-    }
+    if (timeLeft <= 20) setTickSpeedUp(true);
   }, [timeLeft]);
 
   useEffect(() => {
@@ -46,13 +50,63 @@ export const FinalOfferSlide = () => {
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
+  const totalValue = "R$781,00";
+  const discountValue = "R$744,00";
+  const finalValue = "R$37,00";
+
+  const bonuses = [
+    {
+      title: "Suporte 24/7 no WhatsApp",
+      subtitle: "Respostas em minutos, a qualquer hora.",
+      body: "Tire duvidas, peca conferencia de jogos e receba ajustes de estrategia direto no WhatsApp, todo dia e toda hora.",
+      image: "https://i.ibb.co/VWPQP3dP/cadastro-bersi.png",
+    },
+    {
+      title: "Apostador Consistente - Metodo 3x3",
+      subtitle: "Mini-metodo usado por jogadores que sempre ganham faixas.",
+      body: "Simples, rapido e feito pra voce acertar mais vezes sem gastar mais.",
+      priceFrom: "R$97,00",
+      priceTo: "R$0,00",
+      image: "https://i.ibb.co/TqHxhKyf/Chat-GPT-Image-19-de-nov-de-2025-19-45-22.png",
+    },
+    {
+      title: "Estrategia de R$ 10 por Semana",
+      subtitle: "A forma mais barata e inteligente de lucrar com loteria.",
+      body: "Com apenas R$10, voce ja joga com vantagem e deixa de perder dinheiro a toa.",
+      priceFrom: "R$147,00",
+      priceTo: "R$0,00",
+      image: "https://i.ibb.co/67hHkCzb/Chat-GPT-Image-19-de-nov-de-2025-19-42-54.png",
+    },
+  ];
+
   const benefits = [
     { icon: "✅", text: "Jogos prontos com IA todos os dias" },
-    { icon: "✅", text: "Até 3 combinações inteligentes por dia" },
-    { icon: "✅", text: "Acesso VIP ao Bolão da Mega da Virada" },
+    { icon: "✅", text: "Ate 3 combinacoes inteligentes por dia" },
+    { icon: "✅", text: "Acesso VIP ao Bolao da Mega da Virada" },
     { icon: "✅", text: "Painel atualizado em tempo real" },
     { icon: "✅", text: "Suporte no WhatsApp com resposta em minutos" },
-    { icon: "✅", text: "Garantia total de 7 dias: testou, não gostou, cancela" },
+    { icon: "✅", text: "Garantia total de 7 dias: testou, nao gostou, cancela" },
+  ];
+
+  const trustPoints = [
+    { icon: ShieldCheck, text: "Plataforma verificada e segura" },
+    { icon: Bot, text: "Jogos gerados com IA todos os dias" },
+    { icon: MessageCircle, text: "Suporte direto no WhatsApp" },
+    { icon: MailCheck, text: "Entrega automatica apos pagamento" },
+    { icon: RefreshCcw, text: "Garantia de 7 dias: testou, nao gostou, cancela" },
+    { icon: Lock, text: "Sem renovacao automatica, sem pegadinha" },
+  ];
+
+  const socialProofImages = [
+    "https://i.ibb.co/bjbS09P9/print-2-plataforma.jpg",
+    "https://i.ibb.co/hxb3L1ss/print-3-plataforma.jpg",
+    "https://i.ibb.co/fYvTSFYM/print-1-plataforma.jpg",
+  ];
+
+  const testimonialPrints = [
+    { name: "Ana - SP", image: "https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg" },
+    { name: "Lucas - MG", image: "https://i.ibb.co/rfQNMBX2/Whats-App-Image-2025-10-27-at-16-32-16.jpg" },
+    { name: "Marina - RJ", image: "https://i.ibb.co/TD85XLkM/Whats-App-Image-2025-10-27-at-16-36-22.jpg" },
   ];
 
   return (
@@ -65,9 +119,9 @@ export const FinalOfferSlide = () => {
             alt="LOTER.IA"
             className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(16,185,129,0.45)] pulse-glow"
           />
-          <h1 className="heading-1 text-glow">🎁 Prêmio resgatado com sucesso!</h1>
+          <h1 className="heading-1 text-glow">🏅 Premio resgatado com sucesso!</h1>
           <p className="heading-3 text-primary">
-            Você liberou o acesso completo à LOTER.IA com R$500 de desconto garantido. Agora veja tudo que está incluso.
+            Voce liberou o acesso completo a LOTER.IA com R$744,00 de desconto garantido. Agora veja tudo que esta incluso.
           </p>
         </div>
 
@@ -80,24 +134,22 @@ export const FinalOfferSlide = () => {
             loop
             playsInline
             className="w-full h-full object-cover"
-            poster="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg"
           />
           <Button size="icon" variant="secondary" onClick={toggleAudio} className="sound-pill">
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </Button>
         </div>
+
         <Card className={`p-6 border ${timeLeft <= 60 ? "border-destructive animate-pulse pulse-glow" : "border-primary glow-primary"}`}>
           <div className="flex items-center justify-center gap-4">
             <Clock className={`w-10 h-10 ${timeLeft <= 60 ? "text-destructive animate-bounce" : "text-primary"}`} />
             <div className="text-center">
-              <p className="text-sm text-muted-foreground uppercase tracking-[0.5em]">Oferta válida enquanto o painel estiver aberto</p>
+              <p className="text-sm text-muted-foreground uppercase tracking-[0.5em]">Oferta valida enquanto o painel estiver aberto</p>
               <p className={`text-5xl font-bold ${timeLeft <= 60 ? "text-destructive text-glow" : "text-primary"}`}>
                 {minutes}:{seconds}
               </p>
               {timeLeft <= 60 && (
-                <p className="text-xs text-destructive mt-2 animate-pulse">
-                  Depois disso, volta para R$500.
-                </p>
+                <p className="text-xs text-destructive mt-2 animate-pulse">Depois disso, volta para {totalValue}.</p>
               )}
             </div>
           </div>
@@ -106,9 +158,125 @@ export const FinalOfferSlide = () => {
           </div>
         </Card>
 
-        <div className="text-center space-y-4">
-          <h2 className="heading-2">📦 Você vai receber:</h2>
+        <div className="space-y-2 text-center">
+          <p className="text-3xl sm:text-4xl font-extrabold text-foreground text-glow">Seu acesso esta pronto para ser liberado!</p>
+          <p className="text-base sm:text-lg text-muted-foreground">
+            Pague via PIX e receba automaticamente no seu WhatsApp em segundos. Sem enrolacao, sem risco.
+          </p>
         </div>
+
+        <Card className="p-4 sm:p-5 border border-primary/30 bg-background/60 backdrop-blur-sm shadow-lg">
+          <Carousel className="relative" opts={{ loop: true }}>
+            <CarouselContent>
+              {socialProofImages.map((src) => (
+                <CarouselItem key={src}>
+                  <div className="aspect-[4/5] sm:aspect-[16/9] overflow-hidden rounded-lg border border-primary/20 bg-black/40">
+                    <img src={src} alt="Prova social WhatsApp" className="w-full h-full object-cover" loading="lazy" />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="-left-3 sm:-left-4 top-1/2 -translate-y-1/2 bg-background/80 border-primary/30 hover:bg-primary/20" />
+            <CarouselNext className="-right-3 sm:-right-4 top-1/2 -translate-y-1/2 bg-background/80 border-primary/30 hover:bg-primary/20" />
+          </Carousel>
+        </Card>
+
+        <div className="text-center space-y-4">
+          <h2 className="heading-2">🎁 Voce vai receber:</h2>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          {bonuses.map((bonus) => (
+            <Card key={bonus.title} className="h-full bg-background border border-primary/30 overflow-hidden flex flex-col">
+              {bonus.image && (
+                <div className="relative aspect-[4/3] overflow-hidden border-b border-primary/20 bg-black/50">
+                  <img src={bonus.image} alt={bonus.title} className="w-full h-full object-contain bg-black/60 p-3" loading="lazy" />
+                </div>
+              )}
+              <div className="p-4 sm:p-5 flex flex-col gap-3 flex-1">
+                <div className="space-y-1">
+                  <p className="text-lg font-bold text-foreground">{bonus.title}</p>
+                  <p className="text-sm sm:text-base text-foreground font-semibold">{bonus.subtitle}</p>
+                </div>
+                <p className="text-sm sm:text-base text-muted-foreground flex-1">{bonus.body}</p>
+                {bonus.priceFrom && bonus.priceTo && (
+                  <div className="text-sm font-semibold text-primary">
+                    De {bonus.priceFrom} por <span className="text-foreground">{bonus.priceTo}</span>
+                  </div>
+                )}
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border border-primary text-center glow-primary-strong pulse-glow space-y-4">
+          <p className="text-2xl font-bold text-foreground">💎 Oferta completa da LOTER.IA</p>
+          <div className="space-y-3 text-left text-sm sm:text-base">
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Valor total (oferta + bonus)</span>
+              <span className="font-bold text-foreground text-xl">{totalValue}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Desconto reservado pela IA</span>
+              <span className="font-bold text-destructive bg-destructive/15 border border-destructive/50 px-3 py-1 rounded-full shadow-sm">
+                -{discountValue}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-foreground font-semibold">Voce paga hoje</span>
+              <span className="text-4xl sm:text-5xl font-black text-primary text-glow">{finalValue}</span>
+            </div>
+          </div>
+          <div className="rounded-xl border border-destructive/50 bg-destructive/10 text-destructive text-center px-4 py-3 font-semibold">
+            Economia total garantida: {discountValue}
+          </div>
+          <p className="text-sm text-muted-foreground">Pagamento unico, acesso por 12 meses, sem renovacao automatica.</p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
+            <Button
+              asChild
+              size="lg"
+              onClick={handleCheckoutClick}
+              className="w-full text-base sm:text-xl py-4 sm:py-5 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
+            >
+              <a href={checkoutUrl} target="_blank" rel="noreferrer" className="block px-2">
+                🚀 Garantir acesso por R$37,00
+              </a>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              className="w-full text-sm sm:text-base py-4 sm:py-5 bg-emerald-500 hover:bg-emerald-400 text-background font-bold shadow-2xl flex items-center justify-center gap-2 text-center leading-snug"
+            >
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2 px-2"
+                onClick={handleWhatsAppClick}
+              >
+                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                <span className="whitespace-nowrap">🤝 Falar com especialista</span>
+              </a>
+            </Button>
+          </div>
+        </Card>
+
+        <div className="grid sm:grid-cols-2 gap-3">
+          {trustPoints.map(({ icon: Icon, text }) => (
+            <div key={text} className="flex items-center gap-3 p-3 rounded-lg border border-primary/25 bg-primary/5 shadow-sm">
+              <Icon className="w-5 h-5 text-primary flex-shrink-0" />
+              <p className="text-sm sm:text-base text-foreground font-semibold">{text}</p>
+            </div>
+          ))}
+        </div>
+
+        <Card className="p-4 bg-destructive/10 border border-destructive/40 text-center shadow-sm">
+          <p className="text-base sm:text-lg font-semibold text-destructive flex items-center justify-center gap-2">
+            <Zap className="w-5 h-5" />
+            Mais de 250 pessoas ativadas hoje. Painel pode fechar a qualquer momento.
+          </p>
+        </Card>
 
         <Card className="p-6 bg-primary/5 border border-primary/30">
           <div className="space-y-4 text-left">
@@ -121,55 +289,30 @@ export const FinalOfferSlide = () => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border border-primary text-center glow-primary-strong pulse-glow space-y-3">
-          <p className="text-2xl font-bold text-foreground">💸 De R$500 por apenas R$37/ano</p>
-          <div>
-            <p className="text-lg text-muted-foreground line-through">Valor original: R$500</p>
-            <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">R$37/ano</p>
+        <div className="space-y-3">
+          <p className="text-lg font-semibold text-center text-foreground">Quem acabou de ativar</p>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {testimonialPrints.map((item) => (
+              <Card key={item.name} className="relative overflow-hidden border border-primary/30 p-0">
+                <div className="w-full bg-black aspect-[9/16] flex items-center justify-center">
+                  <img src={item.image} alt={item.name} className="h-full w-auto object-contain" loading="lazy" />
+                </div>
+                <div className="absolute inset-x-3 bottom-3 bg-background/90 rounded-xl px-3 py-2 text-left shadow-lg">
+                  <p className="text-sm font-semibold text-foreground">{item.name}</p>
+                </div>
+              </Card>
+            ))}
           </div>
-          <p className="text-lg text-foreground font-semibold">
-            Sem mensalidade e sem renovação automática sem aviso. Você garante 12 meses completos e ainda tem 7 dias para testar sem risco.
-          </p>
-        </Card>
-
-        <Button
-          asChild
-          size="lg"
-          onClick={handleCheckoutClick}
-          className="w-full text-xl md:text-2xl py-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
-        >
-          <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            🔐 Garantir acesso por R$37/ano
-          </a>
-        </Button>
-
-        <Button
-          asChild
-          size="lg"
-          className="w-full text-base md:text-xl py-6 px-4 bg-emerald-500 hover:bg-emerald-400 text-background font-bold shadow-2xl flex items-center justify-center gap-2 text-center leading-snug"
-        >
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center justify-center gap-2 whitespace-normal"
-            onClick={handleWhatsAppClick}
-          >
-            <MessageCircle className="w-5 h-5 flex-shrink-0" />
-            <span>💬 Falar com especialista no WhatsApp</span>
-          </a>
-        </Button>
+        </div>
 
         <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground text-center">
           <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Compra segura" className="w-40 sm:w-52 mx-auto" />
-          <p>⏳ Oferta ativa enquanto o painel estiver aberto.</p>
-          <p>Já são +84 pessoas ativadas hoje. Depois disso, o acesso volta para o valor original.</p>
+          <p>ℹ️ Oferta ativa enquanto o painel estiver aberto.</p>
+          <p>Ja sao +84 pessoas ativadas hoje. Depois disso, o acesso volta para o valor original.</p>
         </div>
 
         <Card className="p-6 bg-primary/10 border border-primary/30 text-center">
-          <p className="text-lg font-bold text-foreground">
-            Mesmo sistema usado por quem fez 13 ou 14 pontos nas últimas semanas.
-          </p>
+          <p className="text-lg font-bold text-foreground">Mesmo sistema usado por quem fez 13 ou 14 pontos nas ultimas semanas.</p>
         </Card>
       </div>
 
@@ -181,7 +324,7 @@ export const FinalOfferSlide = () => {
           className="w-full text-lg py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl"
         >
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            🔐 Garantir acesso por R$37/ano
+            🚀 Garantir acesso por R$37,00
           </a>
         </Button>
       </div>
