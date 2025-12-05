@@ -9,24 +9,24 @@ interface EntrySlideProps {
 
 const timelineSteps = [
   {
-    icon: "📝",
-    title: "Perguntas rápidas",
-    description: "Responda 5 perguntas simples e ganhe 10 moedas em cada uma.",
+    icon: "⏳",
+    title: "Check-in relâmpago",
+    description: "5 respostas liberam 50 moedas e mostram o caminho.",
   },
   {
-    icon: "🪙",
-    title: "Moedas viram mapa",
-    description: "As 50 moedas liberam o Mapa dos Números Quentes automático.",
+    icon: "🗺️",
+    title: "Mapa aberto",
+    description: "As moedas destravam o Mapa dos Números Quentes.",
   },
   {
-    icon: "🤝",
-    title: "Teste sua aposta",
-    description: "Compare seus 15 números com a IA sem termos difíceis.",
+    icon: "🤖",
+    title: "Seu palpite testado",
+    description: "IA revisa seu jogo e calcula a margem segura.",
   },
   {
     icon: "🎰",
-    title: "Giro bônus",
-    description: "As moedas pagam o primeiro giro da máquina e destravam descontos.",
+    title: "Giro pago pela IA",
+    description: "Ela banca 1 giro de alto risco para fechar o desconto.",
   },
 ];
 
@@ -34,6 +34,9 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
   const [loading, setLoading] = useState(true);
   const [dots, setDots] = useState("...");
   const [ctaReady, setCtaReady] = useState(false);
+  const [microMessage, setMicroMessage] = useState<string | null>(null);
+  const [scanActive, setScanActive] = useState(false);
+  const [fakeCountdown, setFakeCountdown] = useState(4 * 60 + 59);
   const slotSoundRef = useRef<HTMLAudioElement | null>(null);
   const introSoundRef = useRef<HTMLAudioElement | null>(null);
   const clickSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -69,6 +72,19 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
     return () => clearInterval(dotsInterval);
   }, []);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setFakeCountdown((prev) => (prev > 0 ? prev - 1 : prev));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatCountdown = () => {
+    const minutes = String(Math.floor(fakeCountdown / 60)).padStart(2, "0");
+    const seconds = String(fakeCountdown % 60).padStart(2, "0");
+    return `${minutes}:${seconds}`;
+  };
+
   const handleHover = (isHovering: boolean) => {
     if (!slotSoundRef.current) return;
     if (isHovering) {
@@ -80,11 +96,17 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
   };
 
   const handleStart = () => {
+    setScanActive(true);
+    setMicroMessage("IA validando seu acesso...");
     introSoundRef.current?.play().catch(() => undefined);
     clickSoundRef.current?.play().catch(() => undefined);
     slotSoundRef.current?.pause();
     trackPixelEvent("QuizEntryStart");
-    onNext();
+    setTimeout(() => setMicroMessage("Pronto, seguimos."), 520);
+    setTimeout(() => setMicroMessage(null), 1200);
+    setTimeout(() => {
+      onNext();
+    }, 380);
   };
 
   return (
@@ -100,13 +122,19 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
         <section className="bg-card/80 border border-primary/30 rounded-3xl p-5 sm:p-8 space-y-4 landing-hero">
           <div className="space-y-3 text-left sm:text-center">
             <img
-                src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png"
+              src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png"
               alt="LOTER.IA"
               className="mx-auto w-24 sm:w-28 drop-shadow-[0_0_20px_rgba(16,185,129,0.45)]"
             />
-            <h1 className="heading-hero text-glow">Chega de perder na Lotofácil</h1>
-            <p className="body-lead max-w-2xl">
-              Faça o teste e desbloqueie a IA que já gerou mais de R$250.000 com jogos da Lotofácil.
+            <p className="meta-label text-primary flex items-center justify-center gap-2 uppercase">
+              <span role="img" aria-hidden="true">
+                ⏱️
+              </span>
+              Painel temporário · {formatCountdown()}
+            </p>
+            <h1 className="heading-hero text-glow">CANSADO DE PERDER NA LOTOFÁCIL?</h1>
+            <p className="body-lead max-w-2xl mx-auto">
+              Conheça a Inteligência Artificial que já gerou mais de R$10.000.000 em prêmios para seus usuários.
             </p>
           </div>
         </section>
@@ -118,7 +146,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
                 <Loader2 className="w-6 h-6 text-primary animate-spin" />
                 <span className="font-semibold text-lg">Preparando o painel{dots}</span>
               </div>
-              <p className="text-sm text-muted-foreground">Deixamos tudo alinhado.</p>
+              <p className="text-sm text-muted-foreground">Segure alguns segundos.</p>
             </div>
           ) : (
             <>
@@ -138,9 +166,10 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
                   ))}
                 </div>
                 <div className="timeline-visual__badges">
-                  <span>🚀 Rápido</span>
+                  <span>⚡ Rápido</span>
                   <span>🛡️ Seguro</span>
-                  <span>🎯 Guiado</span>
+                  <span>🤝 Guiado</span>
+                  <span>🔒 Acesso restrito</span>
                 </div>
               </div>
               <Button
@@ -149,13 +178,16 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
                 onClick={handleStart}
                 size="lg"
                 disabled={!ctaReady}
-                className={`relative overflow-hidden w-full text-base sm:text-xl py-4 sm:py-6 font-bold rounded-2xl ${
+                className={`relative overflow-hidden w-full text-base sm:text-xl py-4 sm:py-6 font-bold rounded-2xl tap-intent ${
                   ctaReady ? "bg-primary hover:bg-primary-glow text-primary-foreground shadow-[0_10px_40px_rgba(16,185,129,0.35)]" : "bg-muted text-muted-foreground"
                 }`}
               >
+                {scanActive && <span className="scan-beam" aria-hidden="true" />}
                 {ctaReady ? (
                   <span className="flex items-center gap-2">
-                    <span role="img" aria-hidden="true">▶️</span>
+                    <span role="img" aria-hidden="true">
+                      🚀
+                    </span>
                     Começar agora
                   </span>
                 ) : (
@@ -165,15 +197,9 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
                   </span>
                 )}
               </Button>
+              {microMessage && <p className="text-sm text-primary text-center micro-toast">{microMessage}</p>}
             </>
           )}
-        </section>
-
-        <section className="rounded-2xl border border-border/60 p-5 bg-secondary/40">
-          <p className="text-sm text-muted-foreground mb-2 font-semibold uppercase tracking-[0.3em]">Como funciona</p>
-          <p className="text-base text-foreground">
-            Cada resposta vale 10 moedas. Ao conquistar 50, você poderá trocar pelo primeiro bônus secreto
-          </p>
         </section>
       </div>
     </div>

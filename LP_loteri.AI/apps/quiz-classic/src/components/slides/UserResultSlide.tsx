@@ -12,13 +12,8 @@ interface UserResultSlideProps {
 }
 
 export const UserResultSlide = ({ onNext, userScore, selectedNumbers, drawnNumbers }: UserResultSlideProps) => {
-  const hasSelection = selectedNumbers.length > 0;
   const [showResult, setShowResult] = useState(false);
   const manualResultSoundRef = useRef<HTMLAudioElement | null>(null);
-
-  // Calculate real hits and misses from user's actual selection
-  const userHits = selectedNumbers.filter((num) => drawnNumbers.includes(num));
-  const userMisses = selectedNumbers.filter((num) => !drawnNumbers.includes(num));
 
   useEffect(() => {
     const timer = setTimeout(() => setShowResult(true), 3200);
@@ -44,7 +39,7 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers, drawnNumbe
       <div className="casino-grid" />
       <div className="slide-frame space-y-6 text-center relative z-10">
         <div className="space-y-2">
-          <p className="meta-label flex items-center justify-center gap-2 text-primary">🧮 IA analisando seu jogo</p>
+          <p className="meta-label flex items-center justify-center gap-2 text-primary">🤖 IA analisando seu jogo</p>
           <h1 className="heading-1">{showResult ? "Seu resultado saiu" : "Estamos conferindo sua aposta"}</h1>
           <p className="body-lead">
             {showResult ? "Veja quantos pontos faria sozinho antes de ligar a IA." : "Segure alguns segundos. Conferimos tudo antes de mostrar."}
@@ -63,18 +58,9 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers, drawnNumbe
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground uppercase">Placar sem IA</p>
                   <p className="text-[clamp(2.5rem,8vw,4rem)] font-black text-primary">{userScore} pontos</p>
-                  <p className="text-sm text-muted-foreground">É aqui que você ficaria se entrasse com este jogo agora.</p>
                 </div>
 
-                <div className="bg-secondary/50 rounded-2xl p-4 text-center">
-                  <p className="text-base sm:text-lg text-foreground font-semibold">
-                    Você acertou {userScore} números neste cenário
-                  </p>
-                </div>
-
-                <p className="text-sm text-muted-foreground text-center">
-                  Toque no botão abaixo para ver a mesma aposta com a IA trabalhando a seu favor.
-                </p>
+                <p className="text-sm text-muted-foreground text-center">Agora veja a mesma aposta com a IA.</p>
               </div>
 
               <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 sm:py-6">

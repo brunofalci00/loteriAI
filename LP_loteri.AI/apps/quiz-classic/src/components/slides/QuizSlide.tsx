@@ -12,55 +12,52 @@ interface QuizSlideProps {
 
 const questions = [
   {
-    question: "Quando você joga na Lotofácil, o que mais te incomoda?",
+    question: "Quando você joga na Lotofácil, o que mais te trava?",
     options: [
-      "Jogar sem saber se estou no caminho certo",
-      "Apostar várias vezes e nunca passar dos mesmos 11 pontos",
-      "Ver os outros falando que usam sistema e eu aqui tentando na raça",
+      "Não saber se estou no caminho certo",
+      "Ficar preso nos mesmos 11 pontos",
+      "Ver a galera usando sistema enquanto vou no chute",
     ],
   },
   {
-    question: 'Quantas vezes você achou que "faltou pouco"?',
+    question: "Quantas vezes faltou 1 número para valer a pena?",
     options: [
-      "Sempre. 1 ou 2 números me perseguem",
-      "Em quase todo jogo fico por um triz",
-      "Nunca passei dos 11. Já tô desacreditado",
+      "Direto: 1 ou 2 escapam",
+      "Quase sempre fico por um triz",
+      "Ainda não passei de 11",
     ],
   },
   {
     question: "Como escolhe seus jogos hoje?",
-    options: [
-      "Sigo minha intuição. Sinto quando vai dar certo",
-      "Vou por datas, palpites, sensação",
-      "Eu nem penso muito. Só jogo e espero",
-    ],
+    options: ["Intuição pura", "Datas, palpites, sensação", "Só jogo e espero"],
   },
   {
-    question: "E se pudesse testar seu palpite contra uma IA treinada?",
-    options: [
-      "Toparia agora. Quero ver no que dá",
-      "Seria bom ver se tá tão errado assim",
-      "Talvez... mas acho que ela ganharia fácil",
-    ],
+    question: "Se pudesse testar seu palpite contra a IA agora, você...",
+    options: ["Toparia de cara", "Quero ver onde erro", "Prefiro deixar ela decidir"],
   },
   {
-    question: "O que você mais quer resolver hoje?",
-    options: [
-      "Parar de jogar no escuro",
-      "Descobrir se meu jeito funciona ou não",
-      "Usar algo que dê vantagem real",
-    ],
+    question: "O que você quer resolver hoje?",
+    options: ["Parar de jogar no escuro", "Validar se meu jeito funciona", "Usar vantagem real"],
   },
 ];
 
 const COINS_PER_ANSWER = 10;
 const TOTAL_COINS = questions.length * COINS_PER_ANSWER;
+const motivationalBursts = [
+  "Boa! Isso libera mais moedas pro mapa.",
+  "Continue, faltam poucos cliques.",
+  "A IA está mapeando seu estilo agora.",
+];
+const microStatusQueue = ["Processando moedas...", "Liberando o próximo passo...", "Quase destravando o mapa..."];
 
 export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [recentGain, setRecentGain] = useState<number | null>(null);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [flashMessage, setFlashMessage] = useState<string | null>(null);
+  const [microStatus, setMicroStatus] = useState<string | null>(null);
+  const [progressPulse, setProgressPulse] = useState(false);
   const startSoundRef = useRef<HTMLAudioElement | null>(null);
   const answerSoundRef = useRef<HTMLAudioElement | null>(null);
   const bonusSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -88,6 +85,12 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
     const timer = setTimeout(() => setRecentGain(null), 1200);
     return () => clearTimeout(timer);
   }, [recentGain]);
+
+  useEffect(() => {
+    if (!progressPulse) return;
+    const timer = setTimeout(() => setProgressPulse(false), 800);
+    return () => clearTimeout(timer);
+  }, [progressPulse]);
 
   const animateCoinJourney = (sourceButton: HTMLButtonElement) => {
     if (typeof document === "undefined") return;
@@ -141,6 +144,11 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
     setAnswers(newAnswers);
     onCoinsEarned(COINS_PER_ANSWER);
     setRecentGain(COINS_PER_ANSWER);
+    setFlashMessage(motivationalBursts[Math.floor(Math.random() * motivationalBursts.length)]);
+    setMicroStatus(microStatusQueue[Math.floor(Math.random() * microStatusQueue.length)]);
+    setProgressPulse(true);
+    setTimeout(() => setFlashMessage(null), 700);
+    setTimeout(() => setMicroStatus(null), 680);
     if (answerSoundRef.current) {
       answerSoundRef.current.currentTime = 0;
       answerSoundRef.current.play().catch(() => undefined);
@@ -173,40 +181,36 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
         <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
           <div className="space-y-1">
             <p className="meta-label flex items-center gap-2 justify-center sm:justify-start">
-              🎯 Pergunta {currentQuestion + 1} de {questions.length}
+              Bônus 1 · Pergunta {currentQuestion + 1} de {questions.length}
             </p>
-            <h2 className="heading-2 flex items-center gap-2 justify-center sm:justify-start">
-              Responda com calma
-            </h2>
+            {microStatus && <p className="text-xs text-primary mt-1 micro-toast">{microStatus}</p>}
           </div>
           <div className="text-center sm:text-right">
-            <p className="text-sm text-muted-foreground">Moedas liberadas</p>
             <div className={`medal-badge ${medalUnlocked ? "medal-badge--active" : ""}`}>
-              {medalUnlocked ? "🏅 Mapa liberado" : `${coinsCollected}/${TOTAL_COINS}`}
+              {medalUnlocked ? "Mapa pronto" : `${coinsCollected}/${TOTAL_COINS}`}
             </div>
           </div>
         </div>
 
         <div className="coin-status-card">
           <div>
-            <p className="coin-status-card__label">Total acumulado</p>
             <div className="coin-status-card__value">
               <span>{coinsCollected}</span>
               <span className="text-muted-foreground">/ {TOTAL_COINS}</span>
             </div>
+            <p className="text-xs text-muted-foreground">Moedas convertidas em acesso.</p>
           </div>
-          {recentGain && <span className="coin-status-card__delta">+{recentGain} agora</span>}
-          <p className="coin-status-card__hint">Usamos essas moedas automaticamente para abrir o Mapa dos Números Quentes.</p>
+          {recentGain && <span className="coin-status-card__delta coin-shiver">+{recentGain} liberadas</span>}
         </div>
 
         <div className="bg-secondary rounded-full h-3 overflow-hidden progress-sheen">
-          <div className="bg-primary h-3 progress-fill" style={{ width: `${progressPercentage}%` }} />
+          <div className={`bg-primary h-3 progress-fill ${progressPulse ? "bar-flicker" : ""}`} style={{ width: `${progressPercentage}%` }} />
         </div>
 
         <Card className="p-4 sm:p-6 md:p-7 space-y-6 border border-border glow-primary quiz-card">
           <div className="space-y-2 text-center">
             <h3 className="heading-2 text-foreground">{current.question}</h3>
-            <p className="text-sm text-muted-foreground">Responda como você fala no dia a dia.</p>
+            <p className="text-sm text-muted-foreground">Clique rápido. Não tem resposta errada, só o caminho que a IA vai usar.</p>
           </div>
 
           <div className="space-y-3">
@@ -215,24 +219,25 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
                 key={option}
                 onClick={(event) => handleAnswer(index, event.currentTarget)}
                 variant="outline"
-                className="w-full min-h-[52px] sm:min-h-[56px] py-3 sm:py-4 text-left text-sm sm:text-base md:text-lg chips-button"
+                className="w-full min-h-[52px] sm:min-h-[56px] py-3 sm:py-4 text-left text-sm sm:text-base md:text-lg chips-button tap-intent"
               >
                 {option}
               </Button>
             ))}
           </div>
         </Card>
+        {flashMessage && <p className="text-center text-primary text-sm micro-toast">{flashMessage}</p>}
       </div>
 
       <Dialog open={showCompletionModal} onOpenChange={setShowCompletionModal}>
         <DialogContent className="max-w-sm text-center space-y-4">
           <DialogHeader>
-            <DialogTitle>Destravando o Bônus 1</DialogTitle>
-            <DialogDescription>Segure um pouco: estamos preparando os dados para liberar o mapa secreto.</DialogDescription>
+            <DialogTitle>Trocando moedas pelo mapa</DialogTitle>
+            <DialogDescription>Segure um pouco: estamos convertendo suas respostas em acesso ao Mapa dos Números Quentes.</DialogDescription>
           </DialogHeader>
           <div className="flex flex-col items-center gap-3 py-5">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-sm text-muted-foreground">Transferindo fichas e liberando o Mapa Secreto...</p>
+            <p className="text-sm text-muted-foreground">Transferindo fichas e liberando o mapa seguro...</p>
           </div>
         </DialogContent>
       </Dialog>

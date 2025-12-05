@@ -29,15 +29,19 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
       <div className="casino-grid" />
       <div className="slide-frame space-y-8 text-center relative z-10">
         <div className="space-y-3">
-          <img src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png" alt="LOTER.IA" className="mx-auto w-24 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]" />
+          <img
+            src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png"
+            alt="LOTER.IA"
+            className="mx-auto w-24 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+          />
           <h1 className="heading-1 flex items-center justify-center gap-2 text-glow text-center">
             <span role="img" aria-hidden="true">
-              💬
+              🎥
             </span>
-            Antes de resgatar seus prêmios, veja quem já ganhou com a LOTER.IA
+            Quem destravou o painel antes de você
           </h1>
-          <p className="body-lead">
-            Esses jogadores acabaram de destravar o mesmo bônus de R$500 e ativaram seus acessos com a IA.
+          <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+            Gente real, 45+, que travava nos 11 pontos e não aceitou perder o bônus.
           </p>
         </div>
 
@@ -63,7 +67,7 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
                 onClick={handleStartWithSound}
                 className="absolute inset-0 flex items-center justify-center bg-black/55 text-primary-foreground text-lg font-semibold rounded-2xl px-4 text-center"
               >
-                Toque para ouvir o depoimento
+                Toque para ouvir depoimento real
               </button>
             )}
           </div>
@@ -73,12 +77,12 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
           <Button
             onClick={onNext}
             size="lg"
-            className="w-full sm:w-auto text-lg sm:text-xl py-5 sm:py-6 px-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold pulse-glow flex items-center justify-center gap-2"
+            className="w-full sm:w-auto text-lg sm:text-xl py-5 sm:py-6 px-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold pulse-glow flex items-center justify-center gap-2 tap-intent"
           >
             <span role="img" aria-hidden="true">
               🏆
             </span>
-            Garantir Meu Desconto
+            Ativar meu desconto agora
           </Button>
         </div>
       </div>

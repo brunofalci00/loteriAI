@@ -31,6 +31,7 @@ export const AISimulationSlide = ({
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [verdictReady, setVerdictReady] = useState(false);
   const [showSpinReveal, setShowSpinReveal] = useState(false);
+  const [tensionLine, setTensionLine] = useState<string | null>(null);
   const [, forceRender] = useState(0);
   const processingRef = useRef<HTMLAudioElement | null>(null);
   const aiSelectSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -61,10 +62,7 @@ export const AISimulationSlide = ({
   useEffect(() => {
     const selectionDelay = 3200;
     const verdictDelay = selectionDelay + aiNumbers.length * 320 + 2400;
-    const timers = [
-      setTimeout(() => setPhase("selection"), selectionDelay),
-      setTimeout(() => setPhase("verdict"), verdictDelay),
-    ];
+    const timers = [setTimeout(() => setPhase("selection"), selectionDelay), setTimeout(() => setPhase("verdict"), verdictDelay)];
     return () => timers.forEach(clearTimeout);
   }, [aiNumbers.length]);
 
@@ -91,8 +89,13 @@ export const AISimulationSlide = ({
     processingRef.current?.pause();
     processingRef.current = null;
     setVerdictReady(false);
+    setTensionLine("Você chegou longe... mas a IA foi além.");
+    const suspenseTimer = setTimeout(() => setTensionLine("Ela viu acertos que você não viu."), 900);
     const timer = setTimeout(() => setVerdictReady(true), 2200);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(suspenseTimer);
+    };
   }, [phase]);
 
   useEffect(() => {
@@ -104,8 +107,6 @@ export const AISimulationSlide = ({
   }, [verdictReady, userScore, aiScore]);
 
   const allNumbers = Array.from({ length: 25 }, (_, i) => i + 1);
-  const aiHits = aiNumbers.filter((num) => drawnNumbers.includes(num));
-  const userHits = userNumbers.filter((num) => drawnNumbers.includes(num));
 
   useEffect(() => {
     const stepDuration = 1400;
@@ -142,11 +143,7 @@ export const AISimulationSlide = ({
             <div>
               <p className="meta-label text-primary">IA em ação</p>
               <p className="text-muted-foreground">
-                {phase === "scan"
-                  ? "Conferindo seu jogo"
-                  : phase === "selection"
-                  ? "Escolhendo os 15 números dela"
-                  : "Mostrando o placar final"}
+                {phase === "scan" ? "Auditando sua decisão." : phase === "selection" ? "Escolhendo 15 números." : "Placar final pronto."}
               </p>
             </div>
             <div className="text-right text-xs text-muted-foreground">Painel protegido em tempo real</div>
@@ -156,9 +153,7 @@ export const AISimulationSlide = ({
         {phase === "scan" && (
           <Card className="p-8 flex flex-col items-center gap-4 border border-border">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-center text-sm text-muted-foreground">
-              IA conectando na sua aposta, auditando 2.500 sorteios anteriores e calculando probabilidades...
-            </p>
+            <p className="text-center text-sm text-muted-foreground">IA auditando 2.500 sorteios e calculando probabilidades...</p>
             <div className="w-full space-y-3">
               {["Conferindo sorteios", "Processando IA", "Preparando o duelo"].map((label, index) => (
                 <div key={label} className="space-y-1">
@@ -183,7 +178,7 @@ export const AISimulationSlide = ({
             <p className="text-center text-sm text-muted-foreground">IA escolhendo 15 números com maior chance agora.</p>
             <div className="grid grid-cols-5 gap-2 sm:gap-3">
               {allNumbers.map((num) => (
-                <div key={num} className={`number-cell ${selectedNumbers.includes(num) ? "number-cell--active" : ""}`}>
+                <div key={num} className={`number-cell ${selectedNumbers.includes(num) ? "number-cell--active soft-pulse" : ""}`}>
                   {num}
                 </div>
               ))}
@@ -216,9 +211,7 @@ export const AISimulationSlide = ({
                       A IA acertou {aiScore} números. Você acertou {userScore}.
                     </p>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    Com essa vantagem, a IA liberou um giro para você resgatar o desconto.
-                  </p>
+                  <p className="text-sm text-muted-foreground">Ela viu padrões que não aparecem no olho nu.</p>
                 </div>
                 {showSpinReveal && (
                   <div className="bg-secondary rounded-2xl p-4 border border-primary/20 text-sm text-left sm:text-center space-y-1">
@@ -227,7 +220,7 @@ export const AISimulationSlide = ({
                     <p className="text-muted-foreground">Esse giro libera até R$500 em desconto.</p>
                   </div>
                 )}
-                <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 flex items-center justify-center gap-2">
+                <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 flex items-center justify-center gap-2 tap-intent">
                   <span role="img" aria-hidden="true">
                     🎰
                   </span>
@@ -240,6 +233,7 @@ export const AISimulationSlide = ({
                 <p className="text-sm text-muted-foreground text-center">
                   IA consolidando os pontos e auditando o painel para liberar seu relatório final...
                 </p>
+                {tensionLine && <p className="text-sm text-primary text-center micro-toast">{tensionLine}</p>}
               </div>
             )}
           </Card>

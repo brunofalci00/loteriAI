@@ -208,6 +208,47 @@ All colors MUST be HSL.
   .text-gold {
     color: hsl(var(--gold));
   }
+
+  .tap-intent {
+    position: relative;
+    transition: transform 0.18s ease, box-shadow 0.2s ease;
+  }
+
+  .tap-intent:active {
+    transform: translateY(1px) scale(0.98);
+    animation: hapticTap 0.22s ease;
+  }
+
+  @keyframes hapticTap {
+    0% {
+      transform: translateY(0) scale(1);
+    }
+    40% {
+      transform: translateY(1px) scale(0.985);
+    }
+    100% {
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .micro-toast {
+    animation: fadeInUp 0.4s ease;
+  }
+
+  .soft-pulse {
+    animation: softPulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes softPulse {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 hsl(var(--primary) / 0.2);
+    }
+    50% {
+      transform: scale(1.03);
+      box-shadow: 0 0 14px hsl(var(--primary) / 0.25);
+    }
+  }
   
   .coin-pop {
     animation: coinPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -257,6 +298,41 @@ All colors MUST be HSL.
     }
     40%, 60% {
       transform: translate3d(4px, 0, 0);
+    }
+  }
+
+  .bar-flicker {
+    animation: barFlicker 1.2s ease-in-out infinite;
+  }
+
+  @keyframes barFlicker {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+  }
+
+  .coin-shiver {
+    animation: coinShiver 0.4s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  @keyframes coinShiver {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    25% {
+      transform: translateY(-1px);
+    }
+    50% {
+      transform: translateY(1px);
+    }
+    75% {
+      transform: translateY(-1px);
     }
   }
 
@@ -861,6 +937,24 @@ All colors MUST be HSL.
     }
   }
 
+  .scan-beam {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.4), transparent);
+    animation: scanBeam 1.4s ease-in-out infinite;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+
+  @keyframes scanBeam {
+    0% {
+      transform: translateX(-120%);
+    }
+    100% {
+      transform: translateX(120%);
+    }
+  }
+
   .map-scan {
     position: absolute;
     inset: 0;
@@ -1065,6 +1159,20 @@ All colors MUST be HSL.
     }
   }
 
+  .danger-blink {
+    animation: dangerBlink 0.9s steps(2, start) infinite;
+    color: hsl(var(--destructive));
+  }
+
+  @keyframes dangerBlink {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.55;
+    }
+  }
+
   .jackpot-radial {
     background: radial-gradient(circle at center, hsl(var(--gold) / 0.25), transparent 65%);
     animation: jackpotPulse 6s ease-in-out infinite alternate;
@@ -1078,6 +1186,19 @@ All colors MUST be HSL.
     to {
       transform: scale(1.2);
       opacity: 1;
+    }
+  }
+
+  .prize-shadow {
+    animation: prizeShadow 1.6s ease-in-out infinite;
+  }
+
+  @keyframes prizeShadow {
+    0%, 100% {
+      text-shadow: 0 0 16px hsl(var(--gold) / 0.3);
+    }
+    50% {
+      text-shadow: 0 0 30px hsl(var(--gold) / 0.7), 0 0 50px hsl(var(--gold) / 0.4);
     }
   }
 

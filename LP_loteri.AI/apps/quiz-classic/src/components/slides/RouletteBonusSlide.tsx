@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { trackPixelEvent } from "@/lib/analytics";
 
 interface RouletteBonusSlideProps {
@@ -12,15 +12,16 @@ interface RouletteBonusSlideProps {
 }
 
 const SLOT_PRIZES = ["R$ 10 OFF", "R$ 20 OFF", "R$ 50 OFF", "R$ 100 OFF", "R$ 200 OFF", "MAX WIN"];
-const WEIGHTED_SPIN_POOL = ["Nao ganhou nada", "Nao ganhou nada", "Nao ganhou nada", "Nao ganhou nada", ...SLOT_PRIZES, "Nao ganhou nada"];
+const WEIGHTED_SPIN_POOL = ["---", "Nada ainda", "Nada ainda", ...SLOT_PRIZES, "---"];
 const TARGET_PRIZE = "MAX WIN";
 
 export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWinClick }: RouletteBonusSlideProps) => {
-  const [reels, setReels] = useState<string[]>(() => Array(3).fill(TARGET_PRIZE));
+  const [reels, setReels] = useState<string[]>(() => Array(3).fill("---"));
   const [isSpinning, setIsSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [hasSpun, setHasSpun] = useState(false);
   const [showPrizeModal, setShowPrizeModal] = useState(false);
+  const [suspenseMessage, setSuspenseMessage] = useState<string | null>("IA calculando sua probabilidade real...");
   const spinLoopRef = useRef<HTMLAudioElement | null>(null);
   type TimerHandle = ReturnType<typeof setTimeout>;
   const timersRef = useRef<TimerHandle[]>([]);
@@ -33,13 +34,11 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
     rain.volume = 0.2;
     rain.play().catch(() => undefined);
     trackPixelEvent("SlotMaxWin");
-    // Show modal after a short delay
     const timer = setTimeout(() => setShowPrizeModal(true), 800);
     return () => clearTimeout(timer);
   }, [result]);
 
   const handleClaimPrize = () => {
-    // Play Max Win sound and advance to next slide
     onMaxWinClick?.();
     onNext();
   };
@@ -75,27 +74,33 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
   };
 
   const revealFinalReels = () => {
-    const finalValues = Array(3).fill(TARGET_PRIZE);
-    finalValues.forEach((value, index) => {
-      registerTimer(
-        setTimeout(() => {
-          setReels((prev) => {
-            const next = [...prev];
-            next[index] = value;
-            return next;
-          });
-          playSound("/sounds/roulette-stop.mp3", 0.2 + index * 0.05);
-          if (index === finalValues.length - 1) {
-            stopSpinLoop();
-            setIsSpinning(false);
-            setResult(TARGET_PRIZE);
-            onSpinComplete?.();
-            playSound("/sounds/jackpot-fanfare.mp3", 0.3);
-            clearRegisteredTimers();
-          }
-        }, index * 450),
-      );
-    });
+    setSuspenseMessage("Quase travou... a IA devolveu pra você.");
+    setReels(["Nada ainda", "R$ 10 OFF", "---"]);
+    registerTimer(
+      setTimeout(() => {
+        const finalValues = Array(3).fill(TARGET_PRIZE);
+        finalValues.forEach((value, index) => {
+          registerTimer(
+            setTimeout(() => {
+              setReels((prev) => {
+                const next = [...prev];
+                next[index] = value;
+                return next;
+              });
+              playSound("/sounds/roulette-stop.mp3", 0.2 + index * 0.05);
+              if (index === finalValues.length - 1) {
+                stopSpinLoop();
+                setIsSpinning(false);
+                setResult(TARGET_PRIZE);
+                onSpinComplete?.();
+                playSound("/sounds/jackpot-fanfare.mp3", 0.3);
+                clearRegisteredTimers();
+              }
+            }, index * 480),
+          );
+        });
+      }, 900),
+    );
   };
 
   useEffect(
@@ -111,6 +116,7 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
     setIsSpinning(true);
     setResult(null);
     setHasSpun(true);
+    setSuspenseMessage("IA segurando a roleta...");
 
     playSound("/sounds/roulette-spin.mp3", 0.25);
     startSpinLoop();
@@ -128,6 +134,7 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
     registerTimer(
       setTimeout(() => {
         clearInterval(fastInterval);
+        setSuspenseMessage("Trancando o acesso... quase lá.");
         const slowInterval = registerTimer(
           setInterval(() => {
             setReels((prev) => prev.map(() => randomSpinValue()));
@@ -149,15 +156,13 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
       <div className="casino-grid" />
       <div className="slide-frame space-y-8 relative z-10">
         <div className="space-y-3 text-center">
-          <p className="meta-label text-primary">Bonus 2 · Roleta da IA</p>
+          <p className="meta-label text-primary">Bônus 2 · Roleta da IA</p>
           <h2 className="heading-1">Giro pago pela IA</h2>
-          <p className="body-lead">
-            Ela deixou 1 rodada para voce. Voce pode ganhar ate R$500,00 de desconto na LOTER.IA.
-          </p>
           <div className="bg-primary/10 border border-primary/30 rounded-lg p-3 text-sm text-primary font-semibold inline-flex flex-col sm:flex-row gap-2 justify-center">
-            <span>A IA deixou 1 chance ativa exclusivamente pra voce.</span>
-            <span>Spins disponiveis: {spinsLeft}</span>
+            <span>A IA deixou 1 chance ativa exclusivamente pra você.</span>
+            <span>Spins disponíveis: {spinsLeft}</span>
           </div>
+          {suspenseMessage && <p className="text-sm text-primary micro-toast">{suspenseMessage}</p>}
         </div>
 
         <div className="flex flex-col lg:flex-row items-center gap-8">
@@ -168,7 +173,7 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
                   <div
                     key={index}
                     className={`h-28 sm:h-32 rounded-xl flex items-center justify-center text-center text-xl sm:text-2xl font-black tracking-tight ${
-                      value === TARGET_PRIZE ? "bg-gold/20 text-gold border border-gold" : "bg-secondary text-foreground border border-border"
+                      value === TARGET_PRIZE ? "bg-gold/20 text-gold border border-gold prize-shadow" : "bg-secondary text-foreground border border-border"
                     }`}
                   >
                     {value}
@@ -184,19 +189,19 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
               onClick={handleSpin}
               size="lg"
               disabled={userSpins <= 0 || hasSpun}
-              className="w-full lg:w-auto text-base sm:text-xl py-5 sm:py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold"
+              className="w-full lg:w-auto text-base sm:text-xl py-5 sm:py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold tap-intent"
             >
               {isSpinning ? "Girando..." : "Girar agora"}
             </Button>
-            <p className="text-sm text-muted-foreground font-semibold">Premios possiveis:</p>
+            <p className="text-sm text-muted-foreground font-semibold">Prêmios possíveis:</p>
             <ul className="text-sm text-muted-foreground space-y-1">
-              <li>💰 R$10 OFF</li>
-              <li>💰 R$20 OFF</li>
-              <li>💰 R$50 OFF</li>
-              <li>💰 R$100 OFF</li>
-              <li>💰 R$200 OFF</li>
-              <li>🏆 MAX WIN: R$500 OFF (desconto maximo)</li>
-              <li>🔕 Nao ganhou nada</li>
+              <li>🎯 R$10 OFF</li>
+              <li>🎯 R$20 OFF</li>
+              <li>🎯 R$50 OFF</li>
+              <li>🎯 R$100 OFF</li>
+              <li>🎯 R$200 OFF</li>
+              <li>🏆 MAX WIN: R$500 OFF (desconto máximo)</li>
+              <li>⚠️ Nada ainda</li>
             </ul>
           </div>
         </div>
@@ -204,31 +209,20 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
         <Dialog open={showPrizeModal} onOpenChange={setShowPrizeModal}>
           <DialogContent className="max-w-md text-center space-y-6 border-gold bg-gradient-to-br from-background to-gold/10">
             <DialogHeader>
-              <DialogTitle className="text-3xl font-black text-gold flex items-center justify-center gap-2">
-                🏆 MAX WIN Desbloqueado!
-              </DialogTitle>
-              <DialogDescription className="text-lg text-foreground font-semibold">
-                Parabéns! Você ganhou o prêmio máximo!
-              </DialogDescription>
+              <DialogTitle className="text-3xl font-black text-gold flex items-center justify-center gap-2">🏆 MAX WIN desbloqueado!</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="text-center space-y-2">
                 <p className="text-5xl font-black text-gold animate-pulse">R$500 OFF</p>
-                <p className="text-base text-muted-foreground">
-                  Desconto exclusivo para ativar a LOTER.IA agora
-                </p>
-              </div>
-              <div className="bg-primary/10 rounded-lg p-4 text-sm text-muted-foreground">
-                ⚠️ Este desconto fica reservado somente enquanto o painel estiver aberto. Aproveite agora!
               </div>
             </div>
             <DialogFooter className="sm:justify-center">
               <Button
                 onClick={handleClaimPrize}
                 size="lg"
-                className="w-full text-xl py-6 bg-gold hover:bg-gold/90 text-background font-bold pulse-glow shadow-[0_0_40px_rgba(250,204,21,0.4)]"
+                className="w-full text-xl py-6 bg-gold hover:bg-gold/90 text-background font-bold pulse-glow shadow-[0_0_40px_rgba(250,204,21,0.4)] tap-intent"
               >
-                🏆 Resgatar meu prêmio
+                Resgatar meu prêmio
               </Button>
             </DialogFooter>
           </DialogContent>
