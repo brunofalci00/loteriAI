@@ -7,9 +7,9 @@ import type {
 } from '@/types/buck-api.types';
 import type { PixFormData } from '@/types/checkout.types';
 
-const BUCK_API_URL = import.meta.env.VITE_BUCK_API_URL || 'https://api.realtechdev.com.br';
-const BUCK_API_KEY = import.meta.env.VITE_BUCK_API_KEY;
-const BUCK_USER_AGENT = import.meta.env.VITE_BUCK_USER_AGENT || 'Buckpay API';
+// Supabase Edge Function endpoint (não mais Buck API direta!)
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://aaqthgqsuhyagsrlnyqk.supabase.co';
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 interface PixPaymentResponse {
   transactionId: string;
@@ -149,9 +149,9 @@ export const useBuckPixPayment = (): UseBuckPixPaymentReturn => {
         const externalId = generateExternalId();
         const tracking = captureUTMs();
 
-        const requestBody: BuckCreateTransactionRequest = {
+        const requestBody = {
+          action: 'create',
           external_id: externalId,
-          payment_method: 'pix',
           amount: config.amount,
           buyer: {
             name: formData.name,
@@ -171,20 +171,19 @@ export const useBuckPixPayment = (): UseBuckPixPaymentReturn => {
           tracking,
         };
 
-        console.log('[BuckAPI] Criando transação PIX:', {
+        console.log('[BuckAPI] Criando transação PIX via Edge Function:', {
           external_id: externalId,
           amount: config.amount,
           buyer_email: formData.email,
         });
 
-        const data = await fetchWithRetry<BuckTransactionResponse>(
+        const data = await fetchWithRetry<any>(
           () =>
-            fetch(`${BUCK_API_URL}/v1/transactions`, {
+            fetch(`${SUPABASE_URL}/functions/v1/buckpay-pix-loteria`, {
               method: 'POST',
               headers: {
-                Authorization: `Bearer ${BUCK_API_KEY}`,
-                'User-Agent': BUCK_USER_AGENT,
                 'Content-Type': 'application/json',
+                'apikey': SUPABASE_ANON_KEY || '',
               },
               body: JSON.stringify(requestBody),
             }),
@@ -192,8 +191,12 @@ export const useBuckPixPayment = (): UseBuckPixPaymentReturn => {
           1000
         );
 
-        if (!data.data?.pix) {
-          throw new Error('Resposta da API não contém dados do PIX');
+        if (!data.success || !data.data) {
+          throw new Error('Resposta do edge function inválida');
+        }
+
+        if (!data.data.qrcode_base64 || !data.data.pix_code) {
+          throw new Error('Resposta não contém dados do PIX');
         }
 
         // Salvar no sessionStorage para idempotência
@@ -203,16 +206,16 @@ export const useBuckPixPayment = (): UseBuckPixPaymentReturn => {
         const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
 
         console.log('[BuckAPI] Transação criada com sucesso:', {
-          transaction_id: data.data.id,
-          external_id: externalId,
+          transaction_id: data.data.transaction_id,
+          external_id: data.data.external_id,
           status: data.data.status,
         });
 
         return {
-          transactionId: data.data.id,
-          externalId,
-          qrCodeBase64: data.data.pix.qrcode_base64,
-          pixCode: data.data.pix.code,
+          transactionId: data.data.transaction_id,
+          externalId: data.data.external_id,
+          qrCodeBase64: data.data.qrcode_base64,
+          pixCode: data.data.pix_code,
           expiresAt,
           status: data.data.status,
         };
@@ -234,20 +237,24 @@ export const useBuckPixPayment = (): UseBuckPixPaymentReturn => {
   const checkPaymentStatus = useCallback(
     async (externalId: string): Promise<BuckPaymentStatus> => {
       try {
-        const data = await fetchWithRetry<BuckTransactionResponse>(
+        const data = await fetchWithRetry<any>(
           () =>
-            fetch(`${BUCK_API_URL}/v1/transactions/external_id/${externalId}`, {
-              method: 'GET',
+            fetch(`${SUPABASE_URL}/functions/v1/buckpay-pix-loteria`, {
+              method: 'POST',
               headers: {
-                Authorization: `Bearer ${BUCK_API_KEY}`,
-                'User-Agent': BUCK_USER_AGENT,
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_ANON_KEY || '',
               },
+              body: JSON.stringify({
+                action: 'status',
+                external_id: externalId,
+              }),
             }),
           2,
           500
         );
 
-        return data.data.status;
+        return data.status || 'pending';
       } catch (err) {
         console.error('[BuckAPI] Erro ao verificar status:', err);
         return 'pending';
