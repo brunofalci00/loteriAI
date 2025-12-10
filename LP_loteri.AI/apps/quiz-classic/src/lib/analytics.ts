@@ -22,7 +22,7 @@ export const trackPixelEvent = (event: string, payload?: Record<string, unknown>
 
   const capiEventMap: Record<
     string,
-    { handler: keyof Pick<Window, "fbCAPI_trackLead" | "fbCAPI_trackCompleteRegistration" | "fbCAPI_trackAddToCart" | "fbCAPI_trackInitiateCheckout">;
+    { handler: keyof Pick<Window, "fbCAPI_trackLead" | "fbCAPI_trackCompleteRegistration" | "fbCAPI_trackAddToCart" | "fbCAPI_trackInitiateCheckout" | "fbCAPI_trackPurchase">;
       defaults?: Record<string, unknown>;
     }
   > = {
@@ -49,6 +49,38 @@ export const trackPixelEvent = (event: string, payload?: Record<string, unknown>
     CheckoutClick: {
       handler: "fbCAPI_trackInitiateCheckout",
       defaults: { contentName: "Checkout Loter.IA", value: 37, currency: "BRL" },
+    },
+    PaymentMethodDialogOpened: {
+      handler: "fbCAPI_trackInitiateCheckout",
+      defaults: { contentName: "Modal Pagamento Aberto", value: 37, currency: "BRL" },
+    },
+    PixMethodSelected: {
+      handler: "fbCAPI_trackInitiateCheckout",
+      defaults: { contentName: "Método PIX Selecionado", value: 37, currency: "BRL" },
+    },
+    CardMethodSelected: {
+      handler: "fbCAPI_trackInitiateCheckout",
+      defaults: { contentName: "Método Cartão Selecionado", value: 37, currency: "BRL" },
+    },
+    PixFormStarted: {
+      handler: "fbCAPI_trackLead",
+      defaults: { contentName: "Formulário PIX Iniciado" },
+    },
+    PixQRCodeGenerated: {
+      handler: "fbCAPI_trackAddToCart",
+      defaults: { contentName: "QR Code PIX Gerado", value: 37, currency: "BRL" },
+    },
+    PixCodeCopied: {
+      handler: "fbCAPI_trackAddToCart",
+      defaults: { contentName: "Código PIX Copiado" },
+    },
+    PixPaymentCompleted: {
+      handler: "fbCAPI_trackPurchase",
+      defaults: { contentName: "Pagamento PIX Concluído", value: 37, currency: "BRL" },
+    },
+    PixPaymentExpired: {
+      handler: "fbCAPI_trackLead",
+      defaults: { contentName: "PIX Expirado" },
     },
   };
 

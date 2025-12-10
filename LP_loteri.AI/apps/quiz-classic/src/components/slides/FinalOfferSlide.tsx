@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ShieldCheck, Clock, MessageCircle, Volume2, VolumeX, Bot, MailCheck, RefreshCcw, Lock } from "lucide-react";
+import { ShieldCheck, Clock, MessageCircle, Volume2, VolumeX, Bot, MailCheck, RefreshCcw, Lock, Zap } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { trackPixelEvent } from "@/lib/analytics";
+import { PaymentMethodDialog } from "@/components/checkout/PaymentMethodDialog";
+import { BuckPixCheckout } from "@/components/checkout/BuckPixCheckout";
+import type { CheckoutMethod } from "@/types/checkout.types";
 
 interface FinalOfferSlideProps {
   onCheckoutClick?: () => void;
@@ -17,10 +20,45 @@ export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
 
+  // Estados do checkout
+  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
+  const [checkoutMethod, setCheckoutMethod] = useState<CheckoutMethod | null>(null);
+
   const handleCheckoutClick = () => {
     trackPixelEvent("CheckoutClick");
-    onCheckoutClick?.();
+    trackPixelEvent("PaymentMethodDialogOpened");
+    setIsPaymentDialogOpen(true);
   };
+
+  const handlePixSelected = () => {
+    setCheckoutMethod("pix");
+    trackPixelEvent("PixMethodSelected");
+  };
+
+  const handleCardSelected = () => {
+    setCheckoutMethod("card");
+    trackPixelEvent("CardMethodSelected");
+    // Redirecionar para Kirvano
+    window.open(checkoutUrl, "_blank");
+    setIsPaymentDialogOpen(false);
+    setCheckoutMethod(null);
+  };
+
+  const handlePixCheckoutClose = (open: boolean) => {
+    if (!open) {
+      setCheckoutMethod(null);
+      setIsPaymentDialogOpen(false);
+    }
+  };
+
+  const handlePixSuccess = (transactionId: string) => {
+    console.log("Pagamento PIX concluído:", transactionId);
+    setCheckoutMethod(null);
+    setIsPaymentDialogOpen(false);
+    onCheckoutClick?.();
+    // Opcional: Redirecionar para app ou página de sucesso
+  };
+
   const handleWhatsAppClick = () => trackPixelEvent("WhatsAppSupportClick");
 
   useEffect(() => {
@@ -58,21 +96,21 @@ export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
     {
       title: "Suporte 24/7 no WhatsApp",
       subtitle: "Respostas em minutos, a qualquer hora.",
-      body: "Tire dúvidas, peça conferência de jogos e receba ajustes de estratégia direto no WhatsApp.",
+      body: "Tire duvidas, peca conferencia de jogos e receba ajustes de estrategia direto no WhatsApp, todo dia e toda hora.",
       image: "https://i.ibb.co/VWPQP3dP/cadastro-bersi.png",
     },
     {
-      title: "Apostador Consistente - Método 3x3",
-      subtitle: "Mini-método usado por quem sempre bate faixas.",
-      body: "Simples, rápido e feito pra você acertar mais vezes sem gastar mais.",
+      title: "Apostador Consistente - Metodo 3x3",
+      subtitle: "Mini-metodo usado por jogadores que sempre ganham faixas.",
+      body: "Simples, rapido e feito pra voce acertar mais vezes sem gastar mais.",
       priceFrom: "R$97,00",
       priceTo: "R$0,00",
       image: "https://i.ibb.co/TqHxhKyf/Chat-GPT-Image-19-de-nov-de-2025-19-45-22.png",
     },
     {
-      title: "Estratégia de R$ 10 por Semana",
+      title: "Estrategia de R$ 10 por Semana",
       subtitle: "A forma mais barata e inteligente de lucrar com loteria.",
-      body: "Com apenas R$10, você já joga com vantagem e deixa de perder dinheiro à toa.",
+      body: "Com apenas R$10, voce ja joga com vantagem e deixa de perder dinheiro a toa.",
       priceFrom: "R$147,00",
       priceTo: "R$0,00",
       image: "https://i.ibb.co/67hHkCzb/Chat-GPT-Image-19-de-nov-de-2025-19-42-54.png",
@@ -81,20 +119,20 @@ export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
 
   const benefits = [
     { icon: "✅", text: "Jogos prontos com IA todos os dias" },
-    { icon: "✅", text: "Até 3 combinações inteligentes por dia" },
-    { icon: "✅", text: "Acesso VIP ao Bolão da Mega da Virada" },
+    { icon: "✅", text: "Ate 3 combinacoes inteligentes por dia" },
+    { icon: "✅", text: "Acesso VIP ao Bolao da Mega da Virada" },
     { icon: "✅", text: "Painel atualizado em tempo real" },
     { icon: "✅", text: "Suporte no WhatsApp com resposta em minutos" },
-    { icon: "✅", text: "Garantia total de 7 dias: testou, não gostou, cancela" },
+    { icon: "✅", text: "Garantia total de 7 dias: testou, nao gostou, cancela" },
   ];
 
   const trustPoints = [
     { icon: ShieldCheck, text: "Plataforma verificada e segura" },
     { icon: Bot, text: "Jogos gerados com IA todos os dias" },
     { icon: MessageCircle, text: "Suporte direto no WhatsApp" },
-    { icon: MailCheck, text: "Entrega automática após pagamento" },
-    { icon: RefreshCcw, text: "Garantia de 7 dias: testou, não gostou, cancela" },
-    { icon: Lock, text: "Sem renovação automática, sem pegadinha" },
+    { icon: MailCheck, text: "Entrega automatica apos pagamento" },
+    { icon: RefreshCcw, text: "Garantia de 7 dias: testou, nao gostou, cancela" },
+    { icon: Lock, text: "Sem renovacao automatica, sem pegadinha" },
   ];
 
   const socialProofImages = [
@@ -109,8 +147,6 @@ export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
     { name: "Marina - RJ", image: "https://i.ibb.co/TD85XLkM/Whats-App-Image-2025-10-27-at-16-36-22.jpg" },
   ];
 
-  const stages = ["1. Confirmar", "2. Sincronizar", "3. Receber"];
-
   return (
     <div className="slide-shell relative py-14">
       <div className="casino-grid" />
@@ -121,21 +157,22 @@ export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
             alt="LOTER.IA"
             className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(16,185,129,0.45)] pulse-glow"
           />
-          <h1 className="heading-1 text-glow">🏆 Prêmio resgatado com sucesso!</h1>
+          <h1 className="heading-1 text-glow">🏅 Premio resgatado com sucesso!</h1>
           <p className="heading-3 text-primary">
-            Você garantiu o acesso completo à LOTER.IA com R$744,00 de desconto travado. Veja tudo que está incluso.
+            Voce liberou o acesso completo a LOTER.IA com R$744,00 de desconto garantido. Agora veja tudo que esta incluso.
           </p>
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground flex-wrap">
-            {stages.map((stage, index) => (
-              <div key={stage} className={`px-3 py-1 rounded-full border ${index === 0 ? "border-primary text-primary" : "border-border"}`}>
-                {stage}
-              </div>
-            ))}
-          </div>
         </div>
 
         <div className="video-shell">
-          <video ref={videoRef} src="/video/demo.mp4" autoPlay muted={isMuted} loop playsInline className="w-full h-full object-cover" />
+          <video
+            ref={videoRef}
+            src="/video/demo.mp4"
+            autoPlay
+            muted={isMuted}
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+          />
           <Button size="icon" variant="secondary" onClick={toggleAudio} className="sound-pill">
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </Button>
@@ -145,11 +182,13 @@ export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
           <div className="flex items-center justify-center gap-4">
             <Clock className={`w-10 h-10 ${timeLeft <= 60 ? "text-destructive animate-bounce" : "text-primary"}`} />
             <div className="text-center">
-              <p className="text-sm text-muted-foreground uppercase tracking-[0.5em]">Contador real</p>
+              <p className="text-sm text-muted-foreground uppercase tracking-[0.5em]">Oferta valida enquanto o painel estiver aberto</p>
               <p className={`text-5xl font-bold ${timeLeft <= 60 ? "text-destructive text-glow" : "text-primary"}`}>
                 {minutes}:{seconds}
               </p>
-              <p className="text-xs text-destructive mt-2 animate-pulse">Se sair agora, seu desconto volta para {totalValue}.</p>
+              {timeLeft <= 60 && (
+                <p className="text-xs text-destructive mt-2 animate-pulse">Depois disso, volta para {totalValue}.</p>
+              )}
             </div>
           </div>
           <div className="timer-shell mt-4">
@@ -158,9 +197,9 @@ export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
         </Card>
 
         <div className="space-y-2 text-center">
-          <p className="text-3xl sm:text-4xl font-extrabold text-foreground text-glow">Seu acesso está pronto.</p>
+          <p className="text-3xl sm:text-4xl font-extrabold text-foreground text-glow">Seu acesso esta pronto para ser liberado!</p>
           <p className="text-base sm:text-lg text-muted-foreground">
-            Pague via PIX e receba automaticamente no seu WhatsApp em segundos. Sem enrolação, sem risco.
+            Pague via PIX e receba automaticamente no seu WhatsApp em segundos. Sem enrolacao, sem risco.
           </p>
         </div>
 
@@ -181,7 +220,7 @@ export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
         </Card>
 
         <div className="text-center space-y-4">
-          <h2 className="heading-2">🚀 Você vai receber:</h2>
+          <h2 className="heading-2">🎁 Voce vai receber:</h2>
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
@@ -209,43 +248,48 @@ export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
         </div>
 
         <Card className="p-6 bg-gradient-to-br from-primary/10 to-gold/20 border border-primary text-center glow-primary-strong pulse-glow space-y-4">
-          <p className="text-2xl font-bold text-foreground">🎁 Oferta completa da LOTER.IA</p>
+          <p className="text-2xl font-bold text-foreground">💎 Oferta completa da LOTER.IA</p>
           <div className="space-y-3 text-left text-sm sm:text-base">
             <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Valor total</span>
+              <span className="text-muted-foreground">Valor total (oferta + bonus)</span>
               <span className="font-bold text-foreground text-xl">{totalValue}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Desconto reservado pela IA</span>
-              <span className="font-bold text-destructive bg-destructive/15 border border-destructive/50 px-3 py-1 rounded-full shadow-sm">-{discountValue}</span>
+              <span className="font-bold text-destructive bg-destructive/15 border border-destructive/50 px-3 py-1 rounded-full shadow-sm">
+                -{discountValue}
+              </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-foreground font-semibold">Você paga hoje</span>
+              <span className="text-foreground font-semibold">Voce paga hoje</span>
               <span className="text-4xl sm:text-5xl font-black text-primary text-glow">{finalValue}</span>
             </div>
           </div>
           <div className="rounded-xl border border-destructive/50 bg-destructive/10 text-destructive text-center px-4 py-3 font-semibold">
             Economia total garantida: {discountValue}
           </div>
-          <p className="text-sm text-muted-foreground">Pagamento único, acesso por 12 meses, sem renovação automática.</p>
+          <p className="text-sm text-muted-foreground">Pagamento unico, acesso por 12 meses, sem renovacao automatica.</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
             <Button
-              asChild
               size="lg"
               onClick={handleCheckoutClick}
-              className="w-full text-base sm:text-xl py-4 sm:py-5 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300 tap-intent"
+              className="w-full text-base sm:text-xl py-4 sm:py-5 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl transform hover:scale-105 transition-all duration-300"
             >
-              <a href={checkoutUrl} target="_blank" rel="noreferrer" className="block px-2">
-                Ativar meu desconto agora
-              </a>
+              🚀 Garantir acesso por R$37,00
             </Button>
             <Button
               asChild
               size="lg"
               className="w-full text-sm sm:text-base py-4 sm:py-5 bg-emerald-500 hover:bg-emerald-400 text-background font-bold shadow-2xl flex items-center justify-center gap-2 text-center leading-snug"
             >
-              <a href={whatsappUrl} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 px-2" onClick={handleWhatsAppClick}>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-2 px-2"
+                onClick={handleWhatsAppClick}
+              >
                 <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                 <span className="whitespace-nowrap">🤝 Falar com especialista</span>
               </a>
@@ -262,7 +306,14 @@ export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
           ))}
         </div>
 
-        <Card className="p-6 bg-primary/10 border border-primary/30">
+        <Card className="p-4 bg-destructive/10 border border-destructive/40 text-center shadow-sm">
+          <p className="text-base sm:text-lg font-semibold text-destructive flex items-center justify-center gap-2">
+            <Zap className="w-5 h-5" />
+            Mais de 250 pessoas ativadas hoje. Painel pode fechar a qualquer momento.
+          </p>
+        </Card>
+
+        <Card className="p-6 bg-primary/5 border border-primary/30">
           <div className="space-y-4 text-left">
             {benefits.map((benefit) => (
               <div key={benefit.text} className="flex items-start gap-3 text-foreground text-lg">
@@ -291,27 +342,43 @@ export const FinalOfferSlide = ({ onCheckoutClick }: FinalOfferSlideProps) => {
 
         <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground text-center">
           <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Compra segura" className="w-40 sm:w-52 mx-auto" />
-          <p>⚡ Oferta ativa enquanto o painel estiver aberto.</p>
-          <p>+84 pessoas ativadas hoje. Depois volta ao valor original.</p>
+          <p>ℹ️ Oferta ativa enquanto o painel estiver aberto.</p>
+          <p>Ja sao +84 pessoas ativadas hoje. Depois disso, o acesso volta para o valor original.</p>
         </div>
 
         <Card className="p-6 bg-primary/10 border border-primary/30 text-center">
-          <p className="text-lg font-bold text-foreground">Mesmo sistema usado por quem fez 13 ou 14 pontos nas últimas semanas.</p>
+          <p className="text-lg font-bold text-foreground">Mesmo sistema usado por quem fez 13 ou 14 pontos nas ultimas semanas.</p>
         </Card>
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-background/95 backdrop-blur-sm border-t border-border md:hidden">
         <Button
-          asChild
           size="lg"
           onClick={handleCheckoutClick}
-          className="w-full text-lg py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl tap-intent"
+          className="w-full text-lg py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold text-center glow-primary-strong pulse-glow shadow-2xl"
         >
-          <a href={checkoutUrl} target="_blank" rel="noreferrer">
-            Ativar meu desconto agora
-          </a>
+          🚀 Garantir acesso por R$37,00
         </Button>
       </div>
+
+      {/* Modais de Checkout */}
+      <PaymentMethodDialog
+        open={isPaymentDialogOpen && checkoutMethod === null}
+        onOpenChange={setIsPaymentDialogOpen}
+        onPixSelected={handlePixSelected}
+        onCardSelected={handleCardSelected}
+      />
+
+      {checkoutMethod === "pix" && (
+        <BuckPixCheckout
+          open={checkoutMethod === "pix"}
+          onOpenChange={handlePixCheckoutClose}
+          onSuccess={handlePixSuccess}
+          amount={3700} // R$ 37,00 em centavos
+          productName="Acesso Loter.IA"
+          offerName="Quiz Classic - Desconto Especial"
+        />
+      )}
     </div>
   );
 };
