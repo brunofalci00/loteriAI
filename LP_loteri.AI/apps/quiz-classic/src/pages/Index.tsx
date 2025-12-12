@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { CoinCounter } from "@/components/CoinCounter";
 import { ExitIntentOverlay } from "@/components/ExitIntentOverlay";
 import { EntrySlide } from "@/components/slides/EntrySlide";
@@ -12,8 +12,12 @@ import { AISimulationSlide } from "@/components/slides/AISimulationSlide";
 import { TestimonialsSlide } from "@/components/slides/TestimonialsSlide";
 import { RouletteBonusSlide } from "@/components/slides/RouletteBonusSlide";
 import { MaxWinCelebrationSlide } from "@/components/slides/MaxWinCelebrationSlide";
-import { FinalOfferSlide } from "@/components/slides/FinalOfferSlide";
 import { useExitIntent } from "@/hooks/useExitIntent";
+
+// Lazy load the heavy checkout slide
+const FinalOfferSlide = lazy(() =>
+  import("@/components/slides/FinalOfferSlide").then(module => ({ default: module.FinalOfferSlide }))
+);
 
 const AI_NUMBERS = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 21, 23, 24, 25, 3];
 const DRAWN_NUMBERS = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 21, 23, 24, 25, 1];
@@ -124,7 +128,16 @@ const Index = () => {
     />,
     <MaxWinCelebrationSlide key="max-win" onNext={handleNext} playWinSound={shouldPlayMaxWinSound} />,
     <TestimonialsSlide key="testimonials" onNext={handleNext} />,
-    <FinalOfferSlide key="final-offer" />,
+    <Suspense
+      key="final-offer"
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+          <div className="text-white text-xl animate-pulse">Carregando...</div>
+        </div>
+      }
+    >
+      <FinalOfferSlide />
+    </Suspense>,
   ];
 
   const shouldShowCoinCounter = currentSlide > 0 && currentSlide <= FIRST_BONUS_UNLOCK_SLIDE_INDEX;

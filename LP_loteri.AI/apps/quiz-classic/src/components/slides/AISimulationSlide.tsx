@@ -32,11 +32,11 @@ export const AISimulationSlide = ({
   const [verdictReady, setVerdictReady] = useState(false);
   const [showSpinReveal, setShowSpinReveal] = useState(false);
   const [tensionLine, setTensionLine] = useState<string | null>(null);
-  const [, forceRender] = useState(0);
   const processingRef = useRef<HTMLAudioElement | null>(null);
   const aiSelectSoundRef = useRef<HTMLAudioElement | null>(null);
   const aiResultSoundRef = useRef<HTMLAudioElement | null>(null);
   const loadingSteps = useRef<number[]>([0, 0, 0]);
+  const selectedNumbersRef = useRef<number[]>([]);
 
   useEffect(() => {
     processingRef.current = new Audio("/sounds/processing-loop.mp3");
@@ -68,10 +68,16 @@ export const AISimulationSlide = ({
 
   useEffect(() => {
     if (phase !== "selection") return;
+    selectedNumbersRef.current = [];
     setSelectedNumbers([]);
     let index = 0;
     const timer = setInterval(() => {
-      setSelectedNumbers((prev) => [...prev, aiNumbers[index]]);
+      // Accumulate in ref
+      selectedNumbersRef.current = [...selectedNumbersRef.current, aiNumbers[index]];
+      // Update state in batches of 3 to reduce re-renders from 15 to 5
+      if (index % 3 === 0 || index === aiNumbers.length - 1) {
+        setSelectedNumbers([...selectedNumbersRef.current]);
+      }
       if (aiSelectSoundRef.current) {
         aiSelectSoundRef.current.currentTime = 0;
         aiSelectSoundRef.current.play().catch(() => undefined);
@@ -79,6 +85,8 @@ export const AISimulationSlide = ({
       index += 1;
       if (index >= aiNumbers.length) {
         clearInterval(timer);
+        // Final update to ensure all numbers are shown
+        setSelectedNumbers([...selectedNumbersRef.current]);
       }
     }, 320);
     return () => clearInterval(timer);

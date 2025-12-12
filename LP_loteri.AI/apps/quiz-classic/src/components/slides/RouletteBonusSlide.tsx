@@ -52,7 +52,7 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
   const randomSpinValue = () => WEIGHTED_SPIN_POOL[Math.floor(Math.random() * WEIGHTED_SPIN_POOL.length)];
 
   const startSpinLoop = () => {
-    spinLoopRef.current = new Audio("/sounds/you-win-sequence-2-183949-1.mp3");
+    spinLoopRef.current = new Audio("/sounds/you-win-sequence-2-183949.mp3");
     spinLoopRef.current.loop = true;
     spinLoopRef.current.volume = 0.2;
     spinLoopRef.current.play().catch(() => undefined);
@@ -69,7 +69,13 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
   };
 
   const clearRegisteredTimers = () => {
-    timersRef.current.forEach((timer) => clearTimeout(timer));
+    timersRef.current.forEach((timer) => {
+      if (typeof timer === 'number') {
+        // Could be either setTimeout ID or requestAnimationFrame ID
+        clearTimeout(timer);
+        cancelAnimationFrame(timer);
+      }
+    });
     timersRef.current = [];
   };
 
@@ -124,31 +130,39 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete, onMaxWin
 
     const fastPhaseDuration = 4000;
     const slowPhaseDuration = 2200;
+    const startTime = Date.now();
+    let animationFrameId: number;
 
-    const fastInterval = registerTimer(
-      setInterval(() => {
-        setReels((prev) => prev.map(() => randomSpinValue()));
-      }, 130),
-    );
+    // Use requestAnimationFrame for smooth animation with fewer state updates
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
 
-    registerTimer(
-      setTimeout(() => {
-        clearInterval(fastInterval);
-        setSuspenseMessage("Trancando o acesso... quase lá.");
-        const slowInterval = registerTimer(
-          setInterval(() => {
-            setReels((prev) => prev.map(() => randomSpinValue()));
-          }, 220),
-        );
+      if (elapsed < fastPhaseDuration) {
+        // Fast phase: update every 130ms worth of frames (reduce updates from 60fps to ~7fps)
+        if (Math.floor(elapsed / 130) !== Math.floor((elapsed - 16) / 130)) {
+          setReels([randomSpinValue(), randomSpinValue(), randomSpinValue()]);
+        }
+        animationFrameId = requestAnimationFrame(animate);
+      } else if (elapsed < fastPhaseDuration + slowPhaseDuration) {
+        // Slow phase: update every 220ms
+        if (elapsed === fastPhaseDuration || Math.floor((elapsed - fastPhaseDuration) / 220) !== Math.floor((elapsed - fastPhaseDuration - 16) / 220)) {
+          setReels([randomSpinValue(), randomSpinValue(), randomSpinValue()]);
+          if (elapsed === fastPhaseDuration) {
+            setSuspenseMessage("Trancando o acesso... quase lá.");
+          }
+        }
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        // Animation complete, reveal final reels
+        cancelAnimationFrame(animationFrameId);
+        revealFinalReels();
+      }
+    };
 
-        registerTimer(
-          setTimeout(() => {
-            clearInterval(slowInterval);
-            revealFinalReels();
-          }, slowPhaseDuration),
-        );
-      }, fastPhaseDuration),
-    );
+    animationFrameId = requestAnimationFrame(animate);
+
+    // Store animation frame ID for cleanup
+    timersRef.current.push(animationFrameId as any);
   };
 
   return (

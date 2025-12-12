@@ -18,5 +18,15 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     assetsDir: "quiz-assets",
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-ui': ['@radix-ui/react-dialog', '@radix-ui/react-tooltip', '@radix-ui/react-toast'],
+          'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          'vendor-icons': ['lucide-react'],
+          'vendor-carousel': ['embla-carousel-react'],
+        }
+      }
+    }
   },
 }));

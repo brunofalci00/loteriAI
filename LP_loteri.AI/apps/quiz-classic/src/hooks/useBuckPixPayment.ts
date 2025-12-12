@@ -46,12 +46,13 @@ export const useBuckPixPayment = (): UseBuckPixPaymentReturn => {
 
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const pollingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const pollingAttemptsRef = useRef<number>(0);
 
   // Cleanup de timers no unmount
   useEffect(() => {
     return () => {
       if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
+        clearTimeout(pollingIntervalRef.current);
       }
       if (pollingTimeoutRef.current) {
         clearTimeout(pollingTimeoutRef.current);
@@ -264,25 +265,35 @@ export const useBuckPixPayment = (): UseBuckPixPaymentReturn => {
   );
 
   /**
-   * Inicia polling para verificar status do pagamento
+   * Calcula o intervalo de polling com exponential backoff
+   * 5s -> 10s -> 20s -> 30s (máximo)
+   */
+  const getPollingInterval = (attempt: number): number => {
+    const intervals = [5000, 10000, 20000, 30000];
+    return intervals[Math.min(attempt, intervals.length - 1)];
+  };
+
+  /**
+   * Inicia polling para verificar status do pagamento com exponential backoff
    */
   const startPolling = useCallback(
     (externalId: string, onPaid: () => void, onExpired: () => void) => {
       // Limpar polling anterior
       if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
+        clearTimeout(pollingIntervalRef.current);
       }
       if (pollingTimeoutRef.current) {
         clearTimeout(pollingTimeoutRef.current);
       }
 
       setIsPolling(true);
+      pollingAttemptsRef.current = 0;
       console.log('[BuckAPI] Iniciando polling para:', externalId);
 
-      // Polling a cada 5 segundos
-      pollingIntervalRef.current = setInterval(async () => {
+      // Função recursiva de polling com backoff
+      const poll = async () => {
         const status = await checkPaymentStatus(externalId);
-        console.log('[BuckAPI] Status do pagamento:', status);
+        console.log('[BuckAPI] Status do pagamento:', status, `(tentativa ${pollingAttemptsRef.current + 1})`);
 
         if (status === 'paid') {
           stopPolling();
@@ -290,13 +301,26 @@ export const useBuckPixPayment = (): UseBuckPixPaymentReturn => {
           sessionStorage.removeItem('buck_pix_transaction_id');
           sessionStorage.removeItem('buck_pix_created_at');
           onPaid();
-        } else if (status === 'failed' || status === 'expired') {
+          return;
+        }
+
+        if (status === 'failed' || status === 'expired') {
           stopPolling();
           sessionStorage.removeItem('buck_pix_transaction_id');
           sessionStorage.removeItem('buck_pix_created_at');
           onExpired();
+          return;
         }
-      }, 5000);
+
+        // Agendar próxima verificação com backoff
+        const nextInterval = getPollingInterval(pollingAttemptsRef.current);
+        pollingAttemptsRef.current += 1;
+        console.log(`[BuckAPI] Próxima verificação em ${nextInterval / 1000}s`);
+        pollingIntervalRef.current = setTimeout(poll, nextInterval);
+      };
+
+      // Primeira verificação imediata
+      poll();
 
       // Timeout de 15 minutos
       pollingTimeoutRef.current = setTimeout(() => {
@@ -314,13 +338,14 @@ export const useBuckPixPayment = (): UseBuckPixPaymentReturn => {
    */
   const stopPolling = useCallback(() => {
     if (pollingIntervalRef.current) {
-      clearInterval(pollingIntervalRef.current);
+      clearTimeout(pollingIntervalRef.current);
       pollingIntervalRef.current = null;
     }
     if (pollingTimeoutRef.current) {
       clearTimeout(pollingTimeoutRef.current);
       pollingTimeoutRef.current = null;
     }
+    pollingAttemptsRef.current = 0;
     setIsPolling(false);
     console.log('[BuckAPI] Polling parado');
   }, []);
