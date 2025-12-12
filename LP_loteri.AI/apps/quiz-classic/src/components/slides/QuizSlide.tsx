@@ -61,6 +61,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
   const startSoundRef = useRef<HTMLAudioElement | null>(null);
   const answerSoundRef = useRef<HTMLAudioElement | null>(null);
   const bonusSoundRef = useRef<HTMLAudioElement | null>(null);
+  const coinCardRef = useRef<HTMLDivElement | null>(null);
 
   const answeredCount = useMemo(() => answers.filter((answer) => answer !== undefined).length, [answers]);
   const coinsCollected = answeredCount * COINS_PER_ANSWER;
@@ -94,7 +95,8 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
 
   const animateCoinJourney = (sourceButton: HTMLButtonElement) => {
     if (typeof document === "undefined") return;
-    const target = document.querySelector(".coin-status-card") as HTMLElement | null;
+    // Use cached ref instead of querySelector to avoid layout thrashing
+    const target = coinCardRef.current;
     if (!target) return;
 
     const sourceRect = sourceButton.getBoundingClientRect();
@@ -192,7 +194,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
           </div>
         </div>
 
-        <div className="coin-status-card">
+        <div ref={coinCardRef} className="coin-status-card">
           <div>
             <div className="coin-status-card__value">
               <span>{coinsCollected}</span>

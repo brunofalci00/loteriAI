@@ -399,7 +399,8 @@ All colors MUST be HSL.
     position: absolute;
     border-radius: 9999px;
     filter: blur(120px);
-    animation: orbPulse 8s ease-in-out infinite alternate;
+    will-change: opacity;
+    animation: orbFade 8s ease-in-out infinite alternate;
   }
 
   .orb-one {
@@ -428,12 +429,12 @@ All colors MUST be HSL.
     animation-delay: 2s;
   }
 
-  @keyframes orbPulse {
-    from {
-      transform: scale(1);
+  @keyframes orbFade {
+    0%, 100% {
+      opacity: 0.3;
     }
-    to {
-      transform: scale(1.2);
+    50% {
+      opacity: 0.5;
     }
   }
 
