@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircle2, Loader2, AlertCircle, X } from "lucide-react";
+import { CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -157,33 +157,20 @@ export const BuckPixCheckout = ({
       <DialogContent className="sm:max-w-[500px] md:max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <DialogHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <DialogTitle className="text-2xl font-bold">
-                {checkoutState.type === "pix-success"
-                  ? "Pagamento Confirmado!"
-                  : checkoutState.type === "pix-expired"
-                  ? "PIX Expirado"
-                  : checkoutState.type === "pix-error"
-                  ? "Erro no Pagamento"
-                  : "Pagamento via PIX"}
-              </DialogTitle>
-              {checkoutState.type === "pix-form" && (
-                <p className="text-sm text-muted-foreground mt-1">
-                  Valor: <span className="font-bold text-primary">{formatCurrency(amount)}</span>
-                </p>
-              )}
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleClose}
-              className="rounded-full"
-              aria-label="Fechar"
-            >
-              <X className="w-5 h-5" />
-            </Button>
-          </div>
+          <DialogTitle className="text-2xl font-bold">
+            {checkoutState.type === "pix-success"
+              ? "Pagamento Confirmado!"
+              : checkoutState.type === "pix-expired"
+              ? "PIX Expirado"
+              : checkoutState.type === "pix-error"
+              ? "Erro no Pagamento"
+              : "Pagamento via PIX"}
+          </DialogTitle>
+          {checkoutState.type === "pix-form" && (
+            <p className="text-sm text-muted-foreground mt-1">
+              Valor: <span className="font-bold text-primary">{formatCurrency(amount)}</span>
+            </p>
+          )}
         </DialogHeader>
 
         {/* Formulário */}
