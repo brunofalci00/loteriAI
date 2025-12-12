@@ -12,27 +12,34 @@
       href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap&subset=latin-ext"
       rel="stylesheet"
     />
-    <script src="/fb-parameter-builder-lite.js"></script>
-    <script src="/fb-capi.js"></script>
+    <script src="/fb-parameter-builder-lite.js" defer></script>
+    <script src="/fb-capi.js" defer></script>
     <script>
-      // Disparar ViewContent via CAPI + Pixel, respeitando carregamento assíncrono
-      const MAX_VIEW_CONTENT_ATTEMPTS = 20;
-      let viewContentAttempts = 0;
-      const triggerViewContent = () => {
-        if (typeof window.fbCAPI_trackViewContent === "function") {
-          window.fbCAPI_trackViewContent({
-            contentName: "Quiz Loter.IA - Landing",
-            value: 37,
-            currency: "BRL",
-          });
-          return;
-        }
-        if (viewContentAttempts < MAX_VIEW_CONTENT_ATTEMPTS) {
-          viewContentAttempts += 1;
-          window.setTimeout(triggerViewContent, 200);
-        }
-      };
-      triggerViewContent();
+      // Disparar ViewContent via CAPI + Pixel - event-driven approach
+      window.addEventListener('DOMContentLoaded', function() {
+        // Check if function is available, otherwise wait for script load
+        const triggerViewContent = () => {
+          if (typeof window.fbCAPI_trackViewContent === "function") {
+            window.fbCAPI_trackViewContent({
+              contentName: "Quiz Loter.IA - Landing",
+              value: 37,
+              currency: "BRL",
+            });
+          } else {
+            // Fallback: single retry after 1s if scripts are slow
+            setTimeout(() => {
+              if (typeof window.fbCAPI_trackViewContent === "function") {
+                window.fbCAPI_trackViewContent({
+                  contentName: "Quiz Loter.IA - Landing",
+                  value: 37,
+                  currency: "BRL",
+                });
+              }
+            }, 1000);
+          }
+        };
+        triggerViewContent();
+      });
     </script>
 
     <meta property="og:type" content="website" />
