@@ -133,10 +133,8 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
         <Card className="p-5 border border-primary/30">
           <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
             <div>
-              <p className="meta-label text-primary">IA em ação</p>
-              <p className="text-muted-foreground">
-                {phase === "scan" ? "Conferindo seu jogo" : phase === "selection" ? "Escolhendo as 6 dezenas dela" : "Mostrando o placar final"}
-              </p>
+              <p className="meta-label text-primary">IA EM OPERAÇÃO</p>
+              <p className="text-muted-foreground">Placar final sendo apurado</p>
             </div>
             <div className="text-right text-xs text-muted-foreground">Painel protegido em tempo real</div>
           </div>
@@ -167,56 +165,55 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpi
         {phase === "verdict" && (
           <Card className="p-6 space-y-6 border border-border">
             <div className="space-y-2 text-center">
-              <p className="meta-label">Comparativo final</p>
-              <p className="heading-3">A IA está jogando por você agora.</p>
+              <p className="meta-label">COMPARATIVO FINAL</p>
+              <p className="heading-3">Agora você vê a diferença na prática.</p>
             </div>
             {verdictReady ? (
               <>
                 <div className="scoreboard">
                   <div className="scoreboard__side">
-                    <p className="text-xs text-muted-foreground uppercase">Você</p>
+                    <p className="text-xs text-muted-foreground uppercase">Sua escolha</p>
                     <p className="scoreboard__value scoreboard__value--fail">{userScore}</p>
+                    <p className="text-xs text-muted-foreground font-semibold mt-1">{userScore === 1 ? "1 ponto" : `${userScore} pontos`}</p>
                   </div>
                   <div className="scoreboard__separator" />
                   <div className="scoreboard__side">
-                    <p className="text-xs text-muted-foreground uppercase">IA</p>
+                    <p className="text-xs text-muted-foreground uppercase">Escolha do sistema</p>
                     <p className="scoreboard__value scoreboard__value--win">{aiScore}</p>
+                    <p className="text-xs text-muted-foreground font-semibold mt-1">{aiScore === 1 ? "1 ponto" : `${aiScore} pontos`}</p>
                   </div>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Card className="p-4 bg-secondary/60 border border-border/60">
-                    <p className="text-xs uppercase text-muted-foreground mb-1">Prêmio com intuição</p>
+                    <p className="text-xs uppercase text-muted-foreground mb-1">Resultado estimado com intuição</p>
                     <p className="text-3xl font-bold text-muted-foreground">
                       {currencyFormatter.format(manualPrizeDisplay)}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">Quanto esse jogo renderia se fosse enviado agora.</p>
+                    <p className="text-xs text-muted-foreground mt-1">Simulação caso o jogo fosse enviado desta forma.</p>
                   </Card>
                   <Card className="p-4 bg-gradient-to-br from-primary/10 to-gold/30 border border-primary/40">
-                    <p className="text-xs uppercase text-muted-foreground mb-1">Prêmio com IA</p>
+                    <p className="text-xs uppercase text-muted-foreground mb-1">Resultado estimado com o sistema</p>
                     <p className="text-3xl font-bold text-primary text-glow">
                       {currencyFormatter.format(iaPrizeDisplay)}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">Simulação real usando a sequência inteligente.</p>
+                    <p className="text-xs text-muted-foreground mt-1">Simulação com base em padrões históricos equivalentes.</p>
                   </Card>
                 </div>
 
                 <div className="space-y-2 text-center text-sm text-muted-foreground">
-                  <p>A IA fez {aiScore} pontos com as mesmas dezenas. Você ficaria nos {userScore}.</p>
-                  <p>Com isso ela liberou um giro para você resgatar o desconto especial.</p>
+                  <p>O sistema atingiu {aiScore} pontos usando as mesmas dezenas. Na mesma condição, a escolha manual ficaria com {userScore}.</p>
+                  <p>Com isso, foi liberada uma condição especial para você continuar o processo.</p>
                 </div>
                 {showSpinReveal && (
                   <div className="bg-secondary rounded-2xl p-4 border border-primary/20 text-sm text-left sm:text-center space-y-1">
-                    <p className="font-semibold text-primary">Bônus reservado</p>
-                    <p>Ela usou {aiSpins} giros e guardou {Math.max(userSpins, 1)} pra você.</p>
-                    <p className="text-muted-foreground">Esse giro libera até {currencyFormatter.format(iaPrize)} em desconto.</p>
+                    <p className="font-semibold text-primary">CONDIÇÃO RESERVADA</p>
+                    <p>O sistema utilizou parte do bônus automaticamente e manteve uma liberação disponível para você.</p>
+                    <p className="text-muted-foreground">Essa etapa permite avançar com vantagem adicional no acesso.</p>
                   </div>
                 )}
                 <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 flex items-center justify-center gap-2">
-                  <span role="img" aria-hidden="true">
-                    🎯
-                  </span>
-                  Seguir para o giro
+                  SEGUIR PARA A PRÓXIMA ETAPA
                 </Button>
               </>
             ) : (

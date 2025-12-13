@@ -10,8 +10,8 @@ interface RouletteBonusSlideProps {
   onSpinComplete?: () => void;
 }
 
-const SLOT_PRIZES = ["R$ 100 OFF", "R$ 200 OFF", "R$ 500 OFF", "R$ 700 OFF", "R$ 1.000 OFF"];
-const TARGET_PRIZE = "R$ 1.000 OFF";
+const SLOT_PRIZES = ["Sem Desconto", "R$ 20 de desconto", "R$ 50 de desconto", "R$ 1.000 de desconto"];
+const TARGET_PRIZE = "R$ 1.000 de desconto";
 const { slotMaxDiscount } = megaQuizConfig;
 
 export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: RouletteBonusSlideProps) => {
@@ -135,14 +135,15 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
       <div className="casino-grid" />
       <div className="slide-frame space-y-8 relative z-10">
         <div className="space-y-3 text-center">
-          <p className="meta-label text-primary">🎰 Bônus 2 — Roleta da IA</p>
-          <h2 className="heading-1">Giro pago pela IA</h2>
+          <p className="meta-label text-primary">BÔNUS 2 • CONDIÇÃO ESPECIAL DO SISTEMA</p>
+          <h2 className="heading-1">Giro reservado pelo sistema</h2>
           <p className="body-lead">
-            Ela deixou 1 rodada para você. Dá para ganhar até {currencyFormatter.format(slotMaxDiscount)} de desconto na Loter.IA.
+            O sistema manteve uma única rodada ativa para você. Essa etapa pode liberar até {currencyFormatter.format(slotMaxDiscount)} de desconto no acesso.
           </p>
-          <div className="bg-primary/10 border border-primary/30 rounded-lg p-3 text-sm text-primary font-semibold inline-flex flex-col sm:flex-row gap-2 justify-center">
-            <span>A IA deixou 1 chance ativa exclusivamente pra você.</span>
-            <span>Spins disponíveis: {spinsLeft}</span>
+          <div className="bg-primary/10 border border-primary/30 rounded-lg p-3 text-sm text-primary font-semibold inline-flex flex-col gap-1 justify-center">
+            <span className="uppercase tracking-[0.3em] text-[0.7rem] text-muted-foreground">Status da condição</span>
+            <span>1 chance ativa • uso único</span>
+            <span className="text-muted-foreground">Essa liberação não se repete.</span>
           </div>
         </div>
 
@@ -162,7 +163,9 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
                 ))}
               </div>
             </div>
-            <p className="text-center text-sm text-muted-foreground">Aperte uma vez.</p>
+            <p className="text-center text-sm text-muted-foreground font-semibold">
+              Execute a rodada para confirmar a condição liberada para você.
+            </p>
           </Card>
 
           <div className="flex-1 space-y-4 text-center lg:text-left">
@@ -172,9 +175,9 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
               disabled={userSpins <= 0 || hasSpun}
               className="w-full lg:w-auto text-base sm:text-xl py-5 sm:py-6 bg-primary hover:bg-primary-glow text-primary-foreground font-bold"
             >
-              {isSpinning ? "Girando..." : "Girar agora"}
+              {isSpinning ? "Confirmando..." : "CONFIRMAR RODADA AGORA"}
             </Button>
-            <p className="text-sm text-muted-foreground font-semibold">Prêmios possíveis:</p>
+            <p className="text-sm text-muted-foreground font-semibold">Valores possíveis</p>
             <ul className="text-sm text-muted-foreground space-y-1">
               {SLOT_PRIZES.map((prize) => (
                 <li key={prize}>✨ {prize}</li>
@@ -183,12 +186,12 @@ export const RouletteBonusSlide = ({ onNext, userSpins, onSpinComplete }: Roulet
 
             {result && (
               <Card className="p-4 border border-primary/40 space-y-2">
-                <p className="meta-label text-primary">Resultado</p>
-                <h3 className="heading-3 text-primary">MAX WIN desbloqueado!</h3>
+                <p className="meta-label text-primary">CONDIÇÃO CONFIRMADA</p>
+                <h3 className="heading-3 text-primary">Liberação registrada</h3>
                 <p className="text-sm sm:text-base text-foreground font-semibold">
-                  Você ganhou mais de {currencyFormatter.format(slotMaxDiscount)} em desconto para ativar a Loter.IA antes da Mega da Virada.
+                  Desconto reservado: {currencyFormatter.format(slotMaxDiscount)} para continuar o processo com vantagem adicional.
                 </p>
-                <p className="text-sm text-muted-foreground">Aproveite enquanto o painel estiver aberto.</p>
+                <p className="text-sm text-muted-foreground">Acesso válido enquanto o painel estiver aberto.</p>
               </Card>
             )}
           </div>

@@ -19,9 +19,7 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
             </span>
             Antes de resgatar seu prêmio, veja quem já garantiu o acesso
           </h1>
-          <p className="body-lead">
-            Esses jogadores destravaram mais de R$1.000 em desconto e já estão usando a IA antes da Mega da Virada.
-          </p>
+
         </div>
 
         <Card className="border-0 bg-gradient-to-r from-primary/10 to-gold/10 p-0 overflow-hidden">

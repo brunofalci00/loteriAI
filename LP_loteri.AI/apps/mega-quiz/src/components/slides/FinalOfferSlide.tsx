@@ -14,7 +14,8 @@ const benefits = [
 ];
 
 export const FinalOfferSlide = () => {
-  const checkoutUrl = "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
+  const checkoutUrl =
+    (import.meta.env.VITE_CHECKOUT_URL as string | undefined) ?? "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
   const whatsappUrl = "https://wa.me/5511993371766";
   const [timeLeft, setTimeLeft] = useState(3 * 60);
   const [tickSpeedUp, setTickSpeedUp] = useState(false);
@@ -122,14 +123,14 @@ export const FinalOfferSlide = () => {
         </Card>
 
         <Card className="p-6 bg-gradient-to-br from-black/40 via-secondary/80 to-gold/20 border border-primary text-center glow-primary-strong space-y-3">
-          <p className="text-2xl font-bold text-foreground">🔥 De R$297 por 12x de R$8,91</p>
+          <p className="text-2xl font-bold text-foreground">🔥 R$67,00 vitalício</p>
           <div>
             <p className="text-lg text-muted-foreground line-through">Valor cheio: R$297</p>
-            <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">12x R$8,91</p>
-            <p className="text-base text-foreground font-semibold">ou R$87,00 à vista (acesso anual)</p>
+            <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">R$67,00</p>
+            <p className="text-base text-foreground font-semibold">Pagamento único (acesso vitalício)</p>
           </div>
           <p className="text-lg text-foreground font-semibold">
-            Sem mensalidade escondida e sem renovação automática sem aviso. Você garante 12 meses completos e ainda tem 7 dias para testar sem risco.
+            Sem mensalidade escondida e sem renovação automática sem aviso. Você garante acesso vitalício e ainda tem 7 dias para testar sem risco.
           </p>
         </Card>
 
