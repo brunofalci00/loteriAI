@@ -14,6 +14,7 @@ const benefits = [
 ];
 
 export const FinalOfferSlide = () => {
+  const baseUrl = import.meta.env.BASE_URL ?? "/";
   const checkoutUrl =
     (import.meta.env.VITE_CHECKOUT_URL as string | undefined) ?? "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
   const whatsappUrl = "https://wa.me/5511993371766";
@@ -75,7 +76,7 @@ export const FinalOfferSlide = () => {
         <div className="video-shell">
           <video
             ref={videoRef}
-            src="/video/demo.mp4"
+            src={`${baseUrl}video/demo.mp4`}
             autoPlay
             muted={isMuted}
             loop

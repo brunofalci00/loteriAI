@@ -110,6 +110,7 @@ const CheckoutButton = ({
 };
 
 const MegaVirada = () => {
+  const baseUrl = import.meta.env.BASE_URL ?? "/";
   const checkoutUrl =
     (import.meta.env.VITE_CHECKOUT_URL as string | undefined) ?? "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
   const offerHeadline = (import.meta.env.VITE_OFFER_HEADLINE as string | undefined) ?? "Acesso vitalício ao gerador";
@@ -542,7 +543,7 @@ const MegaVirada = () => {
               </p>
             </Card>
 
-            <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
               <Card className="p-4 bg-card/85 border border-primary/20 rounded-3xl space-y-3">
                 <div className="flex items-center justify-between">
                   <p className="font-bold">Vídeo</p>
@@ -551,7 +552,7 @@ const MegaVirada = () => {
                   </Badge>
                 </div>
                 <div className="video-shell">
-                  <video src="/video/demo.mp4" controls playsInline className="w-full h-full object-cover" />
+                  <video src={`${baseUrl}video/demo.mp4`} controls playsInline className="w-full h-full object-cover" />
                 </div>
               </Card>
               <Card className="p-4 bg-card/85 border border-primary/20 rounded-3xl space-y-3">
@@ -562,7 +563,7 @@ const MegaVirada = () => {
                   </Badge>
                 </div>
                 <div className="video-shell">
-                  <video src="/video/slot.mp4" controls playsInline className="w-full h-full object-cover" />
+                  <video src={`${baseUrl}video/slot.mp4`} controls playsInline className="w-full h-full object-cover" />
                 </div>
               </Card>
               <Card className="p-4 bg-card/85 border border-primary/20 rounded-3xl space-y-3">
