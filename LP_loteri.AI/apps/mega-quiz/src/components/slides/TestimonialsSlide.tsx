@@ -12,6 +12,8 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [ctaUnlocked, setCtaUnlocked] = useState(false);
+  const MAX_PLAY_SECONDS = 122;
+  const CLAMP_SECONDS = 121.8;
 
   useEffect(() => {
     videoRef.current?.play().catch(() => undefined);
@@ -28,8 +30,15 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
   };
 
   const handleTimeUpdate = () => {
-    if (ctaUnlocked || !videoRef.current) return;
-    if (videoRef.current.currentTime >= 60) {
+    if (!videoRef.current) return;
+
+    if (videoRef.current.currentTime >= MAX_PLAY_SECONDS) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = CLAMP_SECONDS;
+      return;
+    }
+
+    if (!ctaUnlocked && videoRef.current.currentTime >= 60) {
       setCtaUnlocked(true);
     }
   };
@@ -85,4 +94,3 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
     </div>
   );
 };
-
