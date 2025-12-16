@@ -10,16 +10,28 @@ interface QuizSlideProps {
   onCoinsEarned: (amount: number) => void;
 }
 
-const questions = [
+type QuizStep =
+  | {
+      type: "info";
+      primaryText: string;
+      supportingText: string[];
+      cta: string;
+    }
+  | {
+      type: "question";
+      contextText?: string;
+      question: string;
+      options: string[];
+    };
+
+const steps: QuizStep[] = [
   {
+    type: "question",
     question: "Você sabia que a Mega da Virada pode pagar mais de R$ 850 milhões?",
-    options: [
-      "Sim, estou acompanhando de perto",
-      "Sabia que era alto, mas não tanto",
-      "Nem fazia ideia, me mostra como funciona",
-    ],
+    options: ["Sim, estou acompanhando de perto", "Sabia que era alto, mas não tanto", "Nem fazia ideia, me mostra como funciona"],
   },
   {
+    type: "question",
     question: "Você já apostou e sentiu que só perde, mesmo seguindo sua intuição?",
     options: [
       "Sempre. Escolho e nunca passo dos mesmos pontos",
@@ -28,21 +40,92 @@ const questions = [
     ],
   },
   {
+    type: "question",
     question: "Quer ver a IA que analisou 20 anos de concursos montar um jogo só pra você?",
+    options: ["Quero ver agora", "Quero entender como funciona", "Tô curioso, pode liberar"],
+  },
+  {
+    type: "info",
+    primaryText:
+      'A ex-BBB Paulinha ganhou mais de 50 vezes. Guilhermino, de PE, ganhou 70 vezes. O matemático "Munir Pé Quente" acertou 46 vezes.',
+    supportingText: [
+      "Se a loteria fosse puramente sorte, como você explica isso?",
+      "A matemática não bate.",
+      "A verdade que a Caixa esconde: Um jogo criado por humanos PODE SIM ser decodificado.",
+    ],
+    cta: "Continuar",
+  },
+  {
+    type: "question",
+    question: "Qual seu principal objetivo ao jogar na loteria?",
     options: [
-      "Quero ver agora",
-      "Quero entender como funciona",
-      "Tô curioso, pode liberar",
+      "Ganhar milhões e mudar de vida completamente",
+      "Conquistar de 50 a 100 mil para quitar dívidas",
+      "Fazer uma renda extra de 5 a 10 mil por mês",
+      "Apenas diversão, sem expectativas",
+    ],
+  },
+  {
+    type: "question",
+    contextText:
+      "Enquanto você queima dinheiro há anos, pessoas comuns estão faturando milhares toda semana usando ciência ao invés de sorte.",
+    question: "Qual foi o maior prêmio que você já ganhou na loteria?",
+    options: ["Nunca ganhei nada", "Menos de R$ 100", "Entre R$ 100 a R$ 1.000", "Mais de R$ 10.000"],
+  },
+  {
+    type: "question",
+    question: "Como você escolhe seus números para apostar?",
+    options: [
+      "Datas especiais (aniversários, casamento, etc.)",
+      "Números da sorte pessoais",
+      "Surpresinha (aleatório)",
+      "Baseado em estatísticas dos sorteios anteriores",
+      "Uso algum método ou sistema",
+    ],
+  },
+  {
+    type: "question",
+    question: "Quanto você gasta por mês com apostas na loteria?",
+    options: ["Não gasto nada", "Até R$ 50", "Entre R$ 50 a R$ 100", "Mais de R$ 500"],
+  },
+  {
+    type: "question",
+    question: "Se você ganhasse R$ 50.000 na loteria amanhã, qual seria sua primeira ação?",
+    options: ["Pagaria todas as dívidas", "Compraria um carro novo", "Investiria o dinheiro", "Realizaria o sonho da casa própria", "Ajudaria a família"],
+  },
+  {
+    type: "question",
+    question: "Você já ouviu falar de pessoas que ganharam na loteria mais de 10 vezes?",
+    options: ["Sim, e acredito que é possível", "Sim, mas acho que é sorte", "Sim, mas desconfio que seja golpe", "Não, nunca soube disso", "Não acredito que seja real"],
+  },
+  {
+    type: "question",
+    question: "Qual seu maior obstáculo para ganhar na loteria?",
+    options: ["Não sei escolher os números certos", "Gasto muito e ganho pouco", "Não tenho um método eficaz", "Acho que é tudo sorte mesmo", "Nunca pensei nisso"],
+  },
+  {
+    type: "question",
+    question: "Qual seria o valor ideal para você ganhar mensalmente na loteria?",
+    options: [
+      "Entre R$ 1.000 a R$ 5.000",
+      "Entre R$ 5.000 a R$ 15.000",
+      "Entre R$ 15.000 a R$ 50.000",
+      "Mais de R$ 50.000",
+      "Qualquer valor já mudaria minha vida",
     ],
   },
 ];
 
+let runningQuestionIndex = 0;
+const questionIndexByStep = steps.map((step) => (step.type === "question" ? runningQuestionIndex++ : -1));
+const QUESTION_COUNT = runningQuestionIndex;
+
 const COINS_PER_ANSWER = 10;
-const TOTAL_COINS = questions.length * COINS_PER_ANSWER;
+const TOTAL_COINS = QUESTION_COUNT * COINS_PER_ANSWER;
 
 export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>([]);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [answers, setAnswers] = useState<Array<number | undefined>>([]);
   const [recentGain, setRecentGain] = useState<number | null>(null);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const startSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -51,7 +134,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
 
   const answeredCount = useMemo(() => answers.filter((answer) => answer !== undefined).length, [answers]);
   const coinsCollected = answeredCount * COINS_PER_ANSWER;
-  const progressPercentage = (answeredCount / questions.length) * 100;
+  const progressPercentage = QUESTION_COUNT === 0 ? 0 : (answeredCount / QUESTION_COUNT) * 100;
   const medalUnlocked = coinsCollected >= TOTAL_COINS;
 
   useEffect(() => {
@@ -72,6 +155,8 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
     const timer = window.setTimeout(() => setRecentGain(null), 1200);
     return () => window.clearTimeout(timer);
   }, [recentGain]);
+
+  const advanceStep = () => setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
 
   const animateCoinJourney = (sourceButton: HTMLButtonElement) => {
     if (typeof document === "undefined") return;
@@ -116,10 +201,12 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
   };
 
   const handleAnswer = (answerIndex: number, buttonElement: HTMLButtonElement) => {
-    if (answers[currentQuestion] !== undefined) return;
+    const questionIndex = questionIndexByStep[currentStep];
+    if (questionIndex < 0) return;
+    if (answers[questionIndex] !== undefined) return;
 
     const newAnswers = [...answers];
-    newAnswers[currentQuestion] = answerIndex;
+    newAnswers[questionIndex] = answerIndex;
 
     animateCoinJourney(buttonElement);
     setAnswers(newAnswers);
@@ -129,12 +216,12 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
       answerSoundRef.current.currentTime = 0;
       answerSoundRef.current.play().catch(() => undefined);
     }
-    trackPixelEvent("QuizAnswer", { question: currentQuestion + 1 });
+    trackPixelEvent("QuizAnswer", { question: questionIndex + 1, step: currentStep + 1 });
 
-    if (answeredCount + 1 === questions.length) {
+    if (answeredCount + 1 === QUESTION_COUNT) {
       window.setTimeout(() => setShowCompletionModal(true), 600);
     } else {
-      window.setTimeout(() => setCurrentQuestion((prev) => prev + 1), 900);
+      window.setTimeout(() => advanceStep(), 900);
     }
   };
 
@@ -149,7 +236,8 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
     return () => window.clearTimeout(timer);
   }, [showCompletionModal, onNext]);
 
-  const current = questions[currentQuestion];
+  const current = steps[currentStep];
+  const questionIndex = questionIndexByStep[currentStep];
 
   return (
     <div className="slide-shell relative">
@@ -157,14 +245,14 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
         <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
           <div className="space-y-1">
             <p className="meta-label flex items-center gap-2 justify-center sm:justify-start">
-              ⚡ Pergunta {currentQuestion + 1} de {questions.length}
+              ⚡ Slide {currentStep + 1} de {steps.length}
             </p>
             <h2 className="heading-2 flex items-center gap-2 justify-center sm:justify-start">Responda com calma</h2>
           </div>
           <div className="text-center sm:text-right">
             <p className="text-sm text-muted-foreground">Moedas liberadas</p>
             <div className={`medal-badge ${medalUnlocked ? "medal-badge--active" : ""}`}>
-              {medalUnlocked ? "🏅 Mapa liberado" : `${coinsCollected}/${TOTAL_COINS}`}
+              {medalUnlocked ? "🎁 Mapa liberado" : `${coinsCollected}/${TOTAL_COINS}`}
             </div>
           </div>
         </div>
@@ -185,25 +273,55 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
           <div className="bg-primary h-3 progress-fill" style={{ width: `${progressPercentage}%` }} />
         </div>
 
-        <Card className="p-4 sm:p-6 md:p-7 space-y-6 border border-border glow-primary quiz-card">
-          <div className="space-y-2 text-center">
-            <h3 className="heading-2 text-foreground">{current.question}</h3>
-            <p className="text-sm text-muted-foreground">Responda como você fala no dia a dia.</p>
-          </div>
+        {current.type === "info" ? (
+          <Card className="p-4 sm:p-6 md:p-7 space-y-6 border border-border glow-primary quiz-card">
+            <div className="space-y-4 text-center">
+              <h3 className="heading-2 text-foreground">{current.primaryText}</h3>
+              <div className="space-y-2 text-sm sm:text-base text-muted-foreground">
+                {current.supportingText.map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
+              </div>
+            </div>
 
-          <div className="space-y-3">
-            {current.options.map((option, index) => (
-              <Button
-                key={option}
-                onClick={(event) => handleAnswer(index, event.currentTarget)}
-                variant="outline"
-                className="w-full min-h-[52px] sm:min-h-[56px] py-3 sm:py-4 text-left text-sm sm:text-base md:text-lg chips-button"
-              >
-                {option}
-              </Button>
-            ))}
-          </div>
-        </Card>
+            <Button
+              onClick={() => {
+                trackPixelEvent("QuizStepContinue", { step: currentStep + 1 });
+                advanceStep();
+              }}
+              size="lg"
+              className="w-full text-base sm:text-lg py-5 bg-primary hover:bg-primary-glow text-primary-foreground font-bold"
+            >
+              {current.cta}
+            </Button>
+          </Card>
+        ) : (
+          <Card className="p-4 sm:p-6 md:p-7 space-y-6 border border-border glow-primary quiz-card">
+            <div className="space-y-2 text-center">
+              {questionIndex >= 0 && (
+                <p className="meta-label text-muted-foreground">
+                  Pergunta {questionIndex + 1} de {QUESTION_COUNT}
+                </p>
+              )}
+              {current.contextText && <p className="text-sm sm:text-base text-muted-foreground">{current.contextText}</p>}
+              <h3 className="heading-2 text-foreground">{current.question}</h3>
+              <p className="text-sm text-muted-foreground">Responda como você fala no dia a dia.</p>
+            </div>
+
+            <div className="space-y-3">
+              {current.options.map((option, index) => (
+                <Button
+                  key={option}
+                  onClick={(event) => handleAnswer(index, event.currentTarget)}
+                  variant="outline"
+                  className="w-full min-h-[52px] sm:min-h-[56px] py-3 sm:py-4 text-left text-sm sm:text-base md:text-lg chips-button"
+                >
+                  {option}
+                </Button>
+              ))}
+            </div>
+          </Card>
+        )}
       </div>
 
       <Dialog open={showCompletionModal} onOpenChange={setShowCompletionModal}>

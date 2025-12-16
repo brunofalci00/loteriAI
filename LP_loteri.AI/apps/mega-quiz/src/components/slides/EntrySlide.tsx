@@ -10,8 +10,8 @@ interface EntrySlideProps {
 const timelineSteps = [
   {
     icon: "🚨",
-    title: "3 aquecimentos",
-    description: "Reservamos sua vaga respondendo 3 perguntas rápidas.",
+    title: "11 perguntas",
+    description: "Reservamos sua vaga respondendo 11 perguntas rápidas.",
   },
   {
     icon: "🧠",
@@ -174,7 +174,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
         <section className="rounded-2xl border border-border/60 p-5 bg-secondary/40">
           <p className="text-sm text-muted-foreground mb-2 font-semibold uppercase tracking-[0.3em]">Como funciona</p>
           <p className="text-base text-foreground">
-            Cada resposta vale 10 moedas. Ao completar 30, garantimos sua vaga e liberamos a etapa manual + IA.
+            Cada resposta vale 10 moedas. Ao completar 110, garantimos sua vaga e liberamos a etapa manual + IA.
           </p>
         </section>
       </div>

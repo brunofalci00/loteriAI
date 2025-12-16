@@ -50,7 +50,7 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
           <div className={`coin-flow ${coinStage !== "stack" ? "coin-flow--active" : ""}`}>
             <div className={`coin-stack ${coinStage !== "stack" ? "coin-stack--light" : ""}`}>
               <span className="coin-stack__label">Moedas</span>
-              <span className="coin-stack__value">30</span>
+              <span className="coin-stack__value">110</span>
             </div>
             <div className="coin-path">
               {Array.from({ length: 4 }).map((_, index) => (

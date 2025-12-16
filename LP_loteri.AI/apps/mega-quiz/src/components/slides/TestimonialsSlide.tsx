@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Volume2, VolumeX } from "lucide-react";
-import testimonialVideo from "../../../WhatsApp Video 2025-11-13 at 21.01.43.mp4";
 
 interface TestimonialsSlideProps {
   onNext: () => void;
 }
 
 export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
+  const baseUrl = import.meta.env.BASE_URL;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [ctaUnlocked, setCtaUnlocked] = useState(false);
@@ -61,7 +61,7 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
           <video
             ref={videoRef}
             className="w-full h-full rounded-2xl"
-            src={testimonialVideo}
+            src={`${baseUrl}video/testimonials.mp4`}
             autoPlay
             muted={isMuted}
             playsInline
