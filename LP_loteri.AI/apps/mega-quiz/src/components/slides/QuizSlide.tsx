@@ -134,6 +134,7 @@ const QUESTION_COUNT = runningQuestionIndex;
 
 const COINS_PER_ANSWER = 10;
 const TOTAL_COINS = QUESTION_COUNT * COINS_PER_ANSWER;
+const DISQUALIFY_ANSWER_TEXT = "Não tenho esse dinheiro agora";
 
 export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -229,6 +230,10 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
       answerSoundRef.current.play().catch(() => undefined);
     }
     trackPixelEvent("QuizAnswer", { question: questionIndex + 1, step: currentStep + 1 });
+
+    if (current.type === "question" && current.options[answerIndex] === DISQUALIFY_ANSWER_TEXT) {
+      trackPixelEvent("QuizNoMoneyNow", { question: questionIndex + 1, step: currentStep + 1 });
+    }
 
     const isLastQuestion = answeredCount + 1 === QUESTION_COUNT;
     const hasNextStep = currentStep < steps.length - 1;
