@@ -73,7 +73,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
               alt="LOTER.IA"
               className="mx-auto w-24 sm:w-28 drop-shadow-[0_0_20px_rgba(255,215,0,0.35)]"
             />
-            <h1 className="heading-hero text-glow">Acesso liberado à IA da Mega da Virada</h1>
+            <h1 className="heading-hero text-glow">DESCUBRA SE VOCÊ PODE ACESSAR O SISTEMA DA MEGA DA VIRADA</h1>
             <p className="body-lead max-w-2xl">
               Responda 12 perguntas rápidas para ver se você está qualificado para desbloquear o acesso ao Sistema.
             </p>
