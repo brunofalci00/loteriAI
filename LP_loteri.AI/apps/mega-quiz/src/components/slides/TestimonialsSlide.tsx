@@ -39,7 +39,7 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
             alt="LOTER.IA"
             className="mx-auto w-24 drop-shadow-[0_0_20px_rgba(255,215,0,0.35)]"
           />
-          <h1 className="heading-1 text-glow text-center">Veja os Resultados de quem Ativou o Sistema</h1>
+          <h1 className="heading-1 text-glow text-center">Assista o Vídeo Completo para Liberar o Seu Acesso</h1>
           <p className="body-lead">Validação final do acesso ao Sistema LOTER.IA.</p>
         </div>
 

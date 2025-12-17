@@ -16,6 +16,7 @@ const benefits = [
 const offerTestimonialImages = [
   "https://i.ibb.co/rfQNMBX2/Whats-App-Image-2025-10-27-at-16-32-16.jpg",
   "https://i.ibb.co/TD85XLkM/Whats-App-Image-2025-10-27-at-16-36-22.jpg",
+  "https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg",
 ];
 
 export const FinalOfferSlide = () => {
