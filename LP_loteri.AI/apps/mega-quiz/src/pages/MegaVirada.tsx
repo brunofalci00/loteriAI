@@ -114,7 +114,7 @@ const MegaVirada = () => {
   const checkoutUrl =
     (import.meta.env.VITE_CHECKOUT_URL as string | undefined) ?? "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
   const offerHeadline = (import.meta.env.VITE_OFFER_HEADLINE as string | undefined) ?? "Acesso vitalício ao gerador";
-  const offerPriceLine = (import.meta.env.VITE_OFFER_PRICE_LINE as string | undefined) ?? "R$67,00 vitalício";
+  const offerPriceLine = (import.meta.env.VITE_OFFER_PRICE_LINE as string | undefined) ?? "R$97,00 vitalício";
   const offerCashLine = (import.meta.env.VITE_OFFER_CASH_LINE as string | undefined) ?? "Pagamento único • liberação imediata";
   const offerFootnote = (import.meta.env.VITE_OFFER_FOOTNOTE as string | undefined) ?? "Sem mensalidade. Sem renovação.";
   const funnelCountdownSecondsRaw = Number((import.meta.env.VITE_FUNNEL_COUNTDOWN_SECONDS as string | undefined) ?? 6 * 60);

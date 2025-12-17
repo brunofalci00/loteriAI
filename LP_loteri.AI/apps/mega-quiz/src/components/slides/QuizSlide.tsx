@@ -114,6 +114,18 @@ const steps: QuizStep[] = [
       "Qualquer valor já mudaria minha vida",
     ],
   },
+  {
+    type: "question",
+    question:
+      "Se existisse um método científico para aumentar drasticamente suas chances de ganhar, você investiria R$97,00 para aprender?",
+    options: ["Sim, sem dúvida", "Talvez, dependendo da prova", "Não, prefiro apostar na sorte", "Não tenho esse dinheiro agora"],
+  },
+  {
+    type: "info",
+    primaryText: "Sua resposta revela se você tem mentalidade de GANHADOR ou de PERDEDOR.",
+    supportingText: ["Continue para descobrir a verdade..."],
+    cta: "Continuar",
+  },
 ];
 
 let runningQuestionIndex = 0;
@@ -218,11 +230,15 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
     }
     trackPixelEvent("QuizAnswer", { question: questionIndex + 1, step: currentStep + 1 });
 
-    if (answeredCount + 1 === QUESTION_COUNT) {
+    const isLastQuestion = answeredCount + 1 === QUESTION_COUNT;
+    const hasNextStep = currentStep < steps.length - 1;
+
+    if (isLastQuestion && !hasNextStep) {
       window.setTimeout(() => setShowCompletionModal(true), 600);
-    } else {
-      window.setTimeout(() => advanceStep(), 900);
+      return;
     }
+
+    window.setTimeout(() => advanceStep(), 900);
   };
 
   useEffect(() => {
@@ -287,6 +303,10 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
             <Button
               onClick={() => {
                 trackPixelEvent("QuizStepContinue", { step: currentStep + 1 });
+                if (currentStep >= steps.length - 1 && answeredCount >= QUESTION_COUNT) {
+                  setShowCompletionModal(true);
+                  return;
+                }
                 advanceStep();
               }}
               size="lg"

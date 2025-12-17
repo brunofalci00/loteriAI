@@ -1,264 +1,129 @@
-src/components/CoinCounter.tsx:25: Moedas
-src/components/ExitIntentOverlay.tsx:37: 🔐 Momento decisivo
-src/components/ExitIntentOverlay.tsx:39: Você chegou longe demais para sair agora.
-src/components/ExitIntentOverlay.tsx:48: Quem fica até o fim desbloqueia 7x mais chances.
-src/components/ExitIntentOverlay.tsx:51: Você já acumulou
-src/components/ExitIntentOverlay.tsx:51: moedas e só falta uma decisão para liberar o Bônus 1.
-src/components/ExitIntentOverlay.tsx:56: Se fechar agora, o sistema zera suas moedas e fecha o acesso a IA secreta.
-src/components/ExitIntentOverlay.tsx:65: Continuar e liberar meu bônus
-src/components/ExitIntentOverlay.tsx:68: Precisa sair mesmo? Fique só mais 1 minuto para ver como a IA libera até R$500 em bônus.
-src/components/slides/AISimulationSlide.tsx:19: Escaneando
-src/components/slides/AISimulationSlide.tsx:19: Olha 2.500 resultados anteriores
-src/components/slides/AISimulationSlide.tsx:20: Montando jogo
-src/components/slides/AISimulationSlide.tsx:20: Escolhe 15 números com maior chance
-src/components/slides/AISimulationSlide.tsx:21: Mostrando placar
-src/components/slides/AISimulationSlide.tsx:21: Libera o giro pago pela IA
-src/components/slides/AISimulationSlide.tsx:108: IA em ação
-src/components/slides/AISimulationSlide.tsx:111: Conferindo seu jogo
-src/components/slides/AISimulationSlide.tsx:113: Escolhendo os 15 números dela
-src/components/slides/AISimulationSlide.tsx:114: Mostrando o placar final
-src/components/slides/AISimulationSlide.tsx:118: Painel protegido em tempo real
-src/components/slides/AISimulationSlide.tsx:138: IA conectando na sua aposta, auditando 2.500 sorteios anteriores e calculando probabilidades...
-src/components/slides/AISimulationSlide.tsx:145: IA escolhendo 15 números com maior chance agora.
-src/components/slides/AISimulationSlide.tsx:159: Comparativo final
-src/components/slides/AISimulationSlide.tsx:160: A IA está jogando por você agora.
-src/components/slides/AISimulationSlide.tsx:166: Você
-src/components/slides/AISimulationSlide.tsx:171: IA
-src/components/slides/AISimulationSlide.tsx:176: A IA fez
-src/components/slides/AISimulationSlide.tsx:176: pontos com os mesmos números. Você ficou nos
-src/components/slides/AISimulationSlide.tsx:177: Com isso ela liberou um giro pago por ela mesma para você resgatar o desconto.
-src/components/slides/AISimulationSlide.tsx:181: Bônus reservado
-src/components/slides/AISimulationSlide.tsx:182: Ela usou
-src/components/slides/AISimulationSlide.tsx:182: giros e guardou 1 pra você.
-src/components/slides/AISimulationSlide.tsx:183: Esse giro destrava até R$500 em desconto.
-src/components/slides/AISimulationSlide.tsx:190: Seguir para o giro
-src/components/slides/AISimulationSlide.tsx:197: IA consolidando os pontos e auditando o painel para liberar seu relatório final...
-src/components/slides/AISyncLoadingSlide.tsx:14: Seu jogo
-src/components/slides/AISyncLoadingSlide.tsx:14: ${userScore} pontos conferidos
-src/components/slides/AISyncLoadingSlide.tsx:15: IA ativa
-src/components/slides/AISyncLoadingSlide.tsx:15: Mesmos números rodando na máquina
-src/components/slides/AISyncLoadingSlide.tsx:16: Giro pronto
-src/components/slides/AISyncLoadingSlide.tsx:16: Roleta carregada para você
-src/components/slides/AISyncLoadingSlide.tsx:31: Conferindo resultado
-src/components/slides/AISyncLoadingSlide.tsx:35: Estamos comparando seus
-src/components/slides/AISyncLoadingSlide.tsx:35: pontos com a jogada da IA
-src/components/slides/AISyncLoadingSlide.tsx:36: É uma tela rápida para não travar e garantir que o placar saia certinho.
-src/components/slides/AISyncLoadingSlide.tsx:40: O que está acontecendo agora
-src/components/slides/AISyncLoadingSlide.tsx:42: Conferimos seus 15 números em 2.500 resultados.
-src/components/slides/AISyncLoadingSlide.tsx:43: Separarmos o mesmo jogo rodado pela IA.
-src/components/slides/AISyncLoadingSlide.tsx:44: Carregamos o giro bônus que ela deixou pra você.
-src/components/slides/AISyncLoadingSlide.tsx:60: Segure uns segundos e já mostramos o comparativo.
-src/components/slides/AiWinSlide.tsx:14: A IA venceu essa rodada…
-src/components/slides/AiWinSlide.tsx:16: Mas ela liberou 1 giro especial para você virar o jogo.
-src/components/slides/AiWinSlide.tsx:22: A IA cravou 14 pontos usando análise preditiva. Ela já desbloqueou os 3 giros dela… e separou 1 giro bônus para você.
-src/components/slides/AiWinSlide.tsx:26: Você ganhou 1 giro na Roleta de Prêmios — ele pode liberar o MAX WIN a qualquer momento.
-src/components/slides/AiWinSlide.tsx:29: Se sair agora, o giro desaparece.
-src/components/slides/AiWinSlide.tsx:33: Antes de usar o giro, veja em segundos como outros jogadores estão ativando a LOTER.IA.
-src/components/slides/AiWinSlide.tsx:42: Ver jogadores reais e liberar meu giro
-src/components/slides/BonusMapSlide.tsx:44: 🎉 Bônus 1 liberado
-src/components/slides/BonusMapSlide.tsx:46: Mapa dos números quentes na sua tela
-src/components/slides/BonusMapSlide.tsx:47: Ele já vem pronto, sem termos difíceis e com letras grandes para você consultar antes de apostar.
-src/components/slides/BonusMapSlide.tsx:51: Veja suas moedas pagando o bônus:
-src/components/slides/BonusMapSlide.tsx:54: Moedas
-src/components/slides/BonusMapSlide.tsx:68: Bônus liberado
-src/components/slides/BonusMapSlide.tsx:71: As moedas não somem: elas viram acesso ao mapa sempre que você completar o quiz.
-src/components/slides/BonusMapSlide.tsx:78: Mapa dos números quentes
-src/components/slides/BonusMapSlide.tsx:86: Este mapa usa 500 sorteios auditados com IA. Não existe chute aqui: são probabilidades reais pensadas para quem trava nos 11.
-src/components/slides/BonusMapSlide.tsx:89: Acesso exclusivo enquanto o painel estiver aberto. Se fechar ou atualizar a página, a IA bloqueia o mapa.
-src/components/slides/BonusMapSlide.tsx:91: Depois desta etapa você vai direto para o duelo simples contra a IA.
-src/components/slides/BonusMapSlide.tsx:99: Ir para o desafio: Você vs IA
-src/components/slides/BonusMapSlide.tsx:107: Agora é você contra a IA
-src/components/slides/BonusMapSlide.tsx:109: Ela abre um duelo valendo até R$500 em bônus. Seu papel é mostrar sua intuição antes de ver como a máquina joga.
-src/components/slides/BonusMapSlide.tsx:113: Responda como jogador, compare com a inteligência artificial e libere o giro que pode pagar seu acesso à LOTER.IA.
-src/components/slides/BonusMapSlide.tsx:117: Partiu enfrentar a IA
-src/components/slides/BonusUnlockLoadingSlide.tsx:11: Conferindo suas respostas
-src/components/slides/BonusUnlockLoadingSlide.tsx:12: Usando as moedas para abrir o mapa
-src/components/slides/BonusUnlockLoadingSlide.tsx:13: Liberando a visualização segura
-src/components/slides/BonusUnlockLoadingSlide.tsx:17: Painel estável
-src/components/slides/BonusUnlockLoadingSlide.tsx:18: Dados protegidos
-src/components/slides/BonusUnlockLoadingSlide.tsx:19: Liberado em segundos
-src/components/slides/BonusUnlockLoadingSlide.tsx:37: IA preparando o Bônus 1
-src/components/slides/BonusUnlockLoadingSlide.tsx:41: Estamos trocando suas moedas pelo mapa
-src/components/slides/BonusUnlockLoadingSlide.tsx:42: Essa tela existe só para garantir que todo mundo veja o mesmo relatório sem travar o celular.
-src/components/slides/BonusUnlockLoadingSlide.tsx:60: Cofre digital segurando suas moedas
-src/components/slides/BonusUnlockLoadingSlide.tsx:73: É um respiro rápido para salvar seus dados no servidor.
-src/components/slides/EntrySlide.tsx:12: Perguntas rápidas
-src/components/slides/EntrySlide.tsx:13: Responda 5 perguntas simples e ganhe 10 moedas em cada uma.
-src/components/slides/EntrySlide.tsx:16: Moedas viram mapa
-src/components/slides/EntrySlide.tsx:17: As 50 moedas liberam o Mapa dos Números Quentes automático.
-src/components/slides/EntrySlide.tsx:20: Teste sua aposta
-src/components/slides/EntrySlide.tsx:21: Compare seus 15 números com a IA sem termos difíceis.
-src/components/slides/EntrySlide.tsx:24: Giro bônus
-src/components/slides/EntrySlide.tsx:25: As moedas pagam o primeiro giro da máquina e destravam descontos.
-src/components/slides/EntrySlide.tsx:32: Texto direto
-src/components/slides/EntrySlide.tsx:33: Frases curtas e letras grandes para quem tem 45+ enxergar tudo sem aperto.
-src/components/slides/EntrySlide.tsx:37: Moedas com função
-src/components/slides/EntrySlide.tsx:38: Elas não ficam sobrando: pagam o mapa e o primeiro bônus automaticamente.
-src/components/slides/EntrySlide.tsx:95: QuizEntryStart
-src/components/slides/EntrySlide.tsx:113: LOTER.IA
-src/components/slides/EntrySlide.tsx:116: Passo a passo guiado
-src/components/slides/EntrySlide.tsx:117: Chega de travar nos 11 pontos
-src/components/slides/EntrySlide.tsx:119: Responda poucas perguntas, junte moedas e veja a IA montar um plano simples. Tudo explicado em tela grande para quem tem 45+ e quer entender cada movimento.
-src/components/slides/EntrySlide.tsx:128: Como funciona
-src/components/slides/EntrySlide.tsx:130: Cada resposta vale 10 moedas. Fechou 50, o sistema usa tudo automaticamente para abrir o primeiro bônus. Ninguém precisa fazer conta ou procurar “faltam X moedas”.
-src/components/slides/EntrySlide.tsx:152: Preparando o painel
-src/components/slides/EntrySlide.tsx:154: Deixamos tudo alinhado antes de liberar o botão de começar.
-src/components/slides/EntrySlide.tsx:158: Linha do tempo
-src/components/slides/EntrySlide.tsx:188: Começar agora
-src/components/slides/EntrySlide.tsx:193: Ajustando painel...
-src/components/slides/EntrySlide.tsx:197: Sem cadastro nesta etapa. Só responder e seguir.
-src/components/slides/FinalOfferSlide.tsx:15: CheckoutClick
-src/components/slides/FinalOfferSlide.tsx:16: WhatsAppSupportClick
-src/components/slides/FinalOfferSlide.tsx:50: Recomendações personalizadas com IA em tempo real
-src/components/slides/FinalOfferSlide.tsx:51: Painel de combinações calibradas diárias
-src/components/slides/FinalOfferSlide.tsx:52: Atendimento 24/7 com 97% de satisfação
-src/components/slides/FinalOfferSlide.tsx:53: Suporte direto no WhatsApp
-src/components/slides/FinalOfferSlide.tsx:54: Acesso antecipado ao Bolão da Mega da Virada
-src/components/slides/FinalOfferSlide.tsx:64: LOTER.IA
-src/components/slides/FinalOfferSlide.tsx:68: 🎁 Parabéns! Desconto máximo ativado
-src/components/slides/FinalOfferSlide.tsx:71: Acesso completo à LOTER.IA por apenas R$37 — de R$500!
-src/components/slides/FinalOfferSlide.tsx:94: Oferta válida pelos próximos
-src/components/slides/FinalOfferSlide.tsx:100: Depois disso, volta para R$500.
-src/components/slides/FinalOfferSlide.tsx:106: ${(timeLeft / (3 * 60)) * 100}%
-src/components/slides/FinalOfferSlide.tsx:111: O que você recebe agora:
-src/components/slides/FinalOfferSlide.tsx:126: 💸 Desconto desbloqueado:
-src/components/slides/FinalOfferSlide.tsx:127: De R$500
-src/components/slides/FinalOfferSlide.tsx:128: R$37
-src/components/slides/FinalOfferSlide.tsx:129: Garantia total de 7 dias — testou, não gostou, cancela sem risco.
-src/components/slides/FinalOfferSlide.tsx:139: Liberar acesso por R$37
-src/components/slides/FinalOfferSlide.tsx:156: Falar com especialista no WhatsApp (24/7)
-src/components/slides/FinalOfferSlide.tsx:161: Compra segura
-src/components/slides/FinalOfferSlide.tsx:162: +84 pessoas ativaram só hoje • 97% de satisfação no suporte 24/7
-src/components/slides/FinalOfferSlide.tsx:167: Mesmo sistema usado por quem fez 13 ou 14 pontos nas últimas semanas.
-src/components/slides/FinalOfferSlide.tsx:180: Garantir meu acesso - R$37
-src/components/slides/IntuitionGameSlide.tsx:21: Toque uma vez
-src/components/slides/IntuitionGameSlide.tsx:21: Nada de duplo clique. Cada número acende na hora.
-src/components/slides/IntuitionGameSlide.tsx:22: Revise com calma
-src/components/slides/IntuitionGameSlide.tsx:22: Pode tocar de novo para apagar e trocar antes de enviar.
-src/components/slides/IntuitionGameSlide.tsx:23: Envie quando estiver seguro
-src/components/slides/IntuitionGameSlide.tsx:23: Assim que os 15 números estiverem marcados, a IA entra em cena.
-src/components/slides/IntuitionGameSlide.tsx:67: IntuitionSubmit
-src/components/slides/IntuitionGameSlide.tsx:80: 🎲 Desafio liberado
-src/components/slides/IntuitionGameSlide.tsx:82: Monte seu jogo com calma
-src/components/slides/IntuitionGameSlide.tsx:84: Escolha 15 números do jeito que você costuma apostar. Depois mostramos o mesmo jogo com e sem IA, sem palavras difíceis.
-src/components/slides/IntuitionGameSlide.tsx:89: Tela grande, sem pressa e com toque único. Dá tempo de revisar antes de enviar.
-src/components/slides/IntuitionGameSlide.tsx:125: IA conferindo seu jogo...
-src/components/slides/IntuitionGameSlide.tsx:127: Ver meu resultado
-src/components/slides/IntuitionGameSlide.tsx:128: Calibrando comparação...
-src/components/slides/IntuitionGameSlide.tsx:129: Selecione mais ${remaining} números
-src/components/slides/IntuitionGameSlide.tsx:135: Seu palpite foi registrado. Preparando comparação...
-src/components/slides/IntuitionGameSlide.tsx:136: Tudo pronto. A IA já está posicionada para analisar o seu jogo.
-src/components/slides/MaxWinCelebrationSlide.tsx:27: Prêmio máximo
-src/components/slides/MaxWinCelebrationSlide.tsx:32: Você recebeu R$500!
-src/components/slides/MaxWinCelebrationSlide.tsx:35: Essa sensação é de quem acabou de economizar alto: a oferta completa da LOTER.IA de R$500 saiu por apenas R$37.
-src/components/slides/MaxWinCelebrationSlide.tsx:45: Economia desbloqueada
-src/components/slides/MaxWinCelebrationSlide.tsx:48: R$ 500
-src/components/slides/MaxWinCelebrationSlide.tsx:50: R$ 37
-src/components/slides/MaxWinCelebrationSlide.tsx:53: Você travou o desconto máximo da IA. Prepare o checkout e finalize enquanto o painel ainda está aberto.
-src/components/slides/MaxWinCelebrationSlide.tsx:59: Suporte no WhatsApp
-src/components/slides/MaxWinCelebrationSlide.tsx:60: Equipe responde a cada passo da ativação.
-src/components/slides/MaxWinCelebrationSlide.tsx:63: Jogos diários
-src/components/slides/MaxWinCelebrationSlide.tsx:64: Receba combinações calibradas todos os dias.
-src/components/slides/MaxWinCelebrationSlide.tsx:67: Bolão Mega da Virada
-src/components/slides/MaxWinCelebrationSlide.tsx:68: Acesso antecipado ao bolão VIP antes de abrir ao público.
-src/components/slides/MaxWinCelebrationSlide.tsx:74: MaxWinCTA
-src/components/slides/MaxWinCelebrationSlide.tsx:83: Quero liberar meu acesso final
-src/components/slides/QuizSlide.tsx:15: Quando você joga na Lotofácil, o que mais te incomoda?
-src/components/slides/QuizSlide.tsx:17: Jogar sem saber se estou no caminho certo
-src/components/slides/QuizSlide.tsx:18: Apostar várias vezes e nunca passar dos mesmos 11 pontos
-src/components/slides/QuizSlide.tsx:19: Ver os outros falando que usam sistema e eu aqui tentando na raça
-src/components/slides/QuizSlide.tsx:23: Quantas vezes você achou que "faltou pouco"?
-src/components/slides/QuizSlide.tsx:25: Sempre. 1 ou 2 números me perseguem
-src/components/slides/QuizSlide.tsx:26: Em quase todo jogo fico por um triz
-src/components/slides/QuizSlide.tsx:27: Nunca passei dos 11. Já tô desacreditado
-src/components/slides/QuizSlide.tsx:31: Como escolhe seus jogos hoje?
-src/components/slides/QuizSlide.tsx:33: Sigo minha intuição. Sinto quando vai dar certo
-src/components/slides/QuizSlide.tsx:34: Vou por datas, palpites, sensação
-src/components/slides/QuizSlide.tsx:35: Eu nem penso muito. Só jogo e espero
-src/components/slides/QuizSlide.tsx:39: E se pudesse testar seu palpite contra uma IA treinada?
-src/components/slides/QuizSlide.tsx:41: Toparia agora. Quero ver no que dá
-src/components/slides/QuizSlide.tsx:42: Seria bom ver se tá tão errado assim
-src/components/slides/QuizSlide.tsx:43: Talvez... mas acho que ela ganharia fácil
-src/components/slides/QuizSlide.tsx:47: O que você mais quer resolver hoje?
-src/components/slides/QuizSlide.tsx:49: Parar de jogar no escuro
-src/components/slides/QuizSlide.tsx:50: Descobrir se meu jeito funciona ou não
-src/components/slides/QuizSlide.tsx:51: Usar algo que dê vantagem real
-src/components/slides/QuizSlide.tsx:62: Seu jeito conta
-src/components/slides/QuizSlide.tsx:63: Responda do modo que fala com amigos. Quanto mais natural, melhor fica o plano final.
-src/components/slides/QuizSlide.tsx:67: Golpe direto
-src/components/slides/QuizSlide.tsx:68: Cada resposta vale 10 moedas. Não tem pegadinha ou cálculo escondido.
-src/components/slides/QuizSlide.tsx:72: Pensado pro celular
-src/components/slides/QuizSlide.tsx:73: Botões grandes, texto simples e nada de enrolação. É só tocar e seguir.
-src/components/slides/QuizSlide.tsx:96: QuizStart
-src/components/slides/QuizSlide.tsx:122: QuizAnswer
-src/components/slides/QuizSlide.tsx:134: QuizBonusUnlocked
-src/components/slides/QuizSlide.tsx:150: 🎯 Pergunta
-src/components/slides/QuizSlide.tsx:153: Responda com calma
-src/components/slides/QuizSlide.tsx:157: Moedas liberadas
-src/components/slides/QuizSlide.tsx:159: 🏅 Mapa liberado
-src/components/slides/QuizSlide.tsx:159: ${coinsCollected}/${TOTAL_COINS}
-src/components/slides/QuizSlide.tsx:166: Total acumulado
-src/components/slides/QuizSlide.tsx:173: Usamos essas moedas automaticamente para abrir o Mapa dos Números Quentes.
-src/components/slides/QuizSlide.tsx:177: ${progressPercentage}%
-src/components/slides/QuizSlide.tsx:184: Representação das perguntas rápidas
-src/components/slides/QuizSlide.tsx:202: Responda como você fala no dia a dia.
-src/components/slides/QuizSlide.tsx:224: Destravando o Bônus 1
-src/components/slides/QuizSlide.tsx:225: Segure um pouco: estamos preparando os dados para liberar o mapa secreto.
-src/components/slides/QuizSlide.tsx:229: Transferindo fichas e liberando o Mapa Secreto...
-src/components/slides/RouletteBonusSlide.tsx:12: R$ 10 OFF
-src/components/slides/RouletteBonusSlide.tsx:12: R$ 20 OFF
-src/components/slides/RouletteBonusSlide.tsx:12: R$ 50 OFF
-src/components/slides/RouletteBonusSlide.tsx:12: R$ 100 OFF
-src/components/slides/RouletteBonusSlide.tsx:12: R$ 200 OFF
-src/components/slides/RouletteBonusSlide.tsx:12: MAX WIN
-src/components/slides/RouletteBonusSlide.tsx:13: MAX WIN
-src/components/slides/RouletteBonusSlide.tsx:17: Cashback imediato
-src/components/slides/RouletteBonusSlide.tsx:18: Usado para reduzir o valor do acesso agora mesmo.
-src/components/slides/RouletteBonusSlide.tsx:22: Consultoria express
-src/components/slides/RouletteBonusSlide.tsx:23: Conversa rápida com o time para destravar estratégia.
-src/components/slides/RouletteBonusSlide.tsx:27: Bônus MAX WIN
-src/components/slides/RouletteBonusSlide.tsx:28: R$500 off quando os três rolos travam no dourado.
-src/components/slides/RouletteBonusSlide.tsx:48: SlotMaxWin
-src/components/slides/RouletteBonusSlide.tsx:121: SlotSpinStart
-src/components/slides/RouletteBonusSlide.tsx:153: Bônus 2 • Roleta da IA
-src/components/slides/RouletteBonusSlide.tsx:154: Giro pago pela IA
-src/components/slides/RouletteBonusSlide.tsx:156: Ela deixou 1 rodada para você. Se os três rolos pararem em MAX WIN, o desconto de R$500 aparece na hora e já vamos para a oferta.
-src/components/slides/RouletteBonusSlide.tsx:159: A IA deixou 1 chance ativa exclusivamente pra você.
-src/components/slides/RouletteBonusSlide.tsx:160: Spins disponíveis:
-src/components/slides/RouletteBonusSlide.tsx:180: Aperte uma vez. Mostramos cada rolo parando devagar.
-src/components/slides/RouletteBonusSlide.tsx:184: Prêmios possíveis:
-src/components/slides/RouletteBonusSlide.tsx:186: 🔹 R$10 OFF
-src/components/slides/RouletteBonusSlide.tsx:187: 🔹 R$20 OFF
-src/components/slides/RouletteBonusSlide.tsx:188: 🔹 R$50 OFF
-src/components/slides/RouletteBonusSlide.tsx:189: 🔹 R$100 OFF
-src/components/slides/RouletteBonusSlide.tsx:190: 🔹 R$200 OFF
-src/components/slides/RouletteBonusSlide.tsx:191: 🔹 MAX WIN: R$500 OFF (desconto máximo)
-src/components/slides/RouletteBonusSlide.tsx:210: Girando...
-src/components/slides/RouletteBonusSlide.tsx:210: Girar agora
-src/components/slides/RouletteBonusSlide.tsx:215: Resultado
-src/components/slides/RouletteBonusSlide.tsx:216: MAX WIN desbloqueado!
-src/components/slides/RouletteBonusSlide.tsx:218: Você ganhou R$500 de desconto para ativar a LOTER.IA agora.
-src/components/slides/RouletteBonusSlide.tsx:220: Aproveite enquanto o painel está aberto. Levamos você automaticamente para a próxima tela.
-src/components/slides/TestimonialsSlide.tsx:11: Ana • SP
-src/components/slides/TestimonialsSlide.tsx:12: R$ 2.500
-src/components/slides/TestimonialsSlide.tsx:16: Lucas • MG
-src/components/slides/TestimonialsSlide.tsx:17: R$ 370
-src/components/slides/TestimonialsSlide.tsx:21: Marina • RJ
-src/components/slides/TestimonialsSlide.tsx:22: R$ 2.030
-src/components/slides/TestimonialsSlide.tsx:35: LOTER.IA
-src/components/slides/TestimonialsSlide.tsx:40: Antes de girar a roleta, veja o que os nossos usuários estão achando da LOTER.IA
-src/components/slides/TestimonialsSlide.tsx:43: São centenas jogando com a LOTER.IA neste momento — sinta a energia antes de liberar seu giro.
-src/components/slides/TestimonialsSlide.tsx:78: Liberar meu giro
-src/components/slides/UserResultSlide.tsx:34: ManualResult
-src/components/slides/UserResultSlide.tsx:43: 🧮 IA auditando seu jogo
-src/components/slides/UserResultSlide.tsx:45: Seu resultado saiu
-src/components/slides/UserResultSlide.tsx:45: Estamos conferindo sua aposta
-src/components/slides/UserResultSlide.tsx:47: Veja quantos pontos faria sozinho antes de ligar a IA.
-src/components/slides/UserResultSlide.tsx:47: Segure alguns segundos. Conferimos tudo antes de mostrar.
-src/components/slides/UserResultSlide.tsx:55: Comparando seus 15 números com 2.500 resultados anteriores.
-src/components/slides/UserResultSlide.tsx:60: Placar sem IA
-src/components/slides/UserResultSlide.tsx:62: É aqui que você ficaria se entrasse com este jogo agora.
-src/components/slides/UserResultSlide.tsx:66: Seus números
-src/components/slides/UserResultSlide.tsx:76: Seus números aparecerão aqui ao fim da rodada.
-src/components/slides/UserResultSlide.tsx:81: Toque no botão abaixo para ver a mesma aposta com a IA trabalhando a seu favor.
-src/components/slides/UserResultSlide.tsx:85: Ver a IA jogando agora
+# Inventário de texto (funil atual) — mega-quiz
+
+## Entrada (EntrySlide)
+- Acesso liberado à IA da Mega da Virada
+- A Loter.IA está recalculando apostas com dados reais da Mega. Responda o aquecimento e teste antes de um possível bloqueio.
+- Como funciona: Cada resposta vale 10 moedas. Ao completar 120, garantimos sua vaga e liberamos a etapa manual + IA.
+
+## Quiz (QuizSlide)
+
+### 1)
+Pergunta: Você sabia que a Mega da Virada pode pagar mais de R$ 850 milhões?
+Alternativas:
+- Sim, estou acompanhando de perto
+- Sabia que era alto, mas não tanto
+- Nem fazia ideia, me mostra como funciona
+
+### 2)
+Pergunta: Você já apostou e sentiu que só perde, mesmo seguindo sua intuição?
+Alternativas:
+- Sempre. Escolho e nunca passo dos mesmos pontos
+- Jogo às vezes, mas já desanimei
+- Ainda não jogo, quero começar com estratégia
+
+### 3)
+Pergunta: Quer ver a IA que analisou 20 anos de concursos montar um jogo só pra você?
+Alternativas:
+- Quero ver agora
+- Quero entender como funciona
+- Tô curioso, pode liberar
+
+### 4) (informativo)
+Texto principal:
+- A ex-BBB Paulinha ganhou mais de 50 vezes. Guilhermino, de PE, ganhou 70 vezes. O matemático "Munir Pé Quente" acertou 46 vezes.
+Texto de apoio:
+- Se a loteria fosse puramente sorte, como você explica isso?
+- A matemática não bate.
+- A verdade que a Caixa esconde: Um jogo criado por humanos PODE SIM ser decodificado.
+
+### 5)
+Pergunta: Qual seu principal objetivo ao jogar na loteria?
+Alternativas:
+- Ganhar milhões e mudar de vida completamente
+- Conquistar de 50 a 100 mil para quitar dívidas
+- Fazer uma renda extra de 5 a 10 mil por mês
+- Apenas diversão, sem expectativas
+
+### 6)
+Contexto:
+- Enquanto você queima dinheiro há anos, pessoas comuns estão faturando milhares toda semana usando ciência ao invés de sorte.
+Pergunta: Qual foi o maior prêmio que você já ganhou na loteria?
+Alternativas:
+- Nunca ganhei nada
+- Menos de R$ 100
+- Entre R$ 100 a R$ 1.000
+- Mais de R$ 10.000
+
+### 7)
+Pergunta: Como você escolhe seus números para apostar?
+Alternativas:
+- Datas especiais (aniversários, casamento, etc.)
+- Números da sorte pessoais
+- Surpresinha (aleatório)
+- Baseado em estatísticas dos sorteios anteriores
+- Uso algum método ou sistema
+
+### 8)
+Pergunta: Quanto você gasta por mês com apostas na loteria?
+Alternativas:
+- Não gasto nada
+- Até R$ 50
+- Entre R$ 50 a R$ 100
+- Mais de R$ 500
+
+### 9)
+Pergunta: Se você ganhasse R$ 50.000 na loteria amanhã, qual seria sua primeira ação?
+Alternativas:
+- Pagaria todas as dívidas
+- Compraria um carro novo
+- Investiria o dinheiro
+- Realizaria o sonho da casa própria
+- Ajudaria a família
+
+### 10)
+Pergunta: Você já ouviu falar de pessoas que ganharam na loteria mais de 10 vezes?
+Alternativas:
+- Sim, e acredito que é possível
+- Sim, mas acho que é sorte
+- Sim, mas desconfio que seja golpe
+- Não, nunca soube disso
+- Não acredito que seja real
+
+### 11)
+Pergunta: Qual seu maior obstáculo para ganhar na loteria?
+Alternativas:
+- Não sei escolher os números certos
+- Gasto muito e ganho pouco
+- Não tenho um método eficaz
+- Acho que é tudo sorte mesmo
+- Nunca pensei nisso
+
+### 12)
+Pergunta: Qual seria o valor ideal para você ganhar mensalmente na loteria?
+Alternativas:
+- Entre R$ 1.000 a R$ 5.000
+- Entre R$ 5.000 a R$ 15.000
+- Entre R$ 15.000 a R$ 50.000
+- Mais de R$ 50.000
+- Qualquer valor já mudaria minha vida
+
+### 13)
+Pergunta: Se existisse um método científico para aumentar drasticamente suas chances de ganhar, você investiria R$97,00 para aprender?
+Alternativas:
+- Sim, sem dúvida
+- Talvez, dependendo da prova
+- Não, prefiro apostar na sorte
+- Não tenho esse dinheiro agora
+
+### 14) (informativo)
+- Sua resposta revela se você tem mentalidade de GANHADOR ou de PERDEDOR.
+- Continue para descobrir a verdade...
+
+## Prova social (vídeo obrigatório)
+- Arquivo: `public/video/testimonials.mp4`
+- CTA destrava após ~60s de vídeo
+
+## Oferta (FinalOfferSlide)
+- Preço: R$97,00 vitalício
+- Valor cheio (âncora): R$297
+- Garantia: 7 dias
