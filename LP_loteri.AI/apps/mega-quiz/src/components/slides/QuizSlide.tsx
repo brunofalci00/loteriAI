@@ -117,7 +117,7 @@ const steps: QuizStep[] = [
   {
     type: "question",
     question:
-      "Se existisse um método científico para aumentar drasticamente suas chances de ganhar, você investiria R$97,00 para aprender?",
+      "Se existisse um método científico para aumentar drasticamente suas chances de ganhar, você investiria R$87,00 para aprender?",
     options: ["Sim, sem dúvida", "Talvez, dependendo da prova", "Não, prefiro apostar na sorte", "Não tenho esse dinheiro agora"],
   },
   {
