@@ -22,7 +22,7 @@ export const CoinCounter = ({ coins, delta }: CoinCounterProps) => {
         <Coins className="w-4 h-4" />
       </div>
       <div>
-        <p className="coin-counter__label">Moedas</p>
+        <p className="coin-counter__label">Pontos</p>
         <p className="coin-counter__value">{coins}</p>
       </div>
       {visibleDelta && (

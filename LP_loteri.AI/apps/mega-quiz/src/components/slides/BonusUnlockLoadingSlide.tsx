@@ -26,8 +26,8 @@ export const BonusUnlockLoadingSlide = ({ onNext }: BonusUnlockLoadingSlideProps
         </p>
         <Card className="loading-panel space-y-4">
           <div className="space-y-1 text-center">
-            <h2 className="heading-2 text-foreground">Qualificação confirmada</h2>
-            <p className="text-sm text-muted-foreground">Liberando o Mapa dos Números Quentes.</p>
+            <h2 className="heading-2 text-foreground">Liberado</h2>
+            <p className="text-sm text-muted-foreground">Mapa dos Números Quentes.</p>
           </div>
         </Card>
       </div>

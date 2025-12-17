@@ -33,7 +33,9 @@ export const ExitIntentOverlay = ({ open, onStay }: ExitIntentOverlayProps) => {
 
             <h2 className="heading-2">Falta pouco.</h2>
 
-            <p className="text-sm text-muted-foreground">Continue para concluir a liberação do acesso.</p>
+            <p className="text-sm text-muted-foreground">
+              Se você sair agora, sua vaga é repassada para o próximo visitante e o Sistema LOTER.IA não libera outra chance.
+            </p>
 
             <Button
               onClick={onStay}

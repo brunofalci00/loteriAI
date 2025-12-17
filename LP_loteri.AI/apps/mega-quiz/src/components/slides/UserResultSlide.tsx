@@ -63,7 +63,7 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
       <div className="casino-grid" />
       <div className="slide-frame space-y-6 text-center relative z-10">
         <div className="space-y-2">
-          <p className="meta-label flex items-center justify-center gap-2 text-primary">IA analisando seu jogo</p>
+          <p className="meta-label flex items-center justify-center gap-2 text-primary">Etapa 2</p>
           <h1 className="heading-1">{showResult ? "Resultado sem sistema" : "Conferindo sua aposta"}</h1>
         </div>
 
@@ -83,7 +83,7 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
               </div>
 
               <div className="bg-secondary/60 border border-primary/20 rounded-2xl p-4">
-                <p className="text-xs text-muted-foreground uppercase mb-1">Prêmio estimado</p>
+                <p className="text-xs text-muted-foreground uppercase mb-1">Valor estimado</p>
                 <p className="text-3xl font-bold text-primary">{currencyFormatter.format(prizeDisplay)}</p>
               </div>
 

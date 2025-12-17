@@ -67,10 +67,8 @@ export const FinalOfferSlide = () => {
             alt="LOTER.IA"
             className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(255,215,0,0.35)] pulse-glow"
           />
-          <h1 className="heading-1 text-glow">🎁 Prêmio resgatado com sucesso!</h1>
-          <p className="heading-3 text-primary">
-            Você liberou o acesso completo à Loter.IA com a condição especial da Mega da Virada. Veja tudo que está incluso.
-          </p>
+          <h1 className="heading-1 text-glow">Acesso ao Sistema LOTER.IA</h1>
+          <p className="heading-3 text-primary">Sua vaga foi liberada. Restam 5 acessos antes do sistema bloquear.</p>
         </div>
 
         <div className="video-shell">
@@ -92,14 +90,12 @@ export const FinalOfferSlide = () => {
           <div className="flex items-center justify-center gap-4">
             <Clock className={`w-10 h-10 ${timeLeft <= 60 ? "text-destructive animate-bounce" : "text-primary"}`} />
             <div className="text-center">
-              <p className="text-sm text-muted-foreground uppercase tracking-[0.5em]">Oferta válida enquanto o painel estiver aberto</p>
+              <p className="text-sm text-muted-foreground uppercase tracking-[0.5em]">5 acessos restantes</p>
               <p className={`text-5xl font-bold ${timeLeft <= 60 ? "text-destructive text-glow" : "text-primary"}`}>
                 {minutes}:{seconds}
               </p>
               {timeLeft <= 60 && (
-                <p className="text-xs text-destructive mt-2 animate-pulse">
-                  Depois disso, voltamos ao valor cheio.
-                </p>
+                <p className="text-xs text-destructive mt-2 animate-pulse">Se você sair, a vaga vai para o próximo visitante.</p>
               )}
             </div>
           </div>
@@ -165,8 +161,8 @@ export const FinalOfferSlide = () => {
 
         <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground text-center">
           <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Compra segura" className="w-40 sm:w-52 mx-auto" />
-          <p>✅ Oferta ativa enquanto o painel estiver aberto.</p>
-          <p>Já são dezenas de acessos liberados hoje. Depois disso voltamos ao valor cheio.</p>
+          <p>✅ Restam 5 acessos para liberar.</p>
+          <p>Se você sair da tela ou não concluir o pagamento, não existe outra chance: a vaga vai para o próximo visitante.</p>
         </div>
 
         <Card className="p-6 bg-primary/10 border border-primary/30 text-center">

@@ -73,16 +73,13 @@ export const IntuitionGameSlide = ({ onNext, onComplete }: IntuitionGameSlidePro
       <div className="casino-grid" />
       <div className="slide-frame space-y-6 relative z-10">
         <div className="text-center space-y-3">
-          <p className="meta-label text-primary flex items-center justify-center gap-2">🎯 Rodada manual pronta</p>
-          <h1 className="heading-1">Etapa 1 — monte seu jogo na intuição</h1>
-          <p className="body-lead max-w-2xl mx-auto">
-            Escolha 6 dezenas do jeito que você costuma apostar. Depois mostramos o jogo recalculado pela IA.
-          </p>
+          <p className="meta-label text-primary">Etapa 2</p>
+          <h1 className="heading-1">Desafio contra o Sistema LOTER.IA</h1>
+          <p className="body-lead max-w-2xl mx-auto">Escolha 6 dezenas como você costuma apostar.</p>
           <div className={`text-lg sm:text-2xl font-bold slot-highlight inline-flex items-center justify-center px-6 py-2 ${shake ? "shake" : ""}`}>
             {selectedNumbers.length}/{MAX_NUMBERS} escolhidos{" "}
             {remaining > 0 ? `— selecione mais ${remaining}` : "— pronto para comparar"}
           </div>
-          <p className="text-sm text-muted-foreground">Tela grande, sem pressa e com toque único. Dá tempo de revisar antes de enviar.</p>
         </div>
 
         <Card className="p-5 sm:p-6 space-y-6 border border-border">
@@ -115,8 +112,8 @@ export const IntuitionGameSlide = ({ onNext, onComplete }: IntuitionGameSlidePro
           {analysisState !== "idle" && (
             <p className="text-center text-sm text-muted-foreground animate-fade-in">
               {analysisState === "analyzing"
-                ? "Seu palpite foi registrado. Preparando comparação..."
-                : "Tudo pronto. A IA já está posicionada para analisar o seu jogo."}
+                ? "Preparando comparação..."
+                : "Tudo pronto."}
             </p>
           )}
         </Card>

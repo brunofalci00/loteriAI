@@ -39,7 +39,6 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore }: AISimulationSl
   const [phase, setPhase] = useState<Phase>("scan");
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [verdictReady, setVerdictReady] = useState(false);
-  const [showSpinReveal, setShowSpinReveal] = useState(false);
   const [manualPrizeDisplay, setManualPrizeDisplay] = useState(0);
   const [iaPrizeDisplay, setIaPrizeDisplay] = useState(0);
   const processingRef = useRef<HTMLAudioElement | null>(null);
@@ -114,11 +113,9 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore }: AISimulationSl
     trackPixelEvent("AISimulationVerdict", { userScore, aiScore });
     const cancelManual = animateToValue(manualPrize, setManualPrizeDisplay);
     const cancelIa = animateToValue(iaPrize, setIaPrizeDisplay);
-    const spinTimer = window.setTimeout(() => setShowSpinReveal(true), 600);
     return () => {
       cancelManual();
       cancelIa();
-      window.clearTimeout(spinTimer);
     };
   }, [verdictReady, userScore, aiScore]);
 
@@ -131,10 +128,10 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore }: AISimulationSl
         <Card className="p-5 border border-primary/30">
           <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
             <div>
-              <p className="meta-label text-primary">IA EM OPERAÇÃO</p>
-              <p className="text-muted-foreground">Placar final sendo apurado</p>
+              <p className="meta-label text-primary">SISTEMA LOTER.IA</p>
+              <p className="text-muted-foreground">Processando</p>
             </div>
-            <div className="text-right text-xs text-muted-foreground">Painel protegido em tempo real</div>
+            <div className="text-right text-xs text-muted-foreground">Etapa 2</div>
           </div>
         </Card>
 
@@ -142,14 +139,14 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore }: AISimulationSl
           <Card className="p-8 flex flex-col items-center gap-4 border border-border">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
             <p className="text-center text-sm text-muted-foreground">
-              IA conectando na sua aposta, auditando 20 anos de resultados e calculando probabilidades...
+              Analisando...
             </p>
           </Card>
         )}
 
         {phase === "selection" && (
           <Card className="p-6 space-y-4 border border-border">
-            <p className="text-center text-sm text-muted-foreground">IA escolhendo as 6 dezenas com maior chance agora.</p>
+            <p className="text-center text-sm text-muted-foreground">Sistema LOTER.IA selecionando as dezenas.</p>
             <div className="grid grid-cols-6 sm:grid-cols-10 gap-2 sm:gap-3">
               {allNumbers.map((num) => (
                 <div key={num} className={`number-cell ${selectedNumbers.includes(num) ? "number-cell--active" : ""}`}>
@@ -164,7 +161,7 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore }: AISimulationSl
           <Card className="p-6 space-y-6 border border-border">
             <div className="space-y-2 text-center">
               <p className="meta-label">COMPARATIVO FINAL</p>
-              <p className="heading-3">Agora você vê a diferença na prática.</p>
+              <p className="heading-3">Resultado do desafio</p>
             </div>
             {verdictReady ? (
               <>
@@ -188,37 +185,29 @@ export const AISimulationSlide = ({ onNext, userScore, aiScore }: AISimulationSl
                     <p className="text-3xl font-bold text-muted-foreground">
                       {currencyFormatter.format(manualPrizeDisplay)}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">Simulação caso o jogo fosse enviado desta forma.</p>
                   </Card>
                   <Card className="p-4 bg-gradient-to-br from-primary/10 to-gold/30 border border-primary/40">
                     <p className="text-xs uppercase text-muted-foreground mb-1">Resultado estimado com o sistema</p>
                     <p className="text-3xl font-bold text-primary text-glow">
                       {currencyFormatter.format(iaPrizeDisplay)}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">Simulação com base em padrões históricos equivalentes.</p>
                   </Card>
                 </div>
 
                 <div className="space-y-2 text-center text-sm text-muted-foreground">
-                  <p>O sistema atingiu {aiScore} pontos usando as mesmas dezenas. Na mesma condição, a escolha manual ficaria com {userScore}.</p>
-                  <p>Com isso, foi liberada uma condição especial para você continuar o processo.</p>
+                  <p>O Sistema LOTER.IA venceu este desafio.</p>
+                  <p>O sistema não libera o acesso automaticamente.</p>
+                  <p>Mas, por mérito, você ganhou 1 chance de tentar liberar o acesso.</p>
                 </div>
-                {showSpinReveal && (
-                  <div className="bg-secondary rounded-2xl p-4 border border-primary/20 text-sm text-left sm:text-center space-y-1">
-                    <p className="font-semibold text-primary">CONDIÇÃO RESERVADA</p>
-                    <p>O sistema utilizou parte do bônus automaticamente e manteve uma liberação disponível para você.</p>
-                    <p className="text-muted-foreground">Essa etapa permite avançar com vantagem adicional no acesso.</p>
-                  </div>
-                )}
-                <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 flex items-center justify-center gap-2">
-                  SEGUIR PARA A PRÓXIMA ETAPA
+                <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5">
+                  Continuar
                 </Button>
               </>
             ) : (
               <div className="flex flex-col items-center gap-3 py-6">
                 <Loader2 className="w-10 h-10 text-primary animate-spin" />
                 <p className="text-sm text-muted-foreground text-center">
-                  IA consolidando os pontos e auditando o painel para liberar seu relatório final...
+                  Processando...
                 </p>
               </div>
             )}

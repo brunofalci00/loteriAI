@@ -37,10 +37,10 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
         </div>
 
         <div className="coin-flow-panel">
-          <p className="text-sm text-muted-foreground text-center">Moedas usadas:</p>
+          <p className="text-sm text-muted-foreground text-center">Pontos usados:</p>
           <div className={`coin-flow ${coinStage !== "stack" ? "coin-flow--active" : ""}`}>
             <div className={`coin-stack ${coinStage !== "stack" ? "coin-stack--light" : ""}`}>
-              <span className="coin-stack__label">Moedas</span>
+              <span className="coin-stack__label">Pontos</span>
               <span className="coin-stack__value">120</span>
             </div>
             <div className="coin-path">

@@ -261,14 +261,14 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
         <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
           <div className="space-y-1">
             <p className="meta-label flex items-center gap-2 justify-center sm:justify-start">
-              ⚡ Slide {currentStep + 1} de {steps.length}
+              Qualificação • Etapa 1
             </p>
             <h2 className="heading-2 flex items-center gap-2 justify-center sm:justify-start">Responda com calma</h2>
           </div>
           <div className="text-center sm:text-right">
-            <p className="text-sm text-muted-foreground">Moedas liberadas</p>
+            <p className="text-sm text-muted-foreground">Pontos</p>
             <div className={`medal-badge ${medalUnlocked ? "medal-badge--active" : ""}`}>
-              {medalUnlocked ? "🎁 Mapa liberado" : `${coinsCollected}/${TOTAL_COINS}`}
+              {medalUnlocked ? "Liberado" : `${coinsCollected}/${TOTAL_COINS}`}
             </div>
           </div>
         </div>
@@ -282,7 +282,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
             </div>
           </div>
           {recentGain && <span className="coin-status-card__delta">+{recentGain} agora</span>}
-          <p className="coin-status-card__hint">Usamos essas moedas automaticamente para abrir o Mapa dos Números Quentes.</p>
+          <p className="coin-status-card__hint">Esses pontos liberam o Mapa dos Números Quentes.</p>
         </div>
 
         <div className="bg-secondary rounded-full h-3 overflow-hidden progress-sheen">

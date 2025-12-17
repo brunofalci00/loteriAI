@@ -68,11 +68,11 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
       <div className="slide-frame space-y-6 text-center relative z-10">
         <div className="space-y-2">
           <p className="meta-label text-primary">Etapa 2</p>
-          <h1 className="heading-1">{stage === "unlocked" ? "Acesso liberado" : "Você perdeu para a IA"}</h1>
+          <h1 className="heading-1">{stage === "unlocked" ? "Acesso liberado" : "Você perdeu para o Sistema LOTER.IA"}</h1>
           <p className="body-lead">
             {stage === "unlocked"
-              ? "Seu acesso foi liberado. Continue para finalizar."
-              : "Mas você ganhou 1 chance de liberar o acesso ao Sistema."}
+              ? "Seu acesso ao Sistema LOTER.IA foi liberado. Continue."
+              : "Mas, por mérito, você ganhou 1 chance de tentar liberar o acesso."}
           </p>
         </div>
 
@@ -104,4 +104,3 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
     </div>
   );
 };
-

@@ -26,8 +26,8 @@ export const AISyncLoadingSlide = ({ onNext }: AISyncLoadingSlideProps) => {
         </p>
         <Card className="loading-panel space-y-3">
           <div className="space-y-1 text-center">
-            <h2 className="heading-2">Etapa 2: validação do sistema</h2>
-            <p className="text-sm text-muted-foreground">Comparando sua aposta com a IA.</p>
+            <h2 className="heading-2">Etapa 2</h2>
+            <p className="text-sm text-muted-foreground">Validando o Sistema LOTER.IA.</p>
           </div>
         </Card>
       </div>

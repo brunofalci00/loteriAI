@@ -4,8 +4,8 @@ Este documento consolida a copy atual do funil em `apps/mega-quiz`.
 
 ## Entrada (EntrySlide)
 - Headline: **Acesso liberado à IA da Mega da Virada**
-- Sub: A Loter.IA está recalculando apostas com dados reais da Mega. Responda o aquecimento e teste antes de um possível bloqueio.
-- Como funciona: **Cada resposta vale 10 moedas. Ao completar 120, garantimos sua vaga e liberamos a etapa manual + IA.**
+- Sub: **Responda 12 perguntas rápidas para ver se você está qualificado para desbloquear o acesso ao Sistema LOTER.IA.**
+- Progresso: **Cada resposta vale 10 pontos. Ao completar 120, a Etapa 1 fica Liberado.**
 
 ## Quiz (QuizSlide)
 
@@ -115,6 +115,7 @@ Pergunta: Se existisse um método científico para aumentar drasticamente suas c
 - CTA destrava após ~60s de vídeo
 
 ## Oferta (FinalOfferSlide)
+- Produto: **Sistema LOTER.IA**
 - Preço: **R$97,00 vitalício**
 - Âncora: **Valor cheio R$297**
-- Garantia: **7 dias**
+- Escassez: **5 acessos restantes** (se sair/não concluir, a vaga vai para o próximo visitante)
