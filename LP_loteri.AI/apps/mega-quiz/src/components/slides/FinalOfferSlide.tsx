@@ -13,6 +13,11 @@ const benefits = [
   { icon: "✅", text: "Garantia total de 7 dias: testou, não gostou, cancela" },
 ];
 
+const offerTestimonialImages = [
+  "https://i.ibb.co/rfQNMBX2/Whats-App-Image-2025-10-27-at-16-32-16.jpg",
+  "https://i.ibb.co/TD85XLkM/Whats-App-Image-2025-10-27-at-16-36-22.jpg",
+];
+
 export const FinalOfferSlide = () => {
   const baseUrl = import.meta.env.BASE_URL ?? "/";
   const checkoutUrl =
@@ -71,21 +76,6 @@ export const FinalOfferSlide = () => {
           <p className="heading-3 text-primary">Sua vaga foi liberada. Restam 5 acessos antes do sistema bloquear.</p>
         </div>
 
-        <div className="video-shell">
-          <video
-            ref={videoRef}
-            src={`${baseUrl}video/demo.mp4`}
-            autoPlay
-            muted={isMuted}
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            poster="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg"
-          />
-          <Button size="icon" variant="secondary" onClick={toggleAudio} className="sound-pill">
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-          </Button>
-        </div>
         <Card className={`p-6 border ${timeLeft <= 60 ? "border-destructive animate-pulse pulse-glow" : "border-primary glow-primary"}`}>
           <div className="flex items-center justify-center gap-4">
             <Clock className={`w-10 h-10 ${timeLeft <= 60 ? "text-destructive animate-bounce" : "text-primary"}`} />
@@ -101,6 +91,44 @@ export const FinalOfferSlide = () => {
           </div>
           <div className="timer-shell mt-4">
             <div className={`timer-bar ${tickSpeedUp ? "timer-bar--fast" : ""}`} style={{ width: `${(timeLeft / (3 * 60)) * 100}%` }} />
+          </div>
+        </Card>
+
+        <div className="text-center space-y-3">
+          <h2 className="heading-2 text-glow">Veja Como o Sistema Funciona</h2>
+        </div>
+
+        <div className="video-shell">
+          <video
+            ref={videoRef}
+            src={`${baseUrl}video/demo.mp4`}
+            autoPlay
+            muted={isMuted}
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+            poster="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg"
+          />
+          <Button size="icon" variant="secondary" onClick={toggleAudio} className="sound-pill">
+            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+          </Button>
+        </div>
+
+        <div className="text-center space-y-3">
+          <h2 className="heading-2 text-glow">Pessoas como você estão ganhando todos os dias! Veja só</h2>
+        </div>
+
+        <Card className="p-4 sm:p-6 bg-primary/5 border border-primary/20">
+          <div className="space-y-4">
+            {offerTestimonialImages.map((src) => (
+              <img
+                key={src}
+                src={src}
+                alt="Depoimento"
+                loading="lazy"
+                className="w-full rounded-2xl border border-border/60 shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
+              />
+            ))}
           </div>
         </Card>
 
