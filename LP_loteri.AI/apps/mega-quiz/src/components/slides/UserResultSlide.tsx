@@ -14,13 +14,12 @@ interface UserResultSlideProps {
 const { manualPrize, manualMaxNumbers } = megaQuizConfig;
 
 export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResultSlideProps) => {
-  const hasSelection = selectedNumbers.length > 0;
   const [showResult, setShowResult] = useState(false);
   const [prizeDisplay, setPrizeDisplay] = useState(0);
   const manualResultSoundRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setShowResult(true), 3200);
+    const timer = window.setTimeout(() => setShowResult(true), 2000);
     return () => window.clearTimeout(timer);
   }, []);
 
@@ -41,7 +40,7 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
     trackPixelEvent("ManualResult", { userScore });
 
     let raf = 0;
-    const duration = 1200;
+    const duration = 900;
     let start: number | null = null;
 
     const step = (timestamp: number) => {
@@ -64,11 +63,8 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
       <div className="casino-grid" />
       <div className="slide-frame space-y-6 text-center relative z-10">
         <div className="space-y-2">
-          <p className="meta-label flex items-center justify-center gap-2 text-primary">🎯 IA analisando seu jogo</p>
-          <h1 className="heading-1">{showResult ? "Seu resultado saiu" : "Estamos conferindo sua aposta"}</h1>
-          <p className="body-lead">
-            {showResult ? "Veja onde ficaria apostando só na intuição antes de ligar a IA." : "Segure alguns segundos. Conferimos tudo antes do duelo."}
-          </p>
+          <p className="meta-label flex items-center justify-center gap-2 text-primary">IA analisando seu jogo</p>
+          <h1 className="heading-1">{showResult ? "Resultado sem sistema" : "Conferindo sua aposta"}</h1>
         </div>
 
         <Card className="p-5 sm:p-6 space-y-6 border border-border">
@@ -76,44 +72,38 @@ export const UserResultSlide = ({ onNext, userScore, selectedNumbers }: UserResu
             <div className="flex flex-col items-center gap-3 py-6">
               <Loader2 className="w-10 h-10 text-primary animate-spin" />
               <p className="text-sm text-muted-foreground text-center">
-                Comparando suas {manualMaxNumbers} dezenas com 20 anos de Mega da Virada.
+                Conferindo {manualMaxNumbers} dezenas.
               </p>
             </div>
           ) : (
             <>
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground uppercase">Placar sem IA</p>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground uppercase">Placar</p>
                 <p className="text-[clamp(2.5rem,8vw,4rem)] font-black text-primary">{manualHitsLabel}</p>
-                <p className="text-sm text-muted-foreground">Com a intuição sozinha você ficaria por aqui.</p>
               </div>
 
-              <Card className="bg-secondary/60 border border-primary/20 p-4 text-left text-sm">
+              <div className="bg-secondary/60 border border-primary/20 rounded-2xl p-4">
                 <p className="text-xs text-muted-foreground uppercase mb-1">Prêmio estimado</p>
                 <p className="text-3xl font-bold text-primary">{currencyFormatter.format(prizeDisplay)}</p>
-                <p className="text-xs text-muted-foreground mt-1">Quanto esse jogo renderia do jeito que você costuma apostar.</p>
-              </Card>
+              </div>
 
-              <div className="bg-secondary rounded-2xl p-4 text-left">
+              <div className="bg-secondary rounded-2xl p-4">
                 <p className="text-xs text-muted-foreground uppercase mb-2">Suas dezenas</p>
-                {hasSelection ? (
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {selectedNumbers.map((num) => (
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {selectedNumbers.length > 0 ? (
+                    selectedNumbers.map((num) => (
                       <span key={num} className="px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold text-sm">
                         {num}
                       </span>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground text-center">Suas dezenas aparecerão aqui ao fim da rodada.</p>
-                )}
+                    ))
+                  ) : (
+                    <span className="text-sm text-muted-foreground">Nenhuma seleção.</span>
+                  )}
+                </div>
               </div>
 
-                <p className="text-sm text-muted-foreground text-center">
-                  Toque no botão abaixo para ver a mesma aposta com a IA trabalhando a seu favor.
-                </p>
-
               <Button onClick={onNext} size="lg" className="w-full text-base sm:text-xl py-5 sm:py-6">
-                Ver a IA jogando agora
+                Ver a IA
               </Button>
             </>
           )}

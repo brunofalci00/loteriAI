@@ -347,12 +347,12 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
       <Dialog open={showCompletionModal} onOpenChange={setShowCompletionModal}>
         <DialogContent className="max-w-sm text-center space-y-4">
           <DialogHeader>
-            <DialogTitle>Destravando o Bônus 1</DialogTitle>
-            <DialogDescription>Segure um pouco: estamos preparando os dados para liberar o mapa secreto.</DialogDescription>
+            <DialogTitle>Liberando o mapa</DialogTitle>
+            <DialogDescription>Um instante.</DialogDescription>
           </DialogHeader>
           <div className="flex flex-col items-center gap-3 py-5">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-sm text-muted-foreground">Transferindo fichas e liberando o mapa secreto...</p>
+            <p className="text-sm text-muted-foreground">Processando...</p>
           </div>
         </DialogContent>
       </Dialog>

@@ -7,32 +7,8 @@ interface EntrySlideProps {
   onNext: () => void;
 }
 
-const timelineSteps = [
-  {
-    icon: "🚨",
-    title: "12 perguntas",
-    description: "Reservamos sua vaga respondendo 12 perguntas rápidas.",
-  },
-  {
-    icon: "🧠",
-    title: "Rodada manual",
-    description: "Você monta 6 dezenas na intuição, igual na lotérica.",
-  },
-  {
-    icon: "🤖",
-    title: "IA recalcula",
-    description: "A IA usa 20 anos de Mega da Virada para montar o contra-ataque.",
-  },
-  {
-    icon: "🎰",
-    title: "Libera o giro",
-    description: "O duelo desbloqueia o giro bônus e a oferta secreta.",
-  },
-];
-
 export const EntrySlide = ({ onNext }: EntrySlideProps) => {
   const [loading, setLoading] = useState(true);
-  const [dots, setDots] = useState("...");
   const [ctaReady, setCtaReady] = useState(false);
   const slotSoundRef = useRef<HTMLAudioElement | null>(null);
   const introSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -57,16 +33,9 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setLoading(false);
-      window.setTimeout(() => setCtaReady(true), 600);
-    }, 3600);
+      window.setTimeout(() => setCtaReady(true), 250);
+    }, 900);
     return () => window.clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const dotsInterval = window.setInterval(() => {
-      setDots((prev) => (prev.length >= 3 ? "." : prev + "."));
-    }, 450);
-    return () => window.clearInterval(dotsInterval);
   }, []);
 
   const handleHover = (isHovering: boolean) => {
@@ -106,7 +75,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
             />
             <h1 className="heading-hero text-glow">Acesso liberado à IA da Mega da Virada</h1>
             <p className="body-lead max-w-2xl">
-              A Loter.IA está recalculando apostas com dados reais da Mega. Responda o aquecimento e teste antes de um possível bloqueio.
+              Responda 12 perguntas rápidas para ver se você está qualificado para desbloquear o acesso ao Sistema.
             </p>
           </div>
         </section>
@@ -116,66 +85,33 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
             <div className="space-y-3 text-center">
               <div className="flex items-center justify-center gap-3">
                 <Loader2 className="w-6 h-6 text-primary animate-spin" />
-                <span className="font-semibold text-lg">Preparando o painel{dots}</span>
+                <span className="font-semibold text-lg">Preparando o painel...</span>
               </div>
-              <p className="text-sm text-muted-foreground">Deixamos tudo alinhado.</p>
+              <p className="text-sm text-muted-foreground">Um instante.</p>
             </div>
           ) : (
-            <>
-              <div className="timeline-visual">
-                <div className="timeline-visual__grid">
-                  {timelineSteps.map((step, index) => (
-                    <div key={step.title} className="timeline-visual__step">
-                      <div className="timeline-visual__icon" aria-hidden="true">
-                        {step.icon}
-                      </div>
-                      <div>
-                        <p className="timeline-card__title">{step.title}</p>
-                        <p className="timeline-card__description">{step.description}</p>
-                      </div>
-                      {index < timelineSteps.length - 1 && <span className="timeline-visual__connector" aria-hidden="true" />}
-                    </div>
-                  ))}
-                </div>
-                <div className="timeline-visual__badges">
-                  <span>⚡ Rápido</span>
-                  <span>🛡️ Seguro</span>
-                  <span>🎯 Guiado</span>
-                </div>
-              </div>
-              <Button
-                onMouseEnter={() => handleHover(true)}
-                onMouseLeave={() => handleHover(false)}
-                onClick={handleStart}
-                size="lg"
-                disabled={!ctaReady}
-                className={`relative overflow-hidden w-full text-base sm:text-xl py-4 sm:py-6 font-bold rounded-2xl ${
-                  ctaReady ? "bg-primary hover:bg-primary-glow text-primary-foreground shadow-[0_10px_40px_rgba(255,215,0,0.35)]" : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {ctaReady ? (
-                  <span className="flex items-center gap-2">
-                    <span role="img" aria-hidden="true">
-                      🟡
-                    </span>
-                    Começar agora
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center gap-2 text-sm font-semibold">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Ajustando painel...
-                  </span>
-                )}
-              </Button>
-            </>
+            <Button
+              onMouseEnter={() => handleHover(true)}
+              onMouseLeave={() => handleHover(false)}
+              onClick={handleStart}
+              size="lg"
+              disabled={!ctaReady}
+              className={`relative overflow-hidden w-full text-base sm:text-xl py-4 sm:py-6 font-bold rounded-2xl ${
+                ctaReady
+                  ? "bg-primary hover:bg-primary-glow text-primary-foreground shadow-[0_10px_40px_rgba(255,215,0,0.35)]"
+                  : "bg-muted text-muted-foreground"
+              }`}
+            >
+              {ctaReady ? (
+                <span className="flex items-center justify-center">Começar Agora</span>
+              ) : (
+                <span className="flex items-center justify-center gap-2 text-sm font-semibold">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Ajustando painel...
+                </span>
+              )}
+            </Button>
           )}
-        </section>
-
-        <section className="rounded-2xl border border-border/60 p-5 bg-secondary/40">
-          <p className="text-sm text-muted-foreground mb-2 font-semibold uppercase tracking-[0.3em]">Como funciona</p>
-          <p className="text-base text-foreground">
-            Cada resposta vale 10 moedas. Ao completar 120, garantimos sua vaga e liberamos a etapa manual + IA.
-          </p>
         </section>
       </div>
     </div>

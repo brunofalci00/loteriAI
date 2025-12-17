@@ -10,8 +10,7 @@ import { UserResultSlide } from "@/components/slides/UserResultSlide";
 import { AISyncLoadingSlide } from "@/components/slides/AISyncLoadingSlide";
 import { AISimulationSlide } from "@/components/slides/AISimulationSlide";
 import { TestimonialsSlide } from "@/components/slides/TestimonialsSlide";
-import { RouletteBonusSlide } from "@/components/slides/RouletteBonusSlide";
-import { MaxWinCelebrationSlide } from "@/components/slides/MaxWinCelebrationSlide";
+import { AccessChanceSlide } from "@/components/slides/AccessChanceSlide";
 import { FinalOfferSlide } from "@/components/slides/FinalOfferSlide";
 import { useExitIntent } from "@/hooks/useExitIntent";
 
@@ -22,8 +21,6 @@ const Index = () => {
   const [userScore, setUserScore] = useState(1);
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const aiScore = 5;
-  const [userSpins, setUserSpins] = useState(1);
-  const aiSpins = 3;
   const [showExitOverlay, setShowExitOverlay] = useState(false);
   const { exitIntentTriggered, acknowledge } = useExitIntent(currentSlide > 0);
 
@@ -71,11 +68,8 @@ const Index = () => {
       onNext={handleNext}
       userScore={userScore}
       aiScore={aiScore}
-      userSpins={userSpins}
-      aiSpins={aiSpins}
     />,
-    <RouletteBonusSlide key="roulette" onNext={handleNext} userSpins={userSpins} onSpinComplete={() => setUserSpins(0)} />,
-    <MaxWinCelebrationSlide key="max-win" onNext={handleNext} />,
+    <AccessChanceSlide key="access-chance" onNext={handleNext} />,
     <TestimonialsSlide key="testimonials" onNext={handleNext} />,
     <FinalOfferSlide key="final-offer" />,
   ];

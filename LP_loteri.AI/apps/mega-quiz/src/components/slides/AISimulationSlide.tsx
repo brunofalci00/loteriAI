@@ -9,8 +9,6 @@ interface AISimulationSlideProps {
   onNext: () => void;
   userScore: number;
   aiScore: number;
-  userSpins: number;
-  aiSpins: number;
 }
 
 type Phase = "scan" | "selection" | "verdict";
@@ -37,7 +35,7 @@ const animateToValue = (target: number, setter: (value: number) => void) => {
   return () => cancelAnimationFrame(frameId);
 };
 
-export const AISimulationSlide = ({ onNext, userScore, aiScore, userSpins, aiSpins }: AISimulationSlideProps) => {
+export const AISimulationSlide = ({ onNext, userScore, aiScore }: AISimulationSlideProps) => {
   const [phase, setPhase] = useState<Phase>("scan");
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [verdictReady, setVerdictReady] = useState(false);

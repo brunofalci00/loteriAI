@@ -31,18 +31,16 @@ export const ExitIntentOverlay = ({ open, onStay }: ExitIntentOverlayProps) => {
               <div className="lock-beam" />
             </div>
 
-            <h2 className="heading-2">Você chegou longe demais para sair agora.</h2>
+            <h2 className="heading-2">Falta pouco.</h2>
 
-            <p className="text-sm text-muted-foreground">
-              Se fechar agora, o sistema zera suas moedas e fecha o acesso à IA secreta.
-            </p>
+            <p className="text-sm text-muted-foreground">Continue para concluir a liberação do acesso.</p>
 
             <Button
               onClick={onStay}
               size="lg"
               className="w-full text-lg py-4 bg-primary hover:bg-primary-glow text-primary-foreground font-bold pulse-glow"
             >
-              Continuar e liberar meu bônus
+              Continuar
             </Button>
           </div>
         </Card>
