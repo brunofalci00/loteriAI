@@ -21,8 +21,7 @@ type Segment = {
 
 const SEGMENTS: Segment[] = [
   { result: "NAO_LIBERA", weight: 7, fill: "#111827", textColor: "#f8fafc", lines: ["NÃO", "LIBERA"] },
-  { result: "EM_ANALISE", weight: 2, fill: "#4b5563", textColor: "#f8fafc", lines: ["EM", "ANÁLISE"] },
-  { result: "LIBERADO", weight: 1, fill: "#fbbf24", textColor: "#111827", lines: ["LIBERADO"] },
+  { result: "LIBERADO", weight: 3, fill: "#fbbf24", textColor: "#111827", lines: ["LIBERADO"] },
 ];
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
@@ -99,7 +98,7 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
     const extraSpins = Math.floor(clamp(strength, 0, 1) * 3);
     const spins = minSpins + extraSpins;
 
-    const jitter = (Math.random() - 0.5) * liberatedSegment.angle * 0.55;
+    const jitter = (Math.random() - 0.5) * liberatedSegment.angle * 0.38;
     const targetFromTop = liberatedSegment.midFromTop + jitter;
     const desiredMod = (360 - (targetFromTop % 360)) % 360;
 
@@ -227,10 +226,11 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
                 <g>
                   {segmentsWithAngles.map((seg) => {
                     const midAbs = -90 + seg.midFromTop;
-                    const pos = polarToCartesian(100, 100, 64, midAbs);
+                    const pos = polarToCartesian(100, 100, 58, midAbs);
                     const rotate = midAbs + 90;
                     const lineHeight = 10.5;
                     const totalHeight = (seg.lines.length - 1) * lineHeight;
+                    const letterSpacing = seg.result === "LIBERADO" ? "0.08em" : "0.14em";
                     return (
                       <text
                         key={`label-${seg.result}`}
@@ -242,7 +242,7 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
                         textAnchor="middle"
                         dominantBaseline="middle"
                         transform={`rotate(${rotate} ${pos.x} ${pos.y})`}
-                        style={{ letterSpacing: "0.14em" }}
+                        style={{ letterSpacing }}
                       >
                         {seg.lines.map((line, index) => (
                           <tspan key={line} x={pos.x} dy={index === 0 ? -totalHeight / 2 : lineHeight}>
@@ -294,4 +294,3 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
     </div>
   );
 };
-
