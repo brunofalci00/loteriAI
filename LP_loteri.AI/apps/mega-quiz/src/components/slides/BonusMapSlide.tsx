@@ -32,8 +32,9 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
       <div className="casino-grid" />
       <div className="slide-frame space-y-6 relative z-10">
         <div className="text-center space-y-2">
-          <p className="meta-label text-primary">Etapa 1 liberada</p>
+          <p className="meta-label text-primary">Perfil: VENCEDOR</p>
           <h1 className="heading-1 text-glow">Mapa dos números quentes liberado</h1>
+          <p className="body-lead">Por isso você desbloqueou o acesso ao mapa.</p>
         </div>
 
         <div className="coin-flow-panel">
