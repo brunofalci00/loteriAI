@@ -9,20 +9,12 @@ interface AccessChanceSlideProps {
 }
 
 type WheelResult = "NAO_LIBERA" | "EM_ANALISE" | "LIBERADO";
-type Stage = "ready" | "spinning" | "landed" | "glitching" | "unlocked";
+type Stage = "ready" | "spinning" | "processing" | "unlocked";
 
-const WHEEL_SEGMENTS: WheelResult[] = [
-  "NAO_LIBERA",
-  "NAO_LIBERA",
-  "NAO_LIBERA",
-  "NAO_LIBERA",
-  "NAO_LIBERA",
-  "NAO_LIBERA",
-  "NAO_LIBERA",
-  "EM_ANALISE",
-  "EM_ANALISE",
-  "LIBERADO",
-];
+const WHEEL_SEGMENTS: WheelResult[] = [];
+for (let i = 0; i < 7; i += 1) WHEEL_SEGMENTS.push("NAO_LIBERA");
+for (let i = 0; i < 2; i += 1) WHEEL_SEGMENTS.push("EM_ANALISE");
+WHEEL_SEGMENTS.push("LIBERADO");
 
 const WHEEL_LABEL: Record<WheelResult, string> = {
   NAO_LIBERA: "NÃO LIBERA",
@@ -36,34 +28,35 @@ const WHEEL_COLOR: Record<WheelResult, string> = {
   LIBERADO: "#fbbf24",
 };
 
+const WHEEL_TEXT: Record<WheelResult, string> = {
+  NAO_LIBERA: "#f8fafc",
+  EM_ANALISE: "#f8fafc",
+  LIBERADO: "#111827",
+};
+
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
-const buildWheelBackground = () => {
-  const segmentAngle = 360 / WHEEL_SEGMENTS.length;
-  const stops: string[] = [];
-  for (let index = 0; index < WHEEL_SEGMENTS.length; index += 1) {
-    const start = index * segmentAngle;
-    const end = (index + 1) * segmentAngle;
-    const color = WHEEL_COLOR[WHEEL_SEGMENTS[index]];
-    stops.push(`${color} ${start}deg ${end}deg`);
-  }
+const polarToCartesian = (cx: number, cy: number, r: number, angleDeg: number) => {
+  const angleRad = (Math.PI / 180) * angleDeg;
+  return { x: cx + r * Math.cos(angleRad), y: cy + r * Math.sin(angleRad) };
+};
 
-  const separators = `repeating-conic-gradient(from -90deg, rgba(255,255,255,0.08) 0deg 1deg, rgba(0,0,0,0) 1deg ${segmentAngle}deg)`;
-  const gloss = "radial-gradient(circle at 30% 25%, rgba(255,255,255,0.18), rgba(255,255,255,0) 55%)";
-  const conic = `conic-gradient(from -90deg, ${stops.join(", ")})`;
-
-  return `${gloss}, ${separators}, ${conic}`;
+const segmentPath = (cx: number, cy: number, r: number, startAngle: number, endAngle: number) => {
+  const start = polarToCartesian(cx, cy, r, startAngle);
+  const end = polarToCartesian(cx, cy, r, endAngle);
+  const largeArc = endAngle - startAngle <= 180 ? "0" : "1";
+  return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 1 ${end.x} ${end.y} Z`;
 };
 
 export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
   const [stage, setStage] = useState<Stage>("ready");
   const [rotationDeg, setRotationDeg] = useState(0);
-  const [result, setResult] = useState<WheelResult | null>(null);
   const [spinDurationMs, setSpinDurationMs] = useState(3200);
-  const [glitchFlip, setGlitchFlip] = useState(false);
   const dragStartRef = useRef<{ x: number; y: number; t: number } | null>(null);
   const timersRef = useRef<number[]>([]);
-  const wheelBackground = useMemo(() => buildWheelBackground(), []);
+
+  const segmentAngle = useMemo(() => 360 / WHEEL_SEGMENTS.length, []);
+  const liberatedIndex = useMemo(() => WHEEL_SEGMENTS.findIndex((value) => value === "LIBERADO"), []);
 
   const clearTimers = () => {
     timersRef.current.forEach((t) => window.clearTimeout(t));
@@ -89,15 +82,12 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
   };
 
   const spinToSegmentIndex = (segmentIndex: number, strength: number) => {
-    const segmentAngle = 360 / WHEEL_SEGMENTS.length;
-    const minSpins = 5;
+    const minSpins = 6;
     const extraSpins = Math.floor(clamp(strength, 0, 1) * 3);
     const spins = minSpins + extraSpins;
-
-    const jitter = (Math.random() - 0.5) * segmentAngle * 0.55;
+    const jitter = (Math.random() - 0.5) * segmentAngle * 0.42;
     const targetAngleAtPointer = segmentIndex * segmentAngle + segmentAngle / 2 + jitter;
     const desiredMod = (360 - targetAngleAtPointer) % 360;
-
     setRotationDeg((prev) => prev + spins * 360 + desiredMod);
   };
 
@@ -106,45 +96,21 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
     clearTimers();
 
     setStage("spinning");
-    setGlitchFlip(false);
-    setResult(null);
     trackPixelEvent("SlotSpinStart");
     playSound("/sounds/roulette-spin.mp3", 0.25);
 
-    const outcome: WheelResult = "NAO_LIBERA";
-    setResult(outcome);
-    const candidateIndexes = WHEEL_SEGMENTS.map((seg, idx) => (seg === outcome ? idx : -1)).filter((idx) => idx >= 0);
-    const segmentIndex = candidateIndexes[Math.floor(Math.random() * candidateIndexes.length)];
-
     const duration = Math.round(2600 + clamp(strength, 0, 1) * 1500);
     setSpinDurationMs(duration);
-    spinToSegmentIndex(segmentIndex, strength);
+    spinToSegmentIndex(liberatedIndex, strength);
 
-    schedule(() => playSound("/sounds/roulette-stop.mp3", 0.22), Math.max(250, duration - 450));
-    schedule(() => setStage("landed"), duration + 60);
-
+    schedule(() => playSound("/sounds/roulette-stop.mp3", 0.22), Math.max(250, duration - 430));
+    schedule(() => setStage("processing"), duration + 80);
     schedule(() => {
-      setStage("glitching");
-      playSound("/sounds/warning-tone.mp3", 0.08);
-      let flips = 0;
-      const flipTimer = window.setInterval(() => {
-        flips += 1;
-        setGlitchFlip((prev) => !prev);
-        if (flips >= 6) {
-          window.clearInterval(flipTimer);
-        }
-      }, 90);
-      timersRef.current.push(flipTimer as unknown as number);
-    }, duration + 520);
-
-    schedule(() => {
-      setGlitchFlip(false);
-      setResult("LIBERADO");
       setStage("unlocked");
       trackPixelEvent("SlotMaxWin");
       playSound("/sounds/jackpot-fanfare.mp3", 0.28);
       playSound("/sounds/coin-rain.mp3", 0.14);
-    }, duration + 1250);
+    }, duration + 780);
   };
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -158,7 +124,7 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
     dragStartRef.current = null;
 
     if (!start) {
-      beginSpin(0.55);
+      beginSpin(0.65);
       return;
     }
 
@@ -167,7 +133,7 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
     const dy = event.clientY - start.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
     const velocity = distance / dt;
-    const strength = clamp((distance / 260) * 0.7 + velocity * 0.9, 0.25, 1);
+    const strength = clamp((distance / 280) * 0.75 + velocity * 0.95, 0.25, 1);
     beginSpin(strength);
   };
 
@@ -175,9 +141,6 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
     trackPixelEvent("MaxWinCTA");
     onNext();
   };
-
-  const renderedResult: WheelResult | null =
-    stage === "glitching" ? (glitchFlip ? "LIBERADO" : "NAO_LIBERA") : result;
 
   return (
     <div className="slide-shell relative">
@@ -189,19 +152,14 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
           <p className="body-lead">
             {stage === "unlocked"
               ? "Seu acesso ao Sistema LOTER.IA foi liberado. Continue."
-              : "Gire para tentar liberar o acesso. O sistema normalmente não libera automaticamente."}
+              : "Arraste e solte para girar. O sistema decide."}
           </p>
         </div>
 
         <Card className="p-6 border border-primary/30 glow-primary space-y-5">
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Arraste e solte para girar (ou toque no centro)</p>
-            <p className="text-xs text-muted-foreground">70% não libera • 20% em análise • 10% libera</p>
-          </div>
-
-          <div className="relative mx-auto w-[280px] h-[280px] sm:w-[330px] sm:h-[330px] select-none">
+          <div className="relative mx-auto w-[290px] h-[290px] sm:w-[340px] sm:h-[340px] select-none">
             <div
-              className="absolute -top-3 left-1/2 -translate-x-1/2 z-10"
+              className="absolute -top-3 left-1/2 -translate-x-1/2 z-20"
               style={{
                 width: 0,
                 height: 0,
@@ -222,18 +180,81 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
                 stage === "ready" ? "cursor-grab active:cursor-grabbing" : "cursor-default"
               }`}
               style={{
-                backgroundImage: wheelBackground,
                 border: "2px solid rgba(255,215,0,0.25)",
-                boxShadow: "0 0 0 10px rgba(0,0,0,0.25), 0 0 60px rgba(255,215,0,0.18)",
-                transform: `rotate(${rotationDeg}deg)`,
-                transition: stage === "spinning" ? `transform ${spinDurationMs}ms cubic-bezier(0.12, 0.78, 0.18, 0.99)` : undefined,
+                boxShadow: "0 0 0 12px rgba(0,0,0,0.25), 0 0 60px rgba(255,215,0,0.18)",
               }}
             >
-              <div className="absolute inset-3 rounded-full border border-white/10 bg-gradient-to-b from-white/5 to-transparent" />
+              <svg
+                viewBox="0 0 200 200"
+                className="w-full h-full"
+                style={{
+                  transform: `rotate(${rotationDeg}deg)`,
+                  transformOrigin: "50% 50%",
+                  transition: stage === "spinning" ? `transform ${spinDurationMs}ms cubic-bezier(0.12, 0.78, 0.18, 0.99)` : undefined,
+                  filter: "drop-shadow(0 18px 40px rgba(0,0,0,0.45))",
+                }}
+              >
+                <defs>
+                  <radialGradient id="wheelGloss" cx="30%" cy="25%">
+                    <stop offset="0%" stopColor="rgba(255,255,255,0.22)" />
+                    <stop offset="55%" stopColor="rgba(255,255,255,0)" />
+                  </radialGradient>
+                  <radialGradient id="wheelVignette" cx="50%" cy="55%">
+                    <stop offset="60%" stopColor="rgba(0,0,0,0)" />
+                    <stop offset="100%" stopColor="rgba(0,0,0,0.55)" />
+                  </radialGradient>
+                </defs>
+
+                <g>
+                  {WHEEL_SEGMENTS.map((segment, index) => {
+                    const start = -90 + index * segmentAngle;
+                    const end = start + segmentAngle;
+                    return (
+                      <path
+                        key={`${segment}-${index}`}
+                        d={segmentPath(100, 100, 96, start, end)}
+                        fill={WHEEL_COLOR[segment]}
+                        stroke="rgba(255,255,255,0.10)"
+                        strokeWidth={0.6}
+                      />
+                    );
+                  })}
+                </g>
+
+                <circle cx="100" cy="100" r="96" fill="url(#wheelGloss)" />
+                <circle cx="100" cy="100" r="96" fill="url(#wheelVignette)" />
+
+                <g>
+                  {WHEEL_SEGMENTS.map((segment, index) => {
+                    const mid = -90 + index * segmentAngle + segmentAngle / 2;
+                    const pos = polarToCartesian(100, 100, 62, mid);
+                    const rotate = mid + 90;
+                    return (
+                      <text
+                        key={`label-${index}`}
+                        x={pos.x}
+                        y={pos.y}
+                        fill={WHEEL_TEXT[segment]}
+                        fontSize="10"
+                        fontWeight={900}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        transform={`rotate(${rotate} ${pos.x} ${pos.y})`}
+                        style={{ letterSpacing: "0.14em" }}
+                      >
+                        {WHEEL_LABEL[segment]}
+                      </text>
+                    );
+                  })}
+                </g>
+
+                <circle cx="100" cy="100" r="46" fill="rgba(0,0,0,0.35)" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+                <circle cx="100" cy="100" r="38" fill="rgba(255,255,255,0.92)" stroke="rgba(0,0,0,0.20)" strokeWidth="1" />
+              </svg>
 
               <button
                 type="button"
-                onClick={() => beginSpin(0.65)}
+                onClick={() => beginSpin(0.75)}
                 disabled={stage !== "ready"}
                 className="absolute inset-0 grid place-items-center"
               >
@@ -246,25 +267,17 @@ export const AccessChanceSlide = ({ onNext }: AccessChanceSlideProps) => {
             </div>
           </div>
 
-          {renderedResult && (
-            <div className="space-y-1">
-              <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Resultado</p>
-              <p className={`text-2xl font-black ${stage === "glitching" ? "animate-pulse" : ""}`}>
-                {WHEEL_LABEL[renderedResult]}
-              </p>
-              {stage === "landed" && (
-                <p className="text-xs text-muted-foreground">O sistema não liberou.</p>
-              )}
-              {stage === "glitching" && (
-                <p className="text-xs text-muted-foreground">Falha detectada... aplicando mérito...</p>
-              )}
-            </div>
-          )}
-
           {stage === "spinning" && (
             <div className="flex flex-col items-center gap-3 py-2">
               <Loader2 className="w-10 h-10 text-primary animate-spin" />
               <p className="text-sm text-muted-foreground">Girando...</p>
+            </div>
+          )}
+
+          {stage === "processing" && (
+            <div className="flex flex-col items-center gap-3 py-2">
+              <Loader2 className="w-10 h-10 text-primary animate-spin" />
+              <p className="text-sm text-muted-foreground">Confirmando...</p>
             </div>
           )}
 
