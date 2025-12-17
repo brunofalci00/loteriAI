@@ -20,8 +20,8 @@ type Segment = {
 };
 
 const SEGMENTS: Segment[] = [
-  { result: "NAO_LIBERA", weight: 7, fill: "#111827", textColor: "#f8fafc", lines: ["NÃO", "LIBERA"] },
-  { result: "LIBERADO", weight: 3, fill: "#fbbf24", textColor: "#111827", lines: ["LIBERADO"] },
+  { result: "NAO_LIBERA", weight: 7, fill: "hsl(var(--secondary))", textColor: "hsl(var(--destructive-foreground))", lines: ["NÃO", "LIBERA"] },
+  { result: "LIBERADO", weight: 3, fill: "hsl(var(--gold))", textColor: "hsl(var(--primary-foreground))", lines: ["LIBERADO"] },
 ];
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
