@@ -12,8 +12,6 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [ctaUnlocked, setCtaUnlocked] = useState(false);
-  const MAX_PLAY_SECONDS = 122;
-  const CLAMP_SECONDS = 121.8;
 
   useEffect(() => {
     videoRef.current?.play().catch(() => undefined);
@@ -29,19 +27,7 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
     setIsMuted(nextMuted);
   };
 
-  const handleTimeUpdate = () => {
-    if (!videoRef.current) return;
-
-    if (videoRef.current.currentTime >= MAX_PLAY_SECONDS) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = CLAMP_SECONDS;
-      return;
-    }
-
-    if (!ctaUnlocked && videoRef.current.currentTime >= 60) {
-      setCtaUnlocked(true);
-    }
-  };
+  const handleEnded = () => setCtaUnlocked(true);
 
   return (
     <div className="slide-shell relative">
@@ -66,7 +52,7 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
             muted={isMuted}
             playsInline
             preload="metadata"
-            onTimeUpdate={handleTimeUpdate}
+            onEnded={handleEnded}
             poster="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg"
           />
           <div className="absolute inset-x-0 bottom-0 p-3 flex items-center justify-between gap-3 bg-background/70 backdrop-blur-sm border-t border-border/60">
