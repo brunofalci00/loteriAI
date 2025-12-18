@@ -47,10 +47,22 @@
           window.fbq("track", "PageView");
         }
 
+        if (document.readyState === "loading") {
+          document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+              window.setTimeout(fallbackLoadPixel, 50);
+            },
+            { once: true }
+          );
+        } else {
+          window.setTimeout(fallbackLoadPixel, 50);
+        }
+
         window.addEventListener(
           "load",
           function () {
-            window.setTimeout(fallbackLoadPixel, 1500);
+            window.setTimeout(fallbackLoadPixel, 50);
           },
           { once: true }
         );
@@ -129,6 +141,15 @@
       ></iframe>
     </noscript>
     <!-- End Google Tag Manager (noscript) -->
+    <noscript>
+      <img
+        height="1"
+        width="1"
+        style="display:none"
+        src="https://www.facebook.com/tr?id=369969430611939&ev=PageView&noscript=1"
+        alt=""
+      />
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
