@@ -59,7 +59,7 @@ const Index = () => {
     <EntrySlide key="entry" onNext={handleNext} />,
     <QuizSlide key="quiz" onNext={handleNext} onCoinsEarned={handleCoinsEarned} />,
     <BonusUnlockLoadingSlide key="bonus-loading" onNext={handleNext} />,
-    <BonusMapSlide key="bonus-map" onNext={handleNext} />,
+    <BonusMapSlide key="bonus-map" onNext={handleNext} pointsUsed={coins} />,
     <IntuitionGameSlide key="intuition" onNext={handleNext} onComplete={handleIntuitionComplete} />,
     <UserResultSlide key="user-result" onNext={handleNext} userScore={userScore} selectedNumbers={selectedNumbers} />,
     <AISyncLoadingSlide key="ai-sync" onNext={handleNext} />,

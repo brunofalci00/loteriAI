@@ -81,7 +81,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
             />
             <h1 className="heading-hero text-glow">DESCUBRA SE VOCÊ PODE ACESSAR O SISTEMA DA MEGA DA VIRADA</h1>
             <p className="body-lead max-w-2xl">
-              Responda 12 perguntas rápidas para ver se você está qualificado para desbloquear o acesso ao Sistema.
+              Responda 11 perguntas rápidas para ver se você está qualificado para desbloquear o acesso ao Sistema.
             </p>
           </div>
         </section>

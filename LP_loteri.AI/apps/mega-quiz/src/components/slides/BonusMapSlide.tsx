@@ -6,9 +6,10 @@ import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 interface BonusMapSlideProps {
   onNext: () => void;
+  pointsUsed: number;
 }
 
-export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
+export const BonusMapSlide = ({ onNext, pointsUsed }: BonusMapSlideProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [coinStage, setCoinStage] = useState<"stack" | "travel" | "spent">("stack");
   const fanfareRef = useSoundEffect("/sounds/winning-unlock.mp3", { autoplay: false, volume: 0.3 });
@@ -42,7 +43,7 @@ export const BonusMapSlide = ({ onNext }: BonusMapSlideProps) => {
           <div className={`coin-flow ${coinStage !== "stack" ? "coin-flow--active" : ""}`}>
             <div className={`coin-stack ${coinStage !== "stack" ? "coin-stack--light" : ""}`}>
               <span className="coin-stack__label">Pontos</span>
-              <span className="coin-stack__value">120</span>
+              <span className="coin-stack__value">{pointsUsed}</span>
             </div>
             <div className="coin-path">
               {Array.from({ length: 4 }).map((_, index) => (
