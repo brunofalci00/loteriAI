@@ -19,6 +19,14 @@ const offerTestimonialImages = [
   "https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg",
 ];
 
+const officialPlatformImages = [
+  "https://i.ibb.co/fYvTSFYM/print-1-plataforma.jpg",
+  "https://i.ibb.co/hxb3L1ss/print-3-plataforma.jpg",
+  "https://i.ibb.co/bjbS09P9/print-2-plataforma.jpg",
+];
+
+const officialSealImage = "https://i.ibb.co/sJN07RmX/Gemini-Generated-Image-rgiaqrgiaqrgiaqr-removebg-preview.png";
+
 export const FinalOfferSlide = () => {
   const baseUrl = import.meta.env.BASE_URL ?? "/";
   const checkoutUrl =
@@ -145,6 +153,26 @@ export const FinalOfferSlide = () => {
                 <p className="font-semibold">{benefit.text}</p>
               </div>
             ))}
+          </div>
+        </Card>
+
+        <Card className="p-6 bg-primary/10 border border-primary/30 text-center space-y-3 glow-primary">
+          <h3 className="heading-3 text-glow">EMPRESA OFICIAL, QUEM COMPRA RECEBE NA HORA!</h3>
+          <p className="body-lead">Não caia em golpes.</p>
+        </Card>
+
+        <Card className="p-4 sm:p-6 bg-primary/5 border border-primary/20">
+          <div className="space-y-4">
+            {officialPlatformImages.map((src) => (
+              <img
+                key={src}
+                src={src}
+                alt="Plataforma oficial"
+                loading="lazy"
+                className="w-full rounded-2xl border border-border/60 shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
+              />
+            ))}
+            <img src={officialSealImage} alt="Selo" loading="lazy" className="mx-auto w-48 sm:w-56" />
           </div>
         </Card>
 
