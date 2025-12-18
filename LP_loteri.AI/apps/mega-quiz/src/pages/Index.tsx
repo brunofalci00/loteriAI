@@ -1,18 +1,32 @@
-import { useEffect, useState } from "react";
-import { CoinCounter } from "@/components/CoinCounter";
-import { ExitIntentOverlay } from "@/components/ExitIntentOverlay";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
 import { EntrySlide } from "@/components/slides/EntrySlide";
-import { QuizSlide } from "@/components/slides/QuizSlide";
-import { BonusUnlockLoadingSlide } from "@/components/slides/BonusUnlockLoadingSlide";
-import { BonusMapSlide } from "@/components/slides/BonusMapSlide";
-import { IntuitionGameSlide } from "@/components/slides/IntuitionGameSlide";
-import { UserResultSlide } from "@/components/slides/UserResultSlide";
-import { AISyncLoadingSlide } from "@/components/slides/AISyncLoadingSlide";
-import { AISimulationSlide } from "@/components/slides/AISimulationSlide";
-import { TestimonialsSlide } from "@/components/slides/TestimonialsSlide";
-import { AccessChanceSlide } from "@/components/slides/AccessChanceSlide";
-import { FinalOfferSlide } from "@/components/slides/FinalOfferSlide";
 import { useExitIntent } from "@/hooks/useExitIntent";
+
+const CoinCounter = lazy(() => import("@/components/CoinCounter").then((m) => ({ default: m.CoinCounter })));
+const ExitIntentOverlay = lazy(() => import("@/components/ExitIntentOverlay").then((m) => ({ default: m.ExitIntentOverlay })));
+
+const QuizSlide = lazy(() => import("@/components/slides/QuizSlide").then((m) => ({ default: m.QuizSlide })));
+const BonusUnlockLoadingSlide = lazy(() =>
+  import("@/components/slides/BonusUnlockLoadingSlide").then((m) => ({ default: m.BonusUnlockLoadingSlide })),
+);
+const BonusMapSlide = lazy(() => import("@/components/slides/BonusMapSlide").then((m) => ({ default: m.BonusMapSlide })));
+const IntuitionGameSlide = lazy(() => import("@/components/slides/IntuitionGameSlide").then((m) => ({ default: m.IntuitionGameSlide })));
+const UserResultSlide = lazy(() => import("@/components/slides/UserResultSlide").then((m) => ({ default: m.UserResultSlide })));
+const AISyncLoadingSlide = lazy(() => import("@/components/slides/AISyncLoadingSlide").then((m) => ({ default: m.AISyncLoadingSlide })));
+const AISimulationSlide = lazy(() => import("@/components/slides/AISimulationSlide").then((m) => ({ default: m.AISimulationSlide })));
+const TestimonialsSlide = lazy(() => import("@/components/slides/TestimonialsSlide").then((m) => ({ default: m.TestimonialsSlide })));
+const FinalOfferSlide = lazy(() => import("@/components/slides/FinalOfferSlide").then((m) => ({ default: m.FinalOfferSlide })));
+
+const SlideFallback = () => (
+  <div className="slide-shell relative">
+    <div className="casino-grid" />
+    <div className="slide-frame relative z-10">
+      <div className="rounded-3xl border border-border bg-card/80 p-6 text-center">
+        <p className="font-semibold text-foreground">Carregando…</p>
+      </div>
+    </div>
+  </div>
+);
 
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -24,19 +38,19 @@ const Index = () => {
   const [showExitOverlay, setShowExitOverlay] = useState(false);
   const { exitIntentTriggered, acknowledge } = useExitIntent(currentSlide > 0);
 
-  const handleCoinsEarned = (amount: number) => {
+  const handleCoinsEarned = useCallback((amount: number) => {
     setCoins((prev) => prev + amount);
     setCoinDelta(amount);
-  };
+  }, []);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     setCurrentSlide((prev) => prev + 1);
-  };
+  }, []);
 
-  const handleIntuitionComplete = (selection: number[]) => {
+  const handleIntuitionComplete = useCallback((selection: number[]) => {
     setSelectedNumbers(selection);
     setUserScore(1);
-  };
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -48,39 +62,40 @@ const Index = () => {
     }
   }, [exitIntentTriggered]);
 
-  const handleExitOverlayClose = () => {
+  const handleExitOverlayClose = useCallback(() => {
     setShowExitOverlay(false);
     acknowledge();
-  };
+  }, [acknowledge]);
 
   const FIRST_BONUS_UNLOCK_SLIDE_INDEX = 3;
 
-  const slides = [
-    <EntrySlide key="entry" onNext={handleNext} />,
-    <QuizSlide key="quiz" onNext={handleNext} onCoinsEarned={handleCoinsEarned} />,
-    <BonusUnlockLoadingSlide key="bonus-loading" onNext={handleNext} />,
-    <BonusMapSlide key="bonus-map" onNext={handleNext} pointsUsed={coins} />,
-    <IntuitionGameSlide key="intuition" onNext={handleNext} onComplete={handleIntuitionComplete} />,
-    <UserResultSlide key="user-result" onNext={handleNext} userScore={userScore} selectedNumbers={selectedNumbers} />,
-    <AISyncLoadingSlide key="ai-sync" onNext={handleNext} />,
-    <AISimulationSlide
-      key="ai-simulation"
-      onNext={handleNext}
-      userScore={userScore}
-      aiScore={aiScore}
-    />,
-    <AccessChanceSlide key="access-chance" onNext={handleNext} />,
-    <TestimonialsSlide key="testimonials" onNext={handleNext} />,
-    <FinalOfferSlide key="final-offer" />,
-  ];
+  const slides = useMemo(
+    () => [
+      <EntrySlide key="entry" onNext={handleNext} />,
+      <QuizSlide key="quiz" onNext={handleNext} onCoinsEarned={handleCoinsEarned} />,
+      <BonusUnlockLoadingSlide key="bonus-loading" onNext={handleNext} />,
+      <BonusMapSlide key="bonus-map" onNext={handleNext} pointsUsed={coins} />,
+      <IntuitionGameSlide key="intuition" onNext={handleNext} onComplete={handleIntuitionComplete} />,
+      <UserResultSlide key="user-result" onNext={handleNext} userScore={userScore} selectedNumbers={selectedNumbers} />,
+      <AISyncLoadingSlide key="ai-sync" onNext={handleNext} />,
+      <AISimulationSlide key="ai-simulation" onNext={handleNext} userScore={userScore} aiScore={aiScore} />,
+      <TestimonialsSlide key="testimonials" />,
+      <FinalOfferSlide key="final-offer" />,
+    ],
+    [aiScore, coins, handleCoinsEarned, handleIntuitionComplete, handleNext, selectedNumbers, userScore],
+  );
 
   const shouldShowCoinCounter = currentSlide > 0 && currentSlide <= FIRST_BONUS_UNLOCK_SLIDE_INDEX;
 
   return (
     <div className="relative overflow-x-hidden">
-      {shouldShowCoinCounter && <CoinCounter coins={coins} delta={coinDelta} />}
-      {slides[currentSlide]}
-      <ExitIntentOverlay open={showExitOverlay} onStay={handleExitOverlayClose} />
+      <Suspense fallback={null}>
+        {shouldShowCoinCounter && <CoinCounter coins={coins} delta={coinDelta} />}
+      </Suspense>
+      <Suspense fallback={<SlideFallback />}>{slides[currentSlide]}</Suspense>
+      <Suspense fallback={null}>
+        <ExitIntentOverlay open={showExitOverlay} onStay={handleExitOverlayClose} />
+      </Suspense>
     </div>
   );
 };

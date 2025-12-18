@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Lock, Volume2, VolumeX } from "lucide-react";
+import { trackPixelEvent } from "@/lib/analytics";
 
-interface TestimonialsSlideProps {
-  onNext: () => void;
-}
-
-export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
+export const TestimonialsSlide = () => {
   const baseUrl = import.meta.env.BASE_URL ?? "/";
+  const checkoutUrl =
+    (import.meta.env.VITE_CHECKOUT_URL as string | undefined) ?? "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [ctaUnlocked, setCtaUnlocked] = useState(false);
@@ -38,7 +37,8 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
 
   const handleContinue = () => {
     if (!ctaUnlocked) return;
-    onNext();
+    trackPixelEvent("CheckoutClick", { source: "TestimonialsSlide" });
+    window.location.assign(checkoutUrl);
   };
 
   return (
@@ -108,7 +108,7 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
                 : "bg-muted text-muted-foreground border border-border"
             }`}
           >
-            {ctaUnlocked ? "Continuar" : "Continuar (bloqueado)"}
+            {ctaUnlocked ? "Ir para o Checkout" : "Continue ao fim do vídeo"}
           </Button>
         </Card>
       </div>
@@ -122,7 +122,7 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
             ctaUnlocked ? "bg-primary hover:bg-primary-glow text-primary-foreground pulse-glow" : "bg-muted text-muted-foreground"
           }`}
         >
-          {ctaUnlocked ? "Continuar" : "Continue ao fim do vídeo"}
+          {ctaUnlocked ? "Ir para o Checkout" : "Continue ao fim do vídeo"}
         </Button>
       </div>
     </div>

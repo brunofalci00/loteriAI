@@ -69,11 +69,24 @@
         n.loaded = !0;
         n.version = "2.0";
         n.queue = [];
-        t = b.createElement(e);
-        t.async = !0;
-        t.src = v;
-        s = b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t, s);
+
+        const loadPixel = function () {
+          if (loadPixel.loaded) return;
+          loadPixel.loaded = true;
+          t = b.createElement(e);
+          t.async = !0;
+          t.src = v;
+          s = b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t, s);
+        };
+
+        if ("requestIdleCallback" in window) {
+          window.requestIdleCallback(loadPixel, { timeout: 2000 });
+        } else {
+          window.addEventListener("load", function () {
+            setTimeout(loadPixel, 1);
+          }, { once: true });
+        }
       })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
       window.fbq("init", "369969430611939");
       window.fbq("track", "PageView");

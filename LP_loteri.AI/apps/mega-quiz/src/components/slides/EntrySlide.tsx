@@ -15,21 +15,41 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
   const introSoundRef = useRef<HTMLAudioElement | null>(null);
   const clickSoundRef = useRef<HTMLAudioElement | null>(null);
 
-  useEffect(() => {
-    introSoundRef.current = new Audio("/sounds/intro-chime.mp3");
-    introSoundRef.current.volume = 0.08;
-    slotSoundRef.current = new Audio("/sounds/slot-loop.mp3");
-    slotSoundRef.current.loop = true;
-    slotSoundRef.current.volume = 0.05;
-    clickSoundRef.current = new Audio("/sounds/game-start.mp3");
+  const ensureHoverSound = () => {
+    if (!slotSoundRef.current) {
+      const sound = new Audio("/sounds/slot-loop.mp3");
+      sound.loop = true;
+      sound.volume = 0.05;
+      slotSoundRef.current = sound;
+    }
+    return slotSoundRef.current;
+  };
 
-    return () => {
+  const ensureIntroSound = () => {
+    if (!introSoundRef.current) {
+      const sound = new Audio("/sounds/intro-chime.mp3");
+      sound.volume = 0.08;
+      introSoundRef.current = sound;
+    }
+    return introSoundRef.current;
+  };
+
+  const ensureClickSound = () => {
+    if (!clickSoundRef.current) {
+      clickSoundRef.current = new Audio("/sounds/game-start.mp3");
+    }
+    return clickSoundRef.current;
+  };
+
+  useEffect(
+    () => () => {
       slotSoundRef.current?.pause();
       slotSoundRef.current = null;
       introSoundRef.current = null;
       clickSoundRef.current = null;
-    };
-  }, []);
+    },
+    [],
+  );
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -40,18 +60,19 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
   }, []);
 
   const handleHover = (isHovering: boolean) => {
-    if (!slotSoundRef.current) return;
+    if (typeof window !== "undefined" && window.matchMedia && !window.matchMedia("(hover: hover)").matches) return;
+    const sound = ensureHoverSound();
     if (isHovering) {
-      slotSoundRef.current.currentTime = 0;
-      slotSoundRef.current.play().catch(() => undefined);
+      sound.currentTime = 0;
+      sound.play().catch(() => undefined);
     } else {
-      slotSoundRef.current.pause();
+      sound.pause();
     }
   };
 
   const handleStart = () => {
-    introSoundRef.current?.play().catch(() => undefined);
-    clickSoundRef.current?.play().catch(() => undefined);
+    ensureIntroSound()?.play().catch(() => undefined);
+    ensureClickSound()?.play().catch(() => undefined);
     slotSoundRef.current?.pause();
     trackPixelEvent("QuizEntryStart");
     onNext();
