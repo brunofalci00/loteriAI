@@ -160,7 +160,7 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
 
   const animateCoinJourney = (sourceButton: HTMLButtonElement) => {
     if (typeof document === "undefined") return;
-    const target = document.querySelector(".coin-status-card") as HTMLElement | null;
+    const target = document.querySelector("[data-coin-target]") as HTMLElement | null;
     if (!target) return;
 
     const sourceRect = sourceButton.getBoundingClientRect();
@@ -253,28 +253,25 @@ export const QuizSlide = ({ onNext, onCoinsEarned }: QuizSlideProps) => {
             </p>
             <h2 className="heading-2 flex items-center gap-2 justify-center sm:justify-start">Responda com calma</h2>
           </div>
-          <div className="text-center sm:text-right">
-            <p className="text-sm text-muted-foreground">Pontos</p>
-            <div className={`medal-badge ${medalUnlocked ? "medal-badge--active" : ""}`}>
-              {medalUnlocked ? "Liberado" : `${coinsCollected}/${TOTAL_COINS}`}
+          <div className="text-center sm:text-right space-y-1">
+            <div className="flex items-center justify-center sm:justify-end gap-2">
+              <span className="text-xs text-muted-foreground font-semibold">Pontos</span>
+              <span
+                data-coin-target
+                className={`px-2 py-0.5 rounded-full text-xs font-extrabold border ${
+                  medalUnlocked ? "bg-primary text-primary-foreground border-primary glow-primary" : "bg-secondary text-foreground border-border"
+                }`}
+              >
+                {medalUnlocked ? "Liberado" : `${coinsCollected}/${TOTAL_COINS}`}
+              </span>
+              {recentGain && <span className="text-xs font-bold text-primary">+{recentGain}</span>}
             </div>
+            <p className="text-[11px] text-muted-foreground">O mapa libera automaticamente ao completar.</p>
           </div>
         </div>
 
-        <div className="coin-status-card">
-          <div>
-            <p className="coin-status-card__label">Total acumulado</p>
-            <div className="coin-status-card__value">
-              <span>{coinsCollected}</span>
-              <span className="text-muted-foreground">/ {TOTAL_COINS}</span>
-            </div>
-          </div>
-          {recentGain && <span className="coin-status-card__delta">+{recentGain} agora</span>}
-          <p className="coin-status-card__hint">Esses pontos liberam o Mapa dos Números Quentes.</p>
-        </div>
-
-        <div className="bg-secondary rounded-full h-3 overflow-hidden progress-sheen">
-          <div className="bg-primary h-3 progress-fill" style={{ width: `${progressPercentage}%` }} />
+        <div className="bg-secondary rounded-full h-2 overflow-hidden progress-sheen">
+          <div className="bg-primary h-2 progress-fill" style={{ width: `${progressPercentage}%` }} />
         </div>
 
         {current.type === "info" ? (

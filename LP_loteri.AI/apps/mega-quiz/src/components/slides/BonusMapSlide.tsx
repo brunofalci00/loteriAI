@@ -10,6 +10,7 @@ interface BonusMapSlideProps {
 }
 
 export const BonusMapSlide = ({ onNext, pointsUsed }: BonusMapSlideProps) => {
+  const baseUrl = import.meta.env.BASE_URL ?? "/";
   const [showConfetti, setShowConfetti] = useState(false);
   const [coinStage, setCoinStage] = useState<"stack" | "travel" | "spent">("stack");
   const fanfareRef = useSoundEffect("/sounds/winning-unlock.mp3", { autoplay: false, volume: 0.3 });
@@ -62,10 +63,13 @@ export const BonusMapSlide = ({ onNext, pointsUsed }: BonusMapSlideProps) => {
         <Card className="p-5 sm:p-6 space-y-5 border border-primary glow-primary-strong animate-scale-in">
           <div className="relative rounded-xl overflow-hidden border border-primary/30 bg-background">
             <img
-              src="https://i.ibb.co/JWTvC1bs/Chat-GPT-Image-13-de-nov-de-2025-18-20-05.png"
+              src={`${baseUrl}img/bonus-map.jpg`}
+              width={900}
+              height={600}
               alt="Mapa dos números quentes"
               className="w-full h-full object-cover"
               loading="lazy"
+              decoding="async"
             />
           </div>
 

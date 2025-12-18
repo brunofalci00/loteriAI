@@ -4,6 +4,13 @@ import { Card } from "@/components/ui/card";
 import { Clock, MessageCircle, Volume2, VolumeX } from "lucide-react";
 import { trackPixelEvent } from "@/lib/analytics";
 
+type SlideImage = {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+};
+
 const benefits = [
   { icon: "✅", text: "Jogos prontos com IA todos os dias" },
   { icon: "✅", text: "Até 3 combinações inteligentes por dia" },
@@ -13,19 +20,20 @@ const benefits = [
   { icon: "✅", text: "Garantia total de 7 dias: testou, não gostou, cancela" },
 ];
 
-const offerTestimonialImages = [
-  "https://i.ibb.co/rfQNMBX2/Whats-App-Image-2025-10-27-at-16-32-16.jpg",
-  "https://i.ibb.co/TD85XLkM/Whats-App-Image-2025-10-27-at-16-36-22.jpg",
-  "https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg",
+const offerTestimonialImages: SlideImage[] = [
+  { src: "img/offer/t-1.jpg", width: 720, height: 1257, alt: "Depoimento" },
+  { src: "img/offer/t-2.jpg", width: 720, height: 1262, alt: "Depoimento" },
+  { src: "img/offer/t-3.jpg", width: 720, height: 1129, alt: "Depoimento" },
 ];
 
-const officialPlatformImages = [
-  "https://i.ibb.co/fYvTSFYM/print-1-plataforma.jpg",
-  "https://i.ibb.co/hxb3L1ss/print-3-plataforma.jpg",
-  "https://i.ibb.co/bjbS09P9/print-2-plataforma.jpg",
+const officialPlatformImages: SlideImage[] = [
+  { src: "img/offer/p-1.jpg", width: 720, height: 989, alt: "Plataforma oficial" },
+  { src: "img/offer/p-2.jpg", width: 720, height: 1146, alt: "Plataforma oficial" },
+  { src: "img/offer/p-3.jpg", width: 720, height: 982, alt: "Plataforma oficial" },
 ];
 
-const officialSealImage = "https://i.ibb.co/sJN07RmX/Gemini-Generated-Image-rgiaqrgiaqrgiaqr-removebg-preview.png";
+const officialSealImage: SlideImage = { src: "img/offer/seal.png", width: 320, height: 320, alt: "Selo" };
+const secureBadgeImage: SlideImage = { src: "img/offer/secure.png", width: 384, height: 480, alt: "Compra segura" };
 
 export const FinalOfferSlide = () => {
   const baseUrl = import.meta.env.BASE_URL ?? "/";
@@ -121,7 +129,7 @@ export const FinalOfferSlide = () => {
             loop
             playsInline
             className="w-full h-full object-cover"
-            poster="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg"
+            poster={`${baseUrl}img/offer/t-3.jpg`}
           />
           <Button size="icon" variant="secondary" onClick={toggleAudio} className="sound-pill">
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
@@ -134,15 +142,15 @@ export const FinalOfferSlide = () => {
 
         <Card className="p-4 sm:p-6 bg-primary/5 border border-primary/20">
           <div className="space-y-4">
-            {offerTestimonialImages.map((src) => (
+            {offerTestimonialImages.map((image) => (
               <img
-                key={src}
-                src={src}
-                alt="Depoimento"
+                key={image.src}
+                src={`${baseUrl}${image.src}`}
+                alt={image.alt}
                 loading="lazy"
                 decoding="async"
-                width={1080}
-                height={1920}
+                width={image.width}
+                height={image.height}
                 className="w-full h-auto rounded-2xl border border-border/60 shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
               />
             ))}
@@ -171,25 +179,25 @@ export const FinalOfferSlide = () => {
 
         <Card className="p-4 sm:p-6 bg-primary/5 border border-primary/20">
           <div className="space-y-4">
-            {officialPlatformImages.map((src) => (
+            {officialPlatformImages.map((image) => (
               <img
-                key={src}
-                src={src}
-                alt="Plataforma oficial"
+                key={image.src}
+                src={`${baseUrl}${image.src}`}
+                alt={image.alt}
                 loading="lazy"
                 decoding="async"
-                width={1080}
-                height={1920}
+                width={image.width}
+                height={image.height}
                 className="w-full h-auto rounded-2xl border border-border/60 shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
               />
             ))}
             <img
-              src={officialSealImage}
-              alt="Selo"
+              src={`${baseUrl}${officialSealImage.src}`}
+              alt={officialSealImage.alt}
               loading="lazy"
               decoding="async"
-              width={640}
-              height={640}
+              width={officialSealImage.width}
+              height={officialSealImage.height}
               className="mx-auto w-48 sm:w-56 h-auto"
             />
           </div>
@@ -236,7 +244,15 @@ export const FinalOfferSlide = () => {
         </Button>
 
         <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground text-center">
-          <img src="https://i.ibb.co/gMtnsTjW/Posts-HQ.png" alt="Compra segura" className="w-40 sm:w-52 mx-auto" />
+          <img
+            src={`${baseUrl}${secureBadgeImage.src}`}
+            alt={secureBadgeImage.alt}
+            loading="lazy"
+            decoding="async"
+            width={secureBadgeImage.width}
+            height={secureBadgeImage.height}
+            className="w-40 sm:w-52 h-auto mx-auto"
+          />
           <p>✅ Restam 5 acessos para liberar.</p>
           <p>Se você sair da tela ou não concluir o pagamento, não existe outra chance: a vaga vai para o próximo visitante.</p>
         </div>

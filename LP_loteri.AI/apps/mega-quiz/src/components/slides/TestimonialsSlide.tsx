@@ -9,14 +9,49 @@ export const TestimonialsSlide = () => {
   const checkoutUrl =
     (import.meta.env.VITE_CHECKOUT_URL as string | undefined) ?? "https://go.perfectpay.com.br/PPU38CQ4TG2";
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const lastTimeRef = useRef(0);
+  const lastAdvanceAtRef = useRef<number | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [ctaUnlocked, setCtaUnlocked] = useState(false);
   const [progress, setProgress] = useState(0);
   const [secondsRemaining, setSecondsRemaining] = useState<number | null>(null);
+  const [safetyUnlocked, setSafetyUnlocked] = useState(false);
 
   useEffect(() => {
     videoRef.current?.play().catch(() => undefined);
   }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      const video = videoRef.current;
+      if (!video || ctaUnlocked) return;
+      if (video.paused) return;
+      if (video.readyState < 2) return;
+      if (video.currentTime <= 0.25) return;
+
+      const now = Date.now();
+      const lastAdvanceAt = lastAdvanceAtRef.current;
+      if (lastAdvanceAt === null) {
+        lastAdvanceAtRef.current = now;
+        lastTimeRef.current = video.currentTime;
+        return;
+      }
+
+      const stuck = Math.abs(video.currentTime - lastTimeRef.current) < 0.01;
+      if (!stuck) {
+        lastTimeRef.current = video.currentTime;
+        lastAdvanceAtRef.current = now;
+        return;
+      }
+
+      if (now - lastAdvanceAt > 12000) {
+        setSafetyUnlocked(true);
+        setCtaUnlocked(true);
+      }
+    }, 2000);
+
+    return () => window.clearInterval(timer);
+  }, [ctaUnlocked]);
 
   const toggleAudio = () => {
     if (!videoRef.current) return;
@@ -42,6 +77,14 @@ export const TestimonialsSlide = () => {
     if (!ctaUnlocked && remaining <= 30) {
       setCtaUnlocked(true);
     }
+
+    lastTimeRef.current = currentTime;
+    lastAdvanceAtRef.current = Date.now();
+  };
+
+  const handleVideoError = () => {
+    setSafetyUnlocked(true);
+    setCtaUnlocked(true);
   };
 
   const handleContinue = () => {
@@ -80,7 +123,8 @@ export const TestimonialsSlide = () => {
             preload="metadata"
             onEnded={handleEnded}
             onTimeUpdate={handleTimeUpdate}
-            poster="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg"
+            onError={handleVideoError}
+            poster={`${baseUrl}img/offer/t-3.jpg`}
           />
           <div className="absolute inset-x-0 bottom-0 p-3 flex items-center justify-between gap-3 bg-background/70 backdrop-blur-sm border-t border-border/60">
             <p className="text-xs sm:text-sm text-muted-foreground font-semibold text-left">
@@ -100,7 +144,9 @@ export const TestimonialsSlide = () => {
               </p>
               <p className="text-sm sm:text-base text-muted-foreground font-semibold">
                 {ctaUnlocked
-                  ? "Clique para liberar o acesso."
+                  ? safetyUnlocked
+                    ? "Se o vídeo travou, liberamos o botão."
+                    : "Clique para liberar o acesso."
                   : secondsRemaining === null
                     ? "Aguarde… carregando o vídeo."
                     : secondsRemaining > 30
