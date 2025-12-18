@@ -12,6 +12,7 @@ export const TestimonialsSlide = () => {
   const [isMuted, setIsMuted] = useState(true);
   const [ctaUnlocked, setCtaUnlocked] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [secondsRemaining, setSecondsRemaining] = useState<number | null>(null);
 
   useEffect(() => {
     videoRef.current?.play().catch(() => undefined);
@@ -32,7 +33,15 @@ export const TestimonialsSlide = () => {
     if (!videoRef.current) return;
     const duration = videoRef.current.duration;
     if (!Number.isFinite(duration) || duration <= 0) return;
-    setProgress(Math.min(1, Math.max(0, videoRef.current.currentTime / duration)));
+    const currentTime = videoRef.current.currentTime;
+    setProgress(Math.min(1, Math.max(0, currentTime / duration)));
+
+    const remaining = Math.max(0, duration - currentTime);
+    setSecondsRemaining(Math.ceil(remaining));
+
+    if (!ctaUnlocked && remaining <= 30) {
+      setCtaUnlocked(true);
+    }
   };
 
   const handleContinue = () => {
@@ -90,7 +99,13 @@ export const TestimonialsSlide = () => {
                 {ctaUnlocked ? "Acesso liberado" : "Quase lá…"}
               </p>
               <p className="text-sm sm:text-base text-muted-foreground font-semibold">
-                {ctaUnlocked ? "Clique para continuar." : "O botão libera quando o vídeo terminar."}
+                {ctaUnlocked
+                  ? "Clique para liberar o acesso."
+                  : secondsRemaining === null
+                    ? "Aguarde… carregando o vídeo."
+                    : secondsRemaining > 30
+                      ? `O botão libera nos últimos 30s (faltam ${secondsRemaining}s).`
+                      : "Liberado. Clique agora."}
               </p>
             </div>
             {!ctaUnlocked && <Lock className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-1" aria-hidden="true" />}
@@ -104,11 +119,11 @@ export const TestimonialsSlide = () => {
             disabled={!ctaUnlocked}
             className={`w-full text-lg sm:text-xl py-6 font-extrabold ${
               ctaUnlocked
-                ? "bg-primary hover:bg-primary-glow text-primary-foreground pulse-glow"
+                ? "bg-primary hover:bg-primary-glow text-primary-foreground pulse-glow animate-pulse"
                 : "bg-muted text-muted-foreground border border-border"
             }`}
           >
-            {ctaUnlocked ? "Ir para o Checkout" : "Continue ao fim do vídeo"}
+            {ctaUnlocked ? "LIBERAR ACESSO" : "Continue ao fim do vídeo"}
           </Button>
         </Card>
       </div>
@@ -119,10 +134,10 @@ export const TestimonialsSlide = () => {
           size="lg"
           disabled={!ctaUnlocked}
           className={`w-full text-lg py-6 font-extrabold ${
-            ctaUnlocked ? "bg-primary hover:bg-primary-glow text-primary-foreground pulse-glow" : "bg-muted text-muted-foreground"
+            ctaUnlocked ? "bg-primary hover:bg-primary-glow text-primary-foreground pulse-glow animate-pulse" : "bg-muted text-muted-foreground"
           }`}
         >
-          {ctaUnlocked ? "Ir para o Checkout" : "Continue ao fim do vídeo"}
+          {ctaUnlocked ? "LIBERAR ACESSO" : "Continue ao fim do vídeo"}
         </Button>
       </div>
     </div>
