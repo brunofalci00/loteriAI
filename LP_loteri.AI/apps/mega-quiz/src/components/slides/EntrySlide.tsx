@@ -69,7 +69,7 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
         <section className="bg-card/80 border border-primary/30 rounded-3xl p-5 sm:p-8 space-y-4 landing-hero">
           <div className="space-y-3 text-left sm:text-center">
             <img
-              src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png"
+              src="https://i.ibb.co/27pMkVsx/Chat-GPT-Image-17-de-dez-de-2025-20-06-27.png"
               alt="LOTER.IA"
               className="mx-auto w-24 sm:w-28 drop-shadow-[0_0_20px_rgba(255,215,0,0.35)]"
             />

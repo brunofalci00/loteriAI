@@ -77,7 +77,7 @@ export const FinalOfferSlide = () => {
       <div className="slide-frame space-y-8 relative z-10">
         <div className="text-center space-y-3">
           <img
-            src="https://i.ibb.co/Dfy1rwfr/Logo-Lumen-2.png"
+            src="https://i.ibb.co/27pMkVsx/Chat-GPT-Image-17-de-dez-de-2025-20-06-27.png"
             alt="LOTER.IA"
             className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(255,215,0,0.35)] pulse-glow"
           />
