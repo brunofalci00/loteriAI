@@ -86,7 +86,7 @@
       }
 
       // Buscar IP do servidor
-      const response = await fetch(IP_ENDPOINT_URL);
+      const response = await fetch(IP_ENDPOINT_URL, { keepalive: true });
       if (response.ok) {
         const data = await response.json();
         const clientIp = data.ip;
@@ -243,6 +243,7 @@
 
       const response = await fetch(EDGE_FUNCTION_URL, {
         method: 'POST',
+        keepalive: true,
         headers: {
           'Content-Type': 'application/json',
         },

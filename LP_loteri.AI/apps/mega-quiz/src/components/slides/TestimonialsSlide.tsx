@@ -90,7 +90,9 @@ export const TestimonialsSlide = () => {
   const handleContinue = () => {
     if (!ctaUnlocked) return;
     trackPixelEvent("CheckoutClick", { source: "TestimonialsSlide" });
-    window.location.assign(checkoutUrl);
+    window.setTimeout(() => {
+      window.location.assign(checkoutUrl);
+    }, 250);
   };
 
   return (
