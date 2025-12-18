@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Local-only assets
-assets/video/ProLotto.mp4
+assets/video/*.mp4
