@@ -140,7 +140,10 @@ export const FinalOfferSlide = () => {
                 src={src}
                 alt="Depoimento"
                 loading="lazy"
-                className="w-full rounded-2xl border border-border/60 shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
+                decoding="async"
+                width={1080}
+                height={1920}
+                className="w-full h-auto rounded-2xl border border-border/60 shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
               />
             ))}
           </div>
@@ -174,10 +177,21 @@ export const FinalOfferSlide = () => {
                 src={src}
                 alt="Plataforma oficial"
                 loading="lazy"
-                className="w-full rounded-2xl border border-border/60 shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
+                decoding="async"
+                width={1080}
+                height={1920}
+                className="w-full h-auto rounded-2xl border border-border/60 shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
               />
             ))}
-            <img src={officialSealImage} alt="Selo" loading="lazy" className="mx-auto w-48 sm:w-56" />
+            <img
+              src={officialSealImage}
+              alt="Selo"
+              loading="lazy"
+              decoding="async"
+              width={640}
+              height={640}
+              className="mx-auto w-48 sm:w-56 h-auto"
+            />
           </div>
         </Card>
 
