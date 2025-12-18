@@ -147,10 +147,10 @@ export const TestimonialsSlide = () => {
                   ? safetyUnlocked
                     ? "Se o vídeo travou, liberamos o botão."
                     : "Clique para liberar o acesso."
-                  : secondsRemaining === null
-                    ? "Aguarde… carregando o vídeo."
+                    : secondsRemaining === null
+                      ? "Aguarde… carregando o vídeo."
                     : secondsRemaining > 30
-                      ? "Continue assistindo para liberar o botão."
+                      ? "Assista o vídeo até o final."
                       : "Liberado. Clique agora."}
               </p>
             </div>
