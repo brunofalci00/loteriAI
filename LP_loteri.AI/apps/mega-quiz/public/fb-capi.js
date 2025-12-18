@@ -2,26 +2,28 @@
  * Facebook Conversions API (CAPI) Helper
  * Para Landing Page Estática
  *
- * Este script envia eventos server-side para Facebook via Edge Function do Supabase
+ * Este script envia eventos via Signals Gateway (Meta)
  */
 
 (function() {
   'use strict';
 
   const DEBUG = new URLSearchParams(window.location.search).has('fb_debug');
-  const log = (...args) => {
+  const debugLog = (...args) => {
     if (DEBUG) console.log(...args);
   };
-  const warn = (...args) => {
+  const debugWarn = (...args) => {
     if (DEBUG) console.warn(...args);
   };
-  const error = (...args) => {
+  const debugError = (...args) => {
     if (DEBUG) console.error(...args);
   };
 
   // Configuração
-  const EDGE_FUNCTION_URL = 'https://aaqthgqsuhyagsrlnyqk.supabase.co/functions/v1/facebook-capi';
-  const IP_ENDPOINT_URL = 'https://aaqthgqsuhyagsrlnyqk.supabase.co/functions/v1/get-client-ip';
+  const SIGNALS_GATEWAY_URL = 'https://rzagub.fqdigital.com.br';
+  const FACEBOOK_API_VERSION = 'v18.0';
+  const FACEBOOK_PIXEL_ID = '369969430611939';
+  const EVENTS_URL = `${SIGNALS_GATEWAY_URL}/${FACEBOOK_API_VERSION}/${FACEBOOK_PIXEL_ID}/events`;
 
   /**
    * Definir cookie com expiry
@@ -64,7 +66,7 @@
       const fbc = `fb.1.${timestamp}.${fbclid}`;
       // Cookie _fbc expira em 90 dias (padrão Meta)
       setCookie('_fbc', fbc, 90);
-      log('[FB-CAPI] Cookie _fbc criado:', fbc);
+      debugLog('[FB-CAPI] Cookie _fbc criado:', fbc);
       return fbc;
     }
 
@@ -77,11 +79,12 @@
    * Seguindo recomendação Meta: tentar IPv6 primeiro, fallback para IPv4
    */
   async function fetchAndStoreClientIp() {
+    return null;
     try {
       // Verificar se já temos IP armazenado (válido por 24h)
       const existingIp = getCookie('_fbi');
       if (existingIp) {
-        log('[FB-CAPI] IP já armazenado em _fbi:', existingIp);
+        debugLog('[FB-CAPI] IP já armazenado em _fbi:', existingIp);
         return existingIp;
       }
 
@@ -94,12 +97,12 @@
         if (clientIp) {
           // Armazenar IP em cookie _fbi por 24 horas
           setCookie('_fbi', clientIp, 1);
-          log('[FB-CAPI] IP armazenado em _fbi:', clientIp, '(IPv6:', data.isIPv6 + ')');
+          debugLog('[FB-CAPI] IP armazenado em _fbi:', clientIp, '(IPv6:', data.isIPv6 + ')');
           return clientIp;
         }
       }
     } catch (error) {
-      error('[FB-CAPI] Erro ao buscar IP do cliente:', error);
+      debugError('[FB-CAPI] Erro ao buscar IP do cliente:', error);
     }
     return null;
   }
@@ -118,7 +121,7 @@
         // Se _fbp existe, Pixel inicializou
         if (fbp) {
           clearInterval(checkInterval);
-          log('[FB-CAPI] Pixel inicializado, _fbp detectado:', fbp);
+          debugLog('[FB-CAPI] Pixel inicializado, _fbp detectado:', fbp);
           resolve(fbp);
           return;
         }
@@ -126,7 +129,7 @@
         // Timeout: continuar sem _fbp após 2 segundos
         if (Date.now() - startTime > maxWaitMs) {
           clearInterval(checkInterval);
-          warn('[FB-CAPI] Timeout aguardando _fbp, continuando sem cookie');
+          debugWarn('[FB-CAPI] Timeout aguardando _fbp, continuando sem cookie');
           resolve(null);
         }
       }, 100); // Verificar a cada 100ms
@@ -145,7 +148,7 @@
       fbp = `fb.1.${ts}.${rand}`;
       // Persistir por 90 dias para consistência com Pixel
       setCookie('_fbp', fbp, 90);
-      log('[FB-CAPI] _fbp gerado (fallback):', fbp);
+      debugLog('[FB-CAPI] _fbp gerado (fallback):', fbp);
     }
     return fbp;
   }
@@ -175,7 +178,7 @@
 
       // Armazenar por 24 horas
       setCookie('_external_id', externalId, 1);
-      log('[FB-CAPI] external_id criado:', externalId);
+      debugLog('[FB-CAPI] external_id criado:', externalId);
     }
 
     return externalId;
@@ -209,7 +212,7 @@
   async function sendFacebookEvent(eventName, userData, customData) {
     try {
       // Garantir melhor cobertura de fbp: se ainda não existir, aguardar Pixel
-      let { fbc, fbp, fbi } = getFacebookCookies();
+      let { fbc, fbp } = getFacebookCookies();
       if (!fbp) {
         // Pixel opcional: não bloquear eventos esperando _fbp
         // Re-ler cookies após aguardar
@@ -227,44 +230,44 @@
 
       const payload = {
         event_name: eventName,
+        event_time: Math.floor(Date.now() / 1000),
         user_data: {
           ...userData,
           fbc: fbc || undefined,
           fbp: fbp || undefined,
-          fbi: fbi || undefined,
+          client_user_agent: navigator.userAgent,
           external_id: userData.external_id || externalId, // Sempre incluir external_id
         },
         custom_data: customData,
         event_source_url: window.location.href,
+        action_source: 'website',
         event_id: eventId,
       };
 
-      log('[FB-CAPI] Enviando evento:', eventName, payload);
+      debugLog('[FB-CAPI] Enviando evento:', eventName, payload);
 
-      const response = await fetch(EDGE_FUNCTION_URL, {
+      const response = await fetch(EVENTS_URL, {
         method: 'POST',
         keepalive: true,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ data: [payload] }),
       });
 
       if (response.ok) {
         const result = await response.json();
-        log('[FB-CAPI] Evento enviado com sucesso:', result);
+        debugLog('[FB-CAPI] Evento enviado com sucesso:', result);
 
         // IMPORTANTE: Também disparar pixel browser-side com MESMO event_id
         // para que Facebook faça deduplicação correta
-        if (typeof fbq === 'function') {
-          fbq('track', eventName, customData, { eventID: eventId });
-        }
+        // Pixel browser-side desativado (CAPI via Signals Gateway)
       } else {
         const error = await response.text();
-        error('[FB-CAPI] Erro ao enviar evento:', error);
+        debugError('[FB-CAPI] Erro ao enviar evento:', error);
       }
     } catch (error) {
-      error('[FB-CAPI] Erro na requisição:', error);
+      debugError('[FB-CAPI] Erro na requisição:', error);
       // Não bloquear a página se CAPI falhar
     }
   }
@@ -423,7 +426,7 @@
     ensureFbp();
 
     // 3. Buscar e armazenar IP do cliente (IPv6 prioritário) em _fbi
-    fetchAndStoreClientIp();
+    // fetchAndStoreClientIp();
 
     // 4. Gerar/obter external_id para melhor match
     getOrCreateExternalId();
@@ -443,7 +446,7 @@
       }
     }
 
-    log('[FB-CAPI] Helper carregado e inicializado');
-    log('[FB-CAPI] Cookies Facebook:', getFacebookCookies());
+    debugLog('[FB-CAPI] Helper carregado e inicializado');
+    debugLog('[FB-CAPI] Cookies Facebook:', getFacebookCookies());
   })();
 })();

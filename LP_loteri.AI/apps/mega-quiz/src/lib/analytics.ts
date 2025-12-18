@@ -2,7 +2,6 @@ declare global {
   type FacebookCapiHandler = (options?: Record<string, unknown>) => void;
 
   interface Window {
-    fbq?: (...args: unknown[]) => void;
     fbCAPI_trackViewContent?: FacebookCapiHandler;
     fbCAPI_trackPageView?: FacebookCapiHandler;
     fbCAPI_trackLead?: FacebookCapiHandler;
@@ -10,45 +9,11 @@ declare global {
     fbCAPI_trackAddToCart?: FacebookCapiHandler;
     // InitiateCheckout é enviado pela PerfectPay.
     fbCAPI_trackPurchase?: FacebookCapiHandler;
-    __loteriaFbqQueue?: Array<{ event: string; payload?: Record<string, unknown> }>;
-    __loteriaFbqFlushScheduled?: boolean;
   }
 }
 
-const flushFbqQueue = () => {
-  if (typeof window === "undefined") return;
-  if (typeof window.fbq !== "function") return;
-  const queue = window.__loteriaFbqQueue;
-  if (!queue || queue.length === 0) return;
-
-  const pending = queue.splice(0, queue.length);
-  for (const item of pending) {
-    window.fbq("trackCustom", item.event, item.payload);
-  }
-};
-
-const scheduleFbqFlush = () => {
-  if (typeof window === "undefined") return;
-  if (window.__loteriaFbqFlushScheduled) return;
-  window.__loteriaFbqFlushScheduled = true;
-  window.setTimeout(() => {
-    window.__loteriaFbqFlushScheduled = false;
-    flushFbqQueue();
-  }, 250);
-};
-
 export const trackPixelEvent = (event: string, payload?: Record<string, unknown>) => {
   const isBrowser = typeof window !== "undefined";
-  if (isBrowser) {
-    if (typeof window.fbq === "function") {
-      window.fbq("trackCustom", event, payload);
-    } else {
-      window.__loteriaFbqQueue = window.__loteriaFbqQueue ?? [];
-      window.__loteriaFbqQueue.push({ event, payload });
-      scheduleFbqFlush();
-    }
-  }
-
   if (!isBrowser) return;
 
   const capiEventMap: Record<
