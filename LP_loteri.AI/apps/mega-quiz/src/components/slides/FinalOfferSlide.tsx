@@ -177,10 +177,10 @@ export const FinalOfferSlide = () => {
         </Card>
 
         <Card className="p-6 bg-gradient-to-br from-black/40 via-secondary/80 to-gold/20 border border-primary text-center glow-primary-strong space-y-3">
-          <p className="text-2xl font-bold text-foreground">🔥 R$87,00 vitalício</p>
+          <p className="text-2xl font-bold text-foreground">🔥 R$147,00 vitalício</p>
           <div>
             <p className="text-lg text-muted-foreground line-through">Valor cheio: R$297</p>
-            <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">R$87,00</p>
+            <p className="text-6xl md:text-7xl font-bold text-primary text-glow my-4">R$147,00</p>
             <p className="text-base text-foreground font-semibold">Pagamento único (acesso vitalício)</p>
           </div>
           <p className="text-lg text-foreground font-semibold">
