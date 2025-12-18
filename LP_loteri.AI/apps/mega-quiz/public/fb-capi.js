@@ -211,7 +211,7 @@
       // Garantir melhor cobertura de fbp: se ainda não existir, aguardar Pixel
       let { fbc, fbp, fbi } = getFacebookCookies();
       if (!fbp) {
-        await waitForPixelInit(4000);
+        // Pixel opcional: não bloquear eventos esperando _fbp
         // Re-ler cookies após aguardar
         let cookies = getFacebookCookies();
         fbc = cookies.fbc;
@@ -293,6 +293,25 @@
    * Track Lead
    * Usar quando: Usuário inicia quiz ou fornece informações
    */
+  /**
+   * Track PageView
+   * Usar quando: usuario entra na pagina (LPV/connect rate)
+   */
+  window.fbCAPI_trackPageView = function(options = {}) {
+    const utm = getUTMParams();
+
+    sendFacebookEvent('PageView', {
+      em: options.email || undefined,
+      external_id: options.userId || undefined,
+    }, {
+      utm_source: utm.utm_source,
+      utm_campaign: utm.utm_campaign,
+      utm_medium: utm.utm_medium,
+      utm_content: utm.utm_content,
+      utm_term: utm.utm_term,
+    });
+  };
+
   window.fbCAPI_trackLead = function(options = {}) {
     const utm = getUTMParams();
 
@@ -394,16 +413,34 @@
    */
   (async function init() {
     // 1. Aguardar Pixel da Meta inicializar e criar _fbp
-    await waitForPixelInit();
+    // Pixel opcional: nao bloquear init aguardando _fbp
 
     // 2. Processar fbclid da URL e criar/atualizar _fbc
     processFbclid();
+
+    // Garantir cookie _fbp mesmo sem Pixel
+    ensureFbp();
 
     // 3. Buscar e armazenar IP do cliente (IPv6 prioritário) em _fbi
     fetchAndStoreClientIp();
 
     // 4. Gerar/obter external_id para melhor match
     getOrCreateExternalId();
+
+    // Disparar PageView via CAPI uma vez por sessao
+    try {
+      const key = '__fb_capi_pageview_sent';
+      if (!window.sessionStorage.getItem(key)) {
+        window.sessionStorage.setItem(key, '1');
+        if (typeof window.fbCAPI_trackPageView === 'function') {
+          window.fbCAPI_trackPageView();
+        }
+      }
+    } catch (e) {
+      if (typeof window.fbCAPI_trackPageView === 'function') {
+        window.fbCAPI_trackPageView();
+      }
+    }
 
     log('[FB-CAPI] Helper carregado e inicializado');
     log('[FB-CAPI] Cookies Facebook:', getFacebookCookies());
