@@ -20,7 +20,7 @@ type Segment = {
 };
 
 const SEGMENTS: Segment[] = [
-  { result: "NAO_LIBERA", weight: 7, fill: "hsl(var(--secondary))", textColor: "hsl(var(--destructive-foreground))", lines: ["NÃO", "LIBERA"] },
+  { result: "NAO_LIBERA", weight: 7, fill: "hsl(var(--foreground))", textColor: "hsl(var(--destructive-foreground))", lines: ["NÃO", "LIBERA"] },
   { result: "LIBERADO", weight: 3, fill: "hsl(var(--gold))", textColor: "hsl(var(--primary-foreground))", lines: ["LIBERADO"] },
 ];
 

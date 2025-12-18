@@ -176,7 +176,7 @@ export const FinalOfferSlide = () => {
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-black/40 via-secondary/80 to-gold/20 border border-primary text-center glow-primary-strong space-y-3">
+        <Card className="p-6 bg-gradient-to-br from-secondary/90 via-background to-gold/20 border border-primary text-center glow-primary-strong space-y-3">
           <p className="text-2xl font-bold text-foreground">🔥 R$147,00 vitalício</p>
           <div>
             <p className="text-lg text-muted-foreground line-through">Valor cheio: R$297</p>

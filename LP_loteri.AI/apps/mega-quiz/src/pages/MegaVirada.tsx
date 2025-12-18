@@ -757,7 +757,7 @@ const MegaVirada = () => {
               <p className="meta-label">Oferta • ativação imediata</p>
               <h2 className="heading-1 text-glow">Ou você entra agora, ou vai assistir outra pessoa ganhar.</h2>
 
-              <Card className="p-5 bg-gradient-to-br from-black/40 via-secondary/80 to-gold/20 border border-primary rounded-3xl space-y-2 glow-primary-strong">
+              <Card className="p-5 bg-gradient-to-br from-secondary/90 via-background to-gold/20 border border-primary rounded-3xl space-y-2 glow-primary-strong">
                 <p className="text-xl font-extrabold text-foreground">{offerHeadline}</p>
                 <p className="text-6xl font-extrabold text-primary text-glow">{offerPriceLine}</p>
                 <p className="text-lg font-bold text-foreground">{offerCashLine}</p>
