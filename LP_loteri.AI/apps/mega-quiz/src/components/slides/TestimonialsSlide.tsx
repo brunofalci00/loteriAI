@@ -150,7 +150,7 @@ export const TestimonialsSlide = () => {
                   : secondsRemaining === null
                     ? "Aguarde… carregando o vídeo."
                     : secondsRemaining > 30
-                      ? `O botão libera nos últimos 30s (faltam ${secondsRemaining}s).`
+                      ? "Continue assistindo para liberar o botão."
                       : "Liberado. Clique agora."}
               </p>
             </div>
