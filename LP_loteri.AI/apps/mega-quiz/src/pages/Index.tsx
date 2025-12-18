@@ -93,9 +93,11 @@ const Index = () => {
         {shouldShowCoinCounter && <CoinCounter coins={coins} delta={coinDelta} />}
       </Suspense>
       <Suspense fallback={<SlideFallback />}>{slides[currentSlide]}</Suspense>
-      <Suspense fallback={null}>
-        <ExitIntentOverlay open={showExitOverlay} onStay={handleExitOverlayClose} />
-      </Suspense>
+      {showExitOverlay && (
+        <Suspense fallback={null}>
+          <ExitIntentOverlay open={showExitOverlay} onStay={handleExitOverlayClose} />
+        </Suspense>
+      )}
     </div>
   );
 };
