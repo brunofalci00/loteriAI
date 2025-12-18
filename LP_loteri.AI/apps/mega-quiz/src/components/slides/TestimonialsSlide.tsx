@@ -82,6 +82,11 @@ export const TestimonialsSlide = () => {
         const key = "__vsl_viewcontent_70_sent";
         if (window.sessionStorage.getItem(key) !== "1") {
           window.sessionStorage.setItem(key, "1");
+          window.fbq?.("track", "ViewContent", {
+            content_name: "VSL 70% - LOTER.IA",
+            value: 147,
+            currency: "BRL",
+          });
           window.fbCAPI_trackViewContent?.({
             contentName: "VSL 70% - LOTER.IA",
             value: 147,
@@ -89,6 +94,11 @@ export const TestimonialsSlide = () => {
           });
         }
       } catch (e) {
+        window.fbq?.("track", "ViewContent", {
+          content_name: "VSL 70% - LOTER.IA",
+          value: 147,
+          currency: "BRL",
+        });
         window.fbCAPI_trackViewContent?.({
           contentName: "VSL 70% - LOTER.IA",
           value: 147,

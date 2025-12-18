@@ -2,6 +2,7 @@ declare global {
   type FacebookCapiHandler = (options?: Record<string, unknown>) => void;
 
   interface Window {
+    fbq?: (...args: unknown[]) => void;
     fbCAPI_trackViewContent?: FacebookCapiHandler;
     fbCAPI_trackPageView?: FacebookCapiHandler;
     fbCAPI_trackLead?: FacebookCapiHandler;
@@ -15,6 +16,22 @@ declare global {
 export const trackPixelEvent = (event: string, payload?: Record<string, unknown>) => {
   const isBrowser = typeof window !== "undefined";
   if (!isBrowser) return;
+
+  if (typeof window.fbq === "function") {
+    window.fbq("trackCustom", event, payload);
+
+    if (event === "QuizEntryStart") {
+      window.fbq("track", "Lead", { content_name: "Quiz Iniciado" });
+    }
+
+    if (event === "QuizBonusUnlocked") {
+      window.fbq("track", "CompleteRegistration", { content_name: "Quiz Completo" });
+    }
+
+    if (event === "CheckoutClick") {
+      window.fbq("track", "AddToCart", { value: 147, currency: "BRL" });
+    }
+  }
 
   const capiEventMap: Record<
     string,
@@ -40,7 +57,7 @@ export const trackPixelEvent = (event: string, payload?: Record<string, unknown>
     },
     MaxWinCTA: {
       handler: "fbCAPI_trackAddToCart",
-      defaults: { contentName: "CTA Pré-Checkout", value: 37, currency: "BRL" },
+      defaults: { contentName: "CTA Pré-Checkout", value: 147, currency: "BRL" },
     },
     CheckoutClick: {
       handler: "fbCAPI_trackAddToCart",

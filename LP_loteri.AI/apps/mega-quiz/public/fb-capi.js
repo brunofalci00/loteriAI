@@ -24,6 +24,7 @@
   const FACEBOOK_API_VERSION = 'v18.0';
   const FACEBOOK_PIXEL_ID = '369969430611939';
   const EVENTS_URL = `${SIGNALS_GATEWAY_URL}/${FACEBOOK_API_VERSION}/${FACEBOOK_PIXEL_ID}/events`;
+  const ENABLE_CAPI = false;
 
   /**
    * Definir cookie com expiry
@@ -211,6 +212,7 @@
    */
   async function sendFacebookEvent(eventName, userData, customData) {
     try {
+      if (!ENABLE_CAPI) return;
       // Garantir melhor cobertura de fbp: se ainda não existir, aguardar Pixel
       let { fbc, fbp } = getFacebookCookies();
       if (!fbp) {
