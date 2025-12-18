@@ -41,14 +41,14 @@
     <script src="/fb-capi.js" defer></script>
     <script>
       // Disparar ViewContent via CAPI + Pixel, respeitando carregamento assíncrono
-      const MAX_VIEW_CONTENT_ATTEMPTS = 20;
-      let viewContentAttempts = 0;
-      const triggerViewContent = () => {
+      var MAX_VIEW_CONTENT_ATTEMPTS = 20;
+      var viewContentAttempts = 0;
+      function triggerViewContent() {
         if (typeof window.fbCAPI_trackViewContent === "function") {
           window.fbCAPI_trackViewContent({
             contentName: "Quiz Loter.IA - Landing",
             value: 37,
-            currency: "BRL",
+            currency: "BRL"
           });
           return;
         }
@@ -56,7 +56,7 @@
           viewContentAttempts += 1;
           window.setTimeout(triggerViewContent, 200);
         }
-      };
+      }
       window.addEventListener("load", triggerViewContent, { once: true });
     </script>
 
@@ -86,7 +86,7 @@
         n.version = "2.0";
         n.queue = [];
 
-        const loadPixel = function () {
+        function loadPixel() {
           if (loadPixel.loaded) return;
           loadPixel.loaded = true;
           t = b.createElement(e);
@@ -94,7 +94,7 @@
           t.src = v;
           s = b.getElementsByTagName(e)[0];
           s.parentNode.insertBefore(t, s);
-        };
+        }
 
         if ("requestIdleCallback" in window) {
           window.requestIdleCallback(loadPixel, { timeout: 2000 });
