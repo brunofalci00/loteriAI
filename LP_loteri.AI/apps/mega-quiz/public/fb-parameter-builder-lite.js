@@ -8,6 +8,14 @@
  */
 (function () {
   try {
+    const DEBUG = new URLSearchParams(window.location.search).has('fb_debug');
+    const log = (...args) => {
+      if (DEBUG) console.log(...args);
+    };
+    const warn = (...args) => {
+      if (DEBUG) console.warn(...args);
+    };
+
     function setCookie(name, value, days) {
       const expires = new Date();
       expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
@@ -35,7 +43,7 @@
         const rand = Math.floor(Math.random() * 1e10);
         fbp = `fb.1.${ts}.${rand}`;
         setCookie('_fbp', fbp, 90);
-        console.log('[FB-PBLite] _fbp gerado:', fbp);
+        log('[FB-PBLite] _fbp gerado:', fbp);
       }
       return fbp;
     }
@@ -46,7 +54,7 @@
       if (fbclid) {
         const fbc = `fb.1.${Date.now()}.${fbclid}`;
         setCookie('_fbc', fbc, 90);
-        console.log('[FB-PBLite] _fbc atualizado de fbclid:', fbc);
+        log('[FB-PBLite] _fbc atualizado de fbclid:', fbc);
         return fbc;
       }
       return getCookie('_fbc');
@@ -58,7 +66,6 @@
     // Expor para diagnósticos/uso opcional
     window.__fbParameterBuilder = { fbp, fbc, refresh: () => ({ fbp: ensureFbp(), fbc: ensureFbcFromUrl() }) };
   } catch (e) {
-    console.warn('[FB-PBLite] Falha ao inicializar:', e);
+    warn('[FB-PBLite] Falha ao inicializar:', e);
   }
 })();
-

@@ -8,6 +8,7 @@ interface EntrySlideProps {
 }
 
 export const EntrySlide = ({ onNext }: EntrySlideProps) => {
+  const baseUrl = import.meta.env.BASE_URL ?? "/";
   const [loading, setLoading] = useState(true);
   const [ctaReady, setCtaReady] = useState(false);
   const slotSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -69,8 +70,13 @@ export const EntrySlide = ({ onNext }: EntrySlideProps) => {
         <section className="bg-card/80 border border-primary/30 rounded-3xl p-5 sm:p-8 space-y-4 landing-hero">
           <div className="space-y-3 text-left sm:text-center">
             <img
-              src="https://i.ibb.co/27pMkVsx/Chat-GPT-Image-17-de-dez-de-2025-20-06-27.png"
+              src={`${baseUrl}img/logo-256.png`}
+              srcSet={`${baseUrl}img/logo-256.png 1x, ${baseUrl}img/logo-512.png 2x`}
+              width={168}
+              height={112}
               alt="LOTER.IA"
+              loading="eager"
+              decoding="async"
               className="mx-auto w-24 sm:w-28 drop-shadow-[0_0_20px_rgba(255,215,0,0.35)]"
             />
             <h1 className="heading-hero text-glow">DESCUBRA SE VOCÊ PODE ACESSAR O SISTEMA DA MEGA DA VIRADA</h1>

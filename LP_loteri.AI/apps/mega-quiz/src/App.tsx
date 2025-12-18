@@ -15,14 +15,16 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/mega-virada" element={<MegaVirada />} />
-          <Route path="/mega-virada.html" element={<MegaVirada />} />
-          <Route path="/quiz.html" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<Index />} />
-        </Routes>
+        <main id="main-content">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/mega-virada" element={<MegaVirada />} />
+            <Route path="/mega-virada.html" element={<MegaVirada />} />
+            <Route path="/quiz.html" element={<Index />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<Index />} />
+          </Routes>
+        </main>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

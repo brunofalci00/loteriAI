@@ -8,7 +8,7 @@ interface TestimonialsSlideProps {
 }
 
 export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
-  const baseUrl = import.meta.env.BASE_URL;
+  const baseUrl = import.meta.env.BASE_URL ?? "/";
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [ctaUnlocked, setCtaUnlocked] = useState(false);
@@ -35,8 +35,13 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
       <div className="slide-frame space-y-8 text-center relative z-10">
         <div className="space-y-3">
           <img
-            src="https://i.ibb.co/27pMkVsx/Chat-GPT-Image-17-de-dez-de-2025-20-06-27.png"
+            src={`${baseUrl}img/logo-256.png`}
+            srcSet={`${baseUrl}img/logo-256.png 1x, ${baseUrl}img/logo-512.png 2x`}
+            width={168}
+            height={112}
             alt="LOTER.IA"
+            loading="lazy"
+            decoding="async"
             className="mx-auto w-24 drop-shadow-[0_0_20px_rgba(255,215,0,0.35)]"
           />
           <h1 className="heading-1 text-glow text-center">Assista o Vídeo Completo para Liberar o Seu Acesso</h1>
