@@ -112,7 +112,7 @@ const CheckoutButton = ({
 const MegaVirada = () => {
   const baseUrl = import.meta.env.BASE_URL ?? "/";
   const checkoutUrl =
-    (import.meta.env.VITE_CHECKOUT_URL as string | undefined) ?? "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
+    (import.meta.env.VITE_CHECKOUT_URL as string | undefined) ?? "https://go.perfectpay.com.br/PPU38CQ4TG2";
   const offerHeadline = (import.meta.env.VITE_OFFER_HEADLINE as string | undefined) ?? "Acesso vitalício ao gerador";
   const offerPriceLine = (import.meta.env.VITE_OFFER_PRICE_LINE as string | undefined) ?? "R$147,00 vitalício";
   const offerCashLine = (import.meta.env.VITE_OFFER_CASH_LINE as string | undefined) ?? "Pagamento único • liberação imediata";

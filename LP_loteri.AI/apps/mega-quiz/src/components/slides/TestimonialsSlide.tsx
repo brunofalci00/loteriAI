@@ -7,7 +7,7 @@ import { trackPixelEvent } from "@/lib/analytics";
 export const TestimonialsSlide = () => {
   const baseUrl = import.meta.env.BASE_URL ?? "/";
   const checkoutUrl =
-    (import.meta.env.VITE_CHECKOUT_URL as string | undefined) ?? "https://pay.kirvano.com/723e60dd-cf83-47c6-8084-f31f88475689";
+    (import.meta.env.VITE_CHECKOUT_URL as string | undefined) ?? "https://go.perfectpay.com.br/PPU38CQ4TG2";
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [ctaUnlocked, setCtaUnlocked] = useState(false);
