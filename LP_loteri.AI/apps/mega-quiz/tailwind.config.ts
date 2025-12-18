@@ -61,7 +61,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Archivo", "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", "system-ui", "sans-serif"],
+        sans: ["Inter", "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", "system-ui", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

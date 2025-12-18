@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Volume2, VolumeX } from "lucide-react";
+import { Lock, Volume2, VolumeX } from "lucide-react";
 
 interface TestimonialsSlideProps {
   onNext: () => void;
@@ -12,6 +12,7 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [ctaUnlocked, setCtaUnlocked] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     videoRef.current?.play().catch(() => undefined);
@@ -28,6 +29,17 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
   };
 
   const handleEnded = () => setCtaUnlocked(true);
+  const handleTimeUpdate = () => {
+    if (!videoRef.current) return;
+    const duration = videoRef.current.duration;
+    if (!Number.isFinite(duration) || duration <= 0) return;
+    setProgress(Math.min(1, Math.max(0, videoRef.current.currentTime / duration)));
+  };
+
+  const handleContinue = () => {
+    if (!ctaUnlocked) return;
+    onNext();
+  };
 
   return (
     <div className="slide-shell relative">
@@ -58,6 +70,7 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
             playsInline
             preload="metadata"
             onEnded={handleEnded}
+            onTimeUpdate={handleTimeUpdate}
             poster="https://i.ibb.co/ZpGzh5st/Whats-App-Image-2025-10-27-at-16-29-26.jpg"
           />
           <div className="absolute inset-x-0 bottom-0 p-3 flex items-center justify-between gap-3 bg-background/70 backdrop-blur-sm border-t border-border/60">
@@ -70,15 +83,47 @@ export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
           </div>
         </Card>
 
-        {ctaUnlocked && (
+        <Card className="p-5 sm:p-6 border border-primary/30 bg-card/90 text-left space-y-3">
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-1">
+              <p className="font-extrabold text-foreground text-lg sm:text-xl">
+                {ctaUnlocked ? "Acesso liberado" : "Quase lá…"}
+              </p>
+              <p className="text-sm sm:text-base text-muted-foreground font-semibold">
+                {ctaUnlocked ? "Clique para continuar." : "O botão libera quando o vídeo terminar."}
+              </p>
+            </div>
+            {!ctaUnlocked && <Lock className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-1" aria-hidden="true" />}
+          </div>
+          <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+            <div className="h-full bg-primary transition-[width] duration-300" style={{ width: `${Math.round(progress * 100)}%` }} />
+          </div>
           <Button
-            onClick={onNext}
+            onClick={handleContinue}
             size="lg"
-            className="w-full sm:w-auto text-lg sm:text-xl py-5 sm:py-6 px-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold pulse-glow"
+            disabled={!ctaUnlocked}
+            className={`w-full text-lg sm:text-xl py-6 font-extrabold ${
+              ctaUnlocked
+                ? "bg-primary hover:bg-primary-glow text-primary-foreground pulse-glow"
+                : "bg-muted text-muted-foreground border border-border"
+            }`}
           >
-            Continuar
+            {ctaUnlocked ? "Continuar" : "Continuar (bloqueado)"}
           </Button>
-        )}
+        </Card>
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-background/95 backdrop-blur-sm border-t border-border md:hidden">
+        <Button
+          onClick={handleContinue}
+          size="lg"
+          disabled={!ctaUnlocked}
+          className={`w-full text-lg py-6 font-extrabold ${
+            ctaUnlocked ? "bg-primary hover:bg-primary-glow text-primary-foreground pulse-glow" : "bg-muted text-muted-foreground"
+          }`}
+        >
+          {ctaUnlocked ? "Continuar" : "Continue ao fim do vídeo"}
+        </Button>
       </div>
     </div>
   );
