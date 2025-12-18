@@ -74,39 +74,6 @@
     <meta name="robots" content="index,follow" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
-    <script>
-      !(function (f, b, e, v, n, t, s) {
-        if (f.fbq) return;
-        n = f.fbq = function () {
-          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-        };
-        if (!f._fbq) f._fbq = n;
-        n.push = n;
-        n.loaded = !0;
-        n.version = "2.0";
-        n.queue = [];
-
-        function loadPixel() {
-          if (loadPixel.loaded) return;
-          loadPixel.loaded = true;
-          t = b.createElement(e);
-          t.async = !0;
-          t.src = v;
-          s = b.getElementsByTagName(e)[0];
-          s.parentNode.insertBefore(t, s);
-        }
-
-        if ("requestIdleCallback" in window) {
-          window.requestIdleCallback(loadPixel, { timeout: 2000 });
-        } else {
-          window.addEventListener("load", function () {
-            setTimeout(loadPixel, 1);
-          }, { once: true });
-        }
-      })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
-      window.fbq("init", "369969430611939");
-      window.fbq("track", "PageView");
-    </script>
     <script
       src="https://cdn.utmify.com.br/scripts/utms/latest.js"
       data-utmify-prevent-xcod-sck
@@ -127,15 +94,6 @@
       ></iframe>
     </noscript>
     <!-- End Google Tag Manager (noscript) -->
-
-    <noscript>
-      <img
-        height="1"
-        width="1"
-        style="display:none"
-        src="https://www.facebook.com/tr?id=369969430611939&ev=PageView&noscript=1"
-      />
-    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
