@@ -4,10 +4,11 @@ declare global {
   interface Window {
     fbq?: (...args: unknown[]) => void;
     fbCAPI_trackViewContent?: FacebookCapiHandler;
+    fbCAPI_trackPageView?: FacebookCapiHandler;
     fbCAPI_trackLead?: FacebookCapiHandler;
     fbCAPI_trackCompleteRegistration?: FacebookCapiHandler;
     fbCAPI_trackAddToCart?: FacebookCapiHandler;
-    fbCAPI_trackInitiateCheckout?: FacebookCapiHandler;
+    // InitiateCheckout é enviado pela PerfectPay.
     fbCAPI_trackPurchase?: FacebookCapiHandler;
     __loteriaFbqQueue?: Array<{ event: string; payload?: Record<string, unknown> }>;
     __loteriaFbqFlushScheduled?: boolean;
@@ -52,7 +53,7 @@ export const trackPixelEvent = (event: string, payload?: Record<string, unknown>
 
   const capiEventMap: Record<
     string,
-    { handler: keyof Pick<Window, "fbCAPI_trackLead" | "fbCAPI_trackCompleteRegistration" | "fbCAPI_trackAddToCart" | "fbCAPI_trackInitiateCheckout">;
+    { handler: keyof Pick<Window, "fbCAPI_trackLead" | "fbCAPI_trackCompleteRegistration" | "fbCAPI_trackAddToCart">;
       defaults?: Record<string, unknown>;
     }
   > = {
@@ -66,19 +67,19 @@ export const trackPixelEvent = (event: string, payload?: Record<string, unknown>
     },
     SlotMaxWin: {
       handler: "fbCAPI_trackAddToCart",
-      defaults: { contentName: "Oferta MAX WIN", value: 37, currency: "BRL" },
+      defaults: { contentName: "Oferta LOTER.IA", value: 147, currency: "BRL" },
     },
     WhatsAppSupportClick: {
       handler: "fbCAPI_trackLead",
       defaults: { contentName: "Suporte WhatsApp" },
     },
     MaxWinCTA: {
-      handler: "fbCAPI_trackInitiateCheckout",
+      handler: "fbCAPI_trackAddToCart",
       defaults: { contentName: "CTA Pré-Checkout", value: 37, currency: "BRL" },
     },
     CheckoutClick: {
-      handler: "fbCAPI_trackInitiateCheckout",
-      defaults: { contentName: "Checkout Loter.IA", value: 37, currency: "BRL" },
+      handler: "fbCAPI_trackAddToCart",
+      defaults: { contentName: "Clique Checkout (PerfectPay)", value: 147, currency: "BRL" },
     },
   };
 

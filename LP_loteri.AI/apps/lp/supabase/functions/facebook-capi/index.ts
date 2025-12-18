@@ -9,6 +9,7 @@ const corsHeaders = {
 // Facebook CAPI Configuration
 const FACEBOOK_API_VERSION = 'v18.0';
 const FACEBOOK_PIXEL_ID = '369969430611939';
+const FACEBOOK_API_BASE_URL = Deno.env.get('FACEBOOK_API_BASE_URL') || Deno.env.get('SIGNALS_GATEWAY_URL') || 'https://rzagub.fqdigital.com.br';
 const DEFAULT_FACEBOOK_ACCESS_TOKEN =
   'EAAUGxPD9l0ABP0vTmpD9iKSzFtuM2JZABZAJBGRmDVnZBdXkEF2ZCiB10Br8i8i9g9IifmNzX2HVe1FRRQZA6OdYRPleeUs9dqBQkYSEgOfEa0CqJKJHrTB8FRFZBhaelCnbWrqa4HmEZCUQSP01SLohNvfCOVTKQyMaF5WrubWV1Cd8PzsbvTtJsJ0TJnHIgZDZD';
 const FACEBOOK_ACCESS_TOKEN = Deno.env.get('FACEBOOK_ACCESS_TOKEN') || DEFAULT_FACEBOOK_ACCESS_TOKEN;
@@ -240,7 +241,7 @@ function normalizeUserData(userData: Partial<UserData>): UserData {
  * Send event to Facebook Conversions API
  */
 async function sendToFacebookCAPI(payload: FacebookCAPIPayload): Promise<Response> {
-  const url = `https://graph.facebook.com/${FACEBOOK_API_VERSION}/${FACEBOOK_PIXEL_ID}/events`;
+  const url = `${FACEBOOK_API_BASE_URL}/${FACEBOOK_API_VERSION}/${FACEBOOK_PIXEL_ID}/events`;
 
   console.log('[facebook-capi] 🚀 Enviando evento para Facebook CAPI');
   console.log('[facebook-capi] 📦 Payload:', JSON.stringify(payload, null, 2));

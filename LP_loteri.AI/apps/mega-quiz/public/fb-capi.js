@@ -368,6 +368,7 @@
    * Usar quando: Usuário clica no CTA de compra
    */
   window.fbCAPI_trackInitiateCheckout = function(options = {}) {
+    return;
     const utm = getUTMParams();
 
     sendFacebookEvent('InitiateCheckout', {

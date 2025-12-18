@@ -11,6 +11,7 @@ export const TestimonialsSlide = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const lastTimeRef = useRef(0);
   const lastAdvanceAtRef = useRef<number | null>(null);
+  const viewContentSentRef = useRef(false);
   const [isMuted, setIsMuted] = useState(true);
   const [ctaUnlocked, setCtaUnlocked] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -69,10 +70,32 @@ export const TestimonialsSlide = () => {
     const duration = videoRef.current.duration;
     if (!Number.isFinite(duration) || duration <= 0) return;
     const currentTime = videoRef.current.currentTime;
-    setProgress(Math.min(1, Math.max(0, currentTime / duration)));
+    const progressValue = Math.min(1, Math.max(0, currentTime / duration));
+    setProgress(progressValue);
 
     const remaining = Math.max(0, duration - currentTime);
     setSecondsRemaining(Math.ceil(remaining));
+
+    if (!viewContentSentRef.current && progressValue >= 0.7) {
+      viewContentSentRef.current = true;
+      try {
+        const key = "__vsl_viewcontent_70_sent";
+        if (window.sessionStorage.getItem(key) !== "1") {
+          window.sessionStorage.setItem(key, "1");
+          window.fbCAPI_trackViewContent?.({
+            contentName: "VSL 70% - LOTER.IA",
+            value: 147,
+            currency: "BRL",
+          });
+        }
+      } catch (e) {
+        window.fbCAPI_trackViewContent?.({
+          contentName: "VSL 70% - LOTER.IA",
+          value: 147,
+          currency: "BRL",
+        });
+      }
+    }
 
     if (!ctaUnlocked && remaining <= 30) {
       setCtaUnlocked(true);
