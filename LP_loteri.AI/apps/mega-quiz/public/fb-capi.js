@@ -24,7 +24,7 @@
   const FACEBOOK_API_VERSION = 'v18.0';
   const FACEBOOK_PIXEL_ID = '369969430611939';
   const EVENTS_URL = `${SIGNALS_GATEWAY_URL}/${FACEBOOK_API_VERSION}/${FACEBOOK_PIXEL_ID}/events`;
-  const ENABLE_CAPI = false;
+  const ENABLE_CAPI = true;
 
   /**
    * Definir cookie com expiry
