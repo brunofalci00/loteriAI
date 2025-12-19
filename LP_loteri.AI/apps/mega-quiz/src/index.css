@@ -8,34 +8,34 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Light theme: soft gray background + blue text + gold highlights */
-    --background: 222 17% 85%; /* #d3d7e0 */
-    --foreground: 231 65% 20%;
+    /* Dark theme: deep blue background + gold highlights */
+    --background: 231 91% 12%; /* #030c3e */
+    --foreground: 210 40% 98%;
 
-    --card: 222 25% 97%;
-    --card-foreground: 231 65% 20%;
+    --card: 231 55% 16%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 222 25% 97%;
-    --popover-foreground: 231 65% 20%;
+    --popover: 231 55% 16%;
+    --popover-foreground: 210 40% 98%;
 
     --primary: 42 95% 55%;
-    --primary-foreground: 231 65% 16%;
+    --primary-foreground: 231 91% 12%;
     --primary-glow: 42 95% 65%;
 
-    --secondary: 222 22% 92%;
-    --secondary-foreground: 231 65% 20%;
+    --secondary: 231 45% 20%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 222 18% 88%;
-    --muted-foreground: 231 25% 40%;
+    --muted: 231 32% 22%;
+    --muted-foreground: 218 18% 82%;
 
     --accent: 42 90% 60%;
-    --accent-foreground: 231 65% 16%;
+    --accent-foreground: 231 91% 12%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 222 16% 74%;
-    --input: 222 22% 94%;
+    --border: 231 28% 26%;
+    --input: 231 30% 22%;
     --ring: 42 95% 55%;
 
     --radius: 0.75rem;
@@ -43,13 +43,13 @@ All colors MUST be HSL.
     --gold: 42 95% 55%;
     --coin-shadow: 42 80% 35%;
     
-    --sidebar-background: 222 25% 97%;
-    --sidebar-foreground: 231 65% 20%;
+    --sidebar-background: 231 55% 16%;
+    --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 42 95% 55%;
-    --sidebar-primary-foreground: 231 65% 16%;
-    --sidebar-accent: 222 22% 92%;
-    --sidebar-accent-foreground: 231 65% 20%;
-    --sidebar-border: 222 16% 74%;
+    --sidebar-primary-foreground: 231 91% 12%;
+    --sidebar-accent: 231 45% 20%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 231 28% 26%;
     --sidebar-ring: 42 95% 55%;
   }
 }
