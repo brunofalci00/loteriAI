@@ -4,7 +4,11 @@ import { Card } from "@/components/ui/card";
 import { Lock, Volume2, VolumeX } from "lucide-react";
 import { trackPixelEvent } from "@/lib/analytics";
 
-export const TestimonialsSlide = () => {
+interface TestimonialsSlideProps {
+  onNext: () => void;
+}
+
+export const TestimonialsSlide = ({ onNext }: TestimonialsSlideProps) => {
   const baseUrl = import.meta.env.BASE_URL ?? "/";
   const checkoutUrl =
     (import.meta.env.VITE_CHECKOUT_URL as string | undefined) ?? "https://go.perfectpay.com.br/PPU38CQ4TG2";
@@ -122,10 +126,8 @@ export const TestimonialsSlide = () => {
 
   const handleContinue = () => {
     if (!ctaUnlocked) return;
-    trackPixelEvent("CheckoutClick", { source: "TestimonialsSlide" });
-    window.setTimeout(() => {
-      window.location.assign(checkoutUrl);
-    }, 250);
+    trackPixelEvent("VSLContinue", { source: "TestimonialsSlide" });
+    onNext();
   };
 
   return (

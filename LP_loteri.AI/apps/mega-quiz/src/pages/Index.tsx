@@ -79,7 +79,7 @@ const Index = () => {
       <UserResultSlide key="user-result" onNext={handleNext} userScore={userScore} selectedNumbers={selectedNumbers} />,
       <AISyncLoadingSlide key="ai-sync" onNext={handleNext} />,
       <AISimulationSlide key="ai-simulation" onNext={handleNext} userScore={userScore} aiScore={aiScore} />,
-      <TestimonialsSlide key="testimonials" />,
+      <TestimonialsSlide key="testimonials" onNext={handleNext} />,
       <FinalOfferSlide key="final-offer" />,
     ],
     [aiScore, coins, handleCoinsEarned, handleIntuitionComplete, handleNext, selectedNumbers, userScore],
