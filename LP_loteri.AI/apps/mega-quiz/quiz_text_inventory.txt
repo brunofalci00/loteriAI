@@ -127,4 +127,4 @@ Alternativas:
 - Produto: Sistema LOTER.IA
 - Preço: R$97,00 vitalício
 - Valor cheio (âncora): R$297
-- Escassez: 5 acessos restantes (se sair/não concluir, a vaga vai para o próximo visitante)
+- Escassez: último acesso disponível (se sair/não concluir, a vaga vai para o próximo visitante)

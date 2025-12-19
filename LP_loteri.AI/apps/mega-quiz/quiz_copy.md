@@ -118,4 +118,4 @@ Pergunta: Se existisse um método científico para aumentar drasticamente suas c
 - Produto: **Sistema LOTER.IA**
 - Preço: **R$97,00 vitalício**
 - Âncora: **Valor cheio R$297**
-- Escassez: **5 acessos restantes** (se sair/não concluir, a vaga vai para o próximo visitante)
+- Escassez: **último acesso disponível** (se sair/não concluir, a vaga vai para o próximo visitante)

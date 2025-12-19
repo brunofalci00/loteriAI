@@ -95,14 +95,14 @@ export const FinalOfferSlide = () => {
             className="mx-auto w-28 sm:w-40 drop-shadow-[0_0_25px_rgba(255,215,0,0.35)] pulse-glow"
           />
           <h1 className="heading-1 text-glow">Acesso ao Sistema LOTER.IA</h1>
-          <p className="heading-3 text-primary">Sua vaga foi liberada. Restam 5 acessos antes do sistema bloquear.</p>
+          <p className="heading-3 text-primary">Seu acesso foi liberado. Este é o último acesso disponível antes do sistema bloquear.</p>
         </div>
 
         <Card className={`p-6 border ${timeLeft <= 60 ? "border-destructive animate-pulse pulse-glow" : "border-primary glow-primary"}`}>
           <div className="flex items-center justify-center gap-4">
             <Clock className={`w-10 h-10 ${timeLeft <= 60 ? "text-destructive animate-bounce" : "text-primary"}`} />
             <div className="text-center">
-              <p className="text-sm text-muted-foreground uppercase tracking-[0.5em]">5 acessos restantes</p>
+              <p className="text-sm text-muted-foreground uppercase tracking-[0.5em]">último acesso disponível</p>
               <p className={`text-5xl font-bold ${timeLeft <= 60 ? "text-destructive text-glow" : "text-primary"}`}>
                 {minutes}:{seconds}
               </p>
@@ -253,7 +253,7 @@ export const FinalOfferSlide = () => {
             height={secureBadgeImage.height}
             className="w-40 sm:w-52 h-auto mx-auto"
           />
-          <p>✅ Restam 5 acessos para liberar.</p>
+          <p>✅ Este é o último acesso disponível para liberar agora.</p>
           <p>Se você sair da tela ou não concluir o pagamento, não existe outra chance: a vaga vai para o próximo visitante.</p>
         </div>
 
