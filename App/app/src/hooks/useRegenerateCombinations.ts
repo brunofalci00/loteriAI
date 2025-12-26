@@ -66,21 +66,35 @@ export function useRegenerateCombinations() {
 
         console.log('✅ Crédito consumido. Restantes:', creditResult.credits_remaining);
 
-        // 2. Gerar novas combinações
+        // 2. Buscar combinações existentes para evitar duplicatas
+        const { data: existingGeneration } = await supabase
+          .from('lottery_generations')
+          .select('generated_numbers')
+          .eq('user_id', params.userId)
+          .eq('lottery_type', params.lotteryType)
+          .eq('contest_number', params.contestNumber)
+          .eq('is_active', true)
+          .single();
+
+        const existingCombinations = existingGeneration?.generated_numbers || [];
+        console.log(`📦 Combinações existentes encontradas: ${existingCombinations.length}`);
+
+        // 3. Gerar novas combinações (evitando duplicatas com as existentes)
         const newCombinations = generateIntelligentCombinations(
           params.statistics,
           params.numbersPerGame,
           params.maxNumber,
-          params.numberOfGames || 10
+          params.numberOfGames || 10,
+          existingCombinations
         );
 
         if (newCombinations.length === 0) {
           throw new Error('Não foi possível gerar combinações válidas');
         }
 
-        console.log(`✅ ${newCombinations.length} combinações geradas`);
+        console.log(`✅ ${newCombinations.length} combinações novas geradas (diferentes das anteriores)`);
 
-        // 3. Salvar no histórico (marca como ativa)
+        // 4. Salvar no histórico (marca como ativa)
         const generationId = await saveGeneration(
           params.userId,
           params.lotteryType,
@@ -96,7 +110,7 @@ export function useRegenerateCombinations() {
 
         console.log('✅ Geração salva no histórico:', generationId);
 
-        // 4. Atualizar lottery_analyses (backward compatibility)
+        // 5. Atualizar lottery_analyses (backward compatibility)
         // Apenas atualizar, não inserir se não existir
         const { error: updateError } = await supabase
           .from('lottery_analyses')

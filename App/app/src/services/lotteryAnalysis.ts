@@ -212,17 +212,22 @@ export const generateIntelligentCombinations = (
   statistics: LotteryStatistics,
   numbersPerGame: number,
   maxNumber: number,
-  numberOfGames: number = 10
+  numberOfGames: number = 10,
+  existingCombinations: number[][] = []
 ): number[][] => {
   const combinations: number[][] = [];
   const strategy = getBalancedStrategy();
-  const maxAttempts = numberOfGames * 10; // Limite de tentativas
+  const maxAttempts = numberOfGames * 20; // Aumentado para garantir variedade
   let attempts = 0;
   let validationFailures = 0;
   let duplicates = 0;
 
+  // Adicionar entropia baseada no timestamp para garantir variação entre gerações
+  const entropy = Date.now() % 1000;
+
   console.log(`🎲 Gerando ${numberOfGames} combinações (${numbersPerGame} números de 1-${maxNumber})`);
   console.log(`📊 Statistics: averageSum=${statistics.averageSum}, hotNumbers=${statistics.hotNumbers.length}`);
+  console.log(`🎲 Entropy seed: ${entropy}, Existing combinations to avoid: ${existingCombinations.length}`);
 
   while (combinations.length < numberOfGames && attempts < maxAttempts) {
     attempts++;
@@ -236,18 +241,26 @@ export const generateIntelligentCombinations = (
 
     // Validar combinação
     if (validateCombination(numbers, statistics.averageSum)) {
-      // Verificar se não é duplicada
-      const isDuplicate = combinations.some(
+      // Verificar se não é duplicada (dentro desta geração)
+      const isDuplicateInCurrent = combinations.some(
         combo => JSON.stringify(combo) === JSON.stringify(numbers)
       );
 
-      if (!isDuplicate) {
+      // Verificar se não é duplicada de gerações anteriores
+      const isDuplicateInExisting = existingCombinations.some(
+        combo => JSON.stringify(combo) === JSON.stringify(numbers)
+      );
+
+      if (!isDuplicateInCurrent && !isDuplicateInExisting) {
         combinations.push(numbers);
         if (combinations.length === 1 || combinations.length === numberOfGames) {
           console.log(`✅ Jogo ${combinations.length}/${numberOfGames} gerado: [${numbers.join(', ')}]`);
         }
       } else {
         duplicates++;
+        if (isDuplicateInExisting) {
+          console.log(`⚠️ Duplicata detectada com geração anterior: [${numbers.join(', ')}]`);
+        }
       }
     } else {
       validationFailures++;
@@ -294,12 +307,15 @@ export const generateIntelligentCombinations = (
         continue; // Pular se não tiver pelo menos 2 pares e 2 ímpares
       }
 
-      // Verificar duplicata
-      const isDuplicate = combinations.some(
+      // Verificar duplicata (na geração atual e nas anteriores)
+      const isDuplicateInCurrent = combinations.some(
+        combo => JSON.stringify(combo) === JSON.stringify(numbers)
+      );
+      const isDuplicateInExisting = existingCombinations.some(
         combo => JSON.stringify(combo) === JSON.stringify(numbers)
       );
 
-      if (!isDuplicate) {
+      if (!isDuplicateInCurrent && !isDuplicateInExisting) {
         combinations.push(numbers);
         console.log(`⚠️ Jogo ${combinations.length}/${numberOfGames} gerado (fallback): [${numbers.join(', ')}]`);
       }

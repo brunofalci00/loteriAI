@@ -9,26 +9,32 @@ const formatNumber = (value: number) => value.toString().padStart(2, "0");
 // 🔒 CONTROLE DE ACESSO: Mude para false para ativar o evento
 const MEGA_EVENT_LOCKED = true;
 
+// Data da Mega da Virada: 31/12/2025 23:59:59
+const MEGA_VIRADA_DATE = new Date("2025-12-31T23:59:59");
+
+const calculateTimeLeft = () => {
+  const now = new Date();
+  const difference = MEGA_VIRADA_DATE.getTime() - now.getTime();
+
+  if (difference <= 0) {
+    return { days: 0, hours: 0, minutes: 0 };
+  }
+
+  const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+
+  return { days, hours, minutes };
+};
+
 export const MegaEventHero = () => {
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState({ days: 48, hours: 12, minutes: 30 });
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
     console.log("🏆 MegaEventHero mounted successfully");
     const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        let { days, hours, minutes } = prev;
-        minutes--;
-        if (minutes < 0) {
-          minutes = 59;
-          hours--;
-          if (hours < 0) {
-            hours = 23;
-            days = Math.max(days - 1, 0);
-          }
-        }
-        return { days, hours, minutes };
-      });
+      setTimeLeft(calculateTimeLeft());
     }, 60_000);
 
     return () => clearInterval(interval);
